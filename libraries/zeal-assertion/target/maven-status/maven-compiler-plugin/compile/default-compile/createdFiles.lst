@@ -1,0 +1,6 @@
+com/zeal/assertion/api/Assertions.class
+com/zeal/assertion/exception/AssertionFailedException.class
+com/zeal/assertion/exception/VerificationFailedException.class
+com/zeal/assertion/exception/PostconditionFailedException.class
+com/zeal/assertion/check/ObjectCheckableAssertion.class
+com/zeal/assertion/exception/PreconditionFailedException.class
