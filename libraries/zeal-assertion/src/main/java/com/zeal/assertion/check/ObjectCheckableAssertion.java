@@ -1,17 +1,14 @@
 package com.zeal.assertion.check;
 
-import com.zeal.expression.ops.values.ObjectOperation;
-import com.zeal.expression.subject.SingleSubjectBooleanExpression;
+import com.zeal.expression.eval.Evaluator;
 
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class ObjectCheckableAssertion<S> {
+public class ObjectCheckableAssertion<S> extends BaseCheckableAssertion<Evaluator<S>> {
 
-    protected final SingleSubjectBooleanExpression<S> expression;
-
-    public ObjectCheckableAssertion(SingleSubjectBooleanExpression<S> expression) {
-        this.expression = expression;
+    public ObjectCheckableAssertion(Evaluator<S> expression) {
+        super(expression);
     }
 
     public S orUse(S other) {
@@ -41,26 +38,5 @@ public class ObjectCheckableAssertion<S> {
         }
 
         return subject;
-    }
-
-    public <T extends Throwable> void orThrow(T throwable) throws T {
-
-        if (expression.isFalse()) {
-            throw throwable;
-        }
-    }
-
-    public <T extends Throwable> void orThrow(Supplier<T> throwable) throws T {
-
-        if (expression.isFalse()) {
-            throw throwable.get();
-        }
-    }
-
-    public <T extends Throwable> void orThrow(Function<S, T> mapper) throws T {
-
-        if (expression.isFalse()) {
-            throw mapper.apply(expression.subject());
-        }
     }
 }
