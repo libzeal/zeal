@@ -7,7 +7,7 @@
     <artifactId>zeal-examples</artifactId>
 
     <parent>
-        <groupId>com.zeal</groupId>
+        <groupId>io.github.albanoj2</groupId>
         <artifactId>zeal-parent</artifactId>
         <version>0.1.0-SNAPSHOT</version>
     </parent>
