@@ -4,7 +4,6 @@ import java.util.UUID;
 
 import static com.zeal.assertion.api.Assertions.*;
 import static com.zeal.assertion.api.Evaluators.that;
-import static com.zeal.expression.api.eval.StringEvaluations.startsWith;
 import static com.zeal.expression.api.ops.LogicalOperations.not;
 import static com.zeal.expression.api.ops.StringOperations.prepend;
 
@@ -16,7 +15,7 @@ public class PreAndPostconditions {
         final String password = "bar";
         final String prefix = "baz";
 
-        final String newUsername = check(not(that(username).satisfies(startsWith(prefix)).hasHashCode(1))).or(prepend(prefix));
+        final String newUsername = check(not(that(username).hasHashCode(1))).or(prepend(prefix));
 
         final Session session = login(newUsername, password);
 
@@ -28,8 +27,8 @@ public class PreAndPostconditions {
 
     public static Session login(String username, String password) {
 
-        require(that(username).isNotBlank().isLongerThan(8));
-        require(that(password).isNotBlank());
+        require(that(username).isNotBlank());
+        require(that(password).isNotBlank().isLongerThan(8));
 
         return new Session(username);
     }

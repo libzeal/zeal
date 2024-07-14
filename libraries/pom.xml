@@ -13,6 +13,7 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <bundle.plugin.version>5.1.9</bundle.plugin.version>
     </properties>
 
     <modules>
@@ -35,5 +36,17 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <build>
+        <pluginManagement>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.felix</groupId>
+                        <artifactId>maven-bundle-plugin</artifactId>
+                        <version>${bundle.plugin.version}</version>
+                    </plugin>
+                </plugins>
+        </pluginManagement>
+    </build>
 
 </project>
