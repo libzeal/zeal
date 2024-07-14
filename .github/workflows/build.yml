@@ -13,9 +13,9 @@ jobs:
         distribution: 'temurin'
         architecture: x64
     - name: Build
-      run: ./scripts/build.sh
+      run: ./scripts/build.sh --batch-mode
     - name: Test
-      run: ./scripts/test.sh
+      run: ./scripts/test.sh --batch-mode
     - name: Stage
       run: ./scripts/stage.sh
     - name: Upload Artifacts
