@@ -17,7 +17,7 @@ jobs:
     - name: Test
       run: ./scripts/test.sh --batch-mode
     - name: Stage
-      run: ./scripts/stage.sh --batch-mode
+      run: ./scripts/stage.sh
     - name: Upload Artifacts
       uses: actions/upload-artifact@v4
       with:
