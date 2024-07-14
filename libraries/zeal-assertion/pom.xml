@@ -5,6 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>zeal-assertion</artifactId>
+    <packaging>bundle</packaging>
 
     <parent>
         <groupId>com.zeal</groupId>
