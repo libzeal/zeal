@@ -11,6 +11,7 @@ jobs:
         run: |
           git config user.email "actions@github.com"
           git config user.name "GitHub Actions"
+          echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
       - name: Set up Maven Central Repository
         uses: actions/setup-java@v4
         with:
