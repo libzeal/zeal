@@ -30,7 +30,6 @@
         <url>https://github.com/libzeal/zeal.git</url>
         <developerConnection>scm:git:https://github.com/libzeal/zeal.git
         </developerConnection>
-        <tag>HEAD</tag>
     </scm>
 
     <properties>
