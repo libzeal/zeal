@@ -113,16 +113,6 @@
                         </execution>
                     </executions>
                 </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-release-plugin</artifactId>
-                    <version>${release.plugin.version}</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.sonatype.plugins</groupId>
-                    <artifactId>nexus-staging-maven-plugin</artifactId>
-                    <version>${nexus.staging.plugin.version}</version>
-                </plugin>
             </plugins>
         </pluginManagement>
     </build>
@@ -135,8 +125,10 @@
                     <plugin>
                         <groupId>org.sonatype.plugins</groupId>
                         <artifactId>nexus-staging-maven-plugin</artifactId>
+                        <version>${nexus.staging.plugin.version}</version>
                         <extensions>true</extensions>
                         <configuration>
+                            <skip>true</skip>
                             <serverId>ossrh</serverId>
                             <nexusUrl>https://s01.oss.sonatype.org</nexusUrl>
                             <autoReleaseAfterClose>true</autoReleaseAfterClose>
@@ -145,7 +137,9 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-release-plugin</artifactId>
+                        <version>${release.plugin.version}</version>
                         <configuration>
+                            <skip>true</skip>
                             <tagNameFormat>@{project.version}</tagNameFormat>
                         </configuration>
                         <executions>
