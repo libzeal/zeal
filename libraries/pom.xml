@@ -14,6 +14,7 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <bundle.plugin.version>5.1.9</bundle.plugin.version>
+        <gpg.plugin.version>3.2.4</gpg.plugin.version>
     </properties>
 
     <modules>
@@ -44,6 +45,11 @@
                         <groupId>org.apache.felix</groupId>
                         <artifactId>maven-bundle-plugin</artifactId>
                         <version>${bundle.plugin.version}</version>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>${gpg.plugin.version}</version>
                     </plugin>
                 </plugins>
         </pluginManagement>
