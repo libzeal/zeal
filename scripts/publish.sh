@@ -5,6 +5,6 @@ PROJECT_ROOT=$SCRIPT_DIR/..
 
 mvn -f ${PROJECT_ROOT}/libraries/pom.xml \
     release:prepare \
-    release:perform
+    release:perform \
 	deploy \
 	$@

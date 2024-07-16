@@ -143,10 +143,6 @@
                         <version>${release.plugin.version}</version>
                         <configuration>
                             <tagNameFormat>@{project.version}</tagNameFormat>
-                            <branchName>main</branchName>
-                            <pushChanges>false</pushChanges>
-                            <localCheckout>true</localCheckout>
-                            <remoteTagging>false</remoteTagging>
                         </configuration>
                         <executions>
                             <execution>
@@ -180,21 +176,5 @@
             </build>
         </profile>
     </profiles>
-
-    <distributionManagement>
-        <snapshotRepository>
-            <id>ossrh</id>
-            <name>Central Repository OSSRH</name>
-            <url>https://s01.oss.sonatype.org/content/repositories/snapshots
-            </url>
-        </snapshotRepository>
-        <repository>
-            <id>ossrh</id>
-            <name>Central Repository OSSRH</name>
-            <url>
-                https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/
-            </url>
-        </repository>
-    </distributionManagement>
 
 </project>
