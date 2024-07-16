@@ -29,10 +29,10 @@
     </developers>
 
     <scm>
-        <connection>scm:git:git://github.com:libzeal/zeal.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com:libzeal/zeal.git
+        <connection>scm:git:git://github.com/libzeal/zeal.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/libzeal/zeal.git
         </developerConnection>
-        <url>git@github.com:libzeal/zeal.git</url>
+        <url>git@github.com/libzeal/zeal.git</url>
   </scm>
 
     <properties>
