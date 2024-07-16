@@ -141,6 +141,10 @@
                         <configuration>
                             <skip>true</skip>
                             <tagNameFormat>@{project.version}</tagNameFormat>
+                            <branchName>main</branchName>
+                            <pushChanges>false</pushChanges>
+                            <localCheckout>true</localCheckout>
+                            <remoteTagging>false</remoteTagging>
                         </configuration>
                         <executions>
                             <execution>
