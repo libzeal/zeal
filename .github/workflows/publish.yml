@@ -1,4 +1,4 @@
-name: Publish
+name: Publish (Maven Central)
 on: workflow_dispatch
 jobs:
   publish:
@@ -32,6 +32,11 @@ jobs:
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
+      - name: Generate Changelog
+        id: changelog
+        uses: metcalfc/changelog-generator@v4.3.1
+        with:
+          myToken: ${{ secrets.GITHUB_TOKEN }}
       - name: Create GitHub Release
         uses: actions/create-release@v1
         env:
@@ -40,18 +45,16 @@ jobs:
           tag_name: ${{ env.RELEASE_VERSION }}
           release_name: ${{ env.RELEASE_VERSION }}
           body: |
-            You can obtain the this release from Maven Central at 
-            https://repo1.maven.org/maven2/de/libzeal/zeal/${{ env.RELEASE_VERSION }}/ or by adding the following dependency to 
-            your project:
+            This release can be obtained from Maven Central at https://repo1.maven.org/maven2/io/github/libzeal/zeal-assertion/${{ env.RELEASE_VERSION }}/.
             
+            The `zeal-assertion` dependency can be added using the following: 
+  
             ```
-            <dependencies>
-                <dependency>
-                    <groupId>de.codecentric</groupId>
-                    <artifactId>cxf-spring-boot-starter</artifactId>
-                    <version>${{ env.RELEASE_VERSION }}</version>
-                </dependency>
-            </dependencies>
+            <dependency>
+                <groupId>io.github.libzeal</groupId>
+                <artifactId>zeal-assertion</artifactId>
+                <version>${{ env.RELEASE_VERSION }}</version>
+            </dependency>
             ```
             
             ### Changelog for this Release
