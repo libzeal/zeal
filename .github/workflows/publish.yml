@@ -1,15 +1,5 @@
 name: Publish Zeal to the Maven Central
-on:
-  workflow_dispatch:
-    inputs:
-      release-version:
-        description: "Release Version"
-        required: true
-        default: "1.0.0"
-      dev-version:
-        description: "Development Version"
-        required: true
-        default: "1.0.0"
+on: workflow_dispatch
 jobs:
   publish:
     permissions:
@@ -35,7 +25,7 @@ jobs:
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
           cache: "maven"
       - name: Publish
-        run: ./scripts/publish.sh -Ppublish --batch-mode --no-transfer-progress --DreleaseVersion=${{ github.event.inputs.release-version }} --DdevelopmentVersion=${{ github.event.inputs.dev-version }}
+        run: ./scripts/publish.sh -Ppublish --batch-mode --no-transfer-progress
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
