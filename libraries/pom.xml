@@ -4,7 +4,7 @@
 
     <groupId>io.github.libzeal</groupId>
     <artifactId>zeal-parent</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
+    <version>0.1.0</version>
     <packaging>pom</packaging>
     <name>Zeal</name>
     <description>Assertion library for Java</description>
@@ -33,6 +33,7 @@
         <url>https://github.com/libzeal/zeal.git</url>
         <developerConnection>scm:git:https://github.com/libzeal/zeal.git
         </developerConnection>
+    <tag>0.1.0</tag>
   </scm>
 
     <properties>
