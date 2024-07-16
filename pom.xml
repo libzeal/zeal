@@ -40,12 +40,17 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <sonar.organization>libzeal</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+        
         <bundle.plugin.version>5.1.9</bundle.plugin.version>
         <gpg.plugin.version>3.2.4</gpg.plugin.version>
         <source.plugin.version>3.3.1</source.plugin.version>
         <javadoc.plugin.version>3.7.0</javadoc.plugin.version>
         <central.publishing.plugin.version>0.5.0</central.publishing.plugin.version>
         <release.plugin.version>3.1.0</release.plugin.version>
+        <sonar.plugin.version>4.0.0.4121</sonar.plugin.version>
     </properties>
 
     <modules>
@@ -174,6 +179,34 @@
                 </plugins>
             </build>
         </profile>
+        <profile>
+            <id>sonar</id>
+            <properties>
+                <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+                <sonar.organization>libzeal</sonar.organization>
+                <sonar.projectKey>libzeal_zeal</sonar.projectKey>
+                <sonar.moduleKey>${project.groupId}:${project.artifactId}</sonar.moduleKey>
+            </properties>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.sonarsource.scanner.maven</groupId>
+                        <artifactId>sonar-maven-plugin</artifactId>
+                        <version>${sonar.plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sonar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
-
 </project>
