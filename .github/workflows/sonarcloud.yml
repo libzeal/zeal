@@ -34,4 +34,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: ./scripts/sonarcloud.sh --batch-mode
+        run: |
+          chmod 775 ./scripts/*
+          ./scripts/sonarcloud.sh --batch-mode
