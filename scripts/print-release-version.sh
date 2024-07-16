@@ -5,6 +5,4 @@ PROJECT_ROOT=$SCRIPT_DIR/..
 
 cd ${PROJECT_ROOT}
 
-mvn -X release:prepare \
-    release:perform \
-	  $@
+mvn help:evaluate -Dexpression=project.version -q -DforceStdout | cut -d '-' -f 1
