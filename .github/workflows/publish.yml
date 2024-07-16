@@ -23,7 +23,7 @@ jobs:
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
           cache: "maven"
       - name: Publish
-        run: ./scripts/publish.sh -Ppublish --batch-mode --no-transfer-progress
+        run: mvn -X release:prepare release:perform -Ppublish --batch-mode --no-transfer-progress
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
