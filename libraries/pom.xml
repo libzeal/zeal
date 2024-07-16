@@ -8,6 +8,9 @@
     <artifactId>zeal-parent</artifactId>
     <version>0.1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
+    <name>Zeal</name>
+    <description>Assertion library for Java</description>
+    <url>https://github.com/libzeal/zeal</url>
 
     <licenses>
         <license>
@@ -22,6 +25,8 @@
             <id>albanoj2</id>
             <name>Justin Albano</name>
             <email>albano.justin@gmail.com</email>
+            <organization>libzeal</organization>
+            <organizationUrl>https://github.com/libzeal</organizationUrl>
         </developer>
     </developers>
 
@@ -41,7 +46,7 @@
         <gpg.plugin.version>3.2.4</gpg.plugin.version>
         <source.plugin.version>3.3.1</source.plugin.version>
         <javadoc.plugin.version>3.7.0</javadoc.plugin.version>
-        <nexus.staging.plugin.version>1.7.0</nexus.staging.plugin.version>
+        <central.publishing.plugin.version>0.5.0</central.publishing.plugin.version>
         <release.plugin.version>3.1.0</release.plugin.version>
     </properties>
 
@@ -123,15 +128,13 @@
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>org.sonatype.plugins</groupId>
-                        <artifactId>nexus-staging-maven-plugin</artifactId>
-                        <version>${nexus.staging.plugin.version}</version>
+                        <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
+                        <version>${central.publishing.plugin.version}</version>
                         <extensions>true</extensions>
                         <configuration>
-                            <skip>true</skip>
-                            <serverId>ossrh</serverId>
-                            <nexusUrl>https://s01.oss.sonatype.org</nexusUrl>
-                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                            <publishingServerId>central</publishingServerId>
+                            <autoPublish>true</autoPublish>
                         </configuration>
                     </plugin>
                     <plugin>
@@ -139,7 +142,6 @@
                         <artifactId>maven-release-plugin</artifactId>
                         <version>${release.plugin.version}</version>
                         <configuration>
-                            <skip>true</skip>
                             <tagNameFormat>@{project.version}</tagNameFormat>
                             <branchName>main</branchName>
                             <pushChanges>false</pushChanges>

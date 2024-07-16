@@ -6,29 +6,29 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-java@v4
-      with:
-        java-version: '8'
-        distribution: 'temurin'
-        architecture: x64
-    - name: Build
-      run: ./scripts/build.sh --batch-mode
-    - name: Test
-      run: ./scripts/test.sh --batch-mode
-    - name: Stage
-      run: ./scripts/stage.sh
-    - name: Upload Artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: Package
-        path: staging
-    - name: Upload Reports
-      uses: dorny/test-reporter@v1
-      if: always()
-      with:
-        name: Maven Tests
-        path: target/surefire-reports/*.xml
-        fail-on-empty: false
-        reporter: java-junit
-        fail-on-error: true
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          java-version: "8"
+          distribution: "temurin"
+          architecture: x64
+      - name: Build
+        run: ./scripts/build.sh --batch-mode --no-transfer-progress
+      - name: Test
+        run: ./scripts/test.sh --batch-mode --no-transfer-progress
+      - name: Stage
+        run: ./scripts/stage.sh
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: Package
+          path: staging
+      - name: Upload Reports
+        uses: dorny/test-reporter@v1
+        if: always()
+        with:
+          name: Maven Tests
+          path: target/surefire-reports/*.xml
+          fail-on-empty: false
+          reporter: java-junit
+          fail-on-error: true
