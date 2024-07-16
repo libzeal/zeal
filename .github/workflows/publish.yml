@@ -7,10 +7,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: "$BRANCH_NAME"
-        env:
-          BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
       - name: Configure Git User
         run: |
           git config user.email "actions@github.com"
