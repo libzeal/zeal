@@ -1,4 +1,4 @@
-name: Publish Zeal to the Maven Central
+name: Publish
 on: workflow_dispatch
 jobs:
   publish:

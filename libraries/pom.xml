@@ -33,7 +33,6 @@
         <url>https://github.com/libzeal/zeal.git</url>
         <developerConnection>scm:git:https://github.com/libzeal/zeal.git
         </developerConnection>
-        <tag>0.1.0</tag>
     </scm>
 
     <properties>
