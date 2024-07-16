@@ -3,4 +3,6 @@
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 PROJECT_ROOT=$SCRIPT_DIR/..
 
-mvn clean package -f ${PROJECT_ROOT}/pom.xml $@
+cd "$PROJECT_ROOT" || exit 1
+
+mvn clean package "$@"

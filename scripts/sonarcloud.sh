@@ -3,6 +3,6 @@
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 PROJECT_ROOT=$SCRIPT_DIR/..
 
-mvn -B verify -Psonar \
-  -f ${PROJECT_ROOT}/libraries/pom.xml \
-  $@
+cd "$PROJECT_ROOT" || exit 1
+
+mvn -B verify -Psonar "$@"
