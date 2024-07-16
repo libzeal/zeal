@@ -8,7 +8,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: main
+          ref: ${{ BRANCH_NAME }}
+        env:
+          BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
       - name: Configure Git User
         run: |
           git config user.email "actions@github.com"
