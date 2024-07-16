@@ -6,4 +6,4 @@ PROJECT_ROOT=$SCRIPT_DIR/..
 mvn -X -f ${PROJECT_ROOT}/pom.xml \
     release:prepare \
     release:perform \
-	$@
+	  $@
