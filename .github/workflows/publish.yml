@@ -35,7 +35,7 @@ jobs:
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
           cache: "maven"
       - name: Publish
-        run: ./scripts/publish.sh -Ppublish --batch-mode --no-transfer-progress --releaseVersion=${{ github.event.inputs.release-version }} --developmentVersion=${{ github.event.inputs.dev-version }}
+        run: ./scripts/publish.sh -Ppublish --batch-mode --no-transfer-progress --DreleaseVersion=${{ github.event.inputs.release-version }} --DdevelopmentVersion=${{ github.event.inputs.dev-version }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
