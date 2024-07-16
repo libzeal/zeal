@@ -8,7 +8,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: BRANCH_NAME
+          ref: "$BRANCH_NAME"
         env:
           BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
       - name: Configure Git User
