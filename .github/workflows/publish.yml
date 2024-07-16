@@ -7,8 +7,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: main
+      - name: Store Release Version
+        run: |
+          echo "RELEASE_VERSION=$(./scripts/print-release-version.sh)" >> $GITHUB_ENV
       - name: Configure Git User
         run: |
           git config user.email "actions@github.com"
@@ -18,7 +19,7 @@ jobs:
         with:
           java-version: "8"
           distribution: "temurin"
-          server-id: ossrh
+          server-id: central
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
           gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
@@ -31,3 +32,29 @@ jobs:
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
+      - name: Create GitHub Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ env.RELEASE_VERSION }}
+          release_name: ${{ env.RELEASE_VERSION }}
+          body: |
+            You can obtain the this release from Maven Central at 
+            https://repo1.maven.org/maven2/de/libzeal/zeal/${{ env.RELEASE_VERSION }}/ or by adding the following dependency to 
+            your project:
+            
+            ```
+            <dependencies>
+                <dependency>
+                    <groupId>de.codecentric</groupId>
+                    <artifactId>cxf-spring-boot-starter</artifactId>
+                    <version>${{ env.RELEASE_VERSION }}</version>
+                </dependency>
+            </dependencies>
+            ```
+            
+            ### Changelog for this Release
+            ${{ steps.changelog.outputs.changelog }}
+          draft: false
+          prerelease: false

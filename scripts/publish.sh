@@ -3,7 +3,8 @@
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 PROJECT_ROOT=$SCRIPT_DIR/..
 
-mvn -X -f ${PROJECT_ROOT}/libraries/pom.xml \
-    release:prepare \
+cd "${PROJECT_ROOT}" || exit 1
+
+mvn release:prepare \
     release:perform \
-	$@
+	  "$@"

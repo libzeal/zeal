@@ -3,4 +3,6 @@
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 PROJECT_ROOT=$SCRIPT_DIR/..
 
-mvn clean package -f ${PROJECT_ROOT}/pom.xml $@
+cd ${PROJECT_ROOT}
+
+mvn help:evaluate -Dexpression=project.version -q -DforceStdout | cut -d '-' -f 1
