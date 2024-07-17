@@ -27,6 +27,6 @@ public abstract class ChainedEvaluator<S, E extends ChainedEvaluator<S, E>>
 
     @Override
     public boolean isTrue() {
-        return chain.evaluate(subject);
+        return chain.evaluate(subject).isTrue();
     }
 }

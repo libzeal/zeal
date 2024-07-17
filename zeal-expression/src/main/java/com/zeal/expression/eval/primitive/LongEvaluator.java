@@ -1,9 +1,4 @@
-package com.zeal.expression.api.eval.primitive;
-
-import com.zeal.expression.eval.primitive.FloatEvaluation;
-import com.zeal.expression.eval.primitive.LongEvaluation;
-import com.zeal.expression.eval.primitive.LongEvaluationBooleanExpression;
-import com.zeal.expression.eval.primitive.LongEvaluationChain;
+package com.zeal.expression.eval.primitive;
 
 public class LongEvaluator implements LongEvaluationBooleanExpression {
 
@@ -26,7 +21,7 @@ public class LongEvaluator implements LongEvaluationBooleanExpression {
 
     @Override
     public boolean isTrue() {
-        return chain.evaluate(subject);
+        return chain.evaluate(subject).isTrue();
     }
 
     public LongEvaluator satisfies(LongEvaluation evaluation) {

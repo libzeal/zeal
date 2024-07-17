@@ -1,9 +1,4 @@
-package com.zeal.expression.api.eval.primitive;
-
-import com.zeal.expression.eval.primitive.FloatEvaluation;
-import com.zeal.expression.eval.primitive.IntEvaluation;
-import com.zeal.expression.eval.primitive.IntEvaluationBooleanExpression;
-import com.zeal.expression.eval.primitive.IntEvaluationChain;
+package com.zeal.expression.eval.primitive;
 
 public class IntEvaluator implements IntEvaluationBooleanExpression {
 
@@ -26,7 +21,7 @@ public class IntEvaluator implements IntEvaluationBooleanExpression {
 
     @Override
     public boolean isTrue() {
-        return chain.evaluate(subject);
+        return chain.evaluate(subject).isTrue();
     }
 
     public IntEvaluator satisfies(IntEvaluation evaluation) {

@@ -1,5 +1,9 @@
 package com.zeal.expression.eval.primitive;
 
+import com.zeal.expression.BooleanExpression;
+import com.zeal.expression.eval.Evaluation;
+import com.zeal.expression.ops.logical.AndOperation;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,15 +26,13 @@ public final class DoubleEvaluationChain {
         return this;
     }
 
-    public boolean evaluate(double subject) {
+    public BooleanExpression evaluate(double subject) {
+        return new AndOperation(toArray(subject, evaluations));
+    }
 
-        for (DoubleEvaluation evaluation: evaluations) {
-
-            if (!evaluation.evaluate(subject)) {
-                return false;
-            }
-        }
-
-        return true;
+    private static BooleanExpression[] toArray(double subject, List<DoubleEvaluation> evaluations) {
+        return evaluations.stream()
+                .map(e -> e.evaluate(subject))
+                .toArray(BooleanExpression[]::new);
     }
 }

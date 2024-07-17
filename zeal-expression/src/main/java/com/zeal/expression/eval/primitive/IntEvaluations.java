@@ -1,17 +1,15 @@
-package com.zeal.expression.api.eval.primitive;
-
-import com.zeal.expression.eval.primitive.IntEvaluation;
+package com.zeal.expression.eval.primitive;
 
 public final class IntEvaluations {
 
     private IntEvaluations() {}
 
     public static IntEvaluation equals(int value) {
-        return i -> i == value;
+        return IntEvaluation.of(i -> i == value);
     }
 
     public static IntEvaluation isLessThan(int value) {
-        return i -> i < value;
+        return IntEvaluation.of(i -> i < value);
     }
 
     /**
@@ -22,7 +20,7 @@ public final class IntEvaluations {
     }
 
     public static IntEvaluation isGreaterThan(int value) {
-        return i -> i > value;
+        return IntEvaluation.of(i -> i > value);
     }
 
     /**
@@ -33,7 +31,7 @@ public final class IntEvaluations {
     }
 
     public static IntEvaluation isLessThanOrEqualTo(int value) {
-        return i -> i <= value;
+        return IntEvaluation.of(i -> i <= value);
     }
 
     /**
@@ -44,7 +42,7 @@ public final class IntEvaluations {
     }
 
     public static IntEvaluation isGreaterThanOrEqualTo(int value) {
-        return i -> i >= value;
+        return IntEvaluation.of(i -> i >= value);
     }
 
     /**
@@ -55,38 +53,38 @@ public final class IntEvaluations {
     }
 
     public static IntEvaluation isMaxValue() {
-        return i -> i == Integer.MAX_VALUE;
+        return IntEvaluation.of(i -> i == Integer.MAX_VALUE);
     }
 
     public static IntEvaluation isMinValue() {
-        return i -> i == Integer.MIN_VALUE;
+        return IntEvaluation.of(i -> i == Integer.MIN_VALUE);
     }
 
     public static IntEvaluation isZero() {
-        return i -> i == 0;
+        return IntEvaluation.of(i -> i == 0);
     }
 
     public static IntEvaluation isPositive() {
-        return i -> i > 0;
+        return IntEvaluation.of(i -> i > 0);
     }
 
     public static IntEvaluation isNegative() {
-        return i -> i < 0;
+        return IntEvaluation.of(i -> i < 0);
     }
 
     public static IntEvaluation isEven() {
-        return i -> i % 2 == 0;
+        return IntEvaluation.of(i -> i % 2 == 0);
     }
 
     public static IntEvaluation isOdd() {
-        return i -> i % 2 != 0;
+        return IntEvaluation.of(i -> i % 2 != 0);
     }
 
     public static IntEvaluation isNotNegative() {
-        return i -> i >= 0;
+        return IntEvaluation.of(i -> i >= 0);
     }
 
     public static IntEvaluation isNotPositive() {
-        return i -> i <= 0;
+        return IntEvaluation.of(i -> i <= 0);
     }
 }

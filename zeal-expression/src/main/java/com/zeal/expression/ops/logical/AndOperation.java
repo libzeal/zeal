@@ -3,28 +3,32 @@ package com.zeal.expression.ops.logical;
 import com.zeal.expression.BooleanExpression;
 import com.zeal.expression.Guards;
 
-public class CompoundAndOperation implements LogicalOperation {
+public class AndOperation implements LogicalOperation {
 
-    private final BooleanExpression first;
-    private final BooleanExpression second;
     private final BooleanExpression[] expressions;
 
-    public CompoundAndOperation(BooleanExpression first, BooleanExpression second, BooleanExpression[] expressions) {
-        this.first = Guards.nullable(first);
-        this.second = Guards.nullable(second);
+    public AndOperation(BooleanExpression[] expressions) {
         this.expressions = Guards.nullable(expressions);
     }
 
     @Override
     public boolean isTrue() {
 
-        if (first.isFalse() || second.isFalse()) {
-            return false;
-        }
-
         for (BooleanExpression e: expressions) {
             if (e.isFalse()) {
                 return false;
+            }
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean hasFailingNotNullCheck() {
+
+        for (BooleanExpression e: expressions) {
+            if (e.hasFailingNotNullCheck()) {
+                return true;
             }
         }
 

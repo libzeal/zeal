@@ -1,11 +1,9 @@
-package com.zeal.expression.api.eval.primitive;
+package com.zeal.expression.eval.boxed;
 
+import com.zeal.expression.eval.primitive.FloatEvaluations;
 import com.zeal.expression.eval.Evaluation;
 import com.zeal.expression.eval.base.BaseObjectEvaluator;
-import com.zeal.expression.eval.primitive.DoubleEvaluation;
 import com.zeal.expression.eval.primitive.FloatEvaluation;
-import com.zeal.expression.eval.primitive.FloatEvaluationBooleanExpression;
-import com.zeal.expression.eval.primitive.FloatEvaluationChain;
 
 public class BoxedFloatEvaluator extends BaseObjectEvaluator<Float,
         BoxedFloatEvaluator> {
@@ -15,7 +13,9 @@ public class BoxedFloatEvaluator extends BaseObjectEvaluator<Float,
     }
 
     private static Evaluation<Float> box(FloatEvaluation evaluation) {
-        return subject -> subject != null && evaluation.evaluate(subject);
+        return Evaluation.of(
+                subject -> subject != null && evaluation.evaluate(subject).isTrue()
+        );
     }
 
     public BoxedFloatEvaluator exactlyEquals(float value) {

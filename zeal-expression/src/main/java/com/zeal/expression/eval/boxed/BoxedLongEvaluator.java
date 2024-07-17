@@ -1,11 +1,9 @@
-package com.zeal.expression.api.eval.primitive;
+package com.zeal.expression.eval.boxed;
 
+import com.zeal.expression.eval.primitive.LongEvaluations;
 import com.zeal.expression.eval.Evaluation;
 import com.zeal.expression.eval.base.BaseObjectEvaluator;
-import com.zeal.expression.eval.primitive.IntEvaluation;
 import com.zeal.expression.eval.primitive.LongEvaluation;
-import com.zeal.expression.eval.primitive.LongEvaluationBooleanExpression;
-import com.zeal.expression.eval.primitive.LongEvaluationChain;
 
 public class BoxedLongEvaluator extends BaseObjectEvaluator<Long,
         BoxedLongEvaluator> {
@@ -15,7 +13,9 @@ public class BoxedLongEvaluator extends BaseObjectEvaluator<Long,
     }
 
     private static Evaluation<Long> box(LongEvaluation evaluation) {
-        return subject -> subject != null && evaluation.evaluate(subject);
+        return Evaluation.of(
+                subject -> subject != null && evaluation.evaluate(subject).isTrue()
+        );
     }
 
     public BoxedLongEvaluator equals(long value) {

@@ -1,5 +1,6 @@
-package com.zeal.expression.api.eval.primitive;
+package com.zeal.expression.eval.boxed;
 
+import com.zeal.expression.eval.primitive.DoubleEvaluations;
 import com.zeal.expression.eval.Evaluation;
 import com.zeal.expression.eval.base.BaseObjectEvaluator;
 import com.zeal.expression.eval.primitive.DoubleEvaluation;
@@ -12,7 +13,9 @@ public class BoxedDoubleEvaluator extends BaseObjectEvaluator<Double,
     }
 
     private static Evaluation<Double> box(DoubleEvaluation evaluation) {
-        return subject -> subject != null && evaluation.evaluate(subject);
+        return Evaluation.of(
+                subject -> subject != null && evaluation.evaluate(subject).isTrue()
+        );
     }
 
     public BoxedDoubleEvaluator exactlyEquals(double value) {

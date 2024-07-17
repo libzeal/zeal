@@ -1,8 +1,15 @@
-package com.zeal.assertion.api;
+package com.zeal.expression.api;
 
-import com.zeal.expression.api.eval.ObjectEvaluator;
-import com.zeal.expression.api.eval.StringEvaluator;
-import com.zeal.expression.api.eval.primitive.*;
+import com.zeal.expression.eval.ObjectEvaluator;
+import com.zeal.expression.eval.StringEvaluator;
+import com.zeal.expression.eval.boxed.BoxedDoubleEvaluator;
+import com.zeal.expression.eval.boxed.BoxedFloatEvaluator;
+import com.zeal.expression.eval.boxed.BoxedIntEvaluator;
+import com.zeal.expression.eval.boxed.BoxedLongEvaluator;
+import com.zeal.expression.eval.primitive.DoubleEvaluator;
+import com.zeal.expression.eval.primitive.FloatEvaluator;
+import com.zeal.expression.eval.primitive.IntEvaluator;
+import com.zeal.expression.eval.primitive.LongEvaluator;
 
 public final class Evaluators {
 
