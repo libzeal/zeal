@@ -1,8 +1,4 @@
-package com.zeal.expression.api.eval.primitive;
-
-import com.zeal.expression.eval.primitive.DoubleEvaluation;
-import com.zeal.expression.eval.primitive.DoubleEvaluationBooleanExpression;
-import com.zeal.expression.eval.primitive.DoubleEvaluationChain;
+package com.zeal.expression.eval.primitive;
 
 public class DoubleEvaluator implements DoubleEvaluationBooleanExpression {
 
@@ -25,7 +21,7 @@ public class DoubleEvaluator implements DoubleEvaluationBooleanExpression {
 
     @Override
     public boolean isTrue() {
-        return chain.evaluate(subject);
+        return chain.evaluate(subject).isTrue();
     }
 
     public DoubleEvaluator satisfies(DoubleEvaluation evaluation) {

@@ -1,4 +1,4 @@
-package com.zeal.expression.api.ops;
+package com.zeal.expression.ops.logical;
 
 import com.zeal.expression.BooleanExpression;
 import com.zeal.expression.eval.Evaluator;
@@ -6,7 +6,6 @@ import com.zeal.expression.eval.primitive.DoubleEvaluationBooleanExpression;
 import com.zeal.expression.eval.primitive.FloatEvaluationBooleanExpression;
 import com.zeal.expression.eval.primitive.IntEvaluationBooleanExpression;
 import com.zeal.expression.eval.primitive.LongEvaluationBooleanExpression;
-import com.zeal.expression.ops.logical.*;
 
 public final class LogicalOperations {
 
@@ -16,20 +15,25 @@ public final class LogicalOperations {
         return new NotOperation(expression);
     }
 
-    public static BooleanExpression and(BooleanExpression a, BooleanExpression b) {
-        return new BinaryAndOperation(a, b);
-    }
-
     public static BooleanExpression and(BooleanExpression first, BooleanExpression second, BooleanExpression... remaining) {
-        return new CompoundAndOperation(first, second, remaining);
+        return new AndOperation(toArray(first, second, remaining));
     }
 
-    public static BooleanExpression or(BooleanExpression a, BooleanExpression b) {
-        return new BinaryOrOperation(a, b);
+    private static BooleanExpression[] toArray(BooleanExpression first, BooleanExpression second,
+                                               BooleanExpression... remaining) {
+
+        BooleanExpression[] array = new BooleanExpression[remaining.length + 2];
+
+        array[0] = first;
+        array[1] = second;
+
+        System.arraycopy(remaining, 0, array, 2, remaining.length);
+
+        return array;
     }
 
     public static BooleanExpression or(BooleanExpression first, BooleanExpression second, BooleanExpression... remaining) {
-        return new CompoundOrOperation(first, second, remaining);
+        return new OrOperation(toArray(first, second, remaining));
     }
 
     public static <S> Evaluator<S> not(Evaluator<S> expression) {

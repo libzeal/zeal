@@ -1,10 +1,4 @@
-package com.zeal.expression.api.eval.primitive;
-
-import com.zeal.expression.eval.Evaluation;
-import com.zeal.expression.eval.primitive.DoubleEvaluation;
-import com.zeal.expression.eval.primitive.FloatEvaluation;
-import com.zeal.expression.eval.primitive.FloatEvaluationBooleanExpression;
-import com.zeal.expression.eval.primitive.FloatEvaluationChain;
+package com.zeal.expression.eval.primitive;
 
 public class FloatEvaluator implements FloatEvaluationBooleanExpression {
 
@@ -27,7 +21,7 @@ public class FloatEvaluator implements FloatEvaluationBooleanExpression {
 
     @Override
     public boolean isTrue() {
-        return chain.evaluate(subject);
+        return chain.evaluate(subject).isTrue();
     }
     
     public FloatEvaluator satisfies(FloatEvaluation evaluation) {

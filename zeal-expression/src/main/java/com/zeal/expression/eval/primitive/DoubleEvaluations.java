@@ -1,6 +1,4 @@
-package com.zeal.expression.api.eval.primitive;
-
-import com.zeal.expression.eval.primitive.DoubleEvaluation;
+package com.zeal.expression.eval.primitive;
 
 public final class DoubleEvaluations {
 
@@ -8,16 +6,16 @@ public final class DoubleEvaluations {
     }
 
     public static DoubleEvaluation exactlyEquals(double value) {
-        return d -> d == value;
+        return DoubleEvaluation.of(d -> d == value);
     }
 
     // NOTE: This method is exclusive of delta
     public static DoubleEvaluation equalsWithinDelta(double value, double delta) {
-        return d -> Math.abs(d - value) < delta;
+        return DoubleEvaluation.of(d -> Math.abs(d - value) < delta);
     }
 
     public static DoubleEvaluation isLessThan(double value) {
-        return d -> d < value;
+        return DoubleEvaluation.of(d -> d < value);
     }
 
     /**
@@ -28,7 +26,7 @@ public final class DoubleEvaluations {
     }
 
     public static DoubleEvaluation isGreaterThan(double value) {
-        return d -> d > value;
+        return DoubleEvaluation.of(d -> d > value);
     }
 
     /**
@@ -39,7 +37,7 @@ public final class DoubleEvaluations {
     }
 
     public static DoubleEvaluation isLessThanOrEqualTo(double value) {
-        return d -> d <= value;
+        return DoubleEvaluation.of(d -> d <= value);
     }
 
     /**
@@ -50,7 +48,7 @@ public final class DoubleEvaluations {
     }
 
     public static DoubleEvaluation isGreaterThanOrEqualTo(double value) {
-        return d -> d >= value;
+        return DoubleEvaluation.of(d -> d >= value);
     }
 
     /**
@@ -61,42 +59,42 @@ public final class DoubleEvaluations {
     }
 
     public static DoubleEvaluation isMaxValue() {
-        return d -> d == Double.MAX_VALUE;
+        return DoubleEvaluation.of(d -> d == Double.MAX_VALUE);
     }
 
     public static DoubleEvaluation isMinValue() {
-        return d -> d == Double.MIN_VALUE;
+        return DoubleEvaluation.of(d -> d == Double.MIN_VALUE);
     }
 
     public static DoubleEvaluation isZero() {
-        return d -> d == 0;
+        return DoubleEvaluation.of(d -> d == 0);
     }
 
     public static DoubleEvaluation isPositive() {
-        return d -> d > 0;
+        return DoubleEvaluation.of(d -> d > 0);
     }
 
     public static DoubleEvaluation isNegative() {
-        return d -> d < 0;
+        return DoubleEvaluation.of(d -> d < 0);
     }
 
     public static DoubleEvaluation isNotNegative() {
-        return d -> d >= 0;
+        return DoubleEvaluation.of(d -> d >= 0);
     }
 
     public static DoubleEvaluation isNotPositive() {
-        return d -> d <= 0;
+        return DoubleEvaluation.of(d -> d <= 0);
     }
 
     public static DoubleEvaluation isFinite() {
-        return Double::isFinite;
+        return DoubleEvaluation.of(Double::isFinite);
     }
 
     public static DoubleEvaluation isInfinite() {
-        return Double::isInfinite;
+        return DoubleEvaluation.of(Double::isInfinite);
     }
 
     public static DoubleEvaluation isNan() {
-        return Double::isNaN;
+        return DoubleEvaluation.of(Double::isNaN);
     }
 }

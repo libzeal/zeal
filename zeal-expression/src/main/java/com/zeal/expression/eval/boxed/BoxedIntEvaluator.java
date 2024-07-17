@@ -1,11 +1,9 @@
-package com.zeal.expression.api.eval.primitive;
+package com.zeal.expression.eval.boxed;
 
+import com.zeal.expression.eval.primitive.IntEvaluations;
 import com.zeal.expression.eval.Evaluation;
 import com.zeal.expression.eval.base.BaseObjectEvaluator;
-import com.zeal.expression.eval.primitive.FloatEvaluation;
 import com.zeal.expression.eval.primitive.IntEvaluation;
-import com.zeal.expression.eval.primitive.IntEvaluationBooleanExpression;
-import com.zeal.expression.eval.primitive.IntEvaluationChain;
 
 public class BoxedIntEvaluator extends BaseObjectEvaluator<Integer,
         BoxedIntEvaluator> {
@@ -15,7 +13,9 @@ public class BoxedIntEvaluator extends BaseObjectEvaluator<Integer,
     }
 
     private static Evaluation<Integer> box(IntEvaluation evaluation) {
-        return subject -> subject != null && evaluation.evaluate(subject);
+        return Evaluation.of(
+                subject -> subject != null && evaluation.evaluate(subject).isTrue()
+        );
     }
 
     public BoxedIntEvaluator equals(int value) {

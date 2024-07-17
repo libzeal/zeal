@@ -1,6 +1,6 @@
 package com.zeal.assertion.exception;
 
-public class PreconditionFailedException extends AssertionFailedException {
+public class PreconditionFailedException extends IllegalArgumentException {
 
     public PreconditionFailedException() {
     }

@@ -1,22 +1,20 @@
-package com.zeal.expression.api.eval.primitive;
-
-import com.zeal.expression.eval.primitive.FloatEvaluation;
+package com.zeal.expression.eval.primitive;
 
 public final class FloatEvaluations {
 
     private FloatEvaluations() {}
 
     public static FloatEvaluation exactlyEquals(float value) {
-        return f -> f == value;
+        return FloatEvaluation.of(f -> f == value);
     }
 
     // NOTE: This method is exclusive of delta
     public static FloatEvaluation equalsWithinDelta(float value, float delta) {
-        return d -> Math.abs(d - value) < delta;
+        return FloatEvaluation.of(d -> Math.abs(d - value) < delta);
     }
 
     public static FloatEvaluation isLessThan(float value) {
-        return f -> f < value;
+        return FloatEvaluation.of(f -> f < value);
     }
 
     /**
@@ -27,7 +25,7 @@ public final class FloatEvaluations {
     }
 
     public static FloatEvaluation isGreaterThan(float value) {
-        return f -> f > value;
+        return FloatEvaluation.of(f -> f > value);
     }
 
     /**
@@ -38,7 +36,7 @@ public final class FloatEvaluations {
     }
 
     public static FloatEvaluation isLessThanOrEqualTo(float value) {
-        return f -> f <= value;
+        return FloatEvaluation.of(f -> f <= value);
     }
 
     /**
@@ -49,7 +47,7 @@ public final class FloatEvaluations {
     }
 
     public static FloatEvaluation isGreaterThanOrEqualTo(float value) {
-        return f -> f >= value;
+        return FloatEvaluation.of(f -> f >= value);
     }
 
     /**
@@ -60,42 +58,42 @@ public final class FloatEvaluations {
     }
 
     public static FloatEvaluation isMaxValue() {
-        return f -> f == Float.MAX_VALUE;
+        return FloatEvaluation.of(f -> f == Float.MAX_VALUE);
     }
 
     public static FloatEvaluation isMinValue() {
-        return f -> f == Float.MIN_VALUE;
+        return FloatEvaluation.of(f -> f == Float.MIN_VALUE);
     }
 
     public static FloatEvaluation isZero() {
-        return f -> f == 0;
+        return FloatEvaluation.of(f -> f == 0);
     }
 
     public static FloatEvaluation isPositive() {
-        return f -> f > 0;
+        return FloatEvaluation.of(f -> f > 0);
     }
 
     public static FloatEvaluation isNegative() {
-        return f -> f < 0;
+        return FloatEvaluation.of(f -> f < 0);
     }
 
     public static FloatEvaluation isNotNegative() {
-        return f -> f >= 0;
+        return FloatEvaluation.of(f -> f >= 0);
     }
 
     public static FloatEvaluation isNotPositive() {
-        return f -> f <= 0;
+        return FloatEvaluation.of(f -> f <= 0);
     }
 
     public static FloatEvaluation isFinite() {
-        return Float::isFinite;
+        return FloatEvaluation.of(Float::isFinite);
     }
 
     public static FloatEvaluation isInfinite() {
-        return Float::isInfinite;
+        return FloatEvaluation.of(Float::isInfinite);
     }
 
     public static FloatEvaluation isNan() {
-        return Float::isNaN;
+        return FloatEvaluation.of(Float::isNaN);
     }
 }

@@ -1,6 +1,4 @@
-package com.zeal.expression.api.ops;
-
-import com.zeal.expression.ops.values.StringOperation;
+package com.zeal.expression.ops.values;
 
 public final class StringOperations {
 
