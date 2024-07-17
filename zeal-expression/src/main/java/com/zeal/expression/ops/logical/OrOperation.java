@@ -22,16 +22,4 @@ public class OrOperation implements LogicalOperation {
 
         return false;
     }
-
-    @Override
-    public boolean hasFailingNotNullCheck() {
-
-        for (BooleanExpression e: expressions) {
-            if (e.hasFailingNotNullCheck()) {
-                return true;
-            }
-        }
-
-        return false;
-    }
 }

@@ -23,6 +23,13 @@ public final class EvaluationChain<S> {
         this(1);
     }
 
+    public EvaluationChain<S> prepend(Evaluation<S> evaluation) {
+
+        evaluations.add(0, evaluation);
+
+        return this;
+    }
+
     public EvaluationChain<S> append(Evaluation<S> evaluation) {
 
         evaluations.add(evaluation);

@@ -1,12 +1,17 @@
 package com.zeal.assertion;
 
 import com.zeal.assertion.api.Precondition;
-import com.zeal.assertion.exception.PreconditionFailedException;
+import com.zeal.assertion.exception.PreconditionIllegalArgumentException;
 import com.zeal.expression.BooleanExpression;
-import org.junit.jupiter.api.BeforeEach;
+import com.zeal.expression.Explanation;
 import org.junit.jupiter.api.Test;
 
+import java.util.Optional;
+
+import static com.zeal.expression.api.Evaluators.that;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class PreconditionTest {
 
@@ -39,8 +44,13 @@ public class PreconditionTest {
             }
 
             @Override
-            public boolean hasFailingNotNullCheck() {
-                return hashFailingNotNullCheck;
+            public Optional<Explanation> failureExplanation() {
+
+                Explanation explanation = mock(Explanation.class);
+
+                when(explanation.checksForNotNull()).thenReturn(hashFailingNotNullCheck);
+
+                return Optional.of(explanation);
             }
         };
     }
@@ -48,7 +58,7 @@ public class PreconditionTest {
     @Test
     void givenFalseExpressionWithoutNotNullCheck_whenRequire_thenExceptionThrown() {
         assertThrows(
-                PreconditionFailedException.class,
+                PreconditionIllegalArgumentException.class,
                 () -> Precondition.require(falseExpressionWithoutNotNullCheck())
         );
     }
@@ -107,7 +117,7 @@ public class PreconditionTest {
         BooleanExpression condition = falseExpressionWithoutNotNullCheck();
 
         Exception e = assertThrows(
-                PreconditionFailedException.class,
+                PreconditionIllegalArgumentException.class,
                 () -> Precondition.require(condition, message)
         );
 
@@ -184,7 +194,7 @@ public class PreconditionTest {
 
         Exception e = assertThrows(
                 NullPointerException.class,
-                () -> Precondition.require(condition, message)
+                () -> Precondition.require(that((Object) null).isNotNull(), message)
         );
 
         assertMessageIsCorrect(message, e, condition);

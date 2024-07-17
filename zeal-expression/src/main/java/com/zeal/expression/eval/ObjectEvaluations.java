@@ -1,5 +1,7 @@
 package com.zeal.expression.eval;
 
+import com.zeal.expression.Explainer;
+
 import java.util.Objects;
 
 public final class ObjectEvaluations {
@@ -11,7 +13,14 @@ public final class ObjectEvaluations {
     }
 
     public static <S> Evaluation<S> isNotNull() {
-        return Evaluation.of(Objects::nonNull);
+        return Evaluation.of(
+                Objects::nonNull,
+                Explainer.<S>builder()
+                        .withDescription("Is null?")
+                        .withExpected("not null")
+                        .markAsNotNullChecker()
+                        .build()
+        );
     }
 
     public static <S> Evaluation<S> hasType(Class<?> type) {

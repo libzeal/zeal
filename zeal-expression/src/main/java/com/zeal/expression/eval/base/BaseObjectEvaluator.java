@@ -9,12 +9,8 @@ import java.util.function.Predicate;
 public abstract class BaseObjectEvaluator<S, E extends BaseObjectEvaluator<S, E>>
         extends ChainedEvaluator<S, E> {
 
-    private boolean includesNotNullCheck;
-
     protected BaseObjectEvaluator(S value) {
         super(value);
-
-        this.includesNotNullCheck = false;
     }
 
     public final E isNull() {
@@ -22,10 +18,7 @@ public abstract class BaseObjectEvaluator<S, E extends BaseObjectEvaluator<S, E>
     }
 
     public final E isNotNull() {
-
-        this.includesNotNullCheck = true;
-
-        return satisfies(ObjectEvaluations.isNotNull());
+        return prependToChain(ObjectEvaluations.isNotNull());
     }
 
     public final E hasType(Class<?> type) {
@@ -54,10 +47,5 @@ public abstract class BaseObjectEvaluator<S, E extends BaseObjectEvaluator<S, E>
 
     public final E satisfies(Evaluation<S> evaluation) {
         return chain(evaluation);
-    }
-
-    @Override
-    public final boolean hasFailingNotNullCheck() {
-        return includesNotNullCheck && isFalse();
     }
 }

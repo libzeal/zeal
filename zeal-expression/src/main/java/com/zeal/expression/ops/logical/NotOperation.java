@@ -15,9 +15,4 @@ public class NotOperation implements LogicalOperation {
     public boolean isTrue() {
         return !expression.isTrue();
     }
-
-    @Override
-    public boolean hasFailingNotNullCheck() {
-        return !expression.hasFailingNotNullCheck();
-    }
 }

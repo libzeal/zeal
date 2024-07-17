@@ -23,6 +23,11 @@
             <artifactId>junit-jupiter-engine</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -36,7 +41,8 @@
                         <Export-Package>
                             com.zeal.assertion.api,
                             com.zeal.assertion.check,
-                            com.zeal.assertion.exception
+                            com.zeal.assertion.exception,
+                            com.zeal.assertion.formatter
                         </Export-Package>
                     </instructions>
                 </configuration>

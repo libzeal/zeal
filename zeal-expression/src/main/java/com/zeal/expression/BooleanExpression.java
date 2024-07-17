@@ -1,5 +1,6 @@
 package com.zeal.expression;
 
+import java.util.Optional;
 import java.util.function.Supplier;
 
 @FunctionalInterface
@@ -11,8 +12,8 @@ public interface BooleanExpression {
         return !isTrue();
     }
 
-    default boolean hasFailingNotNullCheck() {
-        return false;
+    default Optional<Explanation> failureExplanation() {
+        return Optional.empty();
     }
 
     static BooleanExpression of(boolean expression) {
