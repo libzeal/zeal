@@ -2,8 +2,9 @@ package com.zeal.assertion.api;
 
 import com.zeal.assertion.exception.PreconditionIllegalArgumentException;
 import com.zeal.assertion.exception.PreconditionNullPointerException;
-import com.zeal.assertion.formatter.SimpleExplanationFormatter;
+import com.zeal.assertion.formatter.SimpleBooleanResultFormatter;
 import com.zeal.expression.BooleanExpression;
+import com.zeal.expression.BooleanResult;
 import com.zeal.expression.Explanation;
 
 import java.util.Objects;
@@ -15,7 +16,7 @@ public class Precondition {
     private static final String PRECONDITION_FAILED_MESSAGE = "Precondition failed";
     private static final String PRECONDITION_FAILED_FOR_NULL_MESSAGE = "Precondition Failed. Expected a non-null " +
             "value but found a null value";
-    public static final SimpleExplanationFormatter PRECONDITION_FORMATTER = new SimpleExplanationFormatter("Precondition Failed");
+    public static final SimpleBooleanResultFormatter PRECONDITION_FORMATTER = new SimpleBooleanResultFormatter("Precondition Failed");
 
     private Precondition() {}
 
@@ -113,19 +114,21 @@ public class Precondition {
             throw new NullPointerException(CANNOT_EVALUATE_NULL_MESSAGE);
         }
 
-        if (condition.isFalse()) {
+        BooleanResult result = condition.result();
+
+        if (result.isFalse()) {
 
             if (checksForNotNull(condition)) {
                 throw new PreconditionNullPointerException(
                         appendMessage(PRECONDITION_FAILED_FOR_NULL_MESSAGE, message),
-                        condition.failureExplanation().orElse(null),
+                        result,
                         PRECONDITION_FORMATTER
                 );
             }
 
             throw new PreconditionIllegalArgumentException(
                     appendMessage(PRECONDITION_FAILED_MESSAGE, message),
-                    condition.failureExplanation().orElse(null),
+                    result,
                     PRECONDITION_FORMATTER
             );
         }

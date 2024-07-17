@@ -1,5 +1,7 @@
 package com.zeal.expression.eval.primitive;
 
+import com.zeal.expression.BooleanResult;
+
 public class FloatEvaluator implements FloatEvaluationBooleanExpression {
 
     private final float subject;
@@ -20,8 +22,8 @@ public class FloatEvaluator implements FloatEvaluationBooleanExpression {
     }
 
     @Override
-    public boolean isTrue() {
-        return chain.evaluate(subject).isTrue();
+    public BooleanResult result() {
+        return chain.evaluate(subject).result();
     }
     
     public FloatEvaluator satisfies(FloatEvaluation evaluation) {

@@ -36,6 +36,11 @@ public interface Explainer<T> {
                     return new Explanation() {
 
                         @Override
+                        public Explanation not() {
+                            return null;
+                        }
+
+                        @Override
                         public String description() {
                             return description;
                         }

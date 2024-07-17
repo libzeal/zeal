@@ -1,5 +1,7 @@
 package com.zeal.expression.eval.primitive;
 
+import com.zeal.expression.BooleanResult;
+
 public class IntEvaluator implements IntEvaluationBooleanExpression {
 
     private final int subject;
@@ -20,8 +22,8 @@ public class IntEvaluator implements IntEvaluationBooleanExpression {
     }
 
     @Override
-    public boolean isTrue() {
-        return chain.evaluate(subject).isTrue();
+    public BooleanResult result() {
+        return chain.evaluate(subject).result();
     }
 
     public IntEvaluator satisfies(IntEvaluation evaluation) {

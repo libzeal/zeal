@@ -1,10 +1,8 @@
 package com.zeal.expression.ops.logical;
 
 import com.zeal.expression.BooleanExpression;
-import com.zeal.expression.Explanation;
+import com.zeal.expression.BooleanResult;
 import com.zeal.expression.Guards;
-
-import java.util.Optional;
 
 public class AndOperation implements LogicalOperation {
 
@@ -15,26 +13,14 @@ public class AndOperation implements LogicalOperation {
     }
 
     @Override
-    public boolean isTrue() {
+    public BooleanResult result() {
 
         for (BooleanExpression e: expressions) {
-            if (e.isFalse()) {
-                return false;
+            if (e.result().isFalse()) {
+                return BooleanResult.FALSE;
             }
         }
 
-        return true;
-    }
-
-    @Override
-    public Optional<Explanation> failureExplanation() {
-
-        for (BooleanExpression e: expressions) {
-            if (e.isFalse()) {
-                return e.failureExplanation();
-            }
-        }
-
-        return Optional.empty();
+        return BooleanResult.TRUE;
     }
 }

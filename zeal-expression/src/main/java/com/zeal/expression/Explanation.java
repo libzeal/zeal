@@ -4,6 +4,7 @@ import java.util.Optional;
 
 public interface Explanation {
 
+    Explanation not();
     String description();
     String expected();
     String actual();

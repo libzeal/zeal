@@ -6,21 +6,13 @@ import java.util.function.Supplier;
 @FunctionalInterface
 public interface BooleanExpression {
 
-    boolean isTrue();
-
-    default boolean isFalse() {
-        return !isTrue();
-    }
-
-    default Optional<Explanation> failureExplanation() {
-        return Optional.empty();
-    }
+    BooleanResult result();
 
     static BooleanExpression of(boolean expression) {
-        return () -> expression;
+        return () -> new BooleanResult(() -> expression);
     }
 
     static BooleanExpression of(Supplier<Boolean> supplier) {
-        return supplier::get;
+        return () -> new BooleanResult(supplier::get);
     }
 }

@@ -12,7 +12,7 @@ public enum BooleanValue implements BooleanExpression {
     }
 
     @Override
-    public boolean isTrue() {
-        return value;
+    public BooleanResult result() {
+        return new BooleanResult(() -> value);
     }
 }
