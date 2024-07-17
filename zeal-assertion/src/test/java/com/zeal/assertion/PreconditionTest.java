@@ -198,6 +198,8 @@ public class PreconditionTest {
         );
 
         assertMessageIsCorrect(message, e, condition);
+
+        System.out.println(e);
     }
 
     @Test

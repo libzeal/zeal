@@ -1,5 +1,6 @@
 package com.zeal.expression.eval.base;
 
+import com.zeal.expression.BooleanResult;
 import com.zeal.expression.Explanation;
 import com.zeal.expression.eval.Evaluation;
 import com.zeal.expression.eval.Evaluator;
@@ -35,12 +36,7 @@ public abstract class ChainedEvaluator<S, E extends ChainedEvaluator<S, E>>
     }
 
     @Override
-    public boolean isTrue() {
-        return chain.evaluate(subject).isTrue();
-    }
-
-    @Override
-    public Optional<Explanation> failureExplanation() {
-        return chain.evaluate(subject).failureExplanation();
+    public BooleanResult result() {
+        return chain.evaluate(subject).result();
     }
 }

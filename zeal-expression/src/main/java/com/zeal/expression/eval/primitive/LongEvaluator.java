@@ -1,5 +1,7 @@
 package com.zeal.expression.eval.primitive;
 
+import com.zeal.expression.BooleanResult;
+
 public class LongEvaluator implements LongEvaluationBooleanExpression {
 
     private final long subject;
@@ -20,8 +22,8 @@ public class LongEvaluator implements LongEvaluationBooleanExpression {
     }
 
     @Override
-    public boolean isTrue() {
-        return chain.evaluate(subject).isTrue();
+    public BooleanResult result() {
+        return chain.evaluate(subject).result();
     }
 
     public LongEvaluator satisfies(LongEvaluation evaluation) {

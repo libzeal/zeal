@@ -1,6 +1,7 @@
 package com.zeal.expression.eval;
 
 import com.zeal.expression.BooleanExpression;
+import com.zeal.expression.BooleanResult;
 
 public interface Evaluator<S> extends BooleanExpression {
 
@@ -10,8 +11,8 @@ public interface Evaluator<S> extends BooleanExpression {
         return new Evaluator<T>() {
 
             @Override
-            public boolean isTrue() {
-                return expression.isFalse();
+            public BooleanResult result() {
+                return expression.result().not();
             }
 
             @Override

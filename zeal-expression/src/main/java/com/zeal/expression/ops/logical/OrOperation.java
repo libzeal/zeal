@@ -1,6 +1,7 @@
 package com.zeal.expression.ops.logical;
 
 import com.zeal.expression.BooleanExpression;
+import com.zeal.expression.BooleanResult;
 import com.zeal.expression.Guards;
 
 public class OrOperation implements LogicalOperation {
@@ -12,14 +13,14 @@ public class OrOperation implements LogicalOperation {
     }
 
     @Override
-    public boolean isTrue() {
+    public BooleanResult result() {
 
         for (BooleanExpression e: expressions) {
-            if (e.isTrue()) {
-                return true;
+            if (e.result().isTrue()) {
+                return BooleanResult.TRUE;
             }
         }
 
-        return false;
+        return BooleanResult.FALSE;
     }
 }

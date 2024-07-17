@@ -1,6 +1,7 @@
 package com.zeal.expression.ops.logical;
 
 import com.zeal.expression.BooleanExpression;
+import com.zeal.expression.BooleanResult;
 import com.zeal.expression.Guards;
 
 public class NotOperation implements LogicalOperation {
@@ -12,7 +13,7 @@ public class NotOperation implements LogicalOperation {
     }
 
     @Override
-    public boolean isTrue() {
-        return !expression.isTrue();
+    public BooleanResult result() {
+        return expression.result().not();
     }
 }

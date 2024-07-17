@@ -1,6 +1,7 @@
 package com.zeal.expression.eval;
 
 import com.zeal.expression.BooleanExpression;
+import com.zeal.expression.BooleanResult;
 import com.zeal.expression.Explainer;
 import com.zeal.expression.Explanation;
 
@@ -17,17 +18,11 @@ public interface Evaluation<T> {
 
     static <T> Evaluation<T> of(BooleanFunction<T> func, Explainer<T> explainer) {
         return subject -> {
-            return new BooleanExpression() {
-
-                @Override
-                public boolean isTrue() {
-                    return func.apply(subject);
-                }
-
-                @Override
-                public Optional<Explanation> failureExplanation() {
-                    return Optional.of(explainer.explain(subject));
-                }
+            return () -> {
+                return new BooleanResult(
+                        () -> func.apply(subject),
+                        explainer.explain(subject)
+                );
             };
         };
     }
