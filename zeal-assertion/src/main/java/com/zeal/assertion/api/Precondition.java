@@ -1,9 +1,13 @@
 package com.zeal.assertion.api;
 
-import com.zeal.assertion.exception.PreconditionFailedException;
+import com.zeal.assertion.exception.PreconditionIllegalArgumentException;
+import com.zeal.assertion.exception.PreconditionNullPointerException;
+import com.zeal.assertion.formatter.SimpleExplanationFormatter;
 import com.zeal.expression.BooleanExpression;
+import com.zeal.expression.Explanation;
 
 import java.util.Objects;
+import java.util.Optional;
 
 public class Precondition {
 
@@ -11,6 +15,7 @@ public class Precondition {
     private static final String PRECONDITION_FAILED_MESSAGE = "Precondition failed";
     private static final String PRECONDITION_FAILED_FOR_NULL_MESSAGE = "Precondition Failed. Expected a non-null " +
             "value but found a null value";
+    public static final SimpleExplanationFormatter PRECONDITION_FORMATTER = new SimpleExplanationFormatter("Precondition Failed");
 
     private Precondition() {}
 
@@ -56,19 +61,7 @@ public class Precondition {
      *         The supplied condition fails for any other reason.
      */
     public static void require(BooleanExpression condition) {
-
-        if (condition == null) {
-            throw new NullPointerException(CANNOT_EVALUATE_NULL_MESSAGE);
-        }
-
-        if (condition.isFalse()) {
-
-            if (condition.hasFailingNotNullCheck()) {
-                throw new NullPointerException(PRECONDITION_FAILED_FOR_NULL_MESSAGE);
-            }
-
-            throw new PreconditionFailedException(PRECONDITION_FAILED_MESSAGE);
-        }
+        require(condition, null);
     }
 
     /**
@@ -122,12 +115,32 @@ public class Precondition {
 
         if (condition.isFalse()) {
 
-            if (condition.hasFailingNotNullCheck()) {
-                throw new NullPointerException(appendMessage(PRECONDITION_FAILED_FOR_NULL_MESSAGE, message));
+            if (checksForNotNull(condition)) {
+                throw new PreconditionNullPointerException(
+                        appendMessage(PRECONDITION_FAILED_FOR_NULL_MESSAGE, message),
+                        condition.failureExplanation().orElse(null),
+                        PRECONDITION_FORMATTER
+                );
             }
 
-            throw new PreconditionFailedException(appendMessage(PRECONDITION_FAILED_MESSAGE, message));
+            throw new PreconditionIllegalArgumentException(
+                    appendMessage(PRECONDITION_FAILED_MESSAGE, message),
+                    condition.failureExplanation().orElse(null),
+                    PRECONDITION_FORMATTER
+            );
         }
+    }
+
+    private static Boolean checksForNotNull(BooleanExpression condition) {
+
+        Optional<Explanation> explanation = condition.failureExplanation();
+
+        if (explanation == null) {
+            // This check is done because explanation() can be overridden by a user and can possibly return "null"
+            return false;
+        }
+
+        return explanation.map(Explanation::checksForNotNull).orElse(false);
     }
 
     private static String appendMessage(String prefixMessage, String message) {
