@@ -8,7 +8,7 @@
     <artifactId>zeal-parent</artifactId>
     <version>0.2.0-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>Zeal</name>
+    <name>zeal</name>
     <description>Assertion library for Java</description>
     <url>https://github.com/libzeal/zeal</url>
 
