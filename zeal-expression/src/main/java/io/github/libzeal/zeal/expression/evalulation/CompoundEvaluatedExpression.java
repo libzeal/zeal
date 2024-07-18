@@ -55,7 +55,7 @@ public class CompoundEvaluatedExpression implements EvaluatedExpression {
 
         int passed = 0;
         int failed = 0;
-        int unevaluated = 0;
+        int skipped = 0;
 
         for (EvaluatedExpression child: children) {
 
@@ -67,12 +67,12 @@ public class CompoundEvaluatedExpression implements EvaluatedExpression {
                     failed++;
                     break;
                 case SKIPPED:
-                    unevaluated++;
+                    skipped++;
                     break;
             }
         }
 
-        return "Passed: " + passed + ", Failed: " + failed + ", Skipped: " + unevaluated;
+        return "Passed: " + passed + ", Failed: " + failed + ", Skipped: " + skipped;
     }
 
     @Override
