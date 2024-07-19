@@ -46,12 +46,11 @@ public class CompoundEvaluatedExpression implements EvaluatedExpression {
     }
 
     @Override
-    public String expected() {
-        return "All children must pass";
+    public Reason reason() {
+        return new Reason("All children must pass", actual());
     }
 
-    @Override
-    public String actual() {
+    private String actual() {
 
         int passed = 0;
         int failed = 0;
@@ -78,11 +77,5 @@ public class CompoundEvaluatedExpression implements EvaluatedExpression {
     @Override
     public List<EvaluatedExpression> children() {
         return children;
-    }
-
-    @Override
-    public final boolean failsNotNullCheck() {
-        return children.stream()
-                .anyMatch(EvaluatedExpression::failsNotNullCheck);
     }
 }

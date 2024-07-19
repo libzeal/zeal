@@ -7,15 +7,12 @@ public class TerminalEvaluatedExpression implements EvaluatedExpression {
 
     private final EvaluationState state;
     private final String name;
-    private final DeferredValue expected;
-    private final DeferredValue actual;
+    private final Reason reason;
 
-    public TerminalEvaluatedExpression(EvaluationState state, String name, DeferredValue expected,
-                                       DeferredValue actual) {
+    public TerminalEvaluatedExpression(EvaluationState state, String name, Reason reason) {
         this.state = state;
         this.name = name;
-        this.expected = expected;
-        this.actual = actual;
+        this.reason = reason;
     }
 
     @Override
@@ -29,22 +26,12 @@ public class TerminalEvaluatedExpression implements EvaluatedExpression {
     }
 
     @Override
-    public String expected() {
-        return expected.value();
-    }
-
-    @Override
-    public String actual() {
-        return actual.value();
+    public Reason reason() {
+        return reason;
     }
 
     @Override
     public List<EvaluatedExpression> children() {
         return new ArrayList<>(0);
-    }
-
-    @Override
-    public final boolean failsNotNullCheck() {
-        return false;
     }
 }

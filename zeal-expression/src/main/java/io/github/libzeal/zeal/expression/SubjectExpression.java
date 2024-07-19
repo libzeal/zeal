@@ -9,7 +9,7 @@ package io.github.libzeal.zeal.expression;
  * @param <S>
  *         The type of the subject.
  *
- * @author Justin Albano <albano.justin@gmail.com>
+ * @author Justin Albano
  * @since 0.2.0
  */
 public interface SubjectExpression<S> extends Expression {
