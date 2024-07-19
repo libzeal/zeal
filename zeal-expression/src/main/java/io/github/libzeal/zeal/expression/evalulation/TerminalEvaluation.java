@@ -5,32 +5,39 @@ import java.util.function.Predicate;
 public class TerminalEvaluation<T> implements Evaluation<T> {
 
     private final String name;
-    private final DeferredValue expected;
-    private final ActualValueComputer<T> actual;
     private final Predicate<T> predicate;
+    private final ReasonGenerator<T> reasonGeneator;
 
-    public static <A> TerminalEvaluation<A> of(String name, DeferredValue expected,
-                                               ActualValueComputer<A> actual, Predicate<A> predicate) {
-        return new TerminalEvaluation<>(name, expected, actual, predicate);
+    public static <A> TerminalEvaluation<A> of(String name, Predicate<A> predicate,
+                                               ReasonGenerator<A> reasonGenerator) {
+        return new TerminalEvaluation<>(
+            name,
+            s -> s != null && predicate.test(s),
+            reasonGenerator
+        );
     }
 
-    public TerminalEvaluation(String name, DeferredValue expected, ActualValueComputer<T> actual, Predicate<T> predicate) {
+    public static <A> TerminalEvaluation<A> ofNullable(String name, Predicate<A> predicate, ReasonGenerator<A> reasonGenerator) {
+        return new TerminalEvaluation<>(
+            name,
+            predicate,
+            reasonGenerator
+        );
+    }
+
+    public TerminalEvaluation(String name, Predicate<T> predicate, ReasonGenerator<T> reasonGenerator) {
         this.name = name;
-        this.expected = expected;
-        this.actual = actual;
         this.predicate = predicate;
+        this.reasonGeneator = reasonGenerator;
     }
 
     @Override
     public EvaluatedExpression evaluate(T subject, boolean skip) {
 
-        EvaluationState state = computeEvaluationState(subject, skip);
-
         return new TerminalEvaluatedExpression(
-                state,
-                name,
-                expected,
-                () -> actual.compute(subject)
+            computeEvaluationState(subject, skip),
+            name,
+            computeReason(subject, skip)
         );
     }
 
@@ -40,15 +47,19 @@ public class TerminalEvaluation<T> implements Evaluation<T> {
             return EvaluationState.SKIPPED;
         }
 
-        if (test(subject)) {
+        if (predicate.test(subject)) {
             return EvaluationState.PASSED;
-        }
-        else {
+        } else {
             return EvaluationState.FAILED;
         }
     }
 
-    private boolean test(T subject) {
-        return subject != null && predicate.test(subject);
+    private Reason computeReason(T subject, boolean skip) {
+
+        if (skip) {
+            return Reason.empty();
+        } else {
+            return reasonGeneator.generate(subject);
+        }
     }
 }

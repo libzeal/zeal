@@ -5,7 +5,7 @@ import io.github.libzeal.zeal.expression.evalulation.EvaluatedExpression;
 /**
  * An expression that can be evaluated.
  *
- * @author Justin Albano <albano.justin@gmail.com>
+ * @author Justin Albano
  * @since 0.2.0
  */
 public interface Expression {

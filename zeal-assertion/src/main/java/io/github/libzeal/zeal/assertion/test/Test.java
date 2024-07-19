@@ -13,19 +13,8 @@ public class Test {
 
     public static void main(String[] args) {
 
-        String value = null;
+        Object value = new Object();
 
-        GeneralObjectExpression<String> expression = that(value).isType(String.class)
-                .isType(Thread.class)
-                .isType(Collection.class)
-                .isNotNull();
-
-        EvaluatedExpressionFormatter formatter = new SimpleEvaluatedExpressionFormatter();
-
-        System.out.println(formatter.format(expression.evaluate()));
-
-//        require(expression, "Expression must not be null");
-
-        String found = require(that(value).isNotNull(), "Foo");
+        require(that(value).isType(Object.class).is("bar").isType(Collection.class).isNotNull(), "foo");
     }
 }

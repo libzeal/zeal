@@ -18,8 +18,12 @@ public class EvaluatedExpressionAssertion<T> {
         assertEquals(expected, eval.state());
     }
 
+    public void assertNameIs(String name) {
+        assertEquals(name, eval.name());
+    }
+
     public void assertNameMatches(String regex) {
-        assertTrue(eval.name().matches(regex));
+        assertTrue(eval.name().matches(regex), "Expected: " + regex + ", actual: " + eval.name());
     }
 
     public void assertExpectedIs(String expected) {
@@ -40,13 +44,5 @@ public class EvaluatedExpressionAssertion<T> {
 
     public void assertHasNoChildren() {
         assertTrue(eval.children().isEmpty());
-    }
-
-    public void assertFailsNotNullCheck() {
-        assertTrue(eval.failsNotNullCheck());
-    }
-
-    public void assertDoesNotFailNotNullCheck() {
-        assertFalse(eval.failsNotNullCheck());
     }
 }

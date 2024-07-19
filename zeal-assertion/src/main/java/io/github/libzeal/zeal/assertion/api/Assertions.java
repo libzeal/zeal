@@ -1,7 +1,10 @@
 package io.github.libzeal.zeal.assertion.api;
 
+import io.github.libzeal.zeal.assertion.error.PreconditionIllegalArgumentException;
+import io.github.libzeal.zeal.assertion.error.PreconditionNullPointerException;
 import io.github.libzeal.zeal.expression.SubjectExpression;
 import io.github.libzeal.zeal.expression.evalulation.EvaluatedExpression;
+import io.github.libzeal.zeal.expression.evalulation.EvaluationState;
 
 public class Assertions {
 
@@ -14,18 +17,23 @@ public class Assertions {
         }
 
         EvaluatedExpression result = expression.evaluate();
+        T subject = expression.subject();
 
-        if (result.isFailed()) {
+        if (isFailed(result)) {
 
-            if (result.failsNotNullCheck()) {
-                throw new NullPointerException(message);
+            if (subject == null) {
+                throw new PreconditionNullPointerException(result, message);
             }
             else {
-                throw new IllegalArgumentException(message);
+                throw new PreconditionIllegalArgumentException(result, message);
             }
         }
         else {
-            return expression.subject();
+            return subject;
         }
+    }
+
+    private static boolean isFailed(EvaluatedExpression eval) {
+        return eval.state() != null && eval.state().equals(EvaluationState.FAILED);
     }
 }
