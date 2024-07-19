@@ -27,7 +27,7 @@ public class EvaluatedExpressionAssertion<T> {
     }
 
     public void assertExpectedIs(String expected) {
-        assertEquals(expected, eval.expected());
+        assertEquals(expected, eval.reason().expected());
     }
 
     public void assertCompoundExpectedValue() {
@@ -35,7 +35,7 @@ public class EvaluatedExpressionAssertion<T> {
     }
 
     public void assertActualIs(String actual) {
-        assertEquals(actual, eval.actual());
+        assertEquals(actual, eval.reason().actual());
     }
 
     public void assertCompoundActualValueIs(int passed, int failed, int skipped) {
