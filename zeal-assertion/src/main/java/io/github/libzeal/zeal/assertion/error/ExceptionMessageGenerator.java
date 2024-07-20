@@ -1,8 +1,8 @@
 package io.github.libzeal.zeal.assertion.error;
 
 import io.github.libzeal.zeal.expression.evalulation.EvaluatedExpression;
-import io.github.libzeal.zeal.expression.evalulation.formatter.EvaluatedExpressionFormatter;
-import io.github.libzeal.zeal.expression.evalulation.formatter.SimpleEvaluatedExpressionFormatter;
+import io.github.libzeal.zeal.expression.evaluation.formatter.EvaluatedExpressionFormatter;
+import io.github.libzeal.zeal.expression.evaluation.formatter.SimpleEvaluatedExpressionFormatter;
 
 class ExceptionMessageGenerator {
 
