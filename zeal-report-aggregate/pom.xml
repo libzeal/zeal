@@ -28,6 +28,9 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
+                <configuration>
+                    <destFile>${sonar.coverage.jacoco.xmlReportPaths}</destFile>
+                </configuration>
                 <executions>
                     <execution>
                         <id>report-aggregate</id>
