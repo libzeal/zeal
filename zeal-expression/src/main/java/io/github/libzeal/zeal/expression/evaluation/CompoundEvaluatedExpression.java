@@ -1,9 +1,9 @@
-package io.github.libzeal.zeal.expression.evalulation;
+package io.github.libzeal.zeal.expression.evaluation;
 
 import java.util.List;
 
-import static io.github.libzeal.zeal.expression.evalulation.EvaluationState.FAILED;
-import static io.github.libzeal.zeal.expression.evalulation.EvaluationState.PASSED;
+import static io.github.libzeal.zeal.expression.evaluation.EvaluationState.FAILED;
+import static io.github.libzeal.zeal.expression.evaluation.EvaluationState.PASSED;
 
 public class CompoundEvaluatedExpression implements EvaluatedExpression {
 

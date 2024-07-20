@@ -2,7 +2,7 @@ package io.github.libzeal.zeal.expression.types;
 
 import io.github.libzeal.zeal.expression.SubjectExpression;
 import io.github.libzeal.zeal.expression.condition.Condition;
-import io.github.libzeal.zeal.expression.evalulation.*;
+import io.github.libzeal.zeal.expression.evaluation.*;
 
 import java.util.Objects;
 import java.util.function.*;

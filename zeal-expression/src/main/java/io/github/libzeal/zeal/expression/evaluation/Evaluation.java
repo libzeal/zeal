@@ -1,4 +1,4 @@
-package io.github.libzeal.zeal.expression.evalulation;
+package io.github.libzeal.zeal.expression.evaluation;
 
 public interface Evaluation<T> {
 

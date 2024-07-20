@@ -1,8 +1,8 @@
 package io.github.libzeal.zeal.expression.evaluation.formatter;
 
-import io.github.libzeal.zeal.expression.evalulation.EvaluatedExpression;
-import io.github.libzeal.zeal.expression.evalulation.EvaluationState;
-import io.github.libzeal.zeal.expression.evalulation.Reason;
+import io.github.libzeal.zeal.expression.evaluation.EvaluatedExpression;
+import io.github.libzeal.zeal.expression.evaluation.EvaluationState;
+import io.github.libzeal.zeal.expression.evaluation.Reason;
 
 import java.util.Optional;
 
