@@ -3,8 +3,8 @@ package io.github.libzeal.zeal.assertion.api;
 import io.github.libzeal.zeal.assertion.error.PreconditionIllegalArgumentException;
 import io.github.libzeal.zeal.assertion.error.PreconditionNullPointerException;
 import io.github.libzeal.zeal.expression.SubjectExpression;
-import io.github.libzeal.zeal.expression.evalulation.EvaluatedExpression;
-import io.github.libzeal.zeal.expression.evalulation.EvaluationState;
+import io.github.libzeal.zeal.expression.evaluation.EvaluatedExpression;
+import io.github.libzeal.zeal.expression.evaluation.EvaluationState;
 
 public class Assertions {
 

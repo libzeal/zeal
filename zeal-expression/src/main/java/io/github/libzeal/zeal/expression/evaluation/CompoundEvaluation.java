@@ -1,4 +1,4 @@
-package io.github.libzeal.zeal.expression.evalulation;
+package io.github.libzeal.zeal.expression.evaluation;
 
 import java.util.ArrayList;
 import java.util.List;

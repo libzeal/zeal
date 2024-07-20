@@ -1,6 +1,6 @@
 package io.github.libzeal.zeal.assertion.error;
 
-import io.github.libzeal.zeal.expression.evalulation.EvaluatedExpression;
+import io.github.libzeal.zeal.expression.evaluation.EvaluatedExpression;
 
 public class PreconditionNullPointerException extends NullPointerException {
 

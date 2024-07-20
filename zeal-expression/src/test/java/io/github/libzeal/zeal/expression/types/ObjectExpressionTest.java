@@ -1,8 +1,8 @@
 package io.github.libzeal.zeal.expression.types;
 
 import io.github.libzeal.zeal.expression.condition.SimpleCondition;
-import io.github.libzeal.zeal.expression.evalulation.EvaluatedExpression;
-import io.github.libzeal.zeal.expression.evalulation.EvaluationState;
+import io.github.libzeal.zeal.expression.evaluation.EvaluatedExpression;
+import io.github.libzeal.zeal.expression.evaluation.EvaluationState;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -12,7 +12,7 @@ import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.stream.Stream;
 
-import static io.github.libzeal.zeal.expression.evalulation.EvaluationState.*;
+import static io.github.libzeal.zeal.expression.evaluation.EvaluationState.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
