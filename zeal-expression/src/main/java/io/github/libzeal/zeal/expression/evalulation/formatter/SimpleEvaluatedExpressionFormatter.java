@@ -78,10 +78,11 @@ public class SimpleEvaluatedExpressionFormatter implements EvaluatedExpressionFo
             .append(intent(nestedLevel + 1))
             .append("- Actual   : ").append(reason.actual()).append("\n");
 
-        reason.hint().ifPresent(hint -> {
+        reason.hint().ifPresent(hint ->
             builder.append(intent(nestedLevel + 1))
-                .append("- Hint     : ").append(hint).append("\n");
-        });
+                .append("- Hint     : ")
+                .append(hint).append("\n")
+        );
 
         return builder.toString();
     }
@@ -147,11 +148,11 @@ public class SimpleEvaluatedExpressionFormatter implements EvaluatedExpressionFo
                 .append(reason.actual())
                 .append("\n");
 
-            reason.hint().ifPresent(hint -> {
+            reason.hint().ifPresent(hint ->
                 builder.append("- Hint       : ")
                     .append(hint)
-                    .append("\n");
-            });
+                    .append("\n")
+            );
 
             return builder.append("\n")
                 .toString();

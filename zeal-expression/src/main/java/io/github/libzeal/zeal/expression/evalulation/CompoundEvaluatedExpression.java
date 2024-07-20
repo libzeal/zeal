@@ -2,6 +2,9 @@ package io.github.libzeal.zeal.expression.evalulation;
 
 import java.util.List;
 
+import static io.github.libzeal.zeal.expression.evalulation.EvaluationState.FAILED;
+import static io.github.libzeal.zeal.expression.evalulation.EvaluationState.PASSED;
+
 public class CompoundEvaluatedExpression implements EvaluatedExpression {
 
     private final String name;
@@ -16,24 +19,23 @@ public class CompoundEvaluatedExpression implements EvaluatedExpression {
     public EvaluationState state() {
 
         if (children.isEmpty()) {
-            return EvaluationState.PASSED;
+            return PASSED;
         }
 
         int passed = 0;
 
         for (EvaluatedExpression child: children) {
 
-            switch (child.state()) {
-                case FAILED:
-                    return EvaluationState.FAILED;
-                case PASSED:
-                    passed++;
-                    break;
+            if (child.state().equals(PASSED)) {
+                passed++;
+            }
+            else if (child.state().equals(FAILED)){
+                return FAILED;
             }
         }
 
         if (passed == children.size()) {
-            return EvaluationState.PASSED;
+            return PASSED;
         }
         else {
             return EvaluationState.SKIPPED;
