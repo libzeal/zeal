@@ -46,7 +46,7 @@
         <sonar.organization>libzeal</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
         <sonar.coverage.jacoco.xmlReportPaths>
-            ${project.basedir}/zeal-report-aggregate/target/site/jacoco-aggregate/jacoco.xml
+            ${project.basedir}/../zeal-report-aggregate/target/site/jacoco-aggregate/jacoco.xml
         </sonar.coverage.jacoco.xmlReportPaths>
 
         <junit.version>5.10.3</junit.version>
