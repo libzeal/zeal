@@ -1,9 +1,5 @@
 package io.github.libzeal.zeal.assertion.test;
 
-import io.github.libzeal.zeal.expression.evalulation.formatter.EvaluatedExpressionFormatter;
-import io.github.libzeal.zeal.expression.evalulation.formatter.SimpleEvaluatedExpressionFormatter;
-import io.github.libzeal.zeal.expression.types.GeneralObjectExpression;
-
 import java.util.Collection;
 
 import static io.github.libzeal.zeal.assertion.api.Assertions.require;

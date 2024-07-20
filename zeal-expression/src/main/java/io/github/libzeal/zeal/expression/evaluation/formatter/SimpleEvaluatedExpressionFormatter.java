@@ -1,4 +1,4 @@
-package io.github.libzeal.zeal.expression.evalulation.formatter;
+package io.github.libzeal.zeal.expression.evaluation.formatter;
 
 import io.github.libzeal.zeal.expression.evalulation.EvaluatedExpression;
 import io.github.libzeal.zeal.expression.evalulation.EvaluationState;

@@ -15,7 +15,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>io.github.libzeal</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>zeal-expression</artifactId>
         </dependency>
         <dependency>
@@ -34,10 +34,8 @@
                 <configuration>
                     <instructions>
                         <Export-Package>
-                            com.zeal.assertion.api,
-                            com.zeal.assertion.check,
-                            com.zeal.assertion.exception,
-                            com.zeal.assertion.formatter
+                            io.github.libzeal.zeal.assertion.api,
+                            io.github.libzeal.zeal.assertion.error
                         </Export-Package>
                     </instructions>
                 </configuration>

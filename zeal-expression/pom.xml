@@ -35,15 +35,12 @@
                 <configuration>
                     <instructions>
                         <Export-Package>
-                            com.zeal.expression,
-                            com.zeal.expression.api.eval,
-                            com.zeal.expression.api.eval.primitive,
-                            com.zeal.expression.api.ops,
-                            com.zeal.expression.eval,
-                            com.zeal.expression.eval.base,
-                            com.zeal.expression.eval.primitive,
-                            com.zeal.expression.ops.logical,
-                            com.zeal.expression.ops.values
+                            io.github.libzeal.zeal.expression,
+                            io.github.libzeal.zeal.expression.api,
+                            io.github.libzeal.zeal.expression.condition,
+                            io.github.libzeal.zeal.expression.evaluation,
+                            io.github.libzeal.zeal.expression.evaluation.formatter,
+                            io.github.libzeal.zeal.expression.types
                         </Export-Package>
                     </instructions>
                 </configuration>
