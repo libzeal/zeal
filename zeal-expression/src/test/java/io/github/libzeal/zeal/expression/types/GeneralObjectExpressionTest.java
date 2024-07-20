@@ -1,7 +1,6 @@
 package io.github.libzeal.zeal.expression.types;
 
-import io.github.libzeal.zeal.expression.SubjectExpression;
-
+@SuppressWarnings("java:S2187")
 public class GeneralObjectExpressionTest extends ObjectExpressionTest<Object, GeneralObjectExpression<Object>> {
 
     @Override

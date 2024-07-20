@@ -1,6 +1,7 @@
 package io.github.libzeal.zeal.expression.types;
 
 import io.github.libzeal.zeal.expression.SubjectExpression;
+import io.github.libzeal.zeal.expression.condition.Condition;
 import io.github.libzeal.zeal.expression.evalulation.*;
 
 import java.util.Objects;
@@ -90,14 +91,6 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Su
     protected final B appendEvaluation(Evaluation<T> evaluation) {
 
         children.append(evaluation);
-
-        return (B) this;
-    }
-
-    @SuppressWarnings("unchecked")
-    private B prependEvaluation(Evaluation<T> evaluation) {
-
-        children.prepend(evaluation);
 
         return (B) this;
     }
@@ -372,8 +365,10 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Su
             return appendEvaluation(createEvaluation());
         }
 
+        @SuppressWarnings("unchecked")
         private B prepend() {
-            return prependEvaluation(createEvaluation());
+            children.prepend(createEvaluation());
+            return (B) ObjectExpression.this;
         }
 
         private Evaluation<T> createEvaluation() {
@@ -477,7 +472,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Su
     public B isNotType(final Class<?> type) {
         return newEvaluation(o -> !o.getClass().equals(type))
             .name("isNotType[" + type.getName() + "]")
-            .expectedValue("not " + type)
+            .expectedValue("not[" + type + "]")
             .actualValue(o -> o.getClass().toString())
             .hint("Subject should be any type other than " + type)
             .append();
@@ -486,7 +481,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Su
     public B isInstanceOf(final Class<?> type) {
         return newEvaluation(o -> type != null && type.isAssignableFrom(o.getClass()))
             .name("isInstanceOf[" + type.getName() + "]")
-            .expectedValue("instanceof " + type)
+            .expectedValue("instanceof[" + type + "]")
             .actualValue(o -> o.getClass().toString())
             .hint("Subject should be exactly of type " + type + " or a subclass of type " + type)
             .append();
@@ -495,7 +490,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Su
     public B isNotInstanceOf(final Class<?> type) {
         return newEvaluation(o -> type != null && !type.isAssignableFrom(o.getClass()))
             .name("isNotInstanceOf[" + type.getName() + "]")
-            .expectedValue("not instanceof " + type)
+            .expectedValue("not[instanceof[" + type + "]]")
             .actualValue(o -> o.getClass().toString())
             .hint("Subject should be any type of than " + type + " and not a subclass of type " + type)
             .append();
@@ -518,7 +513,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Su
     }
 
     public B isEqualTo(final Object other) {
-        return newEvaluation(o -> o.equals(other))
+        return newNullableEvaluation(o -> Objects.equals(o, other))
             .name("isEqualTo[" + stringOf(other) + "]")
             .expectedValue(stringOf(other))
             .hint("Subject should be equal to " + other + " (using subject.equals(" + other + "))")
@@ -528,7 +523,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Su
     public B isNotEqualTo(final Object other) {
         return newEvaluation(o -> !o.equals(other))
             .name("isNotEqualTo[" + stringOf(other) + "]")
-            .expectedValue("not " + stringOf(other))
+            .expectedValue("not[" + stringOf(other) + "]")
             .hint("Subject should be equal to " + other + " (using !subject.equals(" + other + "))")
             .append();
     }
@@ -544,7 +539,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Su
     public B hashCodeIsNot(final int hashCode) {
         return newEvaluation(o -> o.hashCode() != hashCode)
             .name("hashCode != " + hashCode)
-            .expectedValue("not " + hashCode)
+            .expectedValue("not[" + hashCode + "]")
             .actualIntValue(Object::hashCode)
             .append();
     }
@@ -559,15 +554,15 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Su
 
     public B toStringIsNot(final String expected) {
         return newEvaluation(o -> !o.toString().equals(expected))
-            .name("not toString().equals(" + expected + ")")
-            .expectedValue("not " + expected)
+            .name("not[toString().equals(" + expected + ")]")
+            .expectedValue("not[" + expected + "]")
             .hint("Subject's toString() value should not equal " + expected + " (using !subject.toString().equals(" + expected + "))")
             .append();
     }
 
     public B satisfies(final Predicate<T> predicate) {
         return newEvaluation(predicate)
-            .name("Supplied predicate")
+            .name("predicate")
             .expectedValue("Predicate satisfied")
             .actualValue(o -> predicate.test(o) ? "Predicate satisfied" : "Predicate unsatisfied")
             .append();
@@ -575,8 +570,24 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Su
 
     public B satisfies(final Condition<T> condition) {
         return newEvaluation(condition)
-            .name("Supplied condition: " + conditionName(condition))
+            .name("condition: " + conditionName(condition))
             .expectedValue("Condition satisfied")
+            .actualValue(o -> condition.test(o) ? "Condition satisfied" : "Condition unsatisfied")
+            .append();
+    }
+
+    public B doesNotSatisfy(final Predicate<T> predicate) {
+        return newEvaluation(o -> !predicate.test(o))
+            .name("not[predicate]")
+            .expectedValue("Predicate unsatisfied")
+            .actualValue(o -> predicate.test(o) ? "Predicate satisfied" : "Predicate unsatisfied")
+            .append();
+    }
+
+    public B doesNotSatisfy(final Condition<T> condition) {
+        return newEvaluation(o -> !condition.test(o))
+            .name("not[condition: " + conditionName(condition) + "]")
+            .expectedValue("Condition unsatisfied")
             .actualValue(o -> condition.test(o) ? "Condition satisfied" : "Condition unsatisfied")
             .append();
     }

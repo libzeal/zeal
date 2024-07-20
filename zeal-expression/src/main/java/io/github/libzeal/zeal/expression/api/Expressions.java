@@ -7,6 +7,6 @@ public class Expressions {
     private Expressions() {}
 
     public static <T> GeneralObjectExpression<T> that(T value) {
-        return new GeneralObjectExpression<T>(value);
+        return new GeneralObjectExpression<>(value);
     }
 }

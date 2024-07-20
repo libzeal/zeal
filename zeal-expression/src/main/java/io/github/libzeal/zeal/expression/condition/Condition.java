@@ -1,4 +1,4 @@
-package io.github.libzeal.zeal.expression.types;
+package io.github.libzeal.zeal.expression.condition;
 
 import java.util.function.Predicate;
 

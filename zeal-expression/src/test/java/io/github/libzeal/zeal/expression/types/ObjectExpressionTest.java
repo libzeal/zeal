@@ -1,5 +1,6 @@
 package io.github.libzeal.zeal.expression.types;
 
+import io.github.libzeal.zeal.expression.condition.SimpleCondition;
 import io.github.libzeal.zeal.expression.evalulation.EvaluatedExpression;
 import io.github.libzeal.zeal.expression.evalulation.EvaluationState;
 import org.junit.jupiter.api.Test;
@@ -7,7 +8,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 import java.util.stream.Stream;
 
 import static io.github.libzeal.zeal.expression.evalulation.EvaluationState.*;
@@ -60,17 +62,17 @@ public abstract class ObjectExpressionTest<T, B extends ObjectExpression<T, B>> 
     @ParameterizedTest(name = "{3} for {1}")
     @MethodSource("evaluationParameters")
     void whenEvaluate_thenCorrectEvaluation(
-        Consumer<B> modifier,
+        BiConsumer<B, T> modifier,
         T value,
         EvaluationState expectedState,
-        String expectedName,
-        String expectedExpectedValue,
-        String expectedActualValue
+        BiFunction<B, T, String> expectedName,
+        BiFunction<B, T, String> expectedExpectedValue,
+        BiFunction<B, T, String> expectedActualValue
     ) {
 
         B expression = expression(value);
 
-        modifier.accept(expression);
+        modifier.accept(expression, value);
 
         EvaluatedExpression eval = expression.evaluate();
         EvaluatedExpression first = eval.children().get(0);
@@ -78,208 +80,399 @@ public abstract class ObjectExpressionTest<T, B extends ObjectExpression<T, B>> 
 
         assertNotNull(first);
         firstAssertion.assertStateIs(expectedState);
-        firstAssertion.assertNameIs(expectedName);
-        firstAssertion.assertExpectedIs(expectedExpectedValue);
-        firstAssertion.assertActualIs(expectedActualValue);
-    }
-
-    private static Stream<Arguments> evaluationParameters() {
-        return Stream.of(
-            // isNull
-            argument(
-                ObjectExpression::isNull,
-                null,
-                PASSED,
-                "isNull",
-                "(null)",
-                "(null)"
-            ),
-            argument(
-                ObjectExpression::isNull,
-                "foo",
-                FAILED,
-                "isNull",
-                "(null)",
-                "foo"
-            ),
-            // isNotNull
-            argument(
-                ObjectExpression::isNotNull,
-                null,
-                FAILED,
-                "isNotNull",
-                "not[(null)]",
-                "(null)"
-            ),
-            argument(
-                ObjectExpression::isNotNull,
-                "foo",
-                PASSED,
-                "isNotNull",
-                "not[(null)]",
-                "foo"
-            ),
-            // isType
-            argument(
-                o -> o.isType(String.class),
-                "foo",
-                PASSED,
-                "isType[java.lang.String]",
-                "class java.lang.String",
-                "class java.lang.String"
-            ),
-            argument(
-                o -> o.isType(Object.class),
-                "foo",
-                FAILED,
-                "isType[java.lang.Object]",
-                "class java.lang.Object",
-                "class java.lang.String"
-            ),
-            argument(
-                o -> o.isType(Thread.class),
-                "foo",
-                FAILED,
-                "isType[java.lang.Thread]",
-                "class java.lang.Thread",
-                "class java.lang.String"
-            ),
-            // isNotType
-            argument(
-                o -> o.isNotType(String.class),
-                "foo",
-                FAILED,
-                "isNotType[java.lang.String]",
-                "not class java.lang.String",
-                "class java.lang.String"
-            ),
-            argument(
-                o -> o.isNotType(Object.class),
-                "foo",
-                PASSED,
-                "isNotType[java.lang.Object]",
-                "not class java.lang.Object",
-                "class java.lang.String"
-            ),
-            argument(
-                o -> o.isNotType(Thread.class),
-                "foo",
-                PASSED,
-                "isNotType[java.lang.Thread]",
-                "not class java.lang.Thread",
-                "class java.lang.String"
-            ),
-            // isInstanceOf
-            argument(
-                o -> o.isInstanceOf(String.class),
-                "foo",
-                PASSED,
-                "isInstanceOf[java.lang.String]",
-                "instanceof class java.lang.String",
-                "class java.lang.String"
-            ),
-            argument(
-                o -> o.isInstanceOf(Object.class),
-                "foo",
-                PASSED,
-                "isInstanceOf[java.lang.Object]",
-                "instanceof class java.lang.Object",
-                "class java.lang.String"
-            ),
-            argument(
-                o -> o.isInstanceOf(Thread.class),
-                "foo",
-                FAILED,
-                "isInstanceOf[java.lang.Thread]",
-                "instanceof class java.lang.Thread",
-                "class java.lang.String"
-            ),
-            // isNotInstanceOf
-            argument(
-                o -> o.isNotInstanceOf(String.class),
-                "foo",
-                FAILED,
-                "isNotInstanceOf[java.lang.String]",
-                "not instanceof class java.lang.String",
-                "class java.lang.String"
-            ),
-            argument(
-                o -> o.isNotInstanceOf(Object.class),
-                "foo",
-                FAILED,
-                "isNotInstanceOf[java.lang.Object]",
-                "not instanceof class java.lang.Object",
-                "class java.lang.String"
-            ),
-            argument(
-                o -> o.isNotInstanceOf(Thread.class),
-                "foo",
-                PASSED,
-                "isNotInstanceOf[java.lang.Thread]",
-                "not instanceof class java.lang.Thread",
-                "class java.lang.String"
-            ),
-            // is
-            argument(
-                o -> o.is("foo"),
-                "foo",
-                PASSED,
-                "is[foo]",
-                "foo",
-                "foo"
-            ),
-            argument(
-                o -> o.is("foo"),
-                "bar",
-                FAILED,
-                "is[foo]",
-                "foo",
-                "bar"
-            ),
-            argument(
-                o -> o.is(null),
-                null,
-                PASSED,
-                "is[(null)]",
-                "(null)",
-                "(null)"
-            ),
-            // isNot
-            argument(
-                o -> o.isNot("foo"),
-                "foo",
-                FAILED,
-                "isNot[foo]",
-                "not[foo]",
-                "foo"
-            ),
-            argument(
-                o -> o.isNot("foo"),
-                "bar",
-                PASSED,
-                "isNot[foo]",
-                "not[foo]",
-                "bar"
-            ),
-            argument(
-                o -> o.isNot(null),
-                null,
-                FAILED,
-                "isNot[(null)]",
-                "not[(null)]",
-                "(null)"
-            )
-        );
+        firstAssertion.assertNameIs(expectedName.apply(expression,value));
+        firstAssertion.assertExpectedIs(expectedExpectedValue.apply(expression,value));
+        firstAssertion.assertActualIs(expectedActualValue.apply(expression,value));
     }
 
     protected static Arguments argument(
-        Consumer<ObjectExpression<?, ?>> modifier,
+        BiConsumer<ObjectExpression<Object, ?>, ?> modifier,
         Object value,
         EvaluationState state,
-        String name,
-        String expectedValue,
-        String actualValue
+        BiFunction<?, ?, String> name,
+        BiFunction<?, ?, String> expectedValue,
+        BiFunction<?, ?, String> actualValue
     ) {
         return Arguments.of(modifier, value, state, name, expectedValue, actualValue);
+    }
+
+    private static Stream<Arguments> evaluationParameters() {
+
+        final Object value1 = new Object();
+        final SimpleCondition<Object> alwaysTrueCondition = new SimpleCondition<>("Always true", o -> true);
+        final SimpleCondition<Object> alwaysFalseCondition = new SimpleCondition<>("Always false", o -> false);
+
+        return Stream.of(
+            // isNull
+            argument(
+                (expression, value) -> expression.isNull(),
+                null,
+                PASSED,
+                (expression, value) -> "isNull",
+                (expression, value) -> "(null)",
+                (expression, value) -> "(null)"
+            ),
+            argument(
+                (expression, value) -> expression.isNull(),
+                "foo",
+                FAILED,
+                (expression, value) -> "isNull",
+                (expression, value) -> "(null)",
+                (expression, value) -> "foo"
+            ),
+            // isNotNull
+            argument(
+                (expression, value) -> expression.isNotNull(),
+                null,
+                FAILED,
+                (expression, value) -> "isNotNull",
+                (expression, value) -> "not[(null)]",
+                (expression, value) -> "(null)"
+            ),
+            argument(
+                (expression, value) -> expression.isNotNull(),
+                "foo",
+                PASSED,
+                (expression, value) -> "isNotNull",
+                (expression, value) -> "not[(null)]",
+                (expression, value) -> "foo"
+            ),
+            // isType
+            argument(
+                (expression, value) -> expression.isType(String.class),
+                "foo",
+                PASSED,
+                (expression, value) -> "isType[java.lang.String]",
+                (expression, value) -> "class java.lang.String",
+                (expression, value) -> "class java.lang.String"
+            ),
+            argument(
+                (expression, value) -> expression.isType(Object.class),
+                "foo",
+                FAILED,
+                (expression, value) -> "isType[java.lang.Object]",
+                (expression, value) -> "class java.lang.Object",
+                (expression, value) -> "class java.lang.String"
+            ),
+            argument(
+                (expression, value) -> expression.isType(Thread.class),
+                "foo",
+                FAILED,
+                (expression, value) -> "isType[java.lang.Thread]",
+                (expression, value) -> "class java.lang.Thread",
+                (expression, value) -> "class java.lang.String"
+            ),
+            // isNotType
+            argument(
+                (expression, value) -> expression.isNotType(String.class),
+                "foo",
+                FAILED,
+                (expression, value) -> "isNotType[java.lang.String]",
+                (expression, value) -> "not[class java.lang.String]",
+                (expression, value) -> "class java.lang.String"
+            ),
+            argument(
+                (expression, value) -> expression.isNotType(Object.class),
+                "foo",
+                PASSED,
+                (expression, value) -> "isNotType[java.lang.Object]",
+                (expression, value) -> "not[class java.lang.Object]",
+                (expression, value) -> "class java.lang.String"
+            ),
+            argument(
+                (expression, value) -> expression.isNotType(Thread.class),
+                "foo",
+                PASSED,
+                (expression, value) -> "isNotType[java.lang.Thread]",
+                (expression, value) -> "not[class java.lang.Thread]",
+                (expression, value) -> "class java.lang.String"
+            ),
+            // isInstanceOf
+            argument(
+                (expression, value) -> expression.isInstanceOf(String.class),
+                "foo",
+                PASSED,
+                (expression, value) -> "isInstanceOf[java.lang.String]",
+                (expression, value) -> "instanceof[class java.lang.String]",
+                (expression, value) -> "class java.lang.String"
+            ),
+            argument(
+                (expression, value) -> expression.isInstanceOf(Object.class),
+                "foo",
+                PASSED,
+                (expression, value) -> "isInstanceOf[java.lang.Object]",
+                (expression, value) -> "instanceof[class java.lang.Object]",
+                (expression, value) -> "class java.lang.String"
+            ),
+            argument(
+                (expression, value) -> expression.isInstanceOf(Thread.class),
+                "foo",
+                FAILED,
+                (expression, value) -> "isInstanceOf[java.lang.Thread]",
+                (expression, value) -> "instanceof[class java.lang.Thread]",
+                (expression, value) -> "class java.lang.String"
+            ),
+            // isNotInstanceOf
+            argument(
+                (expression, value) -> expression.isNotInstanceOf(String.class),
+                "foo",
+                FAILED,
+                (expression, value) -> "isNotInstanceOf[java.lang.String]",
+                (expression, value) -> "not[instanceof[class java.lang.String]]",
+                (expression, value) -> "class java.lang.String"
+            ),
+            argument(
+                (expression, value) -> expression.isNotInstanceOf(Object.class),
+                "foo",
+                FAILED,
+                (expression, value) -> "isNotInstanceOf[java.lang.Object]",
+                (expression, value) -> "not[instanceof[class java.lang.Object]]",
+                (expression, value) -> "class java.lang.String"
+            ),
+            argument(
+                (expression, value) -> expression.isNotInstanceOf(Thread.class),
+                "foo",
+                PASSED,
+                (expression, value) -> "isNotInstanceOf[java.lang.Thread]",
+                (expression, value) -> "not[instanceof[class java.lang.Thread]]",
+                (expression, value) -> "class java.lang.String"
+            ),
+            // is
+            argument(
+                (expression, value) -> expression.is("foo"),
+                "foo",
+                PASSED,
+                (expression, value) -> "is[foo]",
+                (expression, value) -> "foo",
+                (expression, value) -> "foo"
+            ),
+            argument(
+                (expression, value) -> expression.is("foo"),
+                "bar",
+                FAILED,
+                (expression, value) -> "is[foo]",
+                (expression, value) -> "foo",
+                (expression, value) -> "bar"
+            ),
+            argument(
+                (expression, value) -> expression.is(null),
+                null,
+                PASSED,
+                (expression, value) -> "is[(null)]",
+                (expression, value) -> "(null)",
+                (expression, value) -> "(null)"
+            ),
+            // isNot
+            argument(
+                (expression, value) -> expression.isNot("foo"),
+                "foo",
+                FAILED,
+                (expression, value) -> "isNot[foo]",
+                (expression, value) -> "not[foo]",
+                (expression, value) -> "foo"
+            ),
+            argument(
+                (expression, value) -> expression.isNot("foo"),
+                "bar",
+                PASSED,
+                (expression, value) -> "isNot[foo]",
+                (expression, value) -> "not[foo]",
+                (expression, value) -> "bar"
+            ),
+            argument(
+                (expression, value) -> expression.isNot(null),
+                null,
+                FAILED,
+                (expression, value) -> "isNot[(null)]",
+                (expression, value) -> "not[(null)]",
+                (expression, value) -> "(null)"
+            ),
+            // isEqualTo
+            argument(
+                ObjectExpression::isEqualTo,
+                new Object(),
+                PASSED,
+                (expression, value) -> "isEqualTo[" + value + "]",
+                (expression, value) -> value.toString(),
+                (expression, value) -> value.toString()
+            ),
+            argument(
+                (expression, value) -> expression.isEqualTo(value1),
+                new Object(),
+                FAILED,
+                (expression, value) -> "isEqualTo[" + value1 + "]",
+                (expression, value) -> value1.toString(),
+                (expression, value) -> value.toString()
+            ),
+            argument(
+                (expression, value) -> expression.isEqualTo(null),
+                null,
+                PASSED,
+                (expression, value) -> "isEqualTo[(null)]",
+                (expression, value) -> "(null)",
+                (expression, value) -> "(null)"
+            ),
+            // isNotEqualTo
+            argument(
+                ObjectExpression::isNotEqualTo,
+                new Object(),
+                FAILED,
+                (expression, value) -> "isNotEqualTo[" + value + "]",
+                (expression, value) -> "not[" + value.toString() + "]",
+                (expression, value) -> value.toString()
+            ),
+            argument(
+                (expression, value) -> expression.isNotEqualTo(value1),
+                new Object(),
+                PASSED,
+                (expression, value) -> "isNotEqualTo[" + value1 + "]",
+                (expression, value) -> "not[" + value1.toString() + "]",
+                (expression, value) -> value.toString()
+            ),
+            argument(
+                (expression, value) -> expression.isNotEqualTo(null),
+                null,
+                FAILED,
+                (expression, value) -> "isNotEqualTo[(null)]",
+                (expression, value) -> "not[(null)]",
+                (expression, value) -> "(null)"
+            ),
+            // hashCodeIs
+            argument(
+                (expression, value) -> expression.hashCodeIs(100),
+                100,
+                PASSED,
+                (expression, value) -> "hashCode == " + value,
+                (expression, value) -> value.toString(),
+                (expression, value) -> value.toString()
+            ),
+            argument(
+                (expression, value) -> expression.hashCodeIs(50),
+                100,
+                FAILED,
+                (expression, value) -> "hashCode == " + 50,
+                (expression, value) -> String.valueOf(50),
+                (expression, value) -> value.toString()
+            ),
+            // hashCodeIsNot
+            argument(
+                (expression, value) -> expression.hashCodeIsNot(100),
+                100,
+                FAILED,
+                (expression, value) -> "hashCode != " + value,
+                (expression, value) -> "not[100]",
+                (expression, value) -> value.toString()
+            ),
+            argument(
+                (expression, value) -> expression.hashCodeIsNot(50),
+                100,
+                PASSED,
+                (expression, value) -> "hashCode != " + 50,
+                (expression, value) -> "not[50]",
+                (expression, value) -> value.toString()
+            ),
+            // toStringIs
+            argument(
+                (expression, value) -> expression.toStringIs("foo"),
+                "foo",
+                PASSED,
+                (expression, value) -> "toString().equals(foo)",
+                (expression, value) -> "foo",
+                (expression, value) -> value.toString()
+            ),
+            argument(
+                (expression, value) -> expression.toStringIs("foo"),
+                "bar",
+                FAILED,
+                (expression, value) -> "toString().equals(foo)",
+                (expression, value) -> "foo",
+                (expression, value) -> value.toString()
+            ),
+            // toStringIsNot
+            argument(
+                (expression, value) -> expression.toStringIsNot("foo"),
+                "foo",
+                FAILED,
+                (expression, value) -> "not[toString().equals(foo)]",
+                (expression, value) -> "not[foo]",
+                (expression, value) -> value.toString()
+            ),
+            argument(
+                (expression, value) -> expression.toStringIsNot("foo"),
+                "bar",
+                PASSED,
+                (expression, value) -> "not[toString().equals(foo)]",
+                (expression, value) -> "not[foo]",
+                (expression, value) -> value.toString()
+            ),
+            // satisfies (predicate)
+            argument(
+                (expression, value) -> expression.satisfies(o -> true),
+                new Object(),
+                PASSED,
+                (expression, value) -> "predicate",
+                (expression, value) -> "Predicate satisfied",
+                (expression, value) -> "Predicate satisfied"
+            ),
+            argument(
+                (expression, value) -> expression.satisfies(o -> false),
+                new Object(),
+                FAILED,
+                (expression, value) -> "predicate",
+                (expression, value) -> "Predicate satisfied",
+                (expression, value) -> "Predicate unsatisfied"
+            ),
+            // doesNotSatisfy (predicate)
+            argument(
+                (expression, value) -> expression.doesNotSatisfy(o -> true),
+                new Object(),
+                FAILED,
+                (expression, value) -> "not[predicate]",
+                (expression, value) -> "Predicate unsatisfied",
+                (expression, value) -> "Predicate satisfied"
+            ),
+            argument(
+                (expression, value) -> expression.doesNotSatisfy(o -> false),
+                new Object(),
+                PASSED,
+                (expression, value) -> "not[predicate]",
+                (expression, value) -> "Predicate unsatisfied",
+                (expression, value) -> "Predicate unsatisfied"
+            ),
+            // satisfies (condition)
+            argument(
+                (expression, value) -> expression.satisfies(alwaysTrueCondition),
+                new Object(),
+                PASSED,
+                (expression, value) -> "condition: " + alwaysTrueCondition.name(),
+                (expression, value) -> "Condition satisfied",
+                (expression, value) -> "Condition satisfied"
+            ),
+            argument(
+                (expression, value) -> expression.satisfies(alwaysFalseCondition),
+                new Object(),
+                FAILED,
+                (expression, value) -> "condition: " + alwaysFalseCondition.name(),
+                (expression, value) -> "Condition satisfied",
+                (expression, value) -> "Condition unsatisfied"
+            ),
+            // doesNotSatisfy (condition)
+            argument(
+                (expression, value) -> expression.doesNotSatisfy(alwaysTrueCondition),
+                new Object(),
+                FAILED,
+                (expression, value) -> "not[condition: " + alwaysTrueCondition.name() + "]",
+                (expression, value) -> "Condition unsatisfied",
+                (expression, value) -> "Condition satisfied"
+            ),
+            argument(
+                (expression, value) -> expression.doesNotSatisfy(alwaysFalseCondition),
+                new Object(),
+                PASSED,
+                (expression, value) -> "not[condition: " + alwaysFalseCondition.name() + "]",
+                (expression, value) -> "Condition unsatisfied",
+                (expression, value) -> "Condition unsatisfied"
+            )
+        );
     }
 }
