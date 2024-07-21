@@ -37,6 +37,14 @@ import static java.util.Objects.requireNonNull;
  */
 public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements SubjectExpression<T> {
 
+    private static final String PREDICATE_SATISFIED = "Predicate satisfied";
+    private static final String PREDICATE_UNSATISFIED = "Predicate unsatisfied";
+    private static final String CONDITION_SATISFIED = "Condition satisfied";
+    private static final String CONDITION_UNSATISFIED = "Condition unsatisfied";
+    private static final String ALWAYS_FAIL_CANNOT_COMPARE_TO_NULL_TYPE = "Always fail: cannot compare to (null) type";
+    private static final String EVALUATION_WILL_ALWAYS_FAIL_WHEN_COMPARED_TO_A_NULL_TYPE = "Evaluation will always " +
+        "fail when compared to a (null) type";
+
     private final T subject;
     private final CompoundEvaluation<T> children;
 
@@ -373,7 +381,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Su
 
         private Evaluation<T> createEvaluation() {
 
-            ReasonGenerator<T> generator = new ReasonGenerator<>(expected, actual, hint);
+            final ReasonGenerator<T> generator = new ReasonGenerator<>(expected, actual, hint);
 
             if (nullable) {
                 return TerminalEvaluation.ofNullable(name, test, generator);
@@ -460,42 +468,143 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Su
             .append();
     }
 
+    /**
+     * Adds an evaluation to the expression that checks if the subject exactly matches the supplied type.
+     * <p/>
+     * Note: If the subject is a subtype of the supplied type, this check will fail.
+     *
+     * @param type
+     *     The type to test the subject against. This evaluation will always fail if the supplied type is {@code null}
+     *
+     * @return This expression (fluent interface).
+     */
     public B isType(final Class<?> type) {
-        return newEvaluation(o -> o.getClass().equals(type))
-            .name("isType[" + type.getName() + "]")
-            .expectedValue(type.toString())
-            .actualValue(o -> o.getClass().toString())
-            .hint("Subject should be exactly of type " + type)
+
+        EvaluationBuilder builder = newEvaluation(o -> o.getClass().equals(type));
+
+        if (type == null) {
+            builder.name("isType[(null)]")
+                .expectedValue(ALWAYS_FAIL_CANNOT_COMPARE_TO_NULL_TYPE)
+                .hint(EVALUATION_WILL_ALWAYS_FAIL_WHEN_COMPARED_TO_A_NULL_TYPE);
+        } else {
+            builder.name("isType[" + type.getName() + "]")
+                .expectedValue(type.toString())
+                .hint("Subject should be exactly of type " + type);
+        }
+
+        return builder.actualValue(o -> o.getClass().toString())
             .append();
     }
 
+    /**
+     * Adds an evaluation to the expression that checks if the subject is not an exact match of the supplied type.
+     *
+     * @param type
+     *     The type to test the subject against. This evaluation will always fail if the supplied type is {@code null}.
+     *
+     * @return This expression (fluent interface).
+     */
     public B isNotType(final Class<?> type) {
-        return newEvaluation(o -> !o.getClass().equals(type))
-            .name("isNotType[" + type.getName() + "]")
-            .expectedValue("not[" + type + "]")
-            .actualValue(o -> o.getClass().toString())
-            .hint("Subject should be any type other than " + type)
+
+        EvaluationBuilder builder = newEvaluation(o -> type != null && !o.getClass().equals(type));
+
+        if (type == null) {
+            builder.name("isNotType[(null)]")
+                .expectedValue(ALWAYS_FAIL_CANNOT_COMPARE_TO_NULL_TYPE)
+                .hint(EVALUATION_WILL_ALWAYS_FAIL_WHEN_COMPARED_TO_A_NULL_TYPE);
+        } else {
+            builder.name("isNotType[" + type.getName() + "]")
+                .expectedValue("not[" + type.toString() + "]")
+                .hint("Subject should be any type other than " + type);
+        }
+
+        return builder.actualValue(o -> o.getClass().toString())
             .append();
     }
 
+    /**
+     * Adds an evaluation to the expression that checks if the subject matches or is a subtype of the supplied type.
+     *
+     * @param type
+     *     The type to test the subject against. This evaluation will always fail if the supplied type is {@code null}.
+     *
+     * @return This expression (fluent interface).
+     *
+     * @implNote This check is equivalent to the following statement, where {@code type} is the supplied type and
+     *     {@code subject} is the subject of the expression:
+     *     <pre><code>
+     *         type.isAssignableFrom(subject.getClass())
+     *     </code></pre>
+     * @see Class#isAssignableFrom(Class)
+     */
     public B isInstanceOf(final Class<?> type) {
-        return newEvaluation(o -> type != null && type.isAssignableFrom(o.getClass()))
-            .name("isInstanceOf[" + type.getName() + "]")
-            .expectedValue("instanceof[" + type + "]")
-            .actualValue(o -> o.getClass().toString())
-            .hint("Subject should be exactly of type " + type + " or a subclass of type " + type)
+
+        EvaluationBuilder builder = newEvaluation(o -> type != null && type.isAssignableFrom(o.getClass()));
+
+        if (type == null) {
+            builder.name("isInstanceOf[(null)]")
+                .expectedValue(ALWAYS_FAIL_CANNOT_COMPARE_TO_NULL_TYPE)
+                .hint(EVALUATION_WILL_ALWAYS_FAIL_WHEN_COMPARED_TO_A_NULL_TYPE);
+        } else {
+            builder.name("isInstanceOf[" + type.getName() + "]")
+                .expectedValue("instanceof[" + type + "]")
+                .hint("Subject should be exactly of type " + type + " or a subtype of type " + type);
+        }
+
+        return builder.actualValue(o -> o.getClass().toString())
             .append();
     }
 
+    /**
+     * Adds an evaluation to the expression that checks if the subject does not exactly match or is not a subtype of the
+     * supplied type.
+     *
+     * @param type
+     *     The type to test the subject against. This evaluation will always fail if the supplied type is {@code null}.
+     *
+     * @return This expression (fluent interface).
+     *
+     * @implNote This check is equivalent to the following statement, where {@code type} is the supplied type and
+     *     {@code subject} is the subject of the expression:
+     *     <pre><code>
+     *         !type.isAssignableFrom(subject.getClass())
+     *     </code></pre>
+     * @see Class#isAssignableFrom(Class)
+     */
     public B isNotInstanceOf(final Class<?> type) {
-        return newEvaluation(o -> type != null && !type.isAssignableFrom(o.getClass()))
-            .name("isNotInstanceOf[" + type.getName() + "]")
-            .expectedValue("not[instanceof[" + type + "]]")
-            .actualValue(o -> o.getClass().toString())
-            .hint("Subject should be any type of than " + type + " and not a subclass of type " + type)
+
+        EvaluationBuilder builder = newEvaluation(o -> type != null && !type.isAssignableFrom(o.getClass()));
+
+        if (type == null) {
+            builder.name("isNotInstanceOf[(null)]")
+                .expectedValue(ALWAYS_FAIL_CANNOT_COMPARE_TO_NULL_TYPE)
+                .hint(EVALUATION_WILL_ALWAYS_FAIL_WHEN_COMPARED_TO_A_NULL_TYPE);
+        } else {
+            builder.name("isNotInstanceOf[" + type.getName() + "]")
+                .expectedValue("not[instanceof[" + type + "]]")
+                .hint("Subject should be any type other than " + type + " and not a subtype of type " + type);
+        }
+
+        return builder.actualValue(o -> o.getClass().toString())
             .append();
     }
 
+    /**
+     * Adds an evaluation to the expression that checks if the subject is the same as the supplied object.
+     * <p/>
+     * This evaluation will pass if the subject and supplied object are both {@code null}.
+     *
+     * @param other
+     *     The object to test against.
+     *
+     * @return This expression (fluent interface).
+     *
+     * @implNote This check is equivalent to the following statement, where {@code other} is the supplied object and
+     *     {@code subject} is the subject of the expression:
+     *     <pre><code>
+     *         subject == object
+     *     </code></pre>
+     */
     public B is(final Object other) {
         return newNullableEvaluation(o -> o == other)
             .name("is[" + stringOf(other) + "]")
@@ -504,6 +613,22 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Su
             .append();
     }
 
+    /**
+     * Adds an evaluation to the expression that checks if the subject is not the same as the supplied object.
+     * <p/>
+     * This evaluation will fail if the subject and supplied object are both {@code null}.
+     *
+     * @param other
+     *     The object to test against.
+     *
+     * @return This expression (fluent interface).
+     *
+     * @implNote This check is equivalent to the following statement, where {@code other} is the supplied object and
+     *     {@code subject} is the subject of the expression:
+     *     <pre><code>
+     *         subject != object
+     *     </code></pre>
+     */
     public B isNot(final Object other) {
         return newNullableEvaluation(o -> o != other)
             .name("isNot[" + stringOf(other) + "]")
@@ -512,6 +637,23 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Su
             .append();
     }
 
+    /**
+     * Adds an evaluation to the expression that checks if the subject is equal to the supplied object.
+     * <p/>
+     * This evaluation will pass if the subject and supplied object are both {@code null}.
+     *
+     * @param other
+     *     The object to test against.
+     *
+     * @return This expression (fluent interface).
+     *
+     * @implNote This check is equivalent to the following statement, where {@code other} is the supplied object and
+     *     {@code subject} is the subject of the expression:
+     *     <pre><code>
+     *         Objects.equals(subject, other);
+     *     </code></pre>
+     * @see Objects#equals(Object, Object)
+     */
     public B isEqualTo(final Object other) {
         return newNullableEvaluation(o -> Objects.equals(o, other))
             .name("isEqualTo[" + stringOf(other) + "]")
@@ -520,14 +662,46 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Su
             .append();
     }
 
+    /**
+     * Adds an evaluation to the expression that checks if the subject is not equal to the supplied object.
+     * <p/>
+     * This evaluation will fail if the subject and supplied object are both {@code null}.
+     *
+     * @param other
+     *     The object to test against.
+     *
+     * @return This expression (fluent interface).
+     *
+     * @implNote This check is equivalent to the following statement, where {@code other} is the supplied object and
+     *     {@code subject} is the subject of the expression:
+     *     <pre><code>
+     *         !Objects.equals(subject, other);
+     *     </code></pre>
+     * @see Objects#equals(Object, Object)
+     */
     public B isNotEqualTo(final Object other) {
-        return newEvaluation(o -> !o.equals(other))
+        return newNullableEvaluation(o -> !Objects.equals(o, other))
             .name("isNotEqualTo[" + stringOf(other) + "]")
             .expectedValue("not[" + stringOf(other) + "]")
             .hint("Subject should be equal to " + other + " (using !subject.equals(" + other + "))")
             .append();
     }
 
+    /**
+     * Adds an evaluation to the expression that checks if the hash code of the subject is equal to the supplied
+     * hash code.
+     *
+     * @param hashCode
+     *     The hash code to test against.
+     *
+     * @return This expression (fluent interface).
+     *
+     * @implNote This check is equivalent to the following statement, where {@code hashCode} is the supplied hash code
+     * and {@code subject} is the subject of the expression:
+     *     <pre><code>
+     *         subject.hashCode() == hashCode
+     *     </code></pre>
+     */
     public B hashCodeIs(final int hashCode) {
         return newEvaluation(o -> o.hashCode() == hashCode)
             .name("hashCode == " + hashCode)
@@ -536,6 +710,21 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Su
             .append();
     }
 
+    /**
+     * Adds an evaluation to the expression that checks if the hash code of the subject is not equal to the supplied
+     * hash code.
+     *
+     * @param hashCode
+     *     The hash code to test against.
+     *
+     * @return This expression (fluent interface).
+     *
+     * @implNote This check is equivalent to the following statement, where {@code hashCode} is the supplied hash code
+     * and {@code subject} is the subject of the expression:
+     *     <pre><code>
+     *         subject.hashCode() != hashCode
+     *     </code></pre>
+     */
     public B hashCodeIsNot(final int hashCode) {
         return newEvaluation(o -> o.hashCode() != hashCode)
             .name("hashCode != " + hashCode)
@@ -544,6 +733,21 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Su
             .append();
     }
 
+    /**
+     * Adds an evaluation to the expression that checks if the {@code toString()} value of the subject is equal to
+     * the supplied value.
+     *
+     * @param expected
+     *     The string to test against.
+     *
+     * @return This expression (fluent interface).
+     *
+     * @implNote This check is equivalent to the following statement, where {@code expected} is the supplied string
+     * and {@code subject} is the subject of the expression:
+     *     <pre><code>
+     *         subject.toString().equals(expected)
+     *     </code></pre>
+     */
     public B toStringIs(final String expected) {
         return newEvaluation(o -> o.toString().equals(expected))
             .name("toString().equals(" + expected + ")")
@@ -552,6 +756,21 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Su
             .append();
     }
 
+    /**
+     * Adds an evaluation to the expression that checks if the {@code toString()} value of the subject is not equal to
+     * the supplied value.
+     *
+     * @param expected
+     *     The string to test against.
+     *
+     * @return This expression (fluent interface).
+     *
+     * @implNote This check is equivalent to the following statement, where {@code expected} is the supplied string
+     * and {@code subject} is the subject of the expression:
+     *     <pre><code>
+     *         !subject.toString().equals(expected)
+     *     </code></pre>
+     */
     public B toStringIsNot(final String expected) {
         return newEvaluation(o -> !o.toString().equals(expected))
             .name("not[toString().equals(" + expected + ")]")
@@ -560,35 +779,67 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Su
             .append();
     }
 
+    /**
+     * Adds an evaluation to the expression that checks if the supplied predicate is true.
+     *
+     * @param predicate
+     *     The predicate to test.
+     *
+     * @return This expression (fluent interface).
+     */
     public B satisfies(final Predicate<T> predicate) {
         return newEvaluation(predicate)
             .name("predicate")
-            .expectedValue("Predicate satisfied")
-            .actualValue(o -> predicate.test(o) ? "Predicate satisfied" : "Predicate unsatisfied")
+            .expectedValue(PREDICATE_SATISFIED)
+            .actualValue(o -> predicate.test(o) ? PREDICATE_SATISFIED : PREDICATE_UNSATISFIED)
             .append();
     }
 
+    /**
+     * Adds an evaluation to the expression that checks if the supplied condition is true.
+     *
+     * @param condition
+     *     The condition to test.
+     *
+     * @return This expression (fluent interface).
+     */
     public B satisfies(final Condition<T> condition) {
         return newEvaluation(condition)
             .name("condition: " + conditionName(condition))
-            .expectedValue("Condition satisfied")
-            .actualValue(o -> condition.test(o) ? "Condition satisfied" : "Condition unsatisfied")
+            .expectedValue(CONDITION_SATISFIED)
+            .actualValue(o -> condition.test(o) ? CONDITION_SATISFIED : CONDITION_UNSATISFIED)
             .append();
     }
 
+    /**
+     * Adds an evaluation to the expression that checks if the supplied predicate is false.
+     *
+     * @param predicate
+     *     The predicate to test.
+     *
+     * @return This expression (fluent interface).
+     */
     public B doesNotSatisfy(final Predicate<T> predicate) {
         return newEvaluation(o -> !predicate.test(o))
             .name("not[predicate]")
-            .expectedValue("Predicate unsatisfied")
-            .actualValue(o -> predicate.test(o) ? "Predicate satisfied" : "Predicate unsatisfied")
+            .expectedValue(PREDICATE_UNSATISFIED)
+            .actualValue(o -> predicate.test(o) ? PREDICATE_SATISFIED : PREDICATE_UNSATISFIED)
             .append();
     }
 
+    /**
+     * Adds an evaluation to the expression that checks if the supplied condition is false.
+     *
+     * @param condition
+     *     The condition to test.
+     *
+     * @return This expression (fluent interface).
+     */
     public B doesNotSatisfy(final Condition<T> condition) {
         return newEvaluation(o -> !condition.test(o))
             .name("not[condition: " + conditionName(condition) + "]")
-            .expectedValue("Condition unsatisfied")
-            .actualValue(o -> condition.test(o) ? "Condition satisfied" : "Condition unsatisfied")
+            .expectedValue(CONDITION_UNSATISFIED)
+            .actualValue(o -> condition.test(o) ? CONDITION_SATISFIED : CONDITION_UNSATISFIED)
             .append();
     }
 
