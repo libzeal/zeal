@@ -162,6 +162,14 @@ public abstract class ObjectExpressionTest<T, B extends ObjectExpression<T, B>> 
                 (expression, value) -> "class java.lang.Thread",
                 (expression, value) -> "class java.lang.String"
             ),
+            argument(
+                (expression, value) -> expression.isType(null),
+                "foo",
+                FAILED,
+                (expression, value) -> "isType[(null)]",
+                (expression, value) -> "Always fail: cannot compare to (null) type",
+                (expression, value) -> "class java.lang.String"
+            ),
             // isNotType
             argument(
                 (expression, value) -> expression.isNotType(String.class),
@@ -185,6 +193,14 @@ public abstract class ObjectExpressionTest<T, B extends ObjectExpression<T, B>> 
                 PASSED,
                 (expression, value) -> "isNotType[java.lang.Thread]",
                 (expression, value) -> "not[class java.lang.Thread]",
+                (expression, value) -> "class java.lang.String"
+            ),
+            argument(
+                (expression, value) -> expression.isNotType(null),
+                "foo",
+                FAILED,
+                (expression, value) -> "isNotType[(null)]",
+                (expression, value) -> "Always fail: cannot compare to (null) type",
                 (expression, value) -> "class java.lang.String"
             ),
             // isInstanceOf
@@ -212,6 +228,14 @@ public abstract class ObjectExpressionTest<T, B extends ObjectExpression<T, B>> 
                 (expression, value) -> "instanceof[class java.lang.Thread]",
                 (expression, value) -> "class java.lang.String"
             ),
+            argument(
+                (expression, value) -> expression.isInstanceOf(null),
+                "foo",
+                FAILED,
+                (expression, value) -> "isInstanceOf[(null)]",
+                (expression, value) -> "Always fail: cannot compare to (null) type",
+                (expression, value) -> "class java.lang.String"
+            ),
             // isNotInstanceOf
             argument(
                 (expression, value) -> expression.isNotInstanceOf(String.class),
@@ -235,6 +259,14 @@ public abstract class ObjectExpressionTest<T, B extends ObjectExpression<T, B>> 
                 PASSED,
                 (expression, value) -> "isNotInstanceOf[java.lang.Thread]",
                 (expression, value) -> "not[instanceof[class java.lang.Thread]]",
+                (expression, value) -> "class java.lang.String"
+            ),
+            argument(
+                (expression, value) -> expression.isNotInstanceOf(null),
+                "foo",
+                FAILED,
+                (expression, value) -> "isNotInstanceOf[(null)]",
+                (expression, value) -> "Always fail: cannot compare to (null) type",
                 (expression, value) -> "class java.lang.String"
             ),
             // is
