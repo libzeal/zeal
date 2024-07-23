@@ -11,20 +11,20 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-public class ExpressionTestCaseBuilder {
+public class ExpressionTestCaseBuilder<T, E extends ObjectExpression<T, E>> {
 
     private final List<Arguments> arguments;
 
-    public static ExpressionTestCaseBuilder newBuilder() {
-        return new ExpressionTestCaseBuilder();
+    public static <A, B extends ObjectExpression<A, B>> ExpressionTestCaseBuilder<A, B> newBuilder() {
+        return new ExpressionTestCaseBuilder<>();
     }
 
     public ExpressionTestCaseBuilder() {
         this.arguments = new ArrayList<>();
     }
 
-    public ArgumentBuilder newTest(BiConsumer<ObjectExpression<Object, ?>, ?> modifier) {
-        return new ArgumentBuilder(this, modifier);
+    public ArgumentBuilder<T, E> newTest(BiConsumer<E, T> modifier) {
+        return new ArgumentBuilder<>(this, modifier);
     }
 
     private void addArgument(Arguments argument) {
@@ -35,60 +35,60 @@ public class ExpressionTestCaseBuilder {
         return arguments.stream();
     }
 
-    public static class ArgumentBuilder {
+    public static class ArgumentBuilder<T, E extends ObjectExpression<T, E>> {
 
-        private final ExpressionTestCaseBuilder testCaseBuilder;
-        private final BiConsumer<ObjectExpression<Object, ?>, ?> modifier;
+        private final ExpressionTestCaseBuilder<T, E> testCaseBuilder;
+        private final BiConsumer<E, T> modifier;
         private String testCaseName;
-        private Object value;
+        private T value;
         private EvaluationState state;
-        private Function<Object, String> name;
+        private Function<T, String> name;
         private BiFunction<?, ?, String> expectedValue;
         private BiFunction<?, ?, String> actualValue;
 
-        public ArgumentBuilder(ExpressionTestCaseBuilder testCaseBuilder, BiConsumer<ObjectExpression<Object, ?>, ?> modifier) {
+        public ArgumentBuilder(ExpressionTestCaseBuilder<T, E> testCaseBuilder, BiConsumer<E, T> modifier) {
             this.testCaseBuilder = testCaseBuilder;
             this.modifier = modifier;
         }
 
-        public ArgumentBuilder testCaseName(String name) {
+        public ArgumentBuilder<T, E> testCaseName(String name) {
             this.testCaseName = name;
             return this;
         }
 
-        public ArgumentBuilder value(Object value) {
+        public ArgumentBuilder<T, E> value(T value) {
             this.value = value;
             return this;
         }
 
-        public ArgumentBuilder expectedState(EvaluationState state) {
+        public ArgumentBuilder<T, E> expectedState(EvaluationState state) {
             this.state = state;
             return this;
         }
 
-        public ArgumentBuilder expectedName(String name) {
+        public ArgumentBuilder<T, E> expectedName(String name) {
             return expectedName(v -> name);
         }
 
-        public ArgumentBuilder expectedName(Function<Object, String> name) {
+        public ArgumentBuilder<T, E> expectedName(Function<T, String> name) {
             this.name = name;
             return this;
         }
 
-        public ArgumentBuilder expectedExpectedValue(String value) {
+        public ArgumentBuilder<T, E> expectedExpectedValue(String value) {
             return expectedExpectedValue((e, v) -> value);
         }
 
-        public ArgumentBuilder expectedExpectedValue(BiFunction<?, ?, String> value) {
+        public ArgumentBuilder<T, E> expectedExpectedValue(BiFunction<?, ?, String> value) {
             this.expectedValue = value;
             return this;
         }
 
-        public ArgumentBuilder expectedActualValue(String value) {
+        public ArgumentBuilder<T, E> expectedActualValue(String value) {
             return expectedActualValue((e, v) -> value);
         }
 
-        public ArgumentBuilder expectedActualValue(BiFunction<?, ?, String> value) {
+        public ArgumentBuilder<T, E> expectedActualValue(BiFunction<T, ?, String> value) {
             this.actualValue = value;
             return this;
         }
@@ -107,7 +107,7 @@ public class ExpressionTestCaseBuilder {
             return Arguments.of(testCaseName(), modifier, value, state, name, expectedValue, actualValue);
         }
 
-        public ExpressionTestCaseBuilder addTest() {
+        public ExpressionTestCaseBuilder<T, E> addTest() {
             this.testCaseBuilder.addArgument(toArguments());
             return testCaseBuilder;
         }

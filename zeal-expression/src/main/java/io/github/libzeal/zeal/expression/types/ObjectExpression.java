@@ -487,7 +487,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Su
                 .expectedValue(ALWAYS_FAIL_CANNOT_COMPARE_TO_NULL_TYPE)
                 .hint(EVALUATION_WILL_ALWAYS_FAIL_WHEN_COMPARED_TO_A_NULL_TYPE);
         } else {
-            builder.name("isType[" + type.getName() + "]")
+            builder.name("isType[" + type + "]")
                 .expectedValue(type.toString())
                 .hint("Subject should be exactly of type " + type);
         }
@@ -513,8 +513,8 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Su
                 .expectedValue(ALWAYS_FAIL_CANNOT_COMPARE_TO_NULL_TYPE)
                 .hint(EVALUATION_WILL_ALWAYS_FAIL_WHEN_COMPARED_TO_A_NULL_TYPE);
         } else {
-            builder.name("isNotType[" + type.getName() + "]")
-                .expectedValue("not[" + type.toString() + "]")
+            builder.name("isNotType[" + type + "]")
+                .expectedValue("not[" + type + "]")
                 .hint("Subject should be any type other than " + type);
         }
 
@@ -546,7 +546,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Su
                 .expectedValue(ALWAYS_FAIL_CANNOT_COMPARE_TO_NULL_TYPE)
                 .hint(EVALUATION_WILL_ALWAYS_FAIL_WHEN_COMPARED_TO_A_NULL_TYPE);
         } else {
-            builder.name("isInstanceOf[" + type.getName() + "]")
+            builder.name("isInstanceOf[" + type + "]")
                 .expectedValue("instanceof[" + type + "]")
                 .hint("Subject should be exactly of type " + type + " or a subtype of type " + type);
         }
@@ -580,7 +580,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Su
                 .expectedValue(ALWAYS_FAIL_CANNOT_COMPARE_TO_NULL_TYPE)
                 .hint(EVALUATION_WILL_ALWAYS_FAIL_WHEN_COMPARED_TO_A_NULL_TYPE);
         } else {
-            builder.name("isNotInstanceOf[" + type.getName() + "]")
+            builder.name("isNotInstanceOf[" + type + "]")
                 .expectedValue("not[instanceof[" + type + "]]")
                 .hint("Subject should be any type other than " + type + " and not a subtype of type " + type);
         }

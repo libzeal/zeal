@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  * public class StringExpressionCheck extends ObjectExpressionTest<String, StringExpression> {
  *
  *    {@literal @}Override
- *     protected void extendTestCases(ExpressionTestCaseBuilder builder) {
+ *     protected void extendTestCases(ExpressionTestCaseBuilder<T, E> builder) {
  *         builder.newTest((expression, value) -> expression.isEmpty())
  *             .value("foo")
  *             .expectedState(FAILED)
@@ -40,7 +40,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  * </code></pre>
  * @param <T>
  *     The type of the subject.
- * @param <B>
+ * @param <E>
  *     The type of the expression under test. This type is an example of the
  *     <a href="https://stackoverflow.com/q/4173254/2403253">Curiously Recurring Template Pattern (CRTP)</a>.
  *     This type allows for the fluent interface methods of this class to return the subtype object, rather than
@@ -50,26 +50,23 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  *     </code></pre>
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public abstract class ObjectExpressionTest<T, B extends ObjectExpression<T, B>> {
+public abstract class ObjectExpressionTest<T, E extends ObjectExpression<T, E>> {
 
-    private static final String OBJECT_EXPRESSION_NAME = "Object\\[.+\\] evaluation";
-    private static final SimpleCondition<Object> ALWAYS_TRUE = new SimpleCondition<>("Always true", s -> true);
-    private static final SimpleCondition<Object> ALWAYS_FALSE = new SimpleCondition<>("Always false", s -> false);
+    private final SimpleCondition<T> alwaysTrueCondition = new SimpleCondition<>("Always true", s -> true);
+    private final SimpleCondition<T> alwaysFalseCondition = new SimpleCondition<>("Always false", s -> false);
 
-    protected abstract B expression(T value);
+    protected abstract E expression(T value);
 
     @Test
-    @SuppressWarnings("unchecked")
     final void givenNoEvaluations_whenConstruct_thenCorrectEvaluation() {
 
-        T value = (T) new Object();
+        T value = exampleValue1();
 
-        B expression = expression(value);
+        E expression = expression(value);
         EvaluatedExpressionAssertion<?> assertion = new EvaluatedExpressionAssertion<>(expression.evaluate());
 
         assertEquals(value, expression.subject());
         assertion.assertStateIs(PASSED);
-        assertion.assertNameMatches(OBJECT_EXPRESSION_NAME);
         assertion.assertCompoundExpectedValue();
         assertion.assertCompoundActualValueIs(0, 0, 0);
     }
@@ -77,7 +74,7 @@ public abstract class ObjectExpressionTest<T, B extends ObjectExpression<T, B>> 
     @Test
     final void givenNotNullFollowsAnotherEvaluation_whenEvaluate_thenNotNullPreemptsOtherEvaluation() {
 
-        B expression = expression(null);
+        E expression = expression(null);
 
         expression.isNull().isNotNull();
 
@@ -99,15 +96,15 @@ public abstract class ObjectExpressionTest<T, B extends ObjectExpression<T, B>> 
     @MethodSource("testCaseStream")
     final void whenEvaluate_thenCorrectEvaluation(
         String testCaseName,
-        BiConsumer<B, T> modifier,
+        BiConsumer<E, T> modifier,
         T value,
         EvaluationState expectedState,
         Function<T, String> expectedName,
-        BiFunction<B, T, String> expectedExpectedValue,
-        BiFunction<B, T, String> expectedActualValue
+        BiFunction<E, T, String> expectedExpectedValue,
+        BiFunction<E, T, String> expectedActualValue
     ) {
 
-        B expression = expression(value);
+        E expression = expression(value);
 
         modifier.accept(expression, value);
 
@@ -124,7 +121,7 @@ public abstract class ObjectExpressionTest<T, B extends ObjectExpression<T, B>> 
 
     private Stream<Arguments> testCaseStream() {
 
-        ExpressionTestCaseBuilder builder = ExpressionTestCaseBuilder.newBuilder();
+        ExpressionTestCaseBuilder<T, E> builder = ExpressionTestCaseBuilder.newBuilder();
 
         isNullTestCases(builder);
         isNotNullTestCases(builder);
@@ -150,7 +147,7 @@ public abstract class ObjectExpressionTest<T, B extends ObjectExpression<T, B>> 
         return builder.stream();
     }
 
-    private void isNullTestCases(ExpressionTestCaseBuilder builder) {
+    private void isNullTestCases(ExpressionTestCaseBuilder<T, E> builder) {
         builder.newTest((expression, value) -> expression.isNull())
                 .value(null)
                 .expectedState(PASSED)
@@ -159,15 +156,15 @@ public abstract class ObjectExpressionTest<T, B extends ObjectExpression<T, B>> 
                 .expectedActualValue("(null)")
                 .addTest()
             .newTest((expression, value) -> expression.isNull())
-                .value("foo")
+                .value(exampleValue1())
                 .expectedState(FAILED)
                 .expectedName("isNull")
                 .expectedExpectedValue("(null)")
-                .expectedActualValue("foo")
+                .expectedActualValue(exampleValue1().toString())
                 .addTest();
     }
 
-    private void isNotNullTestCases(ExpressionTestCaseBuilder builder) {
+    private void isNotNullTestCases(ExpressionTestCaseBuilder<T, E> builder) {
         builder.newTest((expression, value) -> expression.isNotNull())
                 .value(null)
                 .expectedState(FAILED)
@@ -176,152 +173,154 @@ public abstract class ObjectExpressionTest<T, B extends ObjectExpression<T, B>> 
                 .expectedActualValue("(null)")
                 .addTest()
             .newTest((expression, value) -> expression.isNotNull())
-                .value("foo")
+                .value(exampleValue1())
                 .expectedState(PASSED)
                 .expectedName("isNotNull")
                 .expectedExpectedValue("not[(null)]")
-                .expectedActualValue("foo")
+                .expectedActualValue(exampleValue1().toString())
                 .addTest();
     }
 
-    private void isTypeTestCases(ExpressionTestCaseBuilder builder) {
-        builder.newTest((expression, value) -> expression.isType(String.class))
-                .value("foo")
+    private void isTypeTestCases(ExpressionTestCaseBuilder<T, E> builder) {
+
+        final T nonNullValue = exampleValue1();
+
+        builder.newTest((expression, value) -> expression.isType(nonNullValue.getClass()))
+                .value(nonNullValue)
                 .expectedState(PASSED)
-                .expectedName("isType[java.lang.String]")
-                .expectedExpectedValue("class java.lang.String")
-                .expectedActualValue("class java.lang.String")
+                .expectedName("isType[" + nonNullValue.getClass() + "]")
+                .expectedExpectedValue(nonNullValue.getClass().toString())
+                .expectedActualValue(nonNullValue.getClass().toString())
                 .addTest()
-            .newTest((expression, value) -> expression.isType(Object.class))
-                .value("foo")
+            .newTest((expression, value) -> expression.isType(CanonicalClass.class))
+                .value(nonNullValue)
                 .expectedState(FAILED)
-                .expectedName("isType[java.lang.Object]")
-                .expectedExpectedValue("class java.lang.Object")
-                .expectedActualValue("class java.lang.String")
-                .addTest()
-            .newTest((expression, value) -> expression.isType(Thread.class))
-                .value("foo")
-                .expectedState(FAILED)
-                .expectedName("isType[java.lang.Thread]")
-                .expectedExpectedValue("class java.lang.Thread")
-                .expectedActualValue("class java.lang.String")
+                .expectedName("isType[" + CanonicalClass.class + "]")
+                .expectedExpectedValue(CanonicalClass.class.toString())
+                .expectedActualValue(nonNullValue.getClass().toString())
                 .addTest()
             .newTest((expression, value) -> expression.isType(null))
-                .value("foo")
+                .value(nonNullValue)
                 .expectedState(FAILED)
                 .expectedName("isType[(null)]")
                 .expectedExpectedValue("Always fail: cannot compare to (null) type")
-                .expectedActualValue("class java.lang.String")
+                .expectedActualValue(nonNullValue.getClass().toString())
                 .addTest();
     }
 
-    private void isNotTypeTestCases(ExpressionTestCaseBuilder builder) {
-        builder.newTest((expression, value) -> expression.isNotType(String.class))
-                .value("foo")
+    private void isNotTypeTestCases(ExpressionTestCaseBuilder<T, E> builder) {
+
+        final T nonNullValue = exampleValue1();
+
+        builder.newTest((expression, value) -> expression.isNotType(nonNullValue.getClass()))
+                .value(nonNullValue)
                 .expectedState(FAILED)
-                .expectedName("isNotType[java.lang.String]")
-                .expectedExpectedValue("not[class java.lang.String]")
-                .expectedActualValue("class java.lang.String")
+                .expectedName("isNotType[" + nonNullValue.getClass() + "]")
+                .expectedExpectedValue("not[" + nonNullValue.getClass() + "]")
+                .expectedActualValue(nonNullValue.getClass().toString())
                 .addTest()
-            .newTest((expression, value) -> expression.isNotType(Object.class))
-                .value("foo")
+            .newTest((expression, value) -> expression.isNotType(CanonicalClass.class))
+                .value(nonNullValue)
                 .expectedState(PASSED)
-                .expectedName("isNotType[java.lang.Object]")
-                .expectedExpectedValue("not[class java.lang.Object]")
-                .expectedActualValue("class java.lang.String")
-                .addTest()
-            .newTest((expression, value) -> expression.isNotType(Thread.class))
-                .value("foo")
-                .expectedState(PASSED)
-                .expectedName("isNotType[java.lang.Thread]")
-                .expectedExpectedValue("not[class java.lang.Thread]")
-                .expectedActualValue("class java.lang.String")
+                .expectedName("isNotType[" + CanonicalClass.class + "]")
+                .expectedExpectedValue("not[" + CanonicalClass.class + "]")
+                .expectedActualValue((expression, value) -> value.getClass().toString())
                 .addTest()
             .newTest((expression, value) -> expression.isNotType(null))
-                .value("foo")
+                .value(nonNullValue)
                 .expectedState(FAILED)
                 .expectedName("isNotType[(null)]")
                 .expectedExpectedValue("Always fail: cannot compare to (null) type")
-                .expectedActualValue("class java.lang.String")
+                .expectedActualValue(nonNullValue.getClass().toString())
                 .addTest();
     }
 
-    private void isInstanceOfTestCases(ExpressionTestCaseBuilder builder) {
-        builder.newTest((expression, value) -> expression.isInstanceOf(String.class))
-                .value("foo")
+    private void isInstanceOfTestCases(ExpressionTestCaseBuilder<T, E> builder) {
+
+        final T nonNullValue = exampleValue1();
+
+        builder.newTest((expression, value) -> expression.isInstanceOf(nonNullValue.getClass()))
+                .value(nonNullValue)
                 .expectedState(PASSED)
-                .expectedName("isInstanceOf[java.lang.String]")
-                .expectedExpectedValue("instanceof[class java.lang.String]")
-                .expectedActualValue("class java.lang.String")
+                .expectedName("isInstanceOf[" + nonNullValue.getClass() + "]")
+                .expectedExpectedValue("instanceof[" + nonNullValue.getClass() + "]")
+                .expectedActualValue(nonNullValue.getClass().toString())
                 .addTest()
             .newTest((expression, value) -> expression.isInstanceOf(Object.class))
-                .value("foo")
+                .value(nonNullValue)
                 .expectedState(PASSED)
-                .expectedName("isInstanceOf[java.lang.Object]")
-                .expectedExpectedValue("instanceof[class java.lang.Object]")
-                .expectedActualValue("class java.lang.String")
+                .expectedName("isInstanceOf[" + Object.class + "]")
+                .expectedExpectedValue("instanceof[" + Object.class + "]")
+                .expectedActualValue(nonNullValue.getClass().toString())
                 .addTest()
-            .newTest((expression, value) -> expression.isInstanceOf(Thread.class))
-                .value("foo")
+            .newTest((expression, value) -> expression.isInstanceOf(CanonicalClass.class))
+                .value(nonNullValue)
                 .expectedState(FAILED)
-                .expectedName("isInstanceOf[java.lang.Thread]")
-                .expectedExpectedValue("instanceof[class java.lang.Thread]")
-                .expectedActualValue("class java.lang.String")
+                .expectedName("isInstanceOf[" + CanonicalClass.class + "]")
+                .expectedExpectedValue("instanceof[" + CanonicalClass.class + "]")
+                .expectedActualValue(nonNullValue.getClass().toString())
                 .addTest()
             .newTest((expression, value) -> expression.isInstanceOf(null))
-                .value("foo")
+                .value(nonNullValue)
                 .expectedState(FAILED)
                 .expectedName("isInstanceOf[(null)]")
                 .expectedExpectedValue("Always fail: cannot compare to (null) type")
-                .expectedActualValue("class java.lang.String")
+                .expectedActualValue(nonNullValue.getClass().toString())
                 .addTest();
     }
 
-    private void isNotInstanceOfTestCases(ExpressionTestCaseBuilder builder) {
-        builder.newTest((expression, value) -> expression.isNotInstanceOf(String.class))
-                .value("foo")
+    private void isNotInstanceOfTestCases(ExpressionTestCaseBuilder<T, E> builder) {
+
+        final T nonNullValue = exampleValue1();
+
+        builder.newTest((expression, value) -> expression.isNotInstanceOf(nonNullValue.getClass()))
+                .value(nonNullValue)
                 .expectedState(FAILED)
-                .expectedName("isNotInstanceOf[java.lang.String]")
-                .expectedExpectedValue("not[instanceof[class java.lang.String]]")
-                .expectedActualValue("class java.lang.String")
+                .expectedName("isNotInstanceOf[" + nonNullValue.getClass() + "]")
+                .expectedExpectedValue("not[instanceof[" + nonNullValue.getClass() +"]]")
+                .expectedActualValue(nonNullValue.getClass().toString())
                 .addTest()
             .newTest((expression, value) -> expression.isNotInstanceOf(Object.class))
-                .value("foo")
+                .value(nonNullValue)
                 .expectedState(FAILED)
-                .expectedName("isNotInstanceOf[java.lang.Object]")
-                .expectedExpectedValue("not[instanceof[class java.lang.Object]]")
-                .expectedActualValue("class java.lang.String")
+                .expectedName("isNotInstanceOf[" + Object.class + "]")
+                .expectedExpectedValue("not[instanceof[" + Object.class + "]]")
+                .expectedActualValue(nonNullValue.getClass().toString())
                 .addTest()
-            .newTest((expression, value) -> expression.isNotInstanceOf(Thread.class))
-                .value("foo")
+            .newTest((expression, value) -> expression.isNotInstanceOf(CanonicalClass.class))
+                .value(nonNullValue)
                 .expectedState(PASSED)
-                .expectedName("isNotInstanceOf[java.lang.Thread]")
-                .expectedExpectedValue("not[instanceof[class java.lang.Thread]]")
-                .expectedActualValue("class java.lang.String")
+                .expectedName("isNotInstanceOf[" + CanonicalClass.class + "]")
+                .expectedExpectedValue("not[instanceof["  + CanonicalClass.class +  "]]")
+                .expectedActualValue(nonNullValue.getClass().toString())
                 .addTest()
             .newTest((expression, value) -> expression.isNotInstanceOf(null))
-                .value("foo")
+                .value(nonNullValue)
                 .expectedState(FAILED)
                 .expectedName("isNotInstanceOf[(null)]")
                 .expectedExpectedValue("Always fail: cannot compare to (null) type")
-                .expectedActualValue("class java.lang.String")
+                .expectedActualValue(nonNullValue.getClass().toString())
                 .addTest();
     }
 
-    private void isTestCases(ExpressionTestCaseBuilder builder) {
-        builder.newTest((expression, value) -> expression.is("foo"))
-                .value("foo")
+    private void isTestCases(ExpressionTestCaseBuilder<T, E> builder) {
+
+        final T value1 = exampleValue1();
+        final T value2 = exampleValue2();
+
+        builder.newTest((expression, value) -> expression.is(value1))
+                .value(value1)
                 .expectedState(PASSED)
-                .expectedName("is[foo]")
-                .expectedExpectedValue("foo")
-                .expectedActualValue("foo")
+                .expectedName("is[" + value1 + "]")
+                .expectedExpectedValue((expression, value) -> value.toString())
+                .expectedActualValue(value1.toString())
                 .addTest()
-            .newTest((expression, value) -> expression.is("foo"))
-                .value("bar")
+            .newTest((expression, value) -> expression.is(value1))
+                .value(value2)
                 .expectedState(FAILED)
-                .expectedName("is[foo]")
-                .expectedExpectedValue("foo")
-                .expectedActualValue("bar")
+                .expectedName("is[" + value1 + "]")
+                .expectedExpectedValue(value1.toString())
+                .expectedActualValue((expression, value) -> value.toString())
                 .addTest()
             .newTest((expression, value) -> expression.is(null))
                 .value(null)
@@ -332,20 +331,24 @@ public abstract class ObjectExpressionTest<T, B extends ObjectExpression<T, B>> 
                 .addTest();
     }
 
-    private void isNotTestCases(ExpressionTestCaseBuilder builder) {
-        builder.newTest((expression, value) -> expression.isNot("foo"))
-                .value("foo")
+    private void isNotTestCases(ExpressionTestCaseBuilder<T, E> builder) {
+
+        final T value1 = exampleValue1();
+        final T value2 = exampleValue2();
+
+        builder.newTest((expression, value) -> expression.isNot(value1))
+                .value(value1)
                 .expectedState(FAILED)
-                .expectedName("isNot[foo]")
-                .expectedExpectedValue("not[foo]")
-                .expectedActualValue("foo")
+                .expectedName("isNot[" + value1 + "]")
+                .expectedExpectedValue("not[" + value1.toString() + "]")
+                .expectedActualValue((expression, value) -> value.toString())
                 .addTest()
-            .newTest((expression, value) -> expression.isNot("foo"))
-                .value("bar")
+            .newTest((expression, value) -> expression.isNot(value1))
+                .value(value2)
                 .expectedState(PASSED)
-                .expectedName("isNot[foo]")
-                .expectedExpectedValue("not[foo]")
-                .expectedActualValue("bar")
+                .expectedName("isNot[" + value1 + "]")
+                .expectedExpectedValue("not[" + value1 + "]")
+                .expectedActualValue((expression, value) -> value.toString())
                 .addTest()
             .newTest((expression, value) -> expression.isNot(null))
                 .value(null)
@@ -356,19 +359,20 @@ public abstract class ObjectExpressionTest<T, B extends ObjectExpression<T, B>> 
                 .addTest();
     }
 
-    private void isEqualToTestCases(ExpressionTestCaseBuilder builder) {
+    private void isEqualToTestCases(ExpressionTestCaseBuilder<T, E> builder) {
 
-        Object value1 = new Object();
+        T value1 = exampleValue1();
+        T value2 = exampleValue2();
 
         builder.newTest(ObjectExpression::isEqualTo)
-                .value(new Object())
+                .value(value1)
                 .expectedState(PASSED)
-                .expectedName(value -> "isEqualTo[" + value + "]")
+                .expectedName(value -> "isEqualTo[" + value1 + "]")
                 .expectedExpectedValue((expression, value) -> value.toString())
                 .expectedActualValue((expression, value) -> value.toString())
                 .addTest()
             .newTest((expression, value) -> expression.isEqualTo(value1))
-                .value(new Object())
+                .value(value2)
                 .expectedState(FAILED)
                 .expectedName(value -> "isEqualTo[" + value1 + "]")
                 .expectedExpectedValue((expression, value) -> value1.toString())
@@ -383,19 +387,20 @@ public abstract class ObjectExpressionTest<T, B extends ObjectExpression<T, B>> 
                 .addTest();
     }
 
-    private void isNotEqualToTestCases(ExpressionTestCaseBuilder builder) {
+    private void isNotEqualToTestCases(ExpressionTestCaseBuilder<T, E> builder) {
 
-        Object value1 = new Object();
+        T value1 = exampleValue1();
+        T value2 = exampleValue2();
 
         builder.newTest(ObjectExpression::isNotEqualTo)
-                .value(new Object())
+                .value(value1)
                 .expectedState(FAILED)
                 .expectedName(value -> "isNotEqualTo[" + value + "]")
                 .expectedExpectedValue((expression, value) -> "not[" + value.toString() + "]")
                 .expectedActualValue((expression, value) -> value.toString())
                 .addTest()
             .newTest((expression, value) -> expression.isNotEqualTo(value1))
-                .value(new Object())
+                .value(value2)
                 .expectedState(PASSED)
                 .expectedName(value -> "isNotEqualTo[" + value1 + "]")
                 .expectedExpectedValue((expression, value) -> "not[" + value1.toString() + "]")
@@ -410,84 +415,103 @@ public abstract class ObjectExpressionTest<T, B extends ObjectExpression<T, B>> 
                 .addTest();
     }
 
-    private void hashCodeIsTestCases(ExpressionTestCaseBuilder builder) {
-            builder.newTest((expression, value) -> expression.hashCodeIs(100))
-                .value(100)
+    private void hashCodeIsTestCases(ExpressionTestCaseBuilder<T, E> builder) {
+
+        T value1 = exampleValue1();
+        T value2 = exampleValue2();
+
+        builder.newTest((expression, value) -> expression.hashCodeIs(value1.hashCode()))
+                .value(value1)
                 .expectedState(PASSED)
-                .expectedName(value -> "hashCode == " + value)
-                .expectedExpectedValue((expression, value) -> value.toString())
-                .expectedActualValue((expression, value) -> value.toString())
+                .expectedName(value -> "hashCode == " + value.hashCode())
+                .expectedExpectedValue((expression, value) -> String.valueOf(value1.hashCode()))
+                .expectedActualValue((expression, value) -> String.valueOf(value.hashCode()))
                 .addTest()
-            .newTest((expression, value) -> expression.hashCodeIs(50))
-                .value(100)
+            .newTest((expression, value) -> expression.hashCodeIs(value1.hashCode()))
+                .value(value2)
                 .expectedState(FAILED)
-                .expectedName(value -> "hashCode == " + 50)
-                .expectedExpectedValue((expression, value) -> String.valueOf(50))
-                .expectedActualValue((expression, value) -> value.toString())
+                .expectedName(value -> "hashCode == " + value1.hashCode())
+                .expectedExpectedValue((expression, value) -> String.valueOf(value1.hashCode()))
+                .expectedActualValue((expression, value) -> String.valueOf(value.hashCode()))
                 .addTest();
     }
 
-    private void hashCodeIsNotTestCases(ExpressionTestCaseBuilder builder) {
-        builder.newTest((expression, value) -> expression.hashCodeIsNot(100))
-                .value(100)
+    private void hashCodeIsNotTestCases(ExpressionTestCaseBuilder<T, E> builder) {
+
+        T value1 = exampleValue1();
+        T value2 = exampleValue2();
+
+        builder.newTest((expression, value) -> expression.hashCodeIsNot(value1.hashCode()))
+                .value(value1)
                 .expectedState(FAILED)
-                .expectedName(value -> "hashCode != " + value)
-                .expectedExpectedValue((expression, value) -> "not[100]")
-                .expectedActualValue((expression, value) -> value.toString())
+                .expectedName(value -> "hashCode != " + value.hashCode())
+                .expectedExpectedValue((expression, value) -> "not[" + value.hashCode() + "]")
+                .expectedActualValue((expression, value) -> String.valueOf(value.hashCode()))
                 .addTest()
-            .newTest((expression, value) -> expression.hashCodeIsNot(50))
-                .value(100)
+            .newTest((expression, value) -> expression.hashCodeIsNot(value1.hashCode()))
+                .value(value2)
                 .expectedState(PASSED)
-                .expectedName(value -> "hashCode != " + 50)
-                .expectedExpectedValue((expression, value) -> "not[50]")
-                .expectedActualValue((expression, value) -> value.toString())
+                .expectedName(value -> "hashCode != " + value1.hashCode())
+                .expectedExpectedValue((expression, value) -> "not[" + value1.hashCode() + "]")
+                .expectedActualValue((expression, value) -> String.valueOf(value.hashCode()))
                 .addTest();
     }
 
-    private void toStringIsTestCases(ExpressionTestCaseBuilder builder) {
-        builder.newTest((expression, value) -> expression.toStringIs("foo"))
-                .value("foo")
+    private void toStringIsTestCases(ExpressionTestCaseBuilder<T, E> builder) {
+
+        T value1 = exampleValue1();
+        T value2 = exampleValue2();
+
+        builder.newTest((expression, value) -> expression.toStringIs(value1.toString()))
+                .value(value1)
                 .expectedState(PASSED)
-                .expectedName(value -> "toString().equals(foo)")
-                .expectedExpectedValue((expression, value) -> "foo")
+                .expectedName(value -> "toString().equals(" + value1 + ")")
+                .expectedExpectedValue((expression, value) -> value1.toString())
                 .expectedActualValue((expression, value) -> value.toString())
             .addTest()
-                .newTest((expression, value) -> expression.toStringIs("foo"))
-                .value("bar")
+                .newTest((expression, value) -> expression.toStringIs(value1.toString()))
+                .value(value2)
                 .expectedState(FAILED)
-                .expectedName(value -> "toString().equals(foo)")
+                .expectedName(value -> "toString().equals(" + value1.toString() + ")")
                 .expectedExpectedValue((expression, value) -> "foo")
                 .expectedActualValue((expression, value) -> value.toString())
                 .addTest();
     }
 
-    private void toStringIsNotTestCases(ExpressionTestCaseBuilder builder) {
-        builder.newTest((expression, value) -> expression.toStringIsNot("foo"))
-                .value("foo")
+    private void toStringIsNotTestCases(ExpressionTestCaseBuilder<T, E> builder) {
+
+        T value1 = exampleValue1();
+        T value2 = exampleValue2();
+
+        builder.newTest((expression, value) -> expression.toStringIsNot(value1.toString()))
+                .value(value1)
                 .expectedState(FAILED)
-                .expectedName(value -> "not[toString().equals(foo)]")
-                .expectedExpectedValue((expression, value) -> "not[foo]")
+                .expectedName(value -> "not[toString().equals(" + value1 + ")]")
+                .expectedExpectedValue((expression, value) -> "not[" + value1 + "]")
                 .expectedActualValue((expression, value) -> value.toString())
                 .addTest()
             .newTest((expression, value) -> expression.toStringIsNot("foo"))
-                .value("bar")
+                .value(value2)
                 .expectedState(PASSED)
-                .expectedName(value -> "not[toString().equals(foo)]")
-                .expectedExpectedValue((expression, value) -> "not[foo]")
+                .expectedName(value -> "not[toString().equals(" + value1 + ")]")
+                .expectedExpectedValue((expression, value) -> "not[" + value1 + "]")
                 .expectedActualValue((expression, value) -> value.toString())
                 .addTest();
     }
 
-    private void satisfiesPredicateTestCases(ExpressionTestCaseBuilder builder) {
+    private void satisfiesPredicateTestCases(ExpressionTestCaseBuilder<T, E> builder) {
+
+        T value1 = exampleValue1();
+
         builder.newTest((expression, value) -> expression.satisfies(o -> true))
-                .value(new Object())
+                .value(value1)
                 .expectedState(PASSED)
                 .expectedName("predicate")
                 .expectedExpectedValue("Predicate satisfied")
                 .expectedActualValue("Predicate satisfied")
                 .addTest()
             .newTest((expression, value) -> expression.satisfies(o -> false))
-                .value(new Object())
+                .value(value1)
                 .expectedState(FAILED)
                 .expectedName("predicate")
                 .expectedExpectedValue("Predicate satisfied")
@@ -495,16 +519,19 @@ public abstract class ObjectExpressionTest<T, B extends ObjectExpression<T, B>> 
                 .addTest();
     }
 
-    private void doesNotSatisfyPredicateTestCases(ExpressionTestCaseBuilder builder) {
+    private void doesNotSatisfyPredicateTestCases(ExpressionTestCaseBuilder<T, E> builder) {
+
+        T value1 = exampleValue1();
+
         builder.newTest((expression, value) -> expression.doesNotSatisfy(o -> true))
-                .value(new Object())
+                .value(value1)
                 .expectedState(FAILED)
                 .expectedName("not[predicate]")
                 .expectedExpectedValue("Predicate unsatisfied")
                 .expectedActualValue("Predicate satisfied")
                 .addTest()
             .newTest((expression, value) -> expression.doesNotSatisfy(o -> false))
-                .value(new Object())
+                .value(value1)
                 .expectedState(PASSED)
                 .expectedName("not[predicate]")
                 .expectedExpectedValue("Predicate unsatisfied")
@@ -512,35 +539,41 @@ public abstract class ObjectExpressionTest<T, B extends ObjectExpression<T, B>> 
                 .addTest();
     }
 
-    private void satisfiesConditionTestCases(ExpressionTestCaseBuilder builder) {
-        builder.newTest((expression, value) -> expression.satisfies(ALWAYS_TRUE))
-                .value(new Object())
+    private void satisfiesConditionTestCases(ExpressionTestCaseBuilder<T, E> builder) {
+
+        T value1 = exampleValue1();
+
+        builder.newTest((expression, value) -> expression.satisfies(alwaysTrueCondition))
+                .value(value1)
                 .expectedState(PASSED)
-                .expectedName("condition: " + ALWAYS_TRUE.name())
+                .expectedName("condition: " + alwaysTrueCondition.name())
                 .expectedExpectedValue("Condition satisfied")
                 .expectedActualValue("Condition satisfied")
                 .addTest()
-            .newTest((expression, value) -> expression.satisfies(ALWAYS_FALSE))
-                .value(new Object())
+            .newTest((expression, value) -> expression.satisfies(alwaysFalseCondition))
+                .value(value1)
                 .expectedState(FAILED)
-                .expectedName("condition: " + ALWAYS_FALSE.name())
+                .expectedName("condition: " + alwaysFalseCondition.name())
                 .expectedExpectedValue("Condition satisfied")
                 .expectedActualValue("Condition unsatisfied")
                 .addTest();
     }
 
-    private void doesNotSatisfyConditionTestCases(ExpressionTestCaseBuilder builder) {
-        builder.newTest((expression, value) -> expression.doesNotSatisfy(ALWAYS_TRUE))
-                .value(new Object())
+    private void doesNotSatisfyConditionTestCases(ExpressionTestCaseBuilder<T, E> builder) {
+
+        T value1 = exampleValue1();
+
+        builder.newTest((expression, value) -> expression.doesNotSatisfy(alwaysTrueCondition))
+                .value(value1)
                 .expectedState(FAILED)
-                .expectedName("not[condition: " + ALWAYS_TRUE.name() + "]")
+                .expectedName("not[condition: " + alwaysTrueCondition.name() + "]")
                 .expectedExpectedValue("Condition unsatisfied")
                 .expectedActualValue("Condition satisfied")
                 .addTest()
-            .newTest((expression, value) -> expression.doesNotSatisfy(ALWAYS_FALSE))
-                .value(new Object())
+            .newTest((expression, value) -> expression.doesNotSatisfy(alwaysFalseCondition))
+                .value(value1)
                 .expectedState(PASSED)
-                .expectedName("not[condition: " + ALWAYS_FALSE.name() + "]")
+                .expectedName("not[condition: " + alwaysFalseCondition.name() + "]")
                 .expectedExpectedValue("Condition unsatisfied")
                 .expectedActualValue("Condition unsatisfied")
                 .addTest();
@@ -552,5 +585,10 @@ public abstract class ObjectExpressionTest<T, B extends ObjectExpression<T, B>> 
      * @param builder
      *     THe builder used to create new test cases.
      */
-    protected void extendTestCases(ExpressionTestCaseBuilder builder) {}
+    protected void extendTestCases(ExpressionTestCaseBuilder<T, E> builder) {}
+
+    protected abstract T exampleValue1();
+    protected abstract T exampleValue2();
+
+    private static class CanonicalClass {}
 }
