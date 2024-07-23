@@ -58,7 +58,15 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Su
         this(subject, "Object[" + stringOf(subject) + "] evaluation");
     }
 
-    private static String stringOf(Object o) {
+    /**
+     * Converts the supplied object into a human-readable string value.
+     *
+     * @param o
+     *     The object to convert.
+     *
+     * @return A human-readable representation of the supplied object.
+     */
+    protected static String stringOf(Object o) {
         return o == null ? "(null)" : o.toString();
     }
 
@@ -166,7 +174,31 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Su
          *
          * @return This builder (fluent interface).
          */
+        public EvaluationBuilder expectedValue(int expected) {
+            return expectedValue(String.valueOf(expected));
+        }
+
+        /**
+         * Sets the expected valued of the evaluation.
+         *
+         * @param expected
+         *     The expected value of the evaluation.
+         *
+         * @return This builder (fluent interface).
+         */
         public EvaluationBuilder expectedValue(long expected) {
+            return expectedValue(String.valueOf(expected));
+        }
+
+        /**
+         * Sets the expected valued of the evaluation.
+         *
+         * @param expected
+         *     The expected value of the evaluation.
+         *
+         * @return This builder (fluent interface).
+         */
+        public EvaluationBuilder expectedValue(float expected) {
             return expectedValue(String.valueOf(expected));
         }
 
