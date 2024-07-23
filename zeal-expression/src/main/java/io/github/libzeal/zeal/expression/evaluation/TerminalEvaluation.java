@@ -6,7 +6,7 @@ public class TerminalEvaluation<T> implements Evaluation<T> {
 
     private final String name;
     private final Predicate<T> predicate;
-    private final ReasonGenerator<T> reasonGeneator;
+    private final ReasonGenerator<T> reasonGenerator;
 
     public static <A> TerminalEvaluation<A> of(String name, Predicate<A> predicate,
                                                ReasonGenerator<A> reasonGenerator) {
@@ -28,7 +28,7 @@ public class TerminalEvaluation<T> implements Evaluation<T> {
     public TerminalEvaluation(String name, Predicate<T> predicate, ReasonGenerator<T> reasonGenerator) {
         this.name = name;
         this.predicate = predicate;
-        this.reasonGeneator = reasonGenerator;
+        this.reasonGenerator = reasonGenerator;
     }
 
     @Override
@@ -59,7 +59,7 @@ public class TerminalEvaluation<T> implements Evaluation<T> {
         if (skip) {
             return Reason.empty();
         } else {
-            return reasonGeneator.generate(subject);
+            return reasonGenerator.generate(subject);
         }
     }
 }

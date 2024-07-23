@@ -587,7 +587,36 @@ public abstract class ObjectExpressionTest<T, E extends ObjectExpression<T, E>> 
      */
     protected void extendTestCases(ExpressionTestCaseBuilder<T, E> builder) {}
 
+    /**
+     * Obtains an example value. This value must be different from the value returned by {@link #exampleValue2()}. The
+     * following properties must hold true for the two methods:
+     * <pre><code>
+     *     exampleValue1() != null
+     *     exampleValue2() != null
+     *     exampleValue1().equals(exampleValue2() == false
+     *     exampleValue1().hashCode() != exampleValue2().hashCode()
+     *     exampleValue1().toString().equals(exampleValue2().toString() == false
+     *     exampleValue1().toString().equalsIgnoreCase(exampleValue2().toString() == false
+     * </code></pre>
+     *
+     * @return An example value.
+     */
     protected abstract T exampleValue1();
+
+    /**
+     * Obtains an example value. This value must be different from the value returned by {@link #exampleValue1()}. The
+     * following properties must hold true for the two methods:
+     * <pre><code>
+     *     exampleValue1() != null
+     *     exampleValue2() != null
+     *     exampleValue1().equals(exampleValue2() == false
+     *     exampleValue1().hashCode() != exampleValue2().hashCode()
+     *     exampleValue1().toString().equals(exampleValue2().toString() == false
+     *     exampleValue1().toString().equalsIgnoreCase(exampleValue2().toString() == false
+     * </code></pre>
+     *
+     * @return An example value.
+     */
     protected abstract T exampleValue2();
 
     private static class CanonicalClass {}
