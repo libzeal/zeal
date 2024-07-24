@@ -26,18 +26,23 @@ public class CompoundEvaluation<T> implements Evaluation<T> {
     }
 
     @Override
-    public EvaluatedExpression evaluate(T subject, boolean skip) {
+    public String name() {
+        return name;
+    }
+
+    @Override
+    public EvaluatedExpression evaluate(final T subject, final boolean skip) {
 
         boolean failureFound = skip;
-        List<EvaluatedExpression> evaluatedChildren = new ArrayList<>();
+        final List<EvaluatedExpression> evaluatedChildren = new ArrayList<>();
 
         for (Evaluation<T> child: children) {
 
-            EvaluatedExpression result = child.evaluate(subject, failureFound);
+            final EvaluatedExpression result = child.evaluate(subject, failureFound);
 
             evaluatedChildren.add(result);
 
-            if (result.state().equals(EvaluationState.FAILED)) {
+            if (result.result().equals(Result.FAILED)) {
                 failureFound = true;
             }
         }

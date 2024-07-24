@@ -1,5 +1,7 @@
 package io.github.libzeal.zeal.expression.api;
 
+import io.github.libzeal.zeal.expression.types.EnumExpression;
+import io.github.libzeal.zeal.expression.types.GeneralEnumExpression;
 import io.github.libzeal.zeal.expression.types.GeneralObjectExpression;
 import io.github.libzeal.zeal.expression.types.StringExpression;
 
@@ -38,5 +40,9 @@ public class Expressions {
      */
     public static StringExpression that(String value) {
         return new StringExpression(value);
+    }
+
+    public static <T extends Enum<T>> GeneralEnumExpression<T> that(T value) {
+        return new GeneralEnumExpression<>(value);
     }
 }

@@ -6,29 +6,34 @@ public class TerminalEvaluation<T> implements Evaluation<T> {
 
     private final String name;
     private final Predicate<T> predicate;
-    private final ReasonGenerator<T> reasonGenerator;
+    private final RationaleGenerator<T> rationaleGenerator;
 
     public static <A> TerminalEvaluation<A> of(String name, Predicate<A> predicate,
-                                               ReasonGenerator<A> reasonGenerator) {
+                                               RationaleGenerator<A> rationaleGenerator) {
         return new TerminalEvaluation<>(
             name,
             s -> s != null && predicate.test(s),
-            reasonGenerator
+            rationaleGenerator
         );
     }
 
-    public static <A> TerminalEvaluation<A> ofNullable(String name, Predicate<A> predicate, ReasonGenerator<A> reasonGenerator) {
+    public static <A> TerminalEvaluation<A> ofNullable(String name, Predicate<A> predicate, RationaleGenerator<A> rationaleGenerator) {
         return new TerminalEvaluation<>(
             name,
             predicate,
-            reasonGenerator
+            rationaleGenerator
         );
     }
 
-    public TerminalEvaluation(String name, Predicate<T> predicate, ReasonGenerator<T> reasonGenerator) {
+    public TerminalEvaluation(String name, Predicate<T> predicate, RationaleGenerator<T> rationaleGenerator) {
         this.name = name;
         this.predicate = predicate;
-        this.reasonGenerator = reasonGenerator;
+        this.rationaleGenerator = rationaleGenerator;
+    }
+
+    @Override
+    public String name() {
+        return name;
     }
 
     @Override
@@ -41,25 +46,25 @@ public class TerminalEvaluation<T> implements Evaluation<T> {
         );
     }
 
-    private EvaluationState computeEvaluationState(T subject, boolean skip) {
+    private Result computeEvaluationState(T subject, boolean skip) {
 
         if (skip) {
-            return EvaluationState.SKIPPED;
+            return Result.SKIPPED;
         }
 
         if (predicate.test(subject)) {
-            return EvaluationState.PASSED;
+            return Result.PASSED;
         } else {
-            return EvaluationState.FAILED;
+            return Result.FAILED;
         }
     }
 
-    private Reason computeReason(T subject, boolean skip) {
+    private Rationale computeReason(T subject, boolean skip) {
 
         if (skip) {
-            return Reason.empty();
+            return Rationale.empty();
         } else {
-            return reasonGenerator.generate(subject);
+            return rationaleGenerator.generate(subject);
         }
     }
 }

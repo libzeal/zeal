@@ -5,18 +5,18 @@ import java.util.List;
 
 public class TerminalEvaluatedExpression implements EvaluatedExpression {
 
-    private final EvaluationState state;
+    private final Result state;
     private final String name;
-    private final Reason reason;
+    private final Rationale rationale;
 
-    public TerminalEvaluatedExpression(EvaluationState state, String name, Reason reason) {
+    public TerminalEvaluatedExpression(Result state, String name, Rationale rationale) {
         this.state = state;
         this.name = name;
-        this.reason = reason;
+        this.rationale = rationale;
     }
 
     @Override
-    public EvaluationState state() {
+    public Result result() {
         return state;
     }
 
@@ -26,8 +26,8 @@ public class TerminalEvaluatedExpression implements EvaluatedExpression {
     }
 
     @Override
-    public Reason reason() {
-        return reason;
+    public Rationale rationale() {
+        return rationale;
     }
 
     @Override

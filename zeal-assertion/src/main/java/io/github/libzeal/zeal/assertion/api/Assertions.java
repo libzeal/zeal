@@ -4,7 +4,7 @@ import io.github.libzeal.zeal.assertion.error.PreconditionIllegalArgumentExcepti
 import io.github.libzeal.zeal.assertion.error.PreconditionNullPointerException;
 import io.github.libzeal.zeal.expression.SubjectExpression;
 import io.github.libzeal.zeal.expression.evaluation.EvaluatedExpression;
-import io.github.libzeal.zeal.expression.evaluation.EvaluationState;
+import io.github.libzeal.zeal.expression.evaluation.Result;
 
 public class Assertions {
 
@@ -34,6 +34,6 @@ public class Assertions {
     }
 
     private static boolean isFailed(EvaluatedExpression eval) {
-        return eval.state() != null && eval.state().equals(EvaluationState.FAILED);
+        return eval.result() != null && eval.result().equals(Result.FAILED);
     }
 }

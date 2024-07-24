@@ -119,9 +119,9 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Su
         private final boolean nullable;
         private final Predicate<T> test;
         private String name = "<unnamed>";
-        private ValueFormatter<T> expected = s -> "<not set>";
-        private ValueFormatter<T> actual = ObjectExpression::stringOf;
-        private ValueFormatter<T> hint = null;
+        private ValueSupplier<T> expected = s -> "<not set>";
+        private ValueSupplier<T> actual = ObjectExpression::stringOf;
+        private ValueSupplier<T> hint = null;
 
         private EvaluationBuilder(boolean nullable, Predicate<T> test) {
             this.nullable = nullable;
@@ -149,7 +149,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Su
          *
          * @return This builder (fluent interface).
          */
-        public EvaluationBuilder expectedValue(ValueFormatter<T> expected) {
+        public EvaluationBuilder expectedValue(ValueSupplier<T> expected) {
             this.expected = expected;
             return this;
         }
@@ -163,7 +163,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Su
          * @return This builder (fluent interface).
          */
         public EvaluationBuilder expectedValue(String expected) {
-            return expectedValue(ValueFormatter.of(expected));
+            return expectedValue(ValueSupplier.of(expected));
         }
 
         /**
@@ -222,18 +222,6 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Su
          *
          * @return This builder (fluent interface).
          */
-        public EvaluationBuilder expectedValue(Supplier<String> expected) {
-            return expectedValue(ValueFormatter.of(expected));
-        }
-
-        /**
-         * Sets the expected valued of the evaluation.
-         *
-         * @param expected
-         *     The expected value of the evaluation.
-         *
-         * @return This builder (fluent interface).
-         */
         public EvaluationBuilder expectedLongValue(ToIntFunction<T> expected) {
             return expectedValue((T o) -> String.valueOf(expected.applyAsInt(o)));
         }
@@ -270,7 +258,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Su
          *
          * @return This builder (fluent interface).
          */
-        public EvaluationBuilder actualValue(ValueFormatter<T> actual) {
+        public EvaluationBuilder actualValue(ValueSupplier<T> actual) {
             this.actual = actual;
             return this;
         }
@@ -284,19 +272,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Su
          * @return This builder (fluent interface).
          */
         public EvaluationBuilder actualValue(String actual) {
-            return actualValue(ValueFormatter.of(actual));
-        }
-
-        /**
-         * Sets the actual valued of the evaluation.
-         *
-         * @param actual
-         *     The actual value of the evaluation.
-         *
-         * @return This builder (fluent interface).
-         */
-        public EvaluationBuilder actualValue(Supplier<T> actual) {
-            return actualValue(ValueFormatter.of(actual));
+            return actualValue(ValueSupplier.of(actual));
         }
 
         /**
@@ -367,7 +343,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Su
          *
          * @return This builder (fluent interface).
          */
-        public EvaluationBuilder hint(ValueFormatter<T> hint) {
+        public EvaluationBuilder hint(ValueSupplier<T> hint) {
             this.hint = hint;
             return this;
         }
@@ -381,19 +357,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Su
          * @return This builder (fluent interface).
          */
         public EvaluationBuilder hint(String hint) {
-            return hint(ValueFormatter.of(hint));
-        }
-
-        /**
-         * Sets the hint for the evaluation.
-         *
-         * @param hint
-         *     The hint for the evaluation.
-         *
-         * @return This builder (fluent interface).
-         */
-        public EvaluationBuilder hint(Supplier<String> hint) {
-            return hint(ValueFormatter.of(hint));
+            return hint(ValueSupplier.of(hint));
         }
 
         /**
@@ -413,7 +377,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Su
 
         private Evaluation<T> createEvaluation() {
 
-            final ReasonGenerator<T> generator = new ReasonGenerator<>(expected, actual, hint);
+            final RationaleGenerator<T> generator = new RationaleGenerator<>(expected, actual, hint);
 
             if (nullable) {
                 return TerminalEvaluation.ofNullable(name, test, generator);

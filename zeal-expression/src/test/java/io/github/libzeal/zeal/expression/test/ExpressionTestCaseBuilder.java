@@ -1,6 +1,6 @@
 package io.github.libzeal.zeal.expression.test;
 
-import io.github.libzeal.zeal.expression.evaluation.EvaluationState;
+import io.github.libzeal.zeal.expression.evaluation.Result;
 import io.github.libzeal.zeal.expression.types.ObjectExpression;
 import org.junit.jupiter.params.provider.Arguments;
 
@@ -41,7 +41,7 @@ public class ExpressionTestCaseBuilder<T, E extends ObjectExpression<T, E>> {
         private final BiConsumer<E, T> modifier;
         private String testCaseName;
         private T value;
-        private EvaluationState state;
+        private Result state;
         private Function<T, String> name;
         private BiFunction<?, ?, String> expectedValue;
         private BiFunction<?, ?, String> actualValue;
@@ -61,7 +61,7 @@ public class ExpressionTestCaseBuilder<T, E extends ObjectExpression<T, E>> {
             return this;
         }
 
-        public ArgumentBuilder<T, E> expectedState(EvaluationState state) {
+        public ArgumentBuilder<T, E> expectedState(Result state) {
             this.state = state;
             return this;
         }

@@ -2,7 +2,7 @@ package io.github.libzeal.zeal.expression.types;
 
 import io.github.libzeal.zeal.expression.condition.SimpleCondition;
 import io.github.libzeal.zeal.expression.evaluation.EvaluatedExpression;
-import io.github.libzeal.zeal.expression.evaluation.EvaluationState;
+import io.github.libzeal.zeal.expression.evaluation.Result;
 import io.github.libzeal.zeal.expression.test.ExpressionTestCaseBuilder;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -15,7 +15,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import static io.github.libzeal.zeal.expression.evaluation.EvaluationState.*;
+import static io.github.libzeal.zeal.expression.evaluation.Result.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -98,7 +98,7 @@ public abstract class ObjectExpressionTest<T, E extends ObjectExpression<T, E>> 
         String testCaseName,
         BiConsumer<E, T> modifier,
         T value,
-        EvaluationState expectedState,
+        Result expectedState,
         Function<T, String> expectedName,
         BiFunction<E, T, String> expectedExpectedValue,
         BiFunction<E, T, String> expectedActualValue
