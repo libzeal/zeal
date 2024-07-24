@@ -14,5 +14,10 @@ import java.util.function.Predicate;
  */
 public interface Condition<T> extends Predicate<T> {
 
+    /**
+     * Obtains the name of the condition.
+     *
+     * @return The name of the condition.
+     */
     String name();
 }

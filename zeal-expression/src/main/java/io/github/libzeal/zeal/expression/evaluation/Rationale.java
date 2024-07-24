@@ -2,21 +2,21 @@ package io.github.libzeal.zeal.expression.evaluation;
 
 import java.util.Optional;
 
-public class Reason {
+public class Rationale {
 
     private final String expected;
     private final String actual;
     private final String hint;
 
-    public static Reason empty() {
-        return new Reason("", "", "");
+    public static Rationale empty() {
+        return new Rationale("", "", "");
     }
 
-    public Reason(String expected, String actual) {
+    public Rationale(String expected, String actual) {
         this(expected, actual, null);
     }
 
-    public Reason(String expected, String actual, String hint) {
+    public Rationale(String expected, String actual, String hint) {
         this.expected = expected;
         this.actual = actual;
         this.hint = hint;

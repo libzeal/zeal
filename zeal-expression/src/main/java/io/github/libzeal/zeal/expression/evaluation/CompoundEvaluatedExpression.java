@@ -2,8 +2,8 @@ package io.github.libzeal.zeal.expression.evaluation;
 
 import java.util.List;
 
-import static io.github.libzeal.zeal.expression.evaluation.EvaluationState.FAILED;
-import static io.github.libzeal.zeal.expression.evaluation.EvaluationState.PASSED;
+import static io.github.libzeal.zeal.expression.evaluation.Result.FAILED;
+import static io.github.libzeal.zeal.expression.evaluation.Result.PASSED;
 
 public class CompoundEvaluatedExpression implements EvaluatedExpression {
 
@@ -16,7 +16,7 @@ public class CompoundEvaluatedExpression implements EvaluatedExpression {
     }
 
     @Override
-    public EvaluationState state() {
+    public Result result() {
 
         if (children.isEmpty()) {
             return PASSED;
@@ -26,10 +26,10 @@ public class CompoundEvaluatedExpression implements EvaluatedExpression {
 
         for (EvaluatedExpression child: children) {
 
-            if (child.state().equals(PASSED)) {
+            if (child.result().equals(PASSED)) {
                 passed++;
             }
-            else if (child.state().equals(FAILED)){
+            else if (child.result().equals(FAILED)){
                 return FAILED;
             }
         }
@@ -38,7 +38,7 @@ public class CompoundEvaluatedExpression implements EvaluatedExpression {
             return PASSED;
         }
         else {
-            return EvaluationState.SKIPPED;
+            return Result.SKIPPED;
         }
     }
 
@@ -48,8 +48,8 @@ public class CompoundEvaluatedExpression implements EvaluatedExpression {
     }
 
     @Override
-    public Reason reason() {
-        return new Reason("All children must pass", actual());
+    public Rationale rationale() {
+        return new Rationale("All children must pass", actual());
     }
 
     private String actual() {
@@ -60,7 +60,7 @@ public class CompoundEvaluatedExpression implements EvaluatedExpression {
 
         for (EvaluatedExpression child: children) {
 
-            switch (child.state()) {
+            switch (child.result()) {
                 case PASSED:
                     passed++;
                     break;

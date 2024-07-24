@@ -11,6 +11,13 @@ public class Test {
 
         Object value = new Object();
 
-        require(that(value).isType(Object.class).is("bar").isType(Collection.class).isNotNull(), "foo");
+//        require(that(value).isType(Object.class).is("bar").isType(Collection.class).isNotNull(), "foo");
+        require(that(Foo.FOO).is(Foo.FOO).ordinalIs(1), "Foo");
+
+    }
+
+    private enum Foo {
+        FOO,
+        BAR
     }
 }

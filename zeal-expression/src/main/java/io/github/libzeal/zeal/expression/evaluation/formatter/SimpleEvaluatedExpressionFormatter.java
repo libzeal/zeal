@@ -1,8 +1,8 @@
 package io.github.libzeal.zeal.expression.evaluation.formatter;
 
 import io.github.libzeal.zeal.expression.evaluation.EvaluatedExpression;
-import io.github.libzeal.zeal.expression.evaluation.EvaluationState;
-import io.github.libzeal.zeal.expression.evaluation.Reason;
+import io.github.libzeal.zeal.expression.evaluation.Result;
+import io.github.libzeal.zeal.expression.evaluation.Rationale;
 
 import java.util.Optional;
 
@@ -28,13 +28,13 @@ public class SimpleEvaluatedExpressionFormatter implements EvaluatedExpressionFo
 
         builder.append(intent(nestedLevel))
             .append("[")
-            .append(formatState(eval.state()))
+            .append(formatState(eval.result()))
             .append("] ")
             .append(eval.name())
             .append("\n");
 
-        if (eval.children().isEmpty() && eval.state().equals(EvaluationState.FAILED)) {
-            builder.append(formatReason(eval.reason(), nestedLevel));
+        if (eval.children().isEmpty() && eval.result().equals(Result.FAILED)) {
+            builder.append(formatReason(eval.rationale(), nestedLevel));
         }
 
         for (EvaluatedExpression child : eval.children()) {
@@ -55,7 +55,7 @@ public class SimpleEvaluatedExpressionFormatter implements EvaluatedExpressionFo
         return intent.toString();
     }
 
-    private static String formatState(EvaluationState state) {
+    private static String formatState(Result state) {
 
         switch (state) {
             case PASSED:
@@ -69,16 +69,16 @@ public class SimpleEvaluatedExpressionFormatter implements EvaluatedExpressionFo
         return "";
     }
 
-    private static String formatReason(Reason reason, int nestedLevel) {
+    private static String formatReason(Rationale rationale, int nestedLevel) {
 
         StringBuilder builder = new StringBuilder();
 
         builder.append(intent(nestedLevel + 1))
-            .append("- Expected : ").append(reason.expected()).append("\n")
+            .append("- Expected : ").append(rationale.expected()).append("\n")
             .append(intent(nestedLevel + 1))
-            .append("- Actual   : ").append(reason.actual()).append("\n");
+            .append("- Actual   : ").append(rationale.actual()).append("\n");
 
-        reason.hint().ifPresent(hint ->
+        rationale.hint().ifPresent(hint ->
             builder.append(intent(nestedLevel + 1))
                 .append("- Hint     : ")
                 .append(hint).append("\n")
@@ -101,11 +101,11 @@ public class SimpleEvaluatedExpressionFormatter implements EvaluatedExpressionFo
 
         private static Optional<RootCause> find(EvaluatedExpression eval) {
 
-            if (eval.state().equals(EvaluationState.PASSED)) {
+            if (eval.result().equals(Result.PASSED)) {
                 return Optional.empty();
             }
-            else if (eval.state().equals(EvaluationState.FAILED) && eval.children().isEmpty()) {
-                return Optional.of(new RootCause(eval.name(), eval.reason()));
+            else if (eval.result().equals(Result.FAILED) && eval.children().isEmpty()) {
+                return Optional.of(new RootCause(eval.name(), eval.rationale()));
             }
 
             RootCause rc = null;
@@ -125,11 +125,11 @@ public class SimpleEvaluatedExpressionFormatter implements EvaluatedExpressionFo
     private static class RootCause {
 
         private final String name;
-        private final Reason reason;
+        private final Rationale rationale;
 
-        public RootCause(String name, Reason reason) {
+        public RootCause(String name, Rationale rationale) {
             this.name = name;
-            this.reason = reason;
+            this.rationale = rationale;
         }
 
         @Override
@@ -142,13 +142,13 @@ public class SimpleEvaluatedExpressionFormatter implements EvaluatedExpressionFo
                 .append(name)
                 .append("\n")
                 .append("- Expected   : ")
-                .append(reason.expected())
+                .append(rationale.expected())
                 .append("\n")
                 .append("- Actual     : ")
-                .append(reason.actual())
+                .append(rationale.actual())
                 .append("\n");
 
-            reason.hint().ifPresent(hint ->
+            rationale.hint().ifPresent(hint ->
                 builder.append("- Hint       : ")
                     .append(hint)
                     .append("\n")

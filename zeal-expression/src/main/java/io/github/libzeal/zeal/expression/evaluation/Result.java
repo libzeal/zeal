@@ -1,6 +1,6 @@
 package io.github.libzeal.zeal.expression.evaluation;
 
-public enum EvaluationState {
+public enum Result {
 
     PASSED,
     FAILED,
