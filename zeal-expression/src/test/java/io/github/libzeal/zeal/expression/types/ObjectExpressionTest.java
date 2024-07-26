@@ -472,8 +472,8 @@ public abstract class ObjectExpressionTest<T, E extends ObjectExpression<T, E>> 
                 .newTest((expression, value) -> expression.toStringIs(value1.toString()))
                 .value(value2)
                 .expectedState(FAILED)
-                .expectedName(value -> "toString().equals(" + value1.toString() + ")")
-                .expectedExpectedValue((expression, value) -> "foo")
+                .expectedName(value -> "toString().equals(" + value1 + ")")
+                .expectedExpectedValue((expression, value) -> value1.toString())
                 .expectedActualValue((expression, value) -> value.toString())
                 .addTest();
     }
@@ -490,7 +490,7 @@ public abstract class ObjectExpressionTest<T, E extends ObjectExpression<T, E>> 
                 .expectedExpectedValue((expression, value) -> "not[" + value1 + "]")
                 .expectedActualValue((expression, value) -> value.toString())
                 .addTest()
-            .newTest((expression, value) -> expression.toStringIsNot("foo"))
+            .newTest((expression, value) -> expression.toStringIsNot(value1.toString()))
                 .value(value2)
                 .expectedState(PASSED)
                 .expectedName(value -> "not[toString().equals(" + value1 + ")]")
