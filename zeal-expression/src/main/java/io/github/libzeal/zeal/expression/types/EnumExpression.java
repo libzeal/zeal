@@ -18,8 +18,8 @@ public abstract class EnumExpression<T extends Enum<T>, B extends EnumExpression
     public B ordinalIsNot(final int ordinal) {
         return newEvaluation(s -> s.ordinal() != ordinal)
             .name("not[ordinalIs[" + ordinal + "]]")
-            .expectedValue(ordinal)
-            .actualValue(value -> "not[" + value.ordinal() + "]")
+            .expectedValue(value -> "not[" + ordinal + "]")
+            .actualValue(value -> String.valueOf(value.ordinal()))
             .append();
     }
 
@@ -42,7 +42,7 @@ public abstract class EnumExpression<T extends Enum<T>, B extends EnumExpression
     public B caseInsensitiveNameIs(final String name) {
         return newEvaluation(s -> s.name().equalsIgnoreCase(name))
             .name("caseInsensitiveNameIs[" + name + "]")
-            .expectedValue(name)
+            .expectedValue("caseInsensitive[" + name + "]")
             .actualValue(Enum::name)
             .append();
     }
@@ -50,7 +50,7 @@ public abstract class EnumExpression<T extends Enum<T>, B extends EnumExpression
     public B caseInsensitiveNameIsNot(final String name) {
         return newEvaluation(s -> !s.name().equalsIgnoreCase(name))
             .name("not[caseInsensitiveNameIs[" + name + "]]")
-            .expectedValue("not[" + name + "]")
+            .expectedValue("not[caseInsensitive[" + name + "]]")
             .actualValue(Enum::name)
             .append();
     }
