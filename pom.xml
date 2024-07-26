@@ -46,11 +46,11 @@
         <sonar.organization>libzeal</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
         <sonar.coverage.jacoco.xmlReportPaths>
-            ${project.basedir}/target/site/jacoco-aggregate/jacoco.xml
+            ${project.basedir}/zeal-report-aggregate/target/site/jacoco-aggregate/jacoco.xml
         </sonar.coverage.jacoco.xmlReportPaths>
 
         <junit.version>5.10.3</junit.version>
-        <mockito.version>5.12.0</mockito.version>
+        <mockito.version>4.11.0</mockito.version>
 
         <bundle.plugin.version>5.1.9</bundle.plugin.version>
         <gpg.plugin.version>3.2.4</gpg.plugin.version>
@@ -92,6 +92,12 @@
                 <groupId>org.junit.jupiter</groupId>
                 <artifactId>junit-jupiter-params</artifactId>
                 <version>${junit.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-core</artifactId>
+                <version>${mockito.version}</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>

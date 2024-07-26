@@ -14,4 +14,44 @@ public abstract class EnumExpression<T extends Enum<T>, B extends EnumExpression
             .actualValue(value -> String.valueOf(value.ordinal()))
             .append();
     }
+
+    public B ordinalIsNot(final int ordinal) {
+        return newEvaluation(s -> s.ordinal() != ordinal)
+            .name("not[ordinalIs[" + ordinal + "]]")
+            .expectedValue(ordinal)
+            .actualValue(value -> "not[" + value.ordinal() + "]")
+            .append();
+    }
+
+    public B nameIs(final String name) {
+        return newEvaluation(s -> s.name().equals(name))
+            .name("nameIs[" + name + "]")
+            .expectedValue(name)
+            .actualValue(Enum::name)
+            .append();
+    }
+
+    public B nameIsNot(final String name) {
+        return newEvaluation(s -> !s.name().equals(name))
+            .name("not[nameIs[" + name + "]]")
+            .expectedValue("not[" + name + "]")
+            .actualValue(Enum::name)
+            .append();
+    }
+
+    public B caseInsensitiveNameIs(final String name) {
+        return newEvaluation(s -> s.name().equalsIgnoreCase(name))
+            .name("caseInsensitiveNameIs[" + name + "]")
+            .expectedValue(name)
+            .actualValue(Enum::name)
+            .append();
+    }
+
+    public B caseInsensitiveNameIsNot(final String name) {
+        return newEvaluation(s -> !s.name().equalsIgnoreCase(name))
+            .name("not[caseInsensitiveNameIs[" + name + "]]")
+            .expectedValue("not[" + name + "]")
+            .actualValue(Enum::name)
+            .append();
+    }
 }
