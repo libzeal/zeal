@@ -167,90 +167,6 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Su
         }
 
         /**
-         * Sets the expected valued of the evaluation.
-         *
-         * @param expected
-         *     The expected value of the evaluation.
-         *
-         * @return This builder (fluent interface).
-         */
-        public EvaluationBuilder expectedValue(int expected) {
-            return expectedValue(String.valueOf(expected));
-        }
-
-        /**
-         * Sets the expected valued of the evaluation.
-         *
-         * @param expected
-         *     The expected value of the evaluation.
-         *
-         * @return This builder (fluent interface).
-         */
-        public EvaluationBuilder expectedValue(long expected) {
-            return expectedValue(String.valueOf(expected));
-        }
-
-        /**
-         * Sets the expected valued of the evaluation.
-         *
-         * @param expected
-         *     The expected value of the evaluation.
-         *
-         * @return This builder (fluent interface).
-         */
-        public EvaluationBuilder expectedValue(float expected) {
-            return expectedValue(String.valueOf(expected));
-        }
-
-        /**
-         * Sets the expected valued of the evaluation.
-         *
-         * @param expected
-         *     The expected value of the evaluation.
-         *
-         * @return This builder (fluent interface).
-         */
-        public EvaluationBuilder expectedValue(double expected) {
-            return expectedValue(String.valueOf(expected));
-        }
-
-        /**
-         * Sets the expected valued of the evaluation.
-         *
-         * @param expected
-         *     The expected value of the evaluation.
-         *
-         * @return This builder (fluent interface).
-         */
-        public EvaluationBuilder expectedLongValue(ToIntFunction<T> expected) {
-            return expectedValue((T o) -> String.valueOf(expected.applyAsInt(o)));
-        }
-
-        /**
-         * Sets the expected valued of the evaluation.
-         *
-         * @param expected
-         *     The expected value of the evaluation.
-         *
-         * @return This builder (fluent interface).
-         */
-        public EvaluationBuilder expectedLongValue(ToLongFunction<T> expected) {
-            return expectedValue((T o) -> String.valueOf(expected.applyAsLong(o)));
-        }
-
-        /**
-         * Sets the expected valued of the evaluation.
-         *
-         * @param expected
-         *     The expected value of the evaluation.
-         *
-         * @return This builder (fluent interface).
-         */
-        public EvaluationBuilder expectedDoubleValue(ToDoubleFunction<T> expected) {
-            return expectedValue((T o) -> String.valueOf(expected.applyAsDouble(o)));
-        }
-
-        /**
          * Sets the actual valued of the evaluation.
          *
          * @param actual
@@ -271,68 +187,8 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Su
          *
          * @return This builder (fluent interface).
          */
-        public EvaluationBuilder actualValue(String actual) {
-            return actualValue(ValueSupplier.of(actual));
-        }
-
-        /**
-         * Sets the actual valued of the evaluation.
-         *
-         * @param actual
-         *     The actual value of the evaluation.
-         *
-         * @return This builder (fluent interface).
-         */
         public EvaluationBuilder actualIntValue(ToIntFunction<T> actual) {
             return actualValue((T o) -> String.valueOf(actual.applyAsInt(o)));
-        }
-
-        /**
-         * Sets the actual valued of the evaluation.
-         *
-         * @param actual
-         *     The actual value of the evaluation.
-         *
-         * @return This builder (fluent interface).
-         */
-        public EvaluationBuilder actualLongValue(ToLongFunction<T> actual) {
-            return actualValue((T o) -> String.valueOf(actual.applyAsLong(o)));
-        }
-
-        /**
-         * Sets the actual valued of the evaluation.
-         *
-         * @param actual
-         *     The actual value of the evaluation.
-         *
-         * @return This builder (fluent interface).
-         */
-        public EvaluationBuilder actualDoubleValue(ToDoubleFunction<T> actual) {
-            return actualValue((T o) -> String.valueOf(actual.applyAsDouble(o)));
-        }
-
-        /**
-         * Sets the actual valued of the evaluation.
-         *
-         * @param actual
-         *     The actual value of the evaluation.
-         *
-         * @return This builder (fluent interface).
-         */
-        public EvaluationBuilder actualValue(long actual) {
-            return actualValue(String.valueOf(actual));
-        }
-
-        /**
-         * Sets the actual valued of the evaluation.
-         *
-         * @param actual
-         *     The actual value of the evaluation.
-         *
-         * @return This builder (fluent interface).
-         */
-        public EvaluationBuilder actualValue(double actual) {
-            return actualValue(String.valueOf(actual));
         }
 
         /**
@@ -701,7 +557,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Su
     public B hashCodeIs(final int hashCode) {
         return newEvaluation(o -> o.hashCode() == hashCode)
             .name("hashCode == " + hashCode)
-            .expectedValue(hashCode)
+            .expectedValue(String.valueOf(hashCode))
             .actualIntValue(Object::hashCode)
             .append();
     }

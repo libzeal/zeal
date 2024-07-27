@@ -9,7 +9,7 @@ package io.github.libzeal.zeal.expression.types;
 public final class GeneralObjectExpression<T> extends ObjectExpression<T, GeneralObjectExpression<T>> {
 
     /**
-     * Creates a new expression.
+     * Creates a new expression for the supplied subject.
      *
      * @param subject
      *     The subject of the expression.

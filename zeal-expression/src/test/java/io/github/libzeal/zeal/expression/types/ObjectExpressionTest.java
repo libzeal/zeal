@@ -3,6 +3,7 @@ package io.github.libzeal.zeal.expression.types;
 import io.github.libzeal.zeal.expression.condition.SimpleCondition;
 import io.github.libzeal.zeal.expression.evaluation.EvaluatedExpression;
 import io.github.libzeal.zeal.expression.evaluation.Result;
+import io.github.libzeal.zeal.expression.test.EvaluatedExpressionAssertion;
 import io.github.libzeal.zeal.expression.test.ExpressionTestCaseBuilder;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
