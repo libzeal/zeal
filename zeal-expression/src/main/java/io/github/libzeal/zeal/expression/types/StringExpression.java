@@ -19,6 +19,7 @@ public class StringExpression extends ObjectExpression<String, StringExpression>
         return newEvaluation(String::isEmpty)
             .name("isEmpty")
             .expectedValue("true")
+            .actualValue(s -> String.valueOf(s.isEmpty()))
             .append();
     }
 
@@ -26,6 +27,7 @@ public class StringExpression extends ObjectExpression<String, StringExpression>
         return newEvaluation(s -> !s.isEmpty())
             .name("isNotEmpty")
             .expectedValue("true")
+            .actualValue(s -> String.valueOf(!s.isEmpty()))
             .append();
     }
 
@@ -33,6 +35,7 @@ public class StringExpression extends ObjectExpression<String, StringExpression>
         return newEvaluation(s -> s.trim().isEmpty())
             .name("isBlank")
             .expectedValue("true")
+            .actualValue(s -> String.valueOf(s.trim().isEmpty()))
             .append();
     }
 
@@ -40,12 +43,13 @@ public class StringExpression extends ObjectExpression<String, StringExpression>
         return newEvaluation(s -> !s.trim().isEmpty())
             .name("isNotBlank")
             .expectedValue("true")
+            .actualValue(s -> String.valueOf(!s.trim().isEmpty()))
             .append();
     }
 
     public StringExpression hasLengthOf(final long length) {
         return newEvaluation(s -> s.length() == length)
-            .name("hasLength[" + length + "]")
+            .name("hasLengthOf[" + length + "]")
             .expectedValue("length := " + length)
             .actualValue(value -> "length := " + value.length())
             .append();
@@ -59,14 +63,6 @@ public class StringExpression extends ObjectExpression<String, StringExpression>
             .append();
     }
 
-    public StringExpression isShorterThan(long length) {
-        return newEvaluation(s -> s.length() < length)
-            .name("isShorterThan[" + length + "]")
-            .expectedValue("length < " + length)
-            .actualValue(value -> "length := " + value.length())
-            .append();
-    }
-
     public StringExpression isLongerThanOrEqualTo(long length) {
         return newEvaluation(s -> s.length() >= length)
             .name("isLongerThanOrEqualTo[" + length + "]")
@@ -75,9 +71,17 @@ public class StringExpression extends ObjectExpression<String, StringExpression>
             .append();
     }
 
+    public StringExpression isShorterThan(long length) {
+        return newEvaluation(s -> s.length() < length)
+            .name("isShorterThan[" + length + "]")
+            .expectedValue("length < " + length)
+            .actualValue(value -> "length := " + value.length())
+            .append();
+    }
+
     public StringExpression isShorterThanOrEqualTo(long length) {
         return newEvaluation(s -> s.length() <= length)
-            .name("isShortThanOrEqualTo[" + length + "]")
+            .name("isShorterThanOrEqualTo[" + length + "]")
             .expectedValue("length <= " + length)
             .actualValue(value -> "length := " + value.length())
             .append();
@@ -86,14 +90,14 @@ public class StringExpression extends ObjectExpression<String, StringExpression>
     public StringExpression includes(final char c) {
         return newEvaluation(s -> s.indexOf(c) != -1)
             .name("includes[" + c + "]")
-            .expectedValue(c + " is included")
+            .expectedValue("includes[" + c + "]")
             .actualValue(s -> needleInHaystackActualValue(s, c))
             .hint(s -> needleInHaystackHint(s, c))
             .append();
     }
 
     private static String needleInHaystackActualValue(String s, char c) {
-        return s.indexOf(c) != -1 ? c + " is included" : c + " is excluded";
+        return s.indexOf(c) != -1 ? "includes[" + c + "]" : "excludes[" + c + "]";
     }
 
     private static String needleInHaystackHint(String s, char c) {
@@ -111,14 +115,14 @@ public class StringExpression extends ObjectExpression<String, StringExpression>
     public StringExpression includes(final CharSequence sequence) {
         return newEvaluation(s -> s.contains(sequence))
             .name("includes[" + sequence + "]")
-            .expectedValue(sequence + " is included")
+            .expectedValue("includes[" + sequence + "]")
             .actualValue(s -> needleInHaystackActualValue(s, sequence))
             .hint(s -> needleInHaystackHint(s, sequence))
             .append();
     }
 
     private static String needleInHaystackActualValue(String s, CharSequence sequence) {
-        return s.contains(sequence) ? sequence + " is included" : sequence + " is excluded";
+        return s.contains(sequence) ? "includes[" + sequence + "]" : "excludes[" + sequence + "]";
     }
 
     private static String needleInHaystackHint(String s, CharSequence sequence) {
@@ -136,7 +140,7 @@ public class StringExpression extends ObjectExpression<String, StringExpression>
     public StringExpression excludes(final char c) {
         return newEvaluation(s -> s.indexOf(c) == -1)
             .name("excludes[" + c + "]")
-            .expectedValue(c + " is excluded")
+            .expectedValue("excludes[" + c + "]")
             .actualValue(s -> needleInHaystackActualValue(s, c))
             .hint(s -> needleInHaystackHint(s, c))
             .append();
@@ -145,7 +149,7 @@ public class StringExpression extends ObjectExpression<String, StringExpression>
     public StringExpression excludes(final CharSequence sequence) {
         return newEvaluation(s -> !s.contains(sequence))
             .name("excludes[" + sequence + "]")
-            .expectedValue(sequence + " is excluded")
+            .expectedValue("excludes[" + sequence + "]")
             .actualValue(s -> needleInHaystackActualValue(s, sequence))
             .hint(s -> needleInHaystackHint(s, sequence))
             .append();
@@ -153,14 +157,10 @@ public class StringExpression extends ObjectExpression<String, StringExpression>
 
     public StringExpression occurs(final char c, final long times) {
         return newEvaluation(s -> characterCount(s, c) == times)
-            .name("occurs[" + c + "]")
+            .name("occurs[" + c + "] := " + times)
             .expectedValue("occurrences := " + times)
-            .actualValue(value -> countTimes(value, c))
+            .actualValue(value -> "occurrences := " + characterCount(value, c))
             .append();
-    }
-
-    private static String countTimes(final String value, final char c) {
-        return "times := " + characterCount(value, c);
     }
 
     private static long characterCount(final String s, final char c) {
@@ -169,63 +169,63 @@ public class StringExpression extends ObjectExpression<String, StringExpression>
             .count();
     }
 
-    public StringExpression occursLessThan(final char c, final long times) {
-        return newEvaluation(s -> characterCount(s, c) < times)
-            .name("occurs[" + c + "]")
-            .expectedValue("occurrences < " + times)
-            .actualValue(value -> countTimes(value, c))
-            .append();
-    }
-
     public StringExpression occursMoreThan(final char c, final long times) {
         return newEvaluation(s -> characterCount(s, c) > times)
-            .name("occurs[" + c + "]")
+            .name("occurs[" + c + "] > " + times)
             .expectedValue("occurrences > " + times)
-            .actualValue(value -> countTimes(value, c))
+            .actualValue(value -> "occurrences := " + characterCount(value, c))
             .append();
     }
 
     public StringExpression occursMoreThanOrEqualTo(final char c, final long times) {
         return newEvaluation(s -> characterCount(s, c) >= times)
-            .name("occurs[" + c + "]")
+            .name("occurs[" + c + "] >= " + times)
             .expectedValue("occurrences >= " + times)
-            .actualValue(value -> countTimes(value, c))
+            .actualValue(value -> "occurrences := " + characterCount(value, c))
+            .append();
+    }
+
+    public StringExpression occursLessThan(final char c, final long times) {
+        return newEvaluation(s -> characterCount(s, c) < times)
+            .name("occurs[" + c + "] < " + times)
+            .expectedValue("occurrences < " + times)
+            .actualValue(value -> "occurrences := " + characterCount(value, c))
             .append();
     }
 
     public StringExpression occursLessThanOrEqualTo(final char c, final long times) {
         return newEvaluation(s -> characterCount(s, c) <= times)
-            .name("occurs[" + c + "]")
+            .name("occurs[" + c + "] <= " + times)
             .expectedValue("occurrences <= " + times)
-            .actualValue(value -> countTimes(value, c))
+            .actualValue(value -> "occurrences := " + characterCount(value, c))
             .append();
     }
 
     public StringExpression startsWith(final String prefix) {
         return newEvaluation(s -> s.startsWith(prefix))
             .name("startsWith[" + prefix + "]")
-            .expectedValue("starts with \"" + prefix + "\"")
+            .expectedValue("startsWith[" + prefix + "]")
             .append();
     }
 
     public StringExpression doesNotStartWith(final String prefix) {
         return newEvaluation(s -> !s.startsWith(prefix))
             .name("doesNotStartWith[" + prefix + "]")
-            .expectedValue("not[starts with \"" + prefix + "\"]")
+            .expectedValue("not[startsWith[" + prefix + "]]")
             .append();
     }
 
     public StringExpression endsWith(final String suffix) {
         return newEvaluation(s -> s.endsWith(suffix))
             .name("endsWith[" + suffix + "]")
-            .expectedValue("ends with \"" + suffix + "\"")
+            .expectedValue("endsWith[" + suffix + "]")
             .append();
     }
 
     public StringExpression doesNotEndWith(final String suffix) {
         return newEvaluation(s -> !s.endsWith(suffix))
             .name("doesNotEndWith[" + suffix + "]")
-            .expectedValue("not[ends with \"" + suffix + "\"]")
+            .expectedValue("not[endsWith[" + suffix + "]]")
             .append();
     }
 
@@ -253,56 +253,64 @@ public class StringExpression extends ObjectExpression<String, StringExpression>
     public StringExpression hasAtIndex(final char needle, final int index) {
         return newEvaluation(s -> s.indexOf(needle) == index)
             .name("indexOf[" + needle + "] := " + index)
-            .expectedValue(s -> String.valueOf(s.indexOf(needle)))
+            .expectedValue(String.valueOf(index))
+            .actualValue(subject -> String.valueOf(subject.indexOf(needle)))
             .append();
     }
 
     public StringExpression hasAtIndex(final String needle, final int index) {
         return newEvaluation(s -> s.indexOf(needle) == index)
             .name("indexOf[" + needle + "] := " + index)
-            .expectedValue(s -> String.valueOf(s.indexOf(needle)))
+            .expectedValue(String.valueOf(index))
+            .actualValue(subject -> String.valueOf(subject.indexOf(needle)))
             .append();
     }
 
     public StringExpression doesNotHaveAtIndex(final char needle, final int index) {
         return newEvaluation(s -> s.indexOf(needle) != index)
             .name("indexOf[" + needle + "] != " + index)
-            .expectedValue(s -> "not[" + s.indexOf(needle) + "]")
+            .expectedValue(s -> "not[" + index + "]")
+            .actualValue(subject -> String.valueOf(subject.indexOf(needle)))
             .append();
     }
 
     public StringExpression doesNotHaveAtIndex(final String needle, final int index) {
         return newEvaluation(s -> s.indexOf(needle) != index)
             .name("indexOf[" + needle + "] != " + index)
-            .expectedValue(s -> "not[" + s.indexOf(needle) + "]")
+            .expectedValue(s -> "not[" + index + "]")
+            .actualValue(subject -> String.valueOf(subject.indexOf(needle)))
             .append();
     }
 
     public StringExpression hasAtLastIndex(final char needle, final int index) {
         return newEvaluation(s -> s.lastIndexOf(needle) == index)
             .name("lastIndexOf[" + needle + "] := " + index)
-            .expectedValue(s -> String.valueOf(s.indexOf(needle)))
+            .expectedValue(String.valueOf(index))
+            .actualValue(subject -> String.valueOf(subject.lastIndexOf(needle)))
             .append();
     }
 
     public StringExpression hasAtLastIndex(final String needle, final int index) {
         return newEvaluation(s -> s.lastIndexOf(needle) == index)
             .name("lastIndexOf[" + needle + "] := " + index)
-            .expectedValue(s -> String.valueOf(s.indexOf(needle)))
+            .expectedValue(String.valueOf(index))
+            .actualValue(subject -> String.valueOf(subject.lastIndexOf(needle)))
             .append();
     }
 
     public StringExpression doesNotHaveAtLastIndex(final char needle, final int index) {
         return newEvaluation(s -> s.lastIndexOf(needle) != index)
             .name("lastIndexOf[" + needle + "] != " + index)
-            .expectedValue(s -> "not[" + s.indexOf(needle) + "]")
+            .expectedValue(s -> "not[" + index + "]")
+            .actualValue(subject -> String.valueOf(subject.lastIndexOf(needle)))
             .append();
     }
 
     public StringExpression doesNotHaveAtLastIndex(final String needle, final int index) {
         return newEvaluation(s -> s.lastIndexOf(needle) != index)
             .name("lastIndexOf[" + needle + "] != " + index)
-            .expectedValue(s -> "not[" + s.indexOf(needle) + "]")
+            .expectedValue(s -> "not[" + index + "]")
+            .actualValue(subject -> String.valueOf(subject.lastIndexOf(needle)))
             .append();
     }
 }
