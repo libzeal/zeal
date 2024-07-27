@@ -1,4 +1,4 @@
-package io.github.libzeal.zeal.expression.types;
+package io.github.libzeal.zeal.expression.test;
 
 import io.github.libzeal.zeal.expression.evaluation.EvaluatedExpression;
 import io.github.libzeal.zeal.expression.evaluation.Result;
