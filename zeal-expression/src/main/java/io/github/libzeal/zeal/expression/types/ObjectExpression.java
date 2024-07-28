@@ -1,6 +1,6 @@
 package io.github.libzeal.zeal.expression.types;
 
-import io.github.libzeal.zeal.expression.SubjectExpression;
+import io.github.libzeal.zeal.expression.UnaryExpression;
 import io.github.libzeal.zeal.expression.condition.Condition;
 import io.github.libzeal.zeal.expression.evaluation.*;
 
@@ -35,7 +35,7 @@ import static java.util.Objects.requireNonNull;
  * @author Justin Albano
  * @since 0.2.0
  */
-public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements SubjectExpression<T> {
+public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements UnaryExpression<T> {
 
     private static final String PREDICATE_SATISFIED = "Predicate satisfied";
     private static final String PREDICATE_UNSATISFIED = "Predicate unsatisfied";
