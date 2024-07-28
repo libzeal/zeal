@@ -12,7 +12,7 @@ package io.github.libzeal.zeal.expression;
  * @author Justin Albano
  * @since 0.2.0
  */
-public interface SubjectExpression<S> extends Expression {
+public interface UnaryExpression<S> extends Expression {
 
     /**
      * Obtains the subject of the expression.

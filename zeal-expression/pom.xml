@@ -50,7 +50,7 @@
                             io.github.libzeal.zeal.expression.api,
                             io.github.libzeal.zeal.expression.condition,
                             io.github.libzeal.zeal.expression.evaluation,
-                            io.github.libzeal.zeal.expression.evaluation.formatter,
+                            io.github.libzeal.zeal.expression.evaluation.format,
                             io.github.libzeal.zeal.expression.types
                         </Export-Package>
                     </instructions>

@@ -1,4 +1,4 @@
-package io.github.libzeal.zeal.expression.evaluation.formatter;
+package io.github.libzeal.zeal.expression.evaluation.format;
 
 import io.github.libzeal.zeal.expression.evaluation.EvaluatedExpression;
 import io.github.libzeal.zeal.expression.evaluation.Result;
@@ -6,9 +6,16 @@ import io.github.libzeal.zeal.expression.evaluation.Rationale;
 
 import java.util.Optional;
 
+/**
+ * A simple formatter that formats the root cause of a failed evaluation and provides a nested visualization of all
+ * compound evaluated expressions.
+ *
+ * @author Justin Albano
+ * @since 0.2.0
+ */
 public class SimpleEvaluatedExpressionFormatter implements EvaluatedExpressionFormatter {
 
-    private static final String INDENT = "       ";
+    static final String INDENT = "       ";
 
     @Override
     public String format(EvaluatedExpression eval) {
@@ -18,35 +25,36 @@ public class SimpleEvaluatedExpressionFormatter implements EvaluatedExpressionFo
 
         finder.find().ifPresent(builder::append);
 
-        return builder.append(formatExpression(eval, 0))
+        return builder.append(format(eval, 0))
             .toString();
     }
 
-    private static String formatExpression(EvaluatedExpression eval, int nestedLevel) {
+    private static String format(EvaluatedExpression eval, int nestedLevel) {
 
         final StringBuilder builder = new StringBuilder();
 
-        builder.append(intent(nestedLevel))
+        builder.append(indent(nestedLevel))
             .append("[")
-            .append(formatState(eval.result()))
+            .append(format(eval.result()))
             .append("] ")
-            .append(eval.name())
-            .append("\n");
+            .append(eval.name());
 
         if (eval.children().isEmpty() && eval.result().equals(Result.FAILED)) {
-            builder.append(formatReason(eval.rationale(), nestedLevel));
+            builder.append("\n")
+                .append(format(eval.rationale(), nestedLevel + 1));
         }
 
         for (EvaluatedExpression child : eval.children()) {
-            builder.append(formatExpression(child, nestedLevel + 1));
+            builder.append("\n")
+                .append(format(child, nestedLevel + 1));
         }
 
         return builder.toString();
     }
 
-    private static String intent(int level) {
+    private static String indent(int level) {
 
-        StringBuilder intent = new StringBuilder();
+        final StringBuilder intent = new StringBuilder();
 
         for (int i = 0; i < level; i++) {
             intent.append(INDENT);
@@ -55,33 +63,35 @@ public class SimpleEvaluatedExpressionFormatter implements EvaluatedExpressionFo
         return intent.toString();
     }
 
-    private static String formatState(Result state) {
+    private static String format(Result state) {
 
         switch (state) {
             case PASSED:
                 return "PASS";
             case FAILED:
                 return "FAIL";
-            case SKIPPED:
+            default:
                 return "    ";
         }
-
-        return "";
     }
 
-    private static String formatReason(Rationale rationale, int nestedLevel) {
+    private static String format(Rationale rationale, int indent) {
 
-        StringBuilder builder = new StringBuilder();
+        final StringBuilder builder = new StringBuilder();
 
-        builder.append(intent(nestedLevel + 1))
-            .append("- Expected : ").append(rationale.expected()).append("\n")
-            .append(intent(nestedLevel + 1))
-            .append("- Actual   : ").append(rationale.actual()).append("\n");
+        builder.append(indent(indent))
+            .append("- Expected : ")
+            .append(rationale.expected())
+            .append("\n")
+            .append(indent(indent))
+            .append("- Actual   : ")
+            .append(rationale.actual())
+            .append("\n");
 
         rationale.hint().ifPresent(hint ->
-            builder.append(intent(nestedLevel + 1))
+            builder.append(indent(indent))
                 .append("- Hint     : ")
-                .append(hint).append("\n")
+                .append(hint)
         );
 
         return builder.toString();
@@ -108,17 +118,16 @@ public class SimpleEvaluatedExpressionFormatter implements EvaluatedExpressionFo
                 return Optional.of(new RootCause(eval.name(), eval.rationale()));
             }
 
-            RootCause rc = null;
-
             for (EvaluatedExpression child : eval.children()) {
-                rc = find(child).orElse(null);
 
-                if (rc != null) {
-                    break;
+                Optional<RootCause> rootCause = find(child);
+
+                if (rootCause.isPresent()) {
+                    return rootCause;
                 }
             }
 
-            return Optional.ofNullable(rc);
+            return Optional.empty();
         }
     }
 
@@ -134,28 +143,11 @@ public class SimpleEvaluatedExpressionFormatter implements EvaluatedExpressionFo
 
         @Override
         public String toString() {
-
-            StringBuilder builder = new StringBuilder();
-
-            builder.append("Root cause:\n")
-                .append("- Evaluation : ")
-                .append(name)
-                .append("\n")
-                .append("- Expected   : ")
-                .append(rationale.expected())
-                .append("\n")
-                .append("- Actual     : ")
-                .append(rationale.actual())
-                .append("\n");
-
-            rationale.hint().ifPresent(hint ->
-                builder.append("- Hint       : ")
-                    .append(hint)
-                    .append("\n")
-            );
-
-            return builder.append("\n")
-                .toString();
+            return "Root Cause: " +
+                name +
+                "\n" +
+                format(rationale, 0) +
+                "\n\n";
         }
     }
 }

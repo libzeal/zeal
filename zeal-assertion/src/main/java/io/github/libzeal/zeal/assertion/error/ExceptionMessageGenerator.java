@@ -1,19 +1,19 @@
 package io.github.libzeal.zeal.assertion.error;
 
 import io.github.libzeal.zeal.expression.evaluation.EvaluatedExpression;
-import io.github.libzeal.zeal.expression.evaluation.formatter.EvaluatedExpressionFormatter;
-import io.github.libzeal.zeal.expression.evaluation.formatter.SimpleEvaluatedExpressionFormatter;
+import io.github.libzeal.zeal.expression.evaluation.format.EvaluatedExpressionFormatter;
+import io.github.libzeal.zeal.expression.evaluation.format.SimpleEvaluatedExpressionFormatter;
 
 class ExceptionMessageGenerator {
 
     public String generate(EvaluatedExpression eval, String message, StackTraceElement[] trace) {
 
-        EvaluatedExpressionFormatter formatter = new SimpleEvaluatedExpressionFormatter();
+        final EvaluatedExpressionFormatter formatter = new SimpleEvaluatedExpressionFormatter();
 
         return message +
             "\n\n" +
             formatter.format(eval) +
-            "\n" +
+            "\n\n" +
             "At: " +
             location(trace);
     }
