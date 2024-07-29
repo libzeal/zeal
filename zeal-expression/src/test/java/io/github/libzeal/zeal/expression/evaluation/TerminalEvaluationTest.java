@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class TerminalEvaluatedExpressionTest {
+class TerminalEvaluationTest {
 
     private Result result;
     private String name;
@@ -24,7 +24,7 @@ class TerminalEvaluatedExpressionTest {
     void givenNullResult_whenConstruct_thenExceptionThrown() {
         assertThrows(
             NullPointerException.class,
-            () -> new TerminalEvaluatedExpression(null, "foo", rationale)
+            () -> new TerminalEvaluation(null, "foo", rationale)
         );
     }
 
@@ -32,7 +32,7 @@ class TerminalEvaluatedExpressionTest {
     void givenNullName_whenConstruct_thenExceptionThrown() {
         assertThrows(
             NullPointerException.class,
-            () -> new TerminalEvaluatedExpression(Result.PASSED, null, rationale)
+            () -> new TerminalEvaluation(Result.PASSED, null, rationale)
         );
     }
 
@@ -40,14 +40,14 @@ class TerminalEvaluatedExpressionTest {
     void givenNullRationale_whenConstruct_thenExceptionThrown() {
         assertThrows(
             NullPointerException.class,
-            () -> new TerminalEvaluatedExpression(Result.PASSED, "foo", null)
+            () -> new TerminalEvaluation(Result.PASSED, "foo", null)
         );
     }
 
     @Test
     void whenConstruct_thenValidDataReturned() {
 
-        TerminalEvaluatedExpression expression = new TerminalEvaluatedExpression(result, name, rationale);
+        TerminalEvaluation expression = new TerminalEvaluation(result, name, rationale);
 
         assertEquals(result, expression.result());
         assertEquals(name, expression.name());

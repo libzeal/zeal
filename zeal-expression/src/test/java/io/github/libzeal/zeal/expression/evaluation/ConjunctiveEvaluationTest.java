@@ -12,11 +12,11 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
-class CompoundEvaluatedExpressionTest {
+class ConjunctiveEvaluationTest {
 
     private String name;
-    private List<EvaluatedExpression> children;
-    private CompoundEvaluatedExpression expression;
+    private List<Evaluation> children;
+    private ConjunctiveEvaluation expression;
 
     @BeforeEach
     void setUp() {
@@ -24,14 +24,14 @@ class CompoundEvaluatedExpressionTest {
         name = "foo";
         children = new ArrayList<>();
 
-        expression = new CompoundEvaluatedExpression(name, children);
+        expression = new ConjunctiveEvaluation(name, children);
     }
 
     @Test
     void givenNullName_whenConstruct_thenExceptionThrown() {
         assertThrows(
             NullPointerException.class,
-            () -> new CompoundEvaluatedExpression(null, children)
+            () -> new ConjunctiveEvaluation(null, children)
         );
     }
 
@@ -39,7 +39,7 @@ class CompoundEvaluatedExpressionTest {
     void givenNullChildren_whenConstruct_thenExceptionThrown() {
         assertThrows(
             NullPointerException.class,
-            () -> new CompoundEvaluatedExpression(name, null)
+            () -> new ConjunctiveEvaluation(name, null)
         );
     }
 
@@ -66,9 +66,9 @@ class CompoundEvaluatedExpressionTest {
         assertEquals(PASSED, expression.result());
     }
 
-    private static EvaluatedExpression child(Result result) {
+    private static Evaluation child(Result result) {
 
-        final EvaluatedExpression child = mock(EvaluatedExpression.class);
+        final Evaluation child = mock(Evaluation.class);
 
         doReturn(result).when(child).result();
 

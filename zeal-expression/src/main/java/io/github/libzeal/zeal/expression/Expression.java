@@ -1,6 +1,6 @@
 package io.github.libzeal.zeal.expression;
 
-import io.github.libzeal.zeal.expression.evaluation.EvaluatedExpression;
+import io.github.libzeal.zeal.expression.evaluation.Evaluation;
 
 /**
  * An expression that can be evaluated.
@@ -15,5 +15,5 @@ public interface Expression {
      *
      * @return The evaluated expression.
      */
-    EvaluatedExpression evaluate();
+    Evaluation evaluate();
 }

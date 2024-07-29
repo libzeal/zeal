@@ -1,34 +1,41 @@
 package io.github.libzeal.zeal.expression.evaluation;
 
-import java.util.function.Predicate;
+import java.util.ArrayList;
+import java.util.List;
 
-public class TerminalEvaluation<T> implements Evaluation<T> {
+import static java.util.Objects.requireNonNull;
 
+/**
+ * An {@link Evaluation} that does not contain children.
+ *
+ * @author Justin Albano
+ * @since 0.2.0
+ */
+public class TerminalEvaluation implements Evaluation {
+
+    private final Result result;
     private final String name;
-    private final Predicate<T> predicate;
-    private final RationaleGenerator<T> rationaleGenerator;
+    private final Rationale rationale;
 
-    public static <A> TerminalEvaluation<A> of(String name, Predicate<A> predicate,
-                                               RationaleGenerator<A> rationaleGenerator) {
-        return new TerminalEvaluation<>(
-            name,
-            s -> s != null && predicate.test(s),
-            rationaleGenerator
-        );
+    /**
+     * Creates a new terminal evaluated expression.
+     *
+     * @param result
+     *     The desired result of the evaluated expression.
+     * @param name
+     *     The name of the evaluation that was performed.
+     * @param rationale
+     *     The rationale for the result of the evaluated expression.
+     */
+    public TerminalEvaluation(Result result, String name, Rationale rationale) {
+        this.result = requireNonNull(result);
+        this.name = requireNonNull(name);
+        this.rationale = requireNonNull(rationale);
     }
 
-    public static <A> TerminalEvaluation<A> ofNullable(String name, Predicate<A> predicate, RationaleGenerator<A> rationaleGenerator) {
-        return new TerminalEvaluation<>(
-            name,
-            predicate,
-            rationaleGenerator
-        );
-    }
-
-    public TerminalEvaluation(String name, Predicate<T> predicate, RationaleGenerator<T> rationaleGenerator) {
-        this.name = name;
-        this.predicate = predicate;
-        this.rationaleGenerator = rationaleGenerator;
+    @Override
+    public Result result() {
+        return result;
     }
 
     @Override
@@ -37,34 +44,12 @@ public class TerminalEvaluation<T> implements Evaluation<T> {
     }
 
     @Override
-    public EvaluatedExpression evaluate(T subject, boolean skip) {
-
-        return new TerminalEvaluatedExpression(
-            computeEvaluationState(subject, skip),
-            name,
-            computeReason(subject, skip)
-        );
+    public Rationale rationale() {
+        return rationale;
     }
 
-    private Result computeEvaluationState(T subject, boolean skip) {
-
-        if (skip) {
-            return Result.SKIPPED;
-        }
-
-        if (predicate.test(subject)) {
-            return Result.PASSED;
-        } else {
-            return Result.FAILED;
-        }
-    }
-
-    private Rationale computeReason(T subject, boolean skip) {
-
-        if (skip) {
-            return Rationale.empty();
-        } else {
-            return rationaleGenerator.generate(subject);
-        }
+    @Override
+    public List<Evaluation> children() {
+        return new ArrayList<>(0);
     }
 }

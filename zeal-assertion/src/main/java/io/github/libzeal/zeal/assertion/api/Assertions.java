@@ -3,7 +3,7 @@ package io.github.libzeal.zeal.assertion.api;
 import io.github.libzeal.zeal.assertion.error.PreconditionIllegalArgumentException;
 import io.github.libzeal.zeal.assertion.error.PreconditionNullPointerException;
 import io.github.libzeal.zeal.expression.UnaryExpression;
-import io.github.libzeal.zeal.expression.evaluation.EvaluatedExpression;
+import io.github.libzeal.zeal.expression.evaluation.Evaluation;
 import io.github.libzeal.zeal.expression.evaluation.Result;
 
 public class Assertions {
@@ -20,7 +20,7 @@ public class Assertions {
             throw new NullPointerException("Cannot evaluate null expression");
         }
 
-        final EvaluatedExpression result = expression.evaluate();
+        final Evaluation result = expression.evaluate();
         final T subject = expression.subject();
 
         if (isFailed(result)) {
@@ -37,7 +37,7 @@ public class Assertions {
         }
     }
 
-    private static boolean isFailed(EvaluatedExpression eval) {
+    private static boolean isFailed(Evaluation eval) {
         return eval.result() != null && eval.result().equals(Result.FAILED);
     }
 }

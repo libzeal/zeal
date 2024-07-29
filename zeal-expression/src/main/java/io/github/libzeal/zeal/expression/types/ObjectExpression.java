@@ -2,6 +2,10 @@ package io.github.libzeal.zeal.expression.types;
 
 import io.github.libzeal.zeal.expression.UnaryExpression;
 import io.github.libzeal.zeal.expression.condition.Condition;
+import io.github.libzeal.zeal.expression.criteria.ConjunctiveCriteria;
+import io.github.libzeal.zeal.expression.criteria.Criteria;
+import io.github.libzeal.zeal.expression.criteria.Criterion;
+import io.github.libzeal.zeal.expression.criteria.EvaluationContext;
 import io.github.libzeal.zeal.expression.evaluation.*;
 
 import java.util.Objects;
@@ -46,7 +50,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
         "fail when compared to a (null) type";
 
     private final T subject;
-    private final CompoundEvaluation<T> children;
+    private final ConjunctiveCriteria<T> children;
 
     /**
      * Creates an object expression with the supplied subject. This constructor uses a default name for the expression.
@@ -80,7 +84,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
      */
     protected ObjectExpression(T subject, String name) {
         this.subject = subject;
-        this.children = new CompoundEvaluation<>(name);
+        this.children = new ConjunctiveCriteria<>(name);
     }
 
     @Override
@@ -89,8 +93,8 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
     }
 
     @Override
-    public final EvaluatedExpression evaluate() {
-        return children.evaluate(subject, false);
+    public final Evaluation evaluate() {
+        return children.evaluate(subject, new EvaluationContext());
     }
 
     /**
@@ -98,21 +102,21 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
      * in which they are appended (first in, first evaluated). The only exception to this rule is a {@link #isNotNull()}
      * evaluation. If a {@link #isNotNull()} is appended to the chain, it is automatically evaluated first.
      *
-     * @param evaluation
+     * @param criteria
      *     The evaluation to append.
      *
      * @return This expression (fluent interface).
      */
     @SuppressWarnings("unchecked")
-    protected final B appendEvaluation(Evaluation<T> evaluation) {
+    protected final B appendEvaluation(Criteria<T> criteria) {
 
-        children.append(evaluation);
+        children.append(criteria);
 
         return (B) this;
     }
 
     /**
-     * A builder used to create {@link Evaluation} objects.
+     * A builder used to create {@link Criteria} objects.
      */
     protected class EvaluationBuilder {
 
@@ -231,14 +235,14 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
             return (B) ObjectExpression.this;
         }
 
-        private Evaluation<T> createEvaluation() {
+        private Criteria<T> createEvaluation() {
 
             final RationaleGenerator<T> generator = new RationaleGenerator<>(expected, actual, hint);
 
             if (nullable) {
-                return TerminalEvaluation.ofNullable(name, test, generator);
+                return Criterion.ofNullable(name, test, generator);
             } else {
-                return TerminalEvaluation.of(name, test, generator);
+                return Criterion.of(name, test, generator);
             }
         }
     }

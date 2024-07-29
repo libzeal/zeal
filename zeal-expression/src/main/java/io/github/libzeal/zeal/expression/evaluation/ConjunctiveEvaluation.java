@@ -7,28 +7,28 @@ import static io.github.libzeal.zeal.expression.evaluation.Result.PASSED;
 import static java.util.Objects.requireNonNull;
 
 /**
- * An evaluated expression that is composed of child evaluated expressions.
+ * An evaluated expression that treats its children as a conjunctive set.
  *
  * @author Justin Albano
  * @since 0.2.0
  */
-public class CompoundEvaluatedExpression implements EvaluatedExpression {
+public class ConjunctiveEvaluation implements Evaluation {
 
     private final String name;
-    private final List<EvaluatedExpression> children;
+    private final List<Evaluation> children;
 
     /**
-     * Creates a new compound evaluated expression.
+     * Creates a new conjunctive evaluation.
      *
      * @param name
      *     The name of the expression.
      * @param children
-     *     The child evaluated expressions that this expression is composed of.
+     *     The child evaluations that this evaluation is composed of.
      *
      * @throws NullPointerException
      *     Any of the supplied arguments are {@code null}.
      */
-    public CompoundEvaluatedExpression(String name, List<EvaluatedExpression> children) {
+    public ConjunctiveEvaluation(String name, List<Evaluation> children) {
         this.name = requireNonNull(name);
         this.children = requireNonNull(children);
     }
@@ -42,18 +42,20 @@ public class CompoundEvaluatedExpression implements EvaluatedExpression {
 
         int passed = 0;
 
-        for (EvaluatedExpression child : children) {
+        for (Evaluation child : children) {
 
             if (child.result().equals(PASSED)) {
                 passed++;
-            } else if (child.result().equals(FAILED)) {
+            }
+            else if (child.result().equals(FAILED)) {
                 return FAILED;
             }
         }
 
         if (passed == children.size()) {
             return PASSED;
-        } else {
+        }
+        else {
             return Result.SKIPPED;
         }
     }
@@ -74,7 +76,7 @@ public class CompoundEvaluatedExpression implements EvaluatedExpression {
         int failed = 0;
         int skipped = 0;
 
-        for (EvaluatedExpression child : children) {
+        for (Evaluation child : children) {
 
             switch (child.result()) {
                 case PASSED:
@@ -93,7 +95,7 @@ public class CompoundEvaluatedExpression implements EvaluatedExpression {
     }
 
     @Override
-    public List<EvaluatedExpression> children() {
+    public List<Evaluation> children() {
         return children;
     }
 }
