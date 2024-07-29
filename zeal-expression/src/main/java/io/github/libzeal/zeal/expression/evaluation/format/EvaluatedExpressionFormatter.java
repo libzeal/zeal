@@ -1,6 +1,6 @@
 package io.github.libzeal.zeal.expression.evaluation.format;
 
-import io.github.libzeal.zeal.expression.evaluation.EvaluatedExpression;
+import io.github.libzeal.zeal.expression.evaluation.Evaluation;
 
 /**
  * A formatter that consumes an evaluated expression and provides a string-based illustration of the evaluation.
@@ -19,5 +19,5 @@ public interface EvaluatedExpressionFormatter {
      *
      * @return The formatted evaluated expression.
      */
-    String format(EvaluatedExpression evaluatedExpression);
+    String format(Evaluation evaluatedExpression);
 }

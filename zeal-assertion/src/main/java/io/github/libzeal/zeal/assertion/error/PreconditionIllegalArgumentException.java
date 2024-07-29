@@ -1,13 +1,13 @@
 package io.github.libzeal.zeal.assertion.error;
 
-import io.github.libzeal.zeal.expression.evaluation.EvaluatedExpression;
+import io.github.libzeal.zeal.expression.evaluation.Evaluation;
 
 public class PreconditionIllegalArgumentException extends NullPointerException {
 
-    private final EvaluatedExpression eval;
+    private final Evaluation eval;
     private final String message;
 
-    public PreconditionIllegalArgumentException(EvaluatedExpression eval, String message) {
+    public PreconditionIllegalArgumentException(Evaluation eval, String message) {
         super(message);
         this.eval = eval;
         this.message = message;

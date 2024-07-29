@@ -1,7 +1,7 @@
 package io.github.libzeal.zeal.expression.types;
 
 import io.github.libzeal.zeal.expression.condition.SimpleCondition;
-import io.github.libzeal.zeal.expression.evaluation.EvaluatedExpression;
+import io.github.libzeal.zeal.expression.evaluation.Evaluation;
 import io.github.libzeal.zeal.expression.evaluation.Result;
 import io.github.libzeal.zeal.expression.test.EvaluatedExpressionAssertion;
 import io.github.libzeal.zeal.expression.test.ExpressionTestCaseBuilder;
@@ -79,9 +79,9 @@ public abstract class ObjectExpressionTest<T, E extends ObjectExpression<T, E>> 
 
         expression.isNull().isNotNull();
 
-        EvaluatedExpression eval = expression.evaluate();
-        EvaluatedExpression first = eval.children().get(0);
-        EvaluatedExpression second = eval.children().get(1);
+        Evaluation eval = expression.evaluate();
+        Evaluation first = eval.children().get(0);
+        Evaluation second = eval.children().get(1);
 
         EvaluatedExpressionAssertion<?> firstAssertion = new EvaluatedExpressionAssertion<>(first);
         EvaluatedExpressionAssertion<?> secondAssertion = new EvaluatedExpressionAssertion<>(second);
@@ -109,8 +109,8 @@ public abstract class ObjectExpressionTest<T, E extends ObjectExpression<T, E>> 
 
         modifier.accept(expression, value);
 
-        EvaluatedExpression eval = expression.evaluate();
-        EvaluatedExpression first = eval.children().get(0);
+        Evaluation eval = expression.evaluate();
+        Evaluation first = eval.children().get(0);
         EvaluatedExpressionAssertion<?> firstEvaluation = new EvaluatedExpressionAssertion<>(first);
 
         assertNotNull(first);

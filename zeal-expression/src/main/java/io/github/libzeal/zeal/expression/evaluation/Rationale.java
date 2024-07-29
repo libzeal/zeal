@@ -3,7 +3,7 @@ package io.github.libzeal.zeal.expression.evaluation;
 import java.util.Optional;
 
 /**
- * The rationale for why an {@link EvaluatedExpression} evaluated to the result that it did. A rationale is made up of
+ * The rationale for why an {@link Evaluation} evaluated to the result that it did. A rationale is made up of
  * at least three parts:
  * <ol>
  *     <li><strong>Expected Value</strong>: The value that the expression should have evaluated to/li>

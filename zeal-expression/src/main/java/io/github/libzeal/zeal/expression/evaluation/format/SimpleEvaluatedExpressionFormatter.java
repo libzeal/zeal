@@ -1,6 +1,6 @@
 package io.github.libzeal.zeal.expression.evaluation.format;
 
-import io.github.libzeal.zeal.expression.evaluation.EvaluatedExpression;
+import io.github.libzeal.zeal.expression.evaluation.Evaluation;
 import io.github.libzeal.zeal.expression.evaluation.Result;
 import io.github.libzeal.zeal.expression.evaluation.Rationale;
 
@@ -18,7 +18,7 @@ public class SimpleEvaluatedExpressionFormatter implements EvaluatedExpressionFo
     static final String INDENT = "       ";
 
     @Override
-    public String format(EvaluatedExpression eval) {
+    public String format(Evaluation eval) {
 
         final StringBuilder builder = new StringBuilder();
         final RootCauseFinder finder = new RootCauseFinder(eval);
@@ -29,7 +29,7 @@ public class SimpleEvaluatedExpressionFormatter implements EvaluatedExpressionFo
             .toString();
     }
 
-    private static String format(EvaluatedExpression eval, int nestedLevel) {
+    private static String format(Evaluation eval, int nestedLevel) {
 
         final StringBuilder builder = new StringBuilder();
 
@@ -44,7 +44,7 @@ public class SimpleEvaluatedExpressionFormatter implements EvaluatedExpressionFo
                 .append(format(eval.rationale(), nestedLevel + 1));
         }
 
-        for (EvaluatedExpression child : eval.children()) {
+        for (Evaluation child : eval.children()) {
             builder.append("\n")
                 .append(format(child, nestedLevel + 1));
         }
@@ -99,9 +99,9 @@ public class SimpleEvaluatedExpressionFormatter implements EvaluatedExpressionFo
 
     private static class RootCauseFinder {
 
-        private final EvaluatedExpression eval;
+        private final Evaluation eval;
 
-        public RootCauseFinder(EvaluatedExpression eval) {
+        public RootCauseFinder(Evaluation eval) {
             this.eval = eval;
         }
 
@@ -109,7 +109,7 @@ public class SimpleEvaluatedExpressionFormatter implements EvaluatedExpressionFo
             return find(eval);
         }
 
-        private static Optional<RootCause> find(EvaluatedExpression eval) {
+        private static Optional<RootCause> find(Evaluation eval) {
 
             if (eval.result().equals(Result.PASSED)) {
                 return Optional.empty();
@@ -118,7 +118,7 @@ public class SimpleEvaluatedExpressionFormatter implements EvaluatedExpressionFo
                 return Optional.of(new RootCause(eval.name(), eval.rationale()));
             }
 
-            for (EvaluatedExpression child : eval.children()) {
+            for (Evaluation child : eval.children()) {
 
                 Optional<RootCause> rootCause = find(child);
 

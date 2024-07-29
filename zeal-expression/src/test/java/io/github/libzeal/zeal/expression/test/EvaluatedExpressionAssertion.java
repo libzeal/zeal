@@ -1,15 +1,15 @@
 package io.github.libzeal.zeal.expression.test;
 
-import io.github.libzeal.zeal.expression.evaluation.EvaluatedExpression;
+import io.github.libzeal.zeal.expression.evaluation.Evaluation;
 import io.github.libzeal.zeal.expression.evaluation.Result;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class EvaluatedExpressionAssertion<T> {
 
-    private final EvaluatedExpression eval;
+    private final Evaluation eval;
 
-    public EvaluatedExpressionAssertion(EvaluatedExpression eval) {
+    public EvaluatedExpressionAssertion(Evaluation eval) {
         this.eval = eval;
     }
 

@@ -1,7 +1,7 @@
 package io.github.libzeal.zeal.expression.evaluation.format;
 
-import io.github.libzeal.zeal.expression.evaluation.CompoundEvaluatedExpression;
-import io.github.libzeal.zeal.expression.evaluation.EvaluatedExpression;
+import io.github.libzeal.zeal.expression.evaluation.ConjunctiveEvaluation;
+import io.github.libzeal.zeal.expression.evaluation.Evaluation;
 import io.github.libzeal.zeal.expression.evaluation.Rationale;
 import io.github.libzeal.zeal.expression.evaluation.Result;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,7 +37,7 @@ class SimpleEvaluatedExpressionFormatterTest {
 
         final Result result = Result.PASSED;
         final String name = "foo";
-        final EvaluatedExpression expression = expression(result, name);
+        final Evaluation expression = expression(result, name);
 
         assertEquals(
             expectedPassingOutput(name, 0),
@@ -45,9 +45,9 @@ class SimpleEvaluatedExpressionFormatterTest {
         );
     }
 
-    private static EvaluatedExpression expression(Result result, String name) {
+    private static Evaluation expression(Result result, String name) {
 
-        final EvaluatedExpression expression = mock(EvaluatedExpression.class);
+        final Evaluation expression = mock(Evaluation.class);
 
         doReturn(result).when(expression).result();
         doReturn(name).when(expression).name();
@@ -77,7 +77,7 @@ class SimpleEvaluatedExpressionFormatterTest {
 
         final Result result = Result.SKIPPED;
         final String name = "foo";
-        final EvaluatedExpression expression = expression(result, name);
+        final Evaluation expression = expression(result, name);
 
         assertEquals(
             expectedSkippedOutput(name, 0),
@@ -97,7 +97,7 @@ class SimpleEvaluatedExpressionFormatterTest {
         final Result result = Result.FAILED;
         final String name = "foo";
         final Rationale rationale = new Rationale("expected", "actual", "hint");
-        final EvaluatedExpression expression = expression(result, name, rationale);
+        final Evaluation expression = expression(result, name, rationale);
 
         assertEquals(
             expectedRootCauseOutput(name, rationale) + "\n\n" +
@@ -106,9 +106,9 @@ class SimpleEvaluatedExpressionFormatterTest {
         );
     }
 
-    private static EvaluatedExpression expression(Result result, String name, Rationale rationale) {
+    private static Evaluation expression(Result result, String name, Rationale rationale) {
 
-        final EvaluatedExpression expression = expression(result, name);
+        final Evaluation expression = expression(result, name);
 
         doReturn(rationale).when(expression).rationale();
 
@@ -160,14 +160,14 @@ class SimpleEvaluatedExpressionFormatterTest {
         final Result passingResult = Result.PASSED;
         final String passingName = "foo1";
         final Rationale passingRationale = new Rationale("expected1", "actual1", "hint1");
-        final EvaluatedExpression passingExpression = expression(passingResult, passingName, passingRationale);
+        final Evaluation passingExpression = expression(passingResult, passingName, passingRationale);
 
         final Result failingResult = Result.FAILED;
         final String failingName = "foo2";
         final Rationale failingRationale = new Rationale("expected2", "actual2", "hint2");
-        final EvaluatedExpression failingExpression = expression(failingResult, failingName, failingRationale);
+        final Evaluation failingExpression = expression(failingResult, failingName, failingRationale);
 
-        final CompoundEvaluatedExpression compound = new CompoundEvaluatedExpression(
+        final ConjunctiveEvaluation compound = new ConjunctiveEvaluation(
             compoundExpressionName,
             Arrays.asList(passingExpression, failingExpression)
         );
@@ -189,19 +189,19 @@ class SimpleEvaluatedExpressionFormatterTest {
         final Result passingResult = Result.PASSED;
         final String passingName = "foo1";
         final Rationale passingRationale = new Rationale("expected1", "actual1", "hint1");
-        final EvaluatedExpression passingExpression = expression(passingResult, passingName, passingRationale);
+        final Evaluation passingExpression = expression(passingResult, passingName, passingRationale);
 
         final Result failingResult = Result.FAILED;
         final String failingName = "foo2";
         final Rationale failingRationale = new Rationale("expected2", "actual2", "hint2");
-        final EvaluatedExpression failingExpression = expression(failingResult, failingName, failingRationale);
+        final Evaluation failingExpression = expression(failingResult, failingName, failingRationale);
 
         final Result skippedResult = Result.SKIPPED;
         final String skippedName = "foo3";
         final Rationale skippedRationale = Rationale.empty();
-        final EvaluatedExpression skippedExpression = expression(skippedResult, skippedName, skippedRationale);
+        final Evaluation skippedExpression = expression(skippedResult, skippedName, skippedRationale);
 
-        final CompoundEvaluatedExpression compound = new CompoundEvaluatedExpression(
+        final ConjunctiveEvaluation compound = new ConjunctiveEvaluation(
             compoundExpressionName,
             Arrays.asList(passingExpression, failingExpression, skippedExpression)
         );
