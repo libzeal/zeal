@@ -118,7 +118,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
     /**
      * A builder used to create {@link Criteria} objects.
      */
-    protected class EvaluationBuilder {
+    protected class CriteriaBuilder {
 
         private final boolean nullable;
         private final Predicate<T> test;
@@ -127,7 +127,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
         private ValueSupplier<T> actual = ObjectExpression::stringOf;
         private ValueSupplier<T> hint = null;
 
-        private EvaluationBuilder(boolean nullable, Predicate<T> test) {
+        private CriteriaBuilder(boolean nullable, Predicate<T> test) {
             this.nullable = nullable;
             this.test = test;
         }
@@ -140,7 +140,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
          *
          * @return This builder (fluent interface).
          */
-        public EvaluationBuilder name(String name) {
+        public CriteriaBuilder name(String name) {
             this.name = name;
             return this;
         }
@@ -153,7 +153,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
          *
          * @return This builder (fluent interface).
          */
-        public EvaluationBuilder expectedValue(ValueSupplier<T> expected) {
+        public CriteriaBuilder expectedValue(ValueSupplier<T> expected) {
             this.expected = expected;
             return this;
         }
@@ -166,7 +166,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
          *
          * @return This builder (fluent interface).
          */
-        public EvaluationBuilder expectedValue(String expected) {
+        public CriteriaBuilder expectedValue(String expected) {
             return expectedValue(ValueSupplier.of(expected));
         }
 
@@ -178,7 +178,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
          *
          * @return This builder (fluent interface).
          */
-        public EvaluationBuilder actualValue(ValueSupplier<T> actual) {
+        public CriteriaBuilder actualValue(ValueSupplier<T> actual) {
             this.actual = actual;
             return this;
         }
@@ -191,7 +191,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
          *
          * @return This builder (fluent interface).
          */
-        public EvaluationBuilder actualIntValue(ToIntFunction<T> actual) {
+        public CriteriaBuilder actualIntValue(ToIntFunction<T> actual) {
             return actualValue((T o) -> String.valueOf(actual.applyAsInt(o)));
         }
 
@@ -203,7 +203,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
          *
          * @return This builder (fluent interface).
          */
-        public EvaluationBuilder hint(ValueSupplier<T> hint) {
+        public CriteriaBuilder hint(ValueSupplier<T> hint) {
             this.hint = hint;
             return this;
         }
@@ -216,7 +216,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
          *
          * @return This builder (fluent interface).
          */
-        public EvaluationBuilder hint(String hint) {
+        public CriteriaBuilder hint(String hint) {
             return hint(ValueSupplier.of(hint));
         }
 
@@ -226,22 +226,23 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
          * @return This builder (fluent interface).
          */
         public B append() {
-            return appendEvaluation(createEvaluation());
+            return appendEvaluation(build());
         }
 
         @SuppressWarnings("unchecked")
         private B prepend() {
-            children.prepend(createEvaluation());
+            children.prepend(build());
             return (B) ObjectExpression.this;
         }
 
-        private Criteria<T> createEvaluation() {
+        private Criteria<T> build() {
 
             final RationaleGenerator<T> generator = new RationaleGenerator<>(expected, actual, hint);
 
             if (nullable) {
                 return Criterion.ofNullable(name, test, generator);
-            } else {
+            }
+            else {
                 return Criterion.of(name, test, generator);
             }
         }
@@ -259,8 +260,8 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
      * @throws NullPointerException
      *     The supplied test was {@code null}.
      */
-    protected final EvaluationBuilder newEvaluation(Predicate<T> test) {
-        return new EvaluationBuilder(false, requireNonNull(test));
+    protected final CriteriaBuilder newCriteria(Predicate<T> test) {
+        return new CriteriaBuilder(false, requireNonNull(test));
     }
 
     /**
@@ -277,12 +278,12 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
      * @throws NullPointerException
      *     The supplied test was {@code null}.
      */
-    protected final EvaluationBuilder newNullableEvaluation(Predicate<T> test) {
-        return new EvaluationBuilder(true, requireNonNull(test));
+    protected final CriteriaBuilder newNullableCriteria(Predicate<T> test) {
+        return new CriteriaBuilder(true, requireNonNull(test));
     }
 
     /**
-     * Adds an evaluation to the expression that checks if the subject is not {@code null}.
+     * Adds a criterion to the expression that checks if the subject is not {@code null}.
      *
      * @return This expression (fluent interface).
      *
@@ -306,26 +307,26 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
      *     order in which they are chained on the expression.
      */
     public final B isNotNull() {
-        return newNullableEvaluation(Objects::nonNull)
+        return newNullableCriteria(Objects::nonNull)
             .name("isNotNull")
             .expectedValue("not[(null)]")
             .prepend();
     }
 
     /**
-     * Adds an evaluation to the expression that checks if the subject is {@code null}.
+     * Adds a criterion to the expression that checks if the subject is {@code null}.
      *
      * @return This expression (fluent interface).
      */
     public B isNull() {
-        return newNullableEvaluation(Objects::isNull)
+        return newNullableCriteria(Objects::isNull)
             .name("isNull")
             .expectedValue("(null)")
             .append();
     }
 
     /**
-     * Adds an evaluation to the expression that checks if the subject exactly matches the supplied type.
+     * Adds a criterion to the expression that checks if the subject exactly matches the supplied type.
      * <p/>
      * Note: If the subject is a subtype of the supplied type, this check will fail.
      *
@@ -336,13 +337,14 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
      */
     public B isType(final Class<?> type) {
 
-        EvaluationBuilder builder = newEvaluation(o -> o.getClass().equals(type));
+        CriteriaBuilder builder = newCriteria(o -> o.getClass().equals(type));
 
         if (type == null) {
             builder.name("isType[(null)]")
                 .expectedValue(ALWAYS_FAIL_CANNOT_COMPARE_TO_NULL_TYPE)
                 .hint(EVALUATION_WILL_ALWAYS_FAIL_WHEN_COMPARED_TO_A_NULL_TYPE);
-        } else {
+        }
+        else {
             builder.name("isType[" + type + "]")
                 .expectedValue(type.toString())
                 .hint("Subject should be exactly of type " + type);
@@ -353,7 +355,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
     }
 
     /**
-     * Adds an evaluation to the expression that checks if the subject is not an exact match of the supplied type.
+     * Adds a criterion to the expression that checks if the subject is not an exact match of the supplied type.
      *
      * @param type
      *     The type to test the subject against. This evaluation will always fail if the supplied type is {@code null}.
@@ -362,13 +364,14 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
      */
     public B isNotType(final Class<?> type) {
 
-        EvaluationBuilder builder = newEvaluation(o -> type != null && !o.getClass().equals(type));
+        CriteriaBuilder builder = newCriteria(o -> type != null && !o.getClass().equals(type));
 
         if (type == null) {
             builder.name("isNotType[(null)]")
                 .expectedValue(ALWAYS_FAIL_CANNOT_COMPARE_TO_NULL_TYPE)
                 .hint(EVALUATION_WILL_ALWAYS_FAIL_WHEN_COMPARED_TO_A_NULL_TYPE);
-        } else {
+        }
+        else {
             builder.name("isNotType[" + type + "]")
                 .expectedValue("not[" + type + "]")
                 .hint("Subject should be any type other than " + type);
@@ -379,7 +382,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
     }
 
     /**
-     * Adds an evaluation to the expression that checks if the subject matches or is a subtype of the supplied type.
+     * Adds a criterion to the expression that checks if the subject matches or is a subtype of the supplied type.
      *
      * @param type
      *     The type to test the subject against. This evaluation will always fail if the supplied type is {@code null}.
@@ -389,19 +392,20 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
      * @implNote This check is equivalent to the following statement, where {@code type} is the supplied type and
      *     {@code subject} is the subject of the expression:
      *     <pre><code>
-     *         type.isAssignableFrom(subject.getClass())
-     *     </code></pre>
+     *                 type.isAssignableFrom(subject.getClass())
+     *             </code></pre>
      * @see Class#isAssignableFrom(Class)
      */
     public B isInstanceOf(final Class<?> type) {
 
-        EvaluationBuilder builder = newEvaluation(o -> type != null && type.isAssignableFrom(o.getClass()));
+        CriteriaBuilder builder = newCriteria(o -> type != null && type.isAssignableFrom(o.getClass()));
 
         if (type == null) {
             builder.name("isInstanceOf[(null)]")
                 .expectedValue(ALWAYS_FAIL_CANNOT_COMPARE_TO_NULL_TYPE)
                 .hint(EVALUATION_WILL_ALWAYS_FAIL_WHEN_COMPARED_TO_A_NULL_TYPE);
-        } else {
+        }
+        else {
             builder.name("isInstanceOf[" + type + "]")
                 .expectedValue("instanceof[" + type + "]")
                 .hint("Subject should be exactly of type " + type + " or a subtype of type " + type);
@@ -412,7 +416,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
     }
 
     /**
-     * Adds an evaluation to the expression that checks if the subject does not exactly match or is not a subtype of the
+     * Adds a criterion to the expression that checks if the subject does not exactly match or is not a subtype of the
      * supplied type.
      *
      * @param type
@@ -423,19 +427,20 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
      * @implNote This check is equivalent to the following statement, where {@code type} is the supplied type and
      *     {@code subject} is the subject of the expression:
      *     <pre><code>
-     *         !type.isAssignableFrom(subject.getClass())
-     *     </code></pre>
+     *                 !type.isAssignableFrom(subject.getClass())
+     *             </code></pre>
      * @see Class#isAssignableFrom(Class)
      */
     public B isNotInstanceOf(final Class<?> type) {
 
-        EvaluationBuilder builder = newEvaluation(o -> type != null && !type.isAssignableFrom(o.getClass()));
+        CriteriaBuilder builder = newCriteria(o -> type != null && !type.isAssignableFrom(o.getClass()));
 
         if (type == null) {
             builder.name("isNotInstanceOf[(null)]")
                 .expectedValue(ALWAYS_FAIL_CANNOT_COMPARE_TO_NULL_TYPE)
                 .hint(EVALUATION_WILL_ALWAYS_FAIL_WHEN_COMPARED_TO_A_NULL_TYPE);
-        } else {
+        }
+        else {
             builder.name("isNotInstanceOf[" + type + "]")
                 .expectedValue("not[instanceof[" + type + "]]")
                 .hint("Subject should be any type other than " + type + " and not a subtype of type " + type);
@@ -446,7 +451,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
     }
 
     /**
-     * Adds an evaluation to the expression that checks if the subject is the same as the supplied object.
+     * Adds a criterion to the expression that checks if the subject is the same as the supplied object.
      * <p/>
      * This evaluation will pass if the subject and supplied object are both {@code null}.
      *
@@ -458,11 +463,11 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
      * @implNote This check is equivalent to the following statement, where {@code other} is the supplied object and
      *     {@code subject} is the subject of the expression:
      *     <pre><code>
-     *         subject == object
-     *     </code></pre>
+     *                 subject == object
+     *             </code></pre>
      */
     public B is(final Object other) {
-        return newNullableEvaluation(o -> o == other)
+        return newNullableCriteria(o -> o == other)
             .name("is[" + stringOf(other) + "]")
             .expectedValue(o -> stringOf(other))
             .hint("Subject should be identical to " + other + " (using ==)")
@@ -470,7 +475,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
     }
 
     /**
-     * Adds an evaluation to the expression that checks if the subject is not the same as the supplied object.
+     * Adds a criterion to the expression that checks if the subject is not the same as the supplied object.
      * <p/>
      * This evaluation will fail if the subject and supplied object are both {@code null}.
      *
@@ -482,11 +487,11 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
      * @implNote This check is equivalent to the following statement, where {@code other} is the supplied object and
      *     {@code subject} is the subject of the expression:
      *     <pre><code>
-     *         subject != object
-     *     </code></pre>
+     *                 subject != object
+     *             </code></pre>
      */
     public B isNot(final Object other) {
-        return newNullableEvaluation(o -> o != other)
+        return newNullableCriteria(o -> o != other)
             .name("isNot[" + stringOf(other) + "]")
             .expectedValue("not[" + stringOf(other) + "]")
             .hint("Subject should not be identical to " + other + " (using !=)")
@@ -494,7 +499,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
     }
 
     /**
-     * Adds an evaluation to the expression that checks if the subject is equal to the supplied object.
+     * Adds a criterion to the expression that checks if the subject is equal to the supplied object.
      * <p/>
      * This evaluation will pass if the subject and supplied object are both {@code null}.
      *
@@ -506,12 +511,12 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
      * @implNote This check is equivalent to the following statement, where {@code other} is the supplied object and
      *     {@code subject} is the subject of the expression:
      *     <pre><code>
-     *         Objects.equals(subject, other);
-     *     </code></pre>
+     *                 Objects.equals(subject, other);
+     *             </code></pre>
      * @see Objects#equals(Object, Object)
      */
     public B isEqualTo(final Object other) {
-        return newNullableEvaluation(o -> Objects.equals(o, other))
+        return newNullableCriteria(o -> Objects.equals(o, other))
             .name("isEqualTo[" + stringOf(other) + "]")
             .expectedValue(stringOf(other))
             .hint("Subject should be equal to " + other + " (using subject.equals(" + other + "))")
@@ -519,7 +524,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
     }
 
     /**
-     * Adds an evaluation to the expression that checks if the subject is not equal to the supplied object.
+     * Adds a criterion to the expression that checks if the subject is not equal to the supplied object.
      * <p/>
      * This evaluation will fail if the subject and supplied object are both {@code null}.
      *
@@ -531,12 +536,12 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
      * @implNote This check is equivalent to the following statement, where {@code other} is the supplied object and
      *     {@code subject} is the subject of the expression:
      *     <pre><code>
-     *         !Objects.equals(subject, other);
-     *     </code></pre>
+     *                 !Objects.equals(subject, other);
+     *             </code></pre>
      * @see Objects#equals(Object, Object)
      */
     public B isNotEqualTo(final Object other) {
-        return newNullableEvaluation(o -> !Objects.equals(o, other))
+        return newNullableCriteria(o -> !Objects.equals(o, other))
             .name("isNotEqualTo[" + stringOf(other) + "]")
             .expectedValue("not[" + stringOf(other) + "]")
             .hint("Subject should be equal to " + other + " (using !subject.equals(" + other + "))")
@@ -544,22 +549,22 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
     }
 
     /**
-     * Adds an evaluation to the expression that checks if the hash code of the subject is equal to the supplied
-     * hash code.
+     * Adds a criterion to the expression that checks if the hash code of the subject is equal to the supplied hash
+     * code.
      *
      * @param hashCode
      *     The hash code to test against.
      *
      * @return This expression (fluent interface).
      *
-     * @implNote This check is equivalent to the following statement, where {@code hashCode} is the supplied hash code
-     * and {@code subject} is the subject of the expression:
+     * @implNote This check is equivalent to the following statement, where {@code hashCode} is the supplied hash
+     *     code and {@code subject} is the subject of the expression:
      *     <pre><code>
-     *         subject.hashCode() == hashCode
-     *     </code></pre>
+     *                 subject.hashCode() == hashCode
+     *             </code></pre>
      */
     public B hashCodeIs(final int hashCode) {
-        return newEvaluation(o -> o.hashCode() == hashCode)
+        return newCriteria(o -> o.hashCode() == hashCode)
             .name("hashCode == " + hashCode)
             .expectedValue(String.valueOf(hashCode))
             .actualIntValue(Object::hashCode)
@@ -567,22 +572,22 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
     }
 
     /**
-     * Adds an evaluation to the expression that checks if the hash code of the subject is not equal to the supplied
-     * hash code.
+     * Adds a criterion to the expression that checks if the hash code of the subject is not equal to the supplied hash
+     * code.
      *
      * @param hashCode
      *     The hash code to test against.
      *
      * @return This expression (fluent interface).
      *
-     * @implNote This check is equivalent to the following statement, where {@code hashCode} is the supplied hash code
-     * and {@code subject} is the subject of the expression:
+     * @implNote This check is equivalent to the following statement, where {@code hashCode} is the supplied hash
+     *     code and {@code subject} is the subject of the expression:
      *     <pre><code>
-     *         subject.hashCode() != hashCode
-     *     </code></pre>
+     *                 subject.hashCode() != hashCode
+     *             </code></pre>
      */
     public B hashCodeIsNot(final int hashCode) {
-        return newEvaluation(o -> o.hashCode() != hashCode)
+        return newCriteria(o -> o.hashCode() != hashCode)
             .name("hashCode != " + hashCode)
             .expectedValue("not[" + hashCode + "]")
             .actualIntValue(Object::hashCode)
@@ -590,8 +595,8 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
     }
 
     /**
-     * Adds an evaluation to the expression that checks if the {@code toString()} value of the subject is equal to
-     * the supplied value.
+     * Adds a criterion to the expression that checks if the {@code toString()} value of the subject is equal to the
+     * supplied value.
      *
      * @param expected
      *     The string to test against.
@@ -599,13 +604,13 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
      * @return This expression (fluent interface).
      *
      * @implNote This check is equivalent to the following statement, where {@code expected} is the supplied string
-     * and {@code subject} is the subject of the expression:
+     *     and {@code subject} is the subject of the expression:
      *     <pre><code>
-     *         subject.toString().equals(expected)
-     *     </code></pre>
+     *                 subject.toString().equals(expected)
+     *             </code></pre>
      */
     public B toStringIs(final String expected) {
-        return newEvaluation(o -> o.toString().equals(expected))
+        return newCriteria(o -> o.toString().equals(expected))
             .name("toString().equals(" + expected + ")")
             .expectedValue(expected)
             .hint("Subject's toString() value should equal " + expected + " (using subject.toString().equals(" + expected + "))")
@@ -613,8 +618,8 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
     }
 
     /**
-     * Adds an evaluation to the expression that checks if the {@code toString()} value of the subject is not equal to
-     * the supplied value.
+     * Adds a criterion to the expression that checks if the {@code toString()} value of the subject is not equal to the
+     * supplied value.
      *
      * @param expected
      *     The string to test against.
@@ -622,13 +627,13 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
      * @return This expression (fluent interface).
      *
      * @implNote This check is equivalent to the following statement, where {@code expected} is the supplied string
-     * and {@code subject} is the subject of the expression:
+     *     and {@code subject} is the subject of the expression:
      *     <pre><code>
-     *         !subject.toString().equals(expected)
-     *     </code></pre>
+     *                 !subject.toString().equals(expected)
+     *             </code></pre>
      */
     public B toStringIsNot(final String expected) {
-        return newEvaluation(o -> !o.toString().equals(expected))
+        return newCriteria(o -> !o.toString().equals(expected))
             .name("not[toString().equals(" + expected + ")]")
             .expectedValue("not[" + expected + "]")
             .hint("Subject's toString() value should not equal " + expected + " (using !subject.toString().equals(" + expected + "))")
@@ -636,7 +641,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
     }
 
     /**
-     * Adds an evaluation to the expression that checks if the supplied predicate is true.
+     * Adds a criterion to the expression that checks if the supplied predicate is true.
      *
      * @param predicate
      *     The predicate to test.
@@ -644,7 +649,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
      * @return This expression (fluent interface).
      */
     public B satisfies(final Predicate<T> predicate) {
-        return newEvaluation(predicate)
+        return newCriteria(predicate)
             .name("predicate")
             .expectedValue(PREDICATE_SATISFIED)
             .actualValue(o -> predicate.test(o) ? PREDICATE_SATISFIED : PREDICATE_UNSATISFIED)
@@ -652,7 +657,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
     }
 
     /**
-     * Adds an evaluation to the expression that checks if the supplied condition is true.
+     * Adds a criterion to the expression that checks if the supplied condition is true.
      *
      * @param condition
      *     The condition to test.
@@ -660,7 +665,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
      * @return This expression (fluent interface).
      */
     public B satisfies(final Condition<T> condition) {
-        return newEvaluation(condition)
+        return newCriteria(condition)
             .name("condition: " + conditionName(condition))
             .expectedValue(CONDITION_SATISFIED)
             .actualValue(o -> condition.test(o) ? CONDITION_SATISFIED : CONDITION_UNSATISFIED)
@@ -668,7 +673,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
     }
 
     /**
-     * Adds an evaluation to the expression that checks if the supplied predicate is false.
+     * Adds a criterion to the expression that checks if the supplied predicate is false.
      *
      * @param predicate
      *     The predicate to test.
@@ -676,7 +681,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
      * @return This expression (fluent interface).
      */
     public B doesNotSatisfy(final Predicate<T> predicate) {
-        return newEvaluation(o -> !predicate.test(o))
+        return newCriteria(o -> !predicate.test(o))
             .name("not[predicate]")
             .expectedValue(PREDICATE_UNSATISFIED)
             .actualValue(o -> predicate.test(o) ? PREDICATE_SATISFIED : PREDICATE_UNSATISFIED)
@@ -684,7 +689,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
     }
 
     /**
-     * Adds an evaluation to the expression that checks if the supplied condition is false.
+     * Adds a criterion to the expression that checks if the supplied condition is false.
      *
      * @param condition
      *     The condition to test.
@@ -692,7 +697,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
      * @return This expression (fluent interface).
      */
     public B doesNotSatisfy(final Condition<T> condition) {
-        return newEvaluation(o -> !condition.test(o))
+        return newCriteria(o -> !condition.test(o))
             .name("not[condition: " + conditionName(condition) + "]")
             .expectedValue(CONDITION_UNSATISFIED)
             .actualValue(o -> condition.test(o) ? CONDITION_SATISFIED : CONDITION_UNSATISFIED)

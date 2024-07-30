@@ -43,7 +43,7 @@ public abstract class EnumExpression<T extends Enum<T>, B extends EnumExpression
     }
 
     /**
-     * Adds an evaluation to the expression that checks if the ordinal of the subject matches the supplied value.
+     * Adds a criterion to the expression that checks if the ordinal of the subject matches the supplied value.
      *
      * @param ordinal
      *     The ordinal to test the subject against.
@@ -51,7 +51,7 @@ public abstract class EnumExpression<T extends Enum<T>, B extends EnumExpression
      * @return This expression (fluent interface).
      */
     public B ordinalIs(final int ordinal) {
-        return newEvaluation(s -> s.ordinal() == ordinal)
+        return newCriteria(s -> s.ordinal() == ordinal)
             .name("ordinalIs[" + ordinal + "]")
             .expectedValue(String.valueOf(ordinal))
             .actualValue(value -> String.valueOf(value.ordinal()))
@@ -59,8 +59,7 @@ public abstract class EnumExpression<T extends Enum<T>, B extends EnumExpression
     }
 
     /**
-     * Adds an evaluation to the expression that checks if the ordinal of the subject does not match the supplied
-     * value.
+     * Adds a criterion to the expression that checks if the ordinal of the subject does not match the supplied value.
      *
      * @param ordinal
      *     The ordinal to test the subject against.
@@ -68,7 +67,7 @@ public abstract class EnumExpression<T extends Enum<T>, B extends EnumExpression
      * @return This expression (fluent interface).
      */
     public B ordinalIsNot(final int ordinal) {
-        return newEvaluation(s -> s.ordinal() != ordinal)
+        return newCriteria(s -> s.ordinal() != ordinal)
             .name("not[ordinalIs[" + ordinal + "]]")
             .expectedValue(value -> "not[" + ordinal + "]")
             .actualValue(value -> String.valueOf(value.ordinal()))
@@ -76,7 +75,7 @@ public abstract class EnumExpression<T extends Enum<T>, B extends EnumExpression
     }
 
     /**
-     * Adds an evaluation to the expression that checks if the name of the subject matches the supplied value.
+     * Adds a criterion to the expression that checks if the name of the subject matches the supplied value.
      *
      * @param name
      *     The name to test the subject against.
@@ -84,7 +83,7 @@ public abstract class EnumExpression<T extends Enum<T>, B extends EnumExpression
      * @return This expression (fluent interface).
      */
     public B nameIs(final String name) {
-        return newEvaluation(s -> s.name().equals(name))
+        return newCriteria(s -> s.name().equals(name))
             .name("nameIs[" + name + "]")
             .expectedValue(name)
             .actualValue(Enum::name)
@@ -92,7 +91,7 @@ public abstract class EnumExpression<T extends Enum<T>, B extends EnumExpression
     }
 
     /**
-     * Adds an evaluation to the expression that checks if the name of the subject does not match the supplied value.
+     * Adds a criterion to the expression that checks if the name of the subject does not match the supplied value.
      *
      * @param name
      *     The name to test the subject against.
@@ -100,7 +99,7 @@ public abstract class EnumExpression<T extends Enum<T>, B extends EnumExpression
      * @return This expression (fluent interface).
      */
     public B nameIsNot(final String name) {
-        return newEvaluation(s -> !s.name().equals(name))
+        return newCriteria(s -> !s.name().equals(name))
             .name("not[nameIs[" + name + "]]")
             .expectedValue("not[" + name + "]")
             .actualValue(Enum::name)
@@ -108,7 +107,7 @@ public abstract class EnumExpression<T extends Enum<T>, B extends EnumExpression
     }
 
     /**
-     * Adds an evaluation to the expression that checks if the name of the subject matches the supplied value, ignoring
+     * Adds a criterion to the expression that checks if the name of the subject matches the supplied value, ignoring
      * case.
      *
      * @param name
@@ -117,7 +116,7 @@ public abstract class EnumExpression<T extends Enum<T>, B extends EnumExpression
      * @return This expression (fluent interface).
      */
     public B caseInsensitiveNameIs(final String name) {
-        return newEvaluation(s -> s.name().equalsIgnoreCase(name))
+        return newCriteria(s -> s.name().equalsIgnoreCase(name))
             .name("caseInsensitiveNameIs[" + name + "]")
             .expectedValue("caseInsensitive[" + name + "]")
             .actualValue(Enum::name)
@@ -125,7 +124,7 @@ public abstract class EnumExpression<T extends Enum<T>, B extends EnumExpression
     }
 
     /**
-     * Adds an evaluation to the expression that checks if the name of the subject does not match the supplied value,
+     * Adds a criterion to the expression that checks if the name of the subject does not match the supplied value,
      * ignoring case.
      *
      * @param name
@@ -134,7 +133,7 @@ public abstract class EnumExpression<T extends Enum<T>, B extends EnumExpression
      * @return This expression (fluent interface).
      */
     public B caseInsensitiveNameIsNot(final String name) {
-        return newEvaluation(s -> !s.name().equalsIgnoreCase(name))
+        return newCriteria(s -> !s.name().equalsIgnoreCase(name))
             .name("not[caseInsensitiveNameIs[" + name + "]]")
             .expectedValue("not[caseInsensitive[" + name + "]]")
             .actualValue(Enum::name)
