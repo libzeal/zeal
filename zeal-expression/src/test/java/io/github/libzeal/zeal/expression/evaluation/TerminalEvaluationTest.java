@@ -3,8 +3,7 @@ package io.github.libzeal.zeal.expression.evaluation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 class TerminalEvaluationTest {
 
@@ -52,5 +51,6 @@ class TerminalEvaluationTest {
         assertEquals(result, expression.result());
         assertEquals(name, expression.name());
         assertEquals(rationale, expression.rationale());
+        assertTrue(expression.children().isEmpty());
     }
 }

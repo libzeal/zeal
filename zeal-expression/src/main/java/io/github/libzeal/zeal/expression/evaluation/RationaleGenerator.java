@@ -1,5 +1,7 @@
 package io.github.libzeal.zeal.expression.evaluation;
 
+import static java.util.Objects.requireNonNull;
+
 public class RationaleGenerator<T> {
 
     private final ValueSupplier<T> expected;
@@ -11,8 +13,8 @@ public class RationaleGenerator<T> {
     }
 
     public RationaleGenerator(ValueSupplier<T> expected, ValueSupplier<T> actual, ValueSupplier<T> hint) {
-        this.expected = expected;
-        this.actual = actual;
+        this.expected = requireNonNull(expected);
+        this.actual = requireNonNull(actual);
         this.hint = hint;
     }
 

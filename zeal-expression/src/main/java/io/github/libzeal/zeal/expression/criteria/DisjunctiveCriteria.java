@@ -1,20 +1,29 @@
 package io.github.libzeal.zeal.expression.criteria;
 
-import io.github.libzeal.zeal.expression.evaluation.ConjunctiveEvaluation;
+import io.github.libzeal.zeal.expression.evaluation.DisjunctiveEvaluation;
 import io.github.libzeal.zeal.expression.evaluation.Evaluation;
 import io.github.libzeal.zeal.expression.evaluation.Result;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.util.Objects.requireNonNull;
+
 public class DisjunctiveCriteria<T> implements CompoundCriteria<T> {
 
-    private final String name;
-    private final List<Criteria<T>> criteria;
+    private final SkippableCriteriaList<T> subCriteria;
 
-    public DisjunctiveCriteria(final String name, final List<Criteria<T>> criteria) {
-        this.name = name;
-        this.criteria = criteria;
+    public DisjunctiveCriteria(final String name, final List<Criteria<T>> subCriteria) {
+        requireNonNull(name);
+        this.subCriteria = wrap(name, subCriteria);
+    }
+
+    private static <T> SkippableCriteriaList<T> wrap(String name, List<Criteria<T>> subCriteria) {
+        return new SkippableCriteriaList<>(
+            subCriteria,
+            eval -> eval.result().equals(Result.PASSED),
+            evaluations -> new DisjunctiveEvaluation(name, evaluations)
+        );
     }
 
     public DisjunctiveCriteria(final String name) {
@@ -23,36 +32,16 @@ public class DisjunctiveCriteria<T> implements CompoundCriteria<T> {
 
     @Override
     public void append(final Criteria<T> criteria) {
-        this.criteria.add(criteria);
+        this.subCriteria.append(criteria);
     }
 
     @Override
     public void prepend(final Criteria<T> criteria) {
-        this.criteria.add(0, criteria);
-    }
-
-    @Override
-    public String name() {
-        return name;
+        this.subCriteria.prepend(criteria);
     }
 
     @Override
     public Evaluation evaluate(final T subject, final EvaluationContext context) {
-
-        final List<Evaluation> evaluatedChildren = new ArrayList<>();
-        EvaluationContext currentContext = context;
-
-        for (Criteria<T> criterion: criteria) {
-
-            final Evaluation result = criterion.evaluate(subject, currentContext);
-
-            evaluatedChildren.add(result);
-
-            if (result.result().equals(Result.PASSED)) {
-                currentContext = currentContext.withSkip();
-            }
-        }
-
-        return new ConjunctiveEvaluation(name, evaluatedChildren);
+        return subCriteria.evaluate(subject, context);
     }
 }
