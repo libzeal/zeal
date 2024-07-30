@@ -4,6 +4,8 @@ import io.github.libzeal.zeal.expression.evaluation.*;
 
 import java.util.function.Predicate;
 
+import static java.util.Objects.requireNonNull;
+
 public class Criterion<T> implements Criteria<T> {
 
     private final String name;
@@ -27,15 +29,10 @@ public class Criterion<T> implements Criteria<T> {
         );
     }
 
-    public Criterion(String name, Predicate<T> predicate, RationaleGenerator<T> rationaleGenerator) {
-        this.name = name;
-        this.predicate = predicate;
-        this.rationaleGenerator = rationaleGenerator;
-    }
-
-    @Override
-    public String name() {
-        return name;
+    private Criterion(String name, Predicate<T> predicate, RationaleGenerator<T> rationaleGenerator) {
+        this.name = requireNonNull(name);
+        this.predicate = requireNonNull(predicate);
+        this.rationaleGenerator = requireNonNull(rationaleGenerator);
     }
 
     @Override

@@ -1,6 +1,5 @@
 package io.github.libzeal.zeal.expression.api;
 
-import io.github.libzeal.zeal.expression.types.EnumExpression;
 import io.github.libzeal.zeal.expression.types.GeneralEnumExpression;
 import io.github.libzeal.zeal.expression.types.GeneralObjectExpression;
 import io.github.libzeal.zeal.expression.types.StringExpression;
