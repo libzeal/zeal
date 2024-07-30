@@ -16,14 +16,14 @@ public class StringExpression extends ObjectExpression<String, StringExpression>
     }
 
     /**
-     * Adds an evaluation to the expression that checks if the subject is empty (has a length of {@code 0}).
+     * Adds a criterion to the expression that checks if the subject is empty (has a length of {@code 0}).
      *
      * @return This expression (fluent interface).
      *
      * @see String#isEmpty()
      */
     public StringExpression isEmpty() {
-        return newEvaluation(String::isEmpty)
+        return newCriteria(String::isEmpty)
             .name("isEmpty")
             .expectedValue("true")
             .actualValue(s -> String.valueOf(s.isEmpty()))
@@ -31,7 +31,7 @@ public class StringExpression extends ObjectExpression<String, StringExpression>
     }
 
     /**
-     * Adds an evaluation to the expression that checks if the subject is not empty (has a length greater than
+     * Adds a criterion to the expression that checks if the subject is not empty (has a length greater than
      * {@code 0}).
      *
      * @return This expression (fluent interface).
@@ -39,7 +39,7 @@ public class StringExpression extends ObjectExpression<String, StringExpression>
      * @see String#isEmpty()
      */
     public StringExpression isNotEmpty() {
-        return newEvaluation(s -> !s.isEmpty())
+        return newCriteria(s -> !s.isEmpty())
             .name("isNotEmpty")
             .expectedValue("true")
             .actualValue(s -> String.valueOf(!s.isEmpty()))
@@ -47,12 +47,12 @@ public class StringExpression extends ObjectExpression<String, StringExpression>
     }
 
     /**
-     * Adds an evaluation to the expression that checks if the subject is blank (empty or contains only whitespace).
+     * Adds a criterion to the expression that checks if the subject is blank (empty or contains only whitespace).
      *
      * @return This expression (fluent interface).
      */
     public StringExpression isBlank() {
-        return newEvaluation(s -> s.trim().isEmpty())
+        return newCriteria(s -> s.trim().isEmpty())
             .name("isBlank")
             .expectedValue("true")
             .actualValue(s -> String.valueOf(s.trim().isEmpty()))
@@ -60,13 +60,12 @@ public class StringExpression extends ObjectExpression<String, StringExpression>
     }
 
     /**
-     * Adds an evaluation to the expression that checks if the subject is not blank (empty or contains only
-     * whitespace).
+     * Adds a criterion to the expression that checks if the subject is not blank (empty or contains only whitespace).
      *
      * @return This expression (fluent interface).
      */
     public StringExpression isNotBlank() {
-        return newEvaluation(s -> !s.trim().isEmpty())
+        return newCriteria(s -> !s.trim().isEmpty())
             .name("isNotBlank")
             .expectedValue("true")
             .actualValue(s -> String.valueOf(!s.trim().isEmpty()))
@@ -74,7 +73,7 @@ public class StringExpression extends ObjectExpression<String, StringExpression>
     }
 
     /**
-     * Adds an evaluation to the expression that checks if the length of the subject is equal to the supplied length.
+     * Adds a criterion to the expression that checks if the length of the subject is equal to the supplied length.
      *
      * @param length
      *     The desired length of the subject.
@@ -82,7 +81,7 @@ public class StringExpression extends ObjectExpression<String, StringExpression>
      * @return This expression (fluent interface).
      */
     public StringExpression hasLengthOf(final long length) {
-        return newEvaluation(s -> s.length() == length)
+        return newCriteria(s -> s.length() == length)
             .name("hasLengthOf[" + length + "]")
             .expectedValue("length := " + length)
             .actualValue(value -> "length := " + value.length())
@@ -90,8 +89,7 @@ public class StringExpression extends ObjectExpression<String, StringExpression>
     }
 
     /**
-     * Adds an evaluation to the expression that checks if the length of the subject is longer than the supplied
-     * length.
+     * Adds a criterion to the expression that checks if the length of the subject is longer than the supplied length.
      *
      * @param length
      *     The desired minimum length of the subject (exclusive).
@@ -99,7 +97,7 @@ public class StringExpression extends ObjectExpression<String, StringExpression>
      * @return This expression (fluent interface).
      */
     public StringExpression isLongerThan(final long length) {
-        return newEvaluation(s -> s.length() > length)
+        return newCriteria(s -> s.length() > length)
             .name("isLongerThan[" + length + "]")
             .expectedValue("length > " + length)
             .actualValue(value -> "length := " + value.length())
@@ -107,7 +105,7 @@ public class StringExpression extends ObjectExpression<String, StringExpression>
     }
 
     /**
-     * Adds an evaluation to the expression that checks if the length of the subject is longer than or equal to the
+     * Adds a criterion to the expression that checks if the length of the subject is longer than or equal to the
      * supplied length.
      *
      * @param length
@@ -116,7 +114,7 @@ public class StringExpression extends ObjectExpression<String, StringExpression>
      * @return This expression (fluent interface).
      */
     public StringExpression isLongerThanOrEqualTo(long length) {
-        return newEvaluation(s -> s.length() >= length)
+        return newCriteria(s -> s.length() >= length)
             .name("isLongerThanOrEqualTo[" + length + "]")
             .expectedValue("length >= " + length)
             .actualValue(value -> "length := " + value.length())
@@ -124,8 +122,7 @@ public class StringExpression extends ObjectExpression<String, StringExpression>
     }
 
     /**
-     * Adds an evaluation to the expression that checks if the length of the subject is shorter than the supplied
-     * length.
+     * Adds a criterion to the expression that checks if the length of the subject is shorter than the supplied length.
      *
      * @param length
      *     The desired maximum length of the subject (exclusive).
@@ -133,7 +130,7 @@ public class StringExpression extends ObjectExpression<String, StringExpression>
      * @return This expression (fluent interface).
      */
     public StringExpression isShorterThan(long length) {
-        return newEvaluation(s -> s.length() < length)
+        return newCriteria(s -> s.length() < length)
             .name("isShorterThan[" + length + "]")
             .expectedValue("length < " + length)
             .actualValue(value -> "length := " + value.length())
@@ -141,7 +138,7 @@ public class StringExpression extends ObjectExpression<String, StringExpression>
     }
 
     /**
-     * Adds an evaluation to the expression that checks if the length of the subject is shorter than or equal to the
+     * Adds a criterion to the expression that checks if the length of the subject is shorter than or equal to the
      * supplied length.
      *
      * @param length
@@ -150,7 +147,7 @@ public class StringExpression extends ObjectExpression<String, StringExpression>
      * @return This expression (fluent interface).
      */
     public StringExpression isShorterThanOrEqualTo(long length) {
-        return newEvaluation(s -> s.length() <= length)
+        return newCriteria(s -> s.length() <= length)
             .name("isShorterThanOrEqualTo[" + length + "]")
             .expectedValue("length <= " + length)
             .actualValue(value -> "length := " + value.length())
@@ -158,7 +155,7 @@ public class StringExpression extends ObjectExpression<String, StringExpression>
     }
 
     /**
-     * Adds an evaluation to the expression that checks if the subject contains the supplied character.
+     * Adds a criterion to the expression that checks if the subject contains the supplied character.
      *
      * @param c
      *     The character to ensure is included in the subject.
@@ -166,7 +163,7 @@ public class StringExpression extends ObjectExpression<String, StringExpression>
      * @return This expression (fluent interface).
      */
     public StringExpression includes(final char c) {
-        return newEvaluation(s -> s.indexOf(c) != -1)
+        return newCriteria(s -> s.indexOf(c) != -1)
             .name("includes[" + c + "]")
             .expectedValue("includes[" + c + "]")
             .actualValue(s -> needleInHaystackActualValue(s, c))
@@ -184,13 +181,14 @@ public class StringExpression extends ObjectExpression<String, StringExpression>
 
         if (index != -1) {
             return c + " found at index " + index;
-        } else {
+        }
+        else {
             return "String does not include " + c;
         }
     }
 
     /**
-     * Adds an evaluation to the expression that checks if the subject contains the supplied sequence.
+     * Adds a criterion to the expression that checks if the subject contains the supplied sequence.
      *
      * @param sequence
      *     The sequence to ensure is included in the subject.
@@ -198,7 +196,7 @@ public class StringExpression extends ObjectExpression<String, StringExpression>
      * @return This expression (fluent interface).
      */
     public StringExpression includes(final CharSequence sequence) {
-        return newEvaluation(s -> s.contains(sequence))
+        return newCriteria(s -> s.contains(sequence))
             .name("includes[" + sequence + "]")
             .expectedValue("includes[" + sequence + "]")
             .actualValue(s -> needleInHaystackActualValue(s, sequence))
@@ -216,13 +214,14 @@ public class StringExpression extends ObjectExpression<String, StringExpression>
 
         if (index != -1) {
             return sequence + " found at index " + index;
-        } else {
+        }
+        else {
             return "String does not include " + sequence;
         }
     }
 
     /**
-     * Adds an evaluation to the expression that checks if the subject does not contain the supplied character.
+     * Adds a criterion to the expression that checks if the subject does not contain the supplied character.
      *
      * @param c
      *     The character to ensure is excluded from the subject.
@@ -230,7 +229,7 @@ public class StringExpression extends ObjectExpression<String, StringExpression>
      * @return This expression (fluent interface).
      */
     public StringExpression excludes(final char c) {
-        return newEvaluation(s -> s.indexOf(c) == -1)
+        return newCriteria(s -> s.indexOf(c) == -1)
             .name("excludes[" + c + "]")
             .expectedValue("excludes[" + c + "]")
             .actualValue(s -> needleInHaystackActualValue(s, c))
@@ -239,7 +238,7 @@ public class StringExpression extends ObjectExpression<String, StringExpression>
     }
 
     /**
-     * Adds an evaluation to the expression that checks if the subject does not contain the supplied sequence.
+     * Adds a criterion to the expression that checks if the subject does not contain the supplied sequence.
      *
      * @param sequence
      *     The sequence to ensure is excluded from the subject.
@@ -247,7 +246,7 @@ public class StringExpression extends ObjectExpression<String, StringExpression>
      * @return This expression (fluent interface).
      */
     public StringExpression excludes(final CharSequence sequence) {
-        return newEvaluation(s -> !s.contains(sequence))
+        return newCriteria(s -> !s.contains(sequence))
             .name("excludes[" + sequence + "]")
             .expectedValue("excludes[" + sequence + "]")
             .actualValue(s -> needleInHaystackActualValue(s, sequence))
@@ -256,7 +255,7 @@ public class StringExpression extends ObjectExpression<String, StringExpression>
     }
 
     /**
-     * Adds an evaluation to the expression that checks if number of times subject contains the supplied character is
+     * Adds a criterion to the expression that checks if number of times subject contains the supplied character is
      * equal to the supplied argument.
      *
      * @param c
@@ -267,7 +266,7 @@ public class StringExpression extends ObjectExpression<String, StringExpression>
      * @return This expression (fluent interface).
      */
     public StringExpression occurs(final char c, final long times) {
-        return newEvaluation(s -> characterCount(s, c) == times)
+        return newCriteria(s -> characterCount(s, c) == times)
             .name("occurs[" + c + "] := " + times)
             .expectedValue("occurrences := " + times)
             .actualValue(value -> "occurrences := " + characterCount(value, c))
@@ -281,7 +280,7 @@ public class StringExpression extends ObjectExpression<String, StringExpression>
     }
 
     /**
-     * Adds an evaluation to the expression that checks if number of times subject contains the supplied character is
+     * Adds a criterion to the expression that checks if number of times subject contains the supplied character is
      * greater than the supplied argument.
      *
      * @param c
@@ -292,7 +291,7 @@ public class StringExpression extends ObjectExpression<String, StringExpression>
      * @return This expression (fluent interface).
      */
     public StringExpression occursMoreThan(final char c, final long times) {
-        return newEvaluation(s -> characterCount(s, c) > times)
+        return newCriteria(s -> characterCount(s, c) > times)
             .name("occurs[" + c + "] > " + times)
             .expectedValue("occurrences > " + times)
             .actualValue(value -> "occurrences := " + characterCount(value, c))
@@ -300,7 +299,7 @@ public class StringExpression extends ObjectExpression<String, StringExpression>
     }
 
     /**
-     * Adds an evaluation to the expression that checks if number of times subject contains the supplied character is
+     * Adds a criterion to the expression that checks if number of times subject contains the supplied character is
      * greater than or equal to the supplied argument.
      *
      * @param c
@@ -311,7 +310,7 @@ public class StringExpression extends ObjectExpression<String, StringExpression>
      * @return This expression (fluent interface).
      */
     public StringExpression occursMoreThanOrEqualTo(final char c, final long times) {
-        return newEvaluation(s -> characterCount(s, c) >= times)
+        return newCriteria(s -> characterCount(s, c) >= times)
             .name("occurs[" + c + "] >= " + times)
             .expectedValue("occurrences >= " + times)
             .actualValue(value -> "occurrences := " + characterCount(value, c))
@@ -319,8 +318,8 @@ public class StringExpression extends ObjectExpression<String, StringExpression>
     }
 
     /**
-     * Adds an evaluation to the expression that checks if number of times subject contains the supplied character is
-     * less than the supplied argument.
+     * Adds a criterion to the expression that checks if number of times subject contains the supplied character is less
+     * than the supplied argument.
      *
      * @param c
      *     The character to match.
@@ -330,7 +329,7 @@ public class StringExpression extends ObjectExpression<String, StringExpression>
      * @return This expression (fluent interface).
      */
     public StringExpression occursLessThan(final char c, final long times) {
-        return newEvaluation(s -> characterCount(s, c) < times)
+        return newCriteria(s -> characterCount(s, c) < times)
             .name("occurs[" + c + "] < " + times)
             .expectedValue("occurrences < " + times)
             .actualValue(value -> "occurrences := " + characterCount(value, c))
@@ -338,8 +337,8 @@ public class StringExpression extends ObjectExpression<String, StringExpression>
     }
 
     /**
-     * Adds an evaluation to the expression that checks if number of times subject contains the supplied character is
-     * less than or equal to the supplied argument.
+     * Adds a criterion to the expression that checks if number of times subject contains the supplied character is less
+     * than or equal to the supplied argument.
      *
      * @param c
      *     The character to match.
@@ -349,7 +348,7 @@ public class StringExpression extends ObjectExpression<String, StringExpression>
      * @return This expression (fluent interface).
      */
     public StringExpression occursLessThanOrEqualTo(final char c, final long times) {
-        return newEvaluation(s -> characterCount(s, c) <= times)
+        return newCriteria(s -> characterCount(s, c) <= times)
             .name("occurs[" + c + "] <= " + times)
             .expectedValue("occurrences <= " + times)
             .actualValue(value -> "occurrences := " + characterCount(value, c))
@@ -357,7 +356,7 @@ public class StringExpression extends ObjectExpression<String, StringExpression>
     }
 
     /**
-     * Adds an evaluation to the expression that checks if the subject starts with the supplied prefix.
+     * Adds a criterion to the expression that checks if the subject starts with the supplied prefix.
      *
      * @param prefix
      *     The desired prefix.
@@ -365,14 +364,14 @@ public class StringExpression extends ObjectExpression<String, StringExpression>
      * @return This expression (fluent interface).
      */
     public StringExpression startsWith(final String prefix) {
-        return newEvaluation(s -> s.startsWith(prefix))
+        return newCriteria(s -> s.startsWith(prefix))
             .name("startsWith[" + prefix + "]")
             .expectedValue("startsWith[" + prefix + "]")
             .append();
     }
 
     /**
-     * Adds an evaluation to the expression that checks if the subject does not start with the supplied prefix.
+     * Adds a criterion to the expression that checks if the subject does not start with the supplied prefix.
      *
      * @param prefix
      *     The prefix to ensure the subject does not have.
@@ -380,14 +379,14 @@ public class StringExpression extends ObjectExpression<String, StringExpression>
      * @return This expression (fluent interface).
      */
     public StringExpression doesNotStartWith(final String prefix) {
-        return newEvaluation(s -> !s.startsWith(prefix))
+        return newCriteria(s -> !s.startsWith(prefix))
             .name("doesNotStartWith[" + prefix + "]")
             .expectedValue("not[startsWith[" + prefix + "]]")
             .append();
     }
 
     /**
-     * Adds an evaluation to the expression that checks if the subject ends with the supplied suffix.
+     * Adds a criterion to the expression that checks if the subject ends with the supplied suffix.
      *
      * @param suffix
      *     The desired suffix.
@@ -395,14 +394,14 @@ public class StringExpression extends ObjectExpression<String, StringExpression>
      * @return This expression (fluent interface).
      */
     public StringExpression endsWith(final String suffix) {
-        return newEvaluation(s -> s.endsWith(suffix))
+        return newCriteria(s -> s.endsWith(suffix))
             .name("endsWith[" + suffix + "]")
             .expectedValue("endsWith[" + suffix + "]")
             .append();
     }
 
     /**
-     * Adds an evaluation to the expression that checks if the subject does not end with the supplied suffix.
+     * Adds a criterion to the expression that checks if the subject does not end with the supplied suffix.
      *
      * @param suffix
      *     The suffix to ensure the subject does not have.
@@ -410,14 +409,14 @@ public class StringExpression extends ObjectExpression<String, StringExpression>
      * @return This expression (fluent interface).
      */
     public StringExpression doesNotEndWith(final String suffix) {
-        return newEvaluation(s -> !s.endsWith(suffix))
+        return newCriteria(s -> !s.endsWith(suffix))
             .name("doesNotEndWith[" + suffix + "]")
             .expectedValue("not[endsWith[" + suffix + "]]")
             .append();
     }
 
     /**
-     * Adds an evaluation to the expression that checks if the supplied regular expression matches the subject.
+     * Adds a criterion to the expression that checks if the supplied regular expression matches the subject.
      *
      * @param regex
      *     The regular expression to match.
@@ -425,14 +424,14 @@ public class StringExpression extends ObjectExpression<String, StringExpression>
      * @return This expression (fluent interface).
      */
     public StringExpression matches(final String regex) {
-        return newEvaluation(s -> s.matches(regex))
+        return newCriteria(s -> s.matches(regex))
             .name("matches[" + regex + "]")
             .expectedValue("matches[" + regex + "]")
             .append();
     }
 
     /**
-     * Adds an evaluation to the expression that checks if the supplied regular expression does not match the subject.
+     * Adds a criterion to the expression that checks if the supplied regular expression does not match the subject.
      *
      * @param regex
      *     The regular expression to not match.
@@ -440,14 +439,14 @@ public class StringExpression extends ObjectExpression<String, StringExpression>
      * @return This expression (fluent interface).
      */
     public StringExpression doesNotMatch(final String regex) {
-        return newEvaluation(s -> !s.matches(regex))
+        return newCriteria(s -> !s.matches(regex))
             .name("doesNotMatch[" + regex + "]")
             .expectedValue("not[matches[" + regex + "]]")
             .append();
     }
 
     /**
-     * Adds an evaluation to the expression that checks if the supplied argument equals the subject, ignoring case.
+     * Adds a criterion to the expression that checks if the supplied argument equals the subject, ignoring case.
      *
      * @param other
      *     The string to match.
@@ -455,14 +454,14 @@ public class StringExpression extends ObjectExpression<String, StringExpression>
      * @return This expression (fluent interface).
      */
     public StringExpression isCaseInsensitiveEqualTo(final String other) {
-        return newEvaluation(s -> s.equalsIgnoreCase(other))
+        return newCriteria(s -> s.equalsIgnoreCase(other))
             .name("caseInsensitiveEqualTo[" + other + "]")
             .expectedValue(other)
             .append();
     }
 
     /**
-     * Adds an evaluation to the expression that checks if the first index of the supplied needle in the subject matches
+     * Adds a criterion to the expression that checks if the first index of the supplied needle in the subject matches
      * the supplied index.
      *
      * @param needle
@@ -473,7 +472,7 @@ public class StringExpression extends ObjectExpression<String, StringExpression>
      * @return This expression (fluent interface).
      */
     public StringExpression hasAtIndex(final char needle, final int index) {
-        return newEvaluation(s -> s.indexOf(needle) == index)
+        return newCriteria(s -> s.indexOf(needle) == index)
             .name("indexOf[" + needle + "] := " + index)
             .expectedValue(String.valueOf(index))
             .actualValue(subject -> String.valueOf(subject.indexOf(needle)))
@@ -481,7 +480,7 @@ public class StringExpression extends ObjectExpression<String, StringExpression>
     }
 
     /**
-     * Adds an evaluation to the expression that checks if the first index of the supplied needle in the subject matches
+     * Adds a criterion to the expression that checks if the first index of the supplied needle in the subject matches
      * the supplied index.
      *
      * @param needle
@@ -492,7 +491,7 @@ public class StringExpression extends ObjectExpression<String, StringExpression>
      * @return This expression (fluent interface).
      */
     public StringExpression hasAtIndex(final String needle, final int index) {
-        return newEvaluation(s -> s.indexOf(needle) == index)
+        return newCriteria(s -> s.indexOf(needle) == index)
             .name("indexOf[" + needle + "] := " + index)
             .expectedValue(String.valueOf(index))
             .actualValue(subject -> String.valueOf(subject.indexOf(needle)))
@@ -500,8 +499,8 @@ public class StringExpression extends ObjectExpression<String, StringExpression>
     }
 
     /**
-     * Adds an evaluation to the expression that checks if the first index of the supplied needle in the subject does
-     * not match the supplied index.
+     * Adds a criterion to the expression that checks if the first index of the supplied needle in the subject does not
+     * match the supplied index.
      *
      * @param needle
      *     The needle to look for in the subject.
@@ -511,7 +510,7 @@ public class StringExpression extends ObjectExpression<String, StringExpression>
      * @return This expression (fluent interface).
      */
     public StringExpression doesNotHaveAtIndex(final char needle, final int index) {
-        return newEvaluation(s -> s.indexOf(needle) != index)
+        return newCriteria(s -> s.indexOf(needle) != index)
             .name("indexOf[" + needle + "] != " + index)
             .expectedValue(s -> "not[" + index + "]")
             .actualValue(subject -> String.valueOf(subject.indexOf(needle)))
@@ -519,8 +518,8 @@ public class StringExpression extends ObjectExpression<String, StringExpression>
     }
 
     /**
-     * Adds an evaluation to the expression that checks if the first index of the supplied needle in the subject does
-     * not match the supplied index.
+     * Adds a criterion to the expression that checks if the first index of the supplied needle in the subject does not
+     * match the supplied index.
      *
      * @param needle
      *     The needle to look for in the subject.
@@ -530,7 +529,7 @@ public class StringExpression extends ObjectExpression<String, StringExpression>
      * @return This expression (fluent interface).
      */
     public StringExpression doesNotHaveAtIndex(final String needle, final int index) {
-        return newEvaluation(s -> s.indexOf(needle) != index)
+        return newCriteria(s -> s.indexOf(needle) != index)
             .name("indexOf[" + needle + "] != " + index)
             .expectedValue(s -> "not[" + index + "]")
             .actualValue(subject -> String.valueOf(subject.indexOf(needle)))
@@ -538,7 +537,7 @@ public class StringExpression extends ObjectExpression<String, StringExpression>
     }
 
     /**
-     * Adds an evaluation to the expression that checks if the last index of the supplied needle in the subject matches
+     * Adds a criterion to the expression that checks if the last index of the supplied needle in the subject matches
      * the supplied index.
      *
      * @param needle
@@ -549,7 +548,7 @@ public class StringExpression extends ObjectExpression<String, StringExpression>
      * @return This expression (fluent interface).
      */
     public StringExpression hasAtLastIndex(final char needle, final int index) {
-        return newEvaluation(s -> s.lastIndexOf(needle) == index)
+        return newCriteria(s -> s.lastIndexOf(needle) == index)
             .name("lastIndexOf[" + needle + "] := " + index)
             .expectedValue(String.valueOf(index))
             .actualValue(subject -> String.valueOf(subject.lastIndexOf(needle)))
@@ -557,7 +556,7 @@ public class StringExpression extends ObjectExpression<String, StringExpression>
     }
 
     /**
-     * Adds an evaluation to the expression that checks if the last index of the supplied needle in the subject matches
+     * Adds a criterion to the expression that checks if the last index of the supplied needle in the subject matches
      * the supplied index.
      *
      * @param needle
@@ -568,7 +567,7 @@ public class StringExpression extends ObjectExpression<String, StringExpression>
      * @return This expression (fluent interface).
      */
     public StringExpression hasAtLastIndex(final String needle, final int index) {
-        return newEvaluation(s -> s.lastIndexOf(needle) == index)
+        return newCriteria(s -> s.lastIndexOf(needle) == index)
             .name("lastIndexOf[" + needle + "] := " + index)
             .expectedValue(String.valueOf(index))
             .actualValue(subject -> String.valueOf(subject.lastIndexOf(needle)))
@@ -576,7 +575,7 @@ public class StringExpression extends ObjectExpression<String, StringExpression>
     }
 
     /**
-     * Adds an evaluation to the expression that checks if the last index of the supplied needle in the subject does not
+     * Adds a criterion to the expression that checks if the last index of the supplied needle in the subject does not
      * match the supplied index.
      *
      * @param needle
@@ -587,7 +586,7 @@ public class StringExpression extends ObjectExpression<String, StringExpression>
      * @return This expression (fluent interface).
      */
     public StringExpression doesNotHaveAtLastIndex(final char needle, final int index) {
-        return newEvaluation(s -> s.lastIndexOf(needle) != index)
+        return newCriteria(s -> s.lastIndexOf(needle) != index)
             .name("lastIndexOf[" + needle + "] != " + index)
             .expectedValue(s -> "not[" + index + "]")
             .actualValue(subject -> String.valueOf(subject.lastIndexOf(needle)))
@@ -595,7 +594,7 @@ public class StringExpression extends ObjectExpression<String, StringExpression>
     }
 
     /**
-     * Adds an evaluation to the expression that checks if the last index of the supplied needle in the subject does not
+     * Adds a criterion to the expression that checks if the last index of the supplied needle in the subject does not
      * match the supplied index.
      *
      * @param needle
@@ -606,7 +605,7 @@ public class StringExpression extends ObjectExpression<String, StringExpression>
      * @return This expression (fluent interface).
      */
     public StringExpression doesNotHaveAtLastIndex(final String needle, final int index) {
-        return newEvaluation(s -> s.lastIndexOf(needle) != index)
+        return newCriteria(s -> s.lastIndexOf(needle) != index)
             .name("lastIndexOf[" + needle + "] != " + index)
             .expectedValue(s -> "not[" + index + "]")
             .actualValue(subject -> String.valueOf(subject.lastIndexOf(needle)))
