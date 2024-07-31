@@ -13,7 +13,7 @@ public interface Expression {
     /**
      * Evaluates the expression.
      *
-     * @return The evaluated expression.
+     * @return The evaluated expression. This evaluation must not be {@code null}.
      */
     Evaluation evaluate();
 }

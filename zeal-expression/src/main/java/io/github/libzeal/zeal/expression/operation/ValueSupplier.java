@@ -1,4 +1,6 @@
-package io.github.libzeal.zeal.expression.evaluation;
+package io.github.libzeal.zeal.expression.operation;
+
+import io.github.libzeal.zeal.expression.evaluation.Rationale;
 
 /**
  * A formatter that consumes a subject and provides a string representation. This interface is intended to be used to

@@ -1,8 +1,8 @@
 package io.github.libzeal.zeal.expression.evaluation;
 
-import java.util.List;
-
 import io.github.libzeal.zeal.expression.Expression;
+
+import java.util.List;
 
 /**
  * An {@link Expression} that has been evaluated. An evaluated expression contains a state, the name of the evaluation
@@ -29,11 +29,16 @@ public interface Evaluation {
     String name();
 
     /**
-     * Obtains the rationale used to reach the result.
+     * Obtains the rationale for the evaluation.
      *
-     * @return The rationale used to reach the result.
+     * @return The rationale for the evaluation.
      */
     Rationale rationale();
 
+    /**
+     * Obtains the children of this evaluation.
+     *
+     * @return The children of this evaluation.
+     */
     List<Evaluation> children();
 }

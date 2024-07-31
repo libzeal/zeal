@@ -13,7 +13,7 @@ import java.util.Optional;
  * @author Justin Albano
  * @since 0.2.0
  */
-public class SimpleEvaluatedExpressionFormatter implements EvaluatedExpressionFormatter {
+public class SimpleEvaluationFormatter implements EvaluationFormatter {
 
     static final String INDENT = "       ";
 
@@ -77,6 +77,10 @@ public class SimpleEvaluatedExpressionFormatter implements EvaluatedExpressionFo
 
     private static String format(Rationale rationale, int indent) {
 
+        if (rationale == null) {
+            return "";
+        }
+
         final StringBuilder builder = new StringBuilder();
 
         builder.append(indent(indent))
@@ -115,7 +119,12 @@ public class SimpleEvaluatedExpressionFormatter implements EvaluatedExpressionFo
                 return Optional.empty();
             }
             else if (eval.result().equals(Result.FAILED) && eval.children().isEmpty()) {
-                return Optional.of(new RootCause(eval.name(), eval.rationale()));
+                return Optional.of(
+                    new RootCause(
+                        eval.name(),
+                        eval.rationale()
+                    )
+                );
             }
 
             for (Evaluation child : eval.children()) {

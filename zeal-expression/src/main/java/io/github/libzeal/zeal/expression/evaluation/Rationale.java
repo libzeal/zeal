@@ -3,8 +3,8 @@ package io.github.libzeal.zeal.expression.evaluation;
 import java.util.Optional;
 
 /**
- * The rationale for why an {@link Evaluation} evaluated to the result that it did. A rationale is made up of
- * at least three parts:
+ * The rationale for why an {@link Evaluation} evaluated to the result that it did. A rationale is made up of at least
+ * three parts:
  * <ol>
  *     <li><strong>Expected Value</strong>: The value that the expression should have evaluated to/li>
  *     <li><strong>Actual Value</strong>: The value that the expression actually evaluated to</li>
@@ -25,14 +25,21 @@ public class Rationale {
     private final String hint;
 
     /**
-     * Creates an empty rationale, where the expected value, actual value, and hint are all blank strings. This is
-     * common when an evaluation is skipped so that no computation is spent deriving the rationale for an evaluation
-     * that did not occur.
+     * Creates an empty rationale, where the expected value, actual value, and hint are all blank strings.
      *
      * @return An empty rationale.
      */
     public static Rationale empty() {
         return new Rationale("", "");
+    }
+
+    /**
+     * Creates a rationale that denotes that an evaluation has been skipped.
+     *
+     * @return A rationale for a skipped evaluation.
+     */
+    public static Rationale skipped() {
+        return new Rationale("(skipped)", "(skipped)");
     }
 
     /**

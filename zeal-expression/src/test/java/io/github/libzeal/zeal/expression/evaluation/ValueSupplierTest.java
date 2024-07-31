@@ -1,5 +1,6 @@
 package io.github.libzeal.zeal.expression.evaluation;
 
+import io.github.libzeal.zeal.expression.operation.ValueSupplier;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

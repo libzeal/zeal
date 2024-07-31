@@ -1,27 +1,26 @@
 package io.github.libzeal.zeal.expression.evaluation.format;
 
-import io.github.libzeal.zeal.expression.evaluation.ConjunctiveEvaluation;
 import io.github.libzeal.zeal.expression.evaluation.Evaluation;
 import io.github.libzeal.zeal.expression.evaluation.Rationale;
 import io.github.libzeal.zeal.expression.evaluation.Result;
+import io.github.libzeal.zeal.expression.operation.EvaluatedOperation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
+class SimpleEvaluationFormatterTest {
 
-class SimpleEvaluatedExpressionFormatterTest {
-
-    private SimpleEvaluatedExpressionFormatter formatter;
+    private SimpleEvaluationFormatter formatter;
 
     @BeforeEach
     void setUp() {
-        formatter = new SimpleEvaluatedExpressionFormatter();
+        formatter = new SimpleEvaluationFormatter();
     }
 
     @Test
@@ -66,7 +65,7 @@ class SimpleEvaluatedExpressionFormatterTest {
         final StringBuilder builder = new StringBuilder();
 
         for (int i = 0; i < indent; i++) {
-            builder.append(SimpleEvaluatedExpressionFormatter.INDENT);
+            builder.append(SimpleEvaluationFormatter.INDENT);
         }
 
         return builder.toString();
@@ -167,8 +166,9 @@ class SimpleEvaluatedExpressionFormatterTest {
         final Rationale failingRationale = new Rationale("expected2", "actual2", "hint2");
         final Evaluation failingExpression = expression(failingResult, failingName, failingRationale);
 
-        final ConjunctiveEvaluation compound = new ConjunctiveEvaluation(
-            compoundExpressionName,
+        final EvaluatedOperation compound = new EvaluatedOperation(
+            compoundExpressionName, Result.FAILED,
+            Rationale::empty,
             Arrays.asList(passingExpression, failingExpression)
         );
 
@@ -201,8 +201,9 @@ class SimpleEvaluatedExpressionFormatterTest {
         final Rationale skippedRationale = Rationale.empty();
         final Evaluation skippedExpression = expression(skippedResult, skippedName, skippedRationale);
 
-        final ConjunctiveEvaluation compound = new ConjunctiveEvaluation(
-            compoundExpressionName,
+        final EvaluatedOperation compound = new EvaluatedOperation(
+            compoundExpressionName, Result.FAILED,
+            Rationale::empty,
             Arrays.asList(passingExpression, failingExpression, skippedExpression)
         );
 

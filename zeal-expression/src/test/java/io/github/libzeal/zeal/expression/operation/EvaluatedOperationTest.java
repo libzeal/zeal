@@ -1,11 +1,13 @@
-package io.github.libzeal.zeal.expression.evaluation;
+package io.github.libzeal.zeal.expression.operation;
 
+import io.github.libzeal.zeal.expression.evaluation.Rationale;
+import io.github.libzeal.zeal.expression.evaluation.Result;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class TerminalEvaluationTest {
+class EvaluatedOperationTest {
 
     private Result result;
     private String name;
@@ -23,7 +25,7 @@ class TerminalEvaluationTest {
     void givenNullResult_whenConstruct_thenExceptionThrown() {
         assertThrows(
             NullPointerException.class,
-            () -> new TerminalEvaluation(null, "foo", rationale)
+            () -> new EvaluatedOperation("foo", null, () -> rationale)
         );
     }
 
@@ -31,7 +33,7 @@ class TerminalEvaluationTest {
     void givenNullName_whenConstruct_thenExceptionThrown() {
         assertThrows(
             NullPointerException.class,
-            () -> new TerminalEvaluation(Result.PASSED, null, rationale)
+            () -> new EvaluatedOperation(null, Result.PASSED, () -> rationale)
         );
     }
 
@@ -39,14 +41,14 @@ class TerminalEvaluationTest {
     void givenNullRationale_whenConstruct_thenExceptionThrown() {
         assertThrows(
             NullPointerException.class,
-            () -> new TerminalEvaluation(Result.PASSED, "foo", null)
+            () -> new EvaluatedOperation("foo", Result.PASSED, null)
         );
     }
 
     @Test
     void whenConstruct_thenValidDataReturned() {
 
-        TerminalEvaluation expression = new TerminalEvaluation(result, name, rationale);
+        EvaluatedOperation expression = new EvaluatedOperation(name, result, () -> rationale);
 
         assertEquals(result, expression.result());
         assertEquals(name, expression.name());
