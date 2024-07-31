@@ -1,9 +1,9 @@
-package io.github.libzeal.zeal.expression.operation;
+package io.github.libzeal.zeal.expression.predicate;
 
 import io.github.libzeal.zeal.expression.evaluation.Evaluation;
 import io.github.libzeal.zeal.expression.evaluation.Rationale;
 import io.github.libzeal.zeal.expression.evaluation.Result;
-import io.github.libzeal.zeal.expression.operation.unary.UnaryOperation;
+import io.github.libzeal.zeal.expression.predicate.unary.UnaryPredicate;
 
 import java.util.Collections;
 import java.util.List;
@@ -12,12 +12,12 @@ import java.util.function.Supplier;
 import static java.util.Objects.requireNonNull;
 
 /**
- * An {@link Evaluation} that resulted from an operation (such as {@link UnaryOperation}).
+ * An {@link Evaluation} that resulted from an operation (such as {@link UnaryPredicate}).
  *
  * @author Justin Albano
  * @since 0.2.0
  */
-public class EvaluatedOperation implements Evaluation {
+public class EvaluatedPredicate implements Evaluation {
 
     private final String name;
     private final Result result;
@@ -38,8 +38,8 @@ public class EvaluatedOperation implements Evaluation {
      * @throws NullPointerException
      *     Any of the supplied arguments are {@code null}.
      */
-    public static EvaluatedOperation skipped(final String name, final Supplier<Rationale> rationale) {
-        return EvaluatedOperation.skipped(name, rationale, Collections.emptyList());
+    public static EvaluatedPredicate skipped(final String name, final Supplier<Rationale> rationale) {
+        return EvaluatedPredicate.skipped(name, rationale, Collections.emptyList());
     }
 
     /**
@@ -58,9 +58,9 @@ public class EvaluatedOperation implements Evaluation {
      * @throws NullPointerException
      *     Any of the supplied arguments are {@code null}.
      */
-    public static EvaluatedOperation skipped(final String name, final Supplier<Rationale> rationale,
+    public static EvaluatedPredicate skipped(final String name, final Supplier<Rationale> rationale,
                                              List<Evaluation> children) {
-        return new EvaluatedOperation(name, Result.SKIPPED, rationale, children);
+        return new EvaluatedPredicate(name, Result.SKIPPED, rationale, children);
     }
 
     /**
@@ -79,7 +79,7 @@ public class EvaluatedOperation implements Evaluation {
      * @throws NullPointerException
      *     Any of the supplied arguments are {@code null}.
      */
-    public EvaluatedOperation(final String name, final Result result, final Supplier<Rationale> rationale,
+    public EvaluatedPredicate(final String name, final Result result, final Supplier<Rationale> rationale,
                               final List<Evaluation> children) {
         this.result = requireNonNull(result);
         this.name = requireNonNull(name);
@@ -101,7 +101,7 @@ public class EvaluatedOperation implements Evaluation {
      * @throws NullPointerException
      *     Any of the supplied arguments are {@code null}.
      */
-    public EvaluatedOperation(final String name, final Result result, final Supplier<Rationale> rationale) {
+    public EvaluatedPredicate(final String name, final Result result, final Supplier<Rationale> rationale) {
         this(name, result, rationale, Collections.emptyList());
     }
 

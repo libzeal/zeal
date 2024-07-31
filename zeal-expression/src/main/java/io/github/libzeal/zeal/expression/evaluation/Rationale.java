@@ -1,5 +1,6 @@
 package io.github.libzeal.zeal.expression.evaluation;
 
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -95,5 +96,18 @@ public class Rationale {
      */
     public Optional<String> hint() {
         return Optional.ofNullable(hint);
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Rationale)) return false;
+        final Rationale rationale = (Rationale) o;
+        return Objects.equals(expected, rationale.expected) && Objects.equals(actual, rationale.actual) && Objects.equals(hint, rationale.hint);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(expected, actual, hint);
     }
 }

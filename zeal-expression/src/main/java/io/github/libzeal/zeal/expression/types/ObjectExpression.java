@@ -3,12 +3,12 @@ package io.github.libzeal.zeal.expression.types;
 import io.github.libzeal.zeal.expression.UnaryExpression;
 import io.github.libzeal.zeal.expression.condition.Condition;
 import io.github.libzeal.zeal.expression.evaluation.Evaluation;
-import io.github.libzeal.zeal.expression.operation.DeferredRationaleGenerator;
-import io.github.libzeal.zeal.expression.operation.RationaleGenerator;
-import io.github.libzeal.zeal.expression.operation.ValueSupplier;
-import io.github.libzeal.zeal.expression.operation.unary.ConjunctiveUnaryOperation;
-import io.github.libzeal.zeal.expression.operation.unary.TerminalUnaryOperation;
-import io.github.libzeal.zeal.expression.operation.unary.UnaryOperation;
+import io.github.libzeal.zeal.expression.predicate.DeferredRationaleGenerator;
+import io.github.libzeal.zeal.expression.predicate.RationaleGenerator;
+import io.github.libzeal.zeal.expression.predicate.ValueSupplier;
+import io.github.libzeal.zeal.expression.predicate.unary.ConjunctiveUnaryPredicate;
+import io.github.libzeal.zeal.expression.predicate.unary.TerminalUnaryPredicate;
+import io.github.libzeal.zeal.expression.predicate.unary.UnaryPredicate;
 
 import java.util.Objects;
 import java.util.function.Predicate;
@@ -52,7 +52,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
         "fail when compared to a (null) type";
 
     private final T subject;
-    private final ConjunctiveUnaryOperation<T> children;
+    private final ConjunctiveUnaryPredicate<T> children;
 
     /**
      * Creates an object expression with the supplied subject. This constructor uses a default name for the expression.
@@ -86,7 +86,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
      */
     protected ObjectExpression(T subject, String name) {
         this.subject = subject;
-        this.children = new ConjunctiveUnaryOperation<>(name);
+        this.children = new ConjunctiveUnaryPredicate<>(name);
     }
 
     @Override
@@ -110,7 +110,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
      * @return This expression (fluent interface).
      */
     @SuppressWarnings("unchecked")
-    protected final B appendEvaluation(UnaryOperation<T> operation) {
+    protected final B appendEvaluation(UnaryPredicate<T> operation) {
 
         children.append(operation);
 
@@ -118,7 +118,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
     }
 
     /**
-     * A builder used to create {@link UnaryOperation} objects.
+     * A builder used to create {@link UnaryPredicate} objects.
      */
     protected class OperationBuilder {
 
@@ -225,15 +225,15 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
             return (B) ObjectExpression.this;
         }
 
-        private UnaryOperation<T> build() {
+        private UnaryPredicate<T> build() {
 
             final RationaleGenerator<T> generator = new DeferredRationaleGenerator<>(expected, actual, hint);
 
             if (nullable) {
-                return TerminalUnaryOperation.ofNullable(name, test, generator);
+                return TerminalUnaryPredicate.ofNullable(name, test, generator);
             }
             else {
-                return TerminalUnaryOperation.of(name, test, generator);
+                return TerminalUnaryPredicate.of(name, test, generator);
             }
         }
     }

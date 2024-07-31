@@ -1,4 +1,4 @@
-package io.github.libzeal.zeal.expression.operation;
+package io.github.libzeal.zeal.expression.predicate;
 
 import io.github.libzeal.zeal.expression.evaluation.Rationale;
 
