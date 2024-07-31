@@ -49,8 +49,8 @@
                             io.github.libzeal.zeal.expression,
                             io.github.libzeal.zeal.expression.api,
                             io.github.libzeal.zeal.expression.condition,
-                            io.github.libzeal.zeal.expression.criteria,
-                            io.github.libzeal.zeal.expression.criteria.format,
+                            io.github.libzeal.zeal.expression.operation,
+                            io.github.libzeal.zeal.expression.operation.format,
                             io.github.libzeal.zeal.expression.types
                         </Export-Package>
                     </instructions>
