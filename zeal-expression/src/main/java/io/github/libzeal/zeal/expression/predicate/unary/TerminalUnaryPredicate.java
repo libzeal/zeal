@@ -1,8 +1,9 @@
-package io.github.libzeal.zeal.expression.operation.unary;
+package io.github.libzeal.zeal.expression.predicate.unary;
 
 import io.github.libzeal.zeal.expression.evaluation.Evaluation;
-import io.github.libzeal.zeal.expression.operation.EvaluatedOperation;
-import io.github.libzeal.zeal.expression.operation.RationaleGenerator;
+import io.github.libzeal.zeal.expression.evaluation.Rationale;
+import io.github.libzeal.zeal.expression.predicate.EvaluatedPredicate;
+import io.github.libzeal.zeal.expression.predicate.RationaleGenerator;
 
 import java.util.function.Predicate;
 
@@ -18,7 +19,7 @@ import static java.util.Objects.requireNonNull;
  * @author Justin Albano
  * @since 0.2.0
  */
-public class TerminalUnaryOperation<T> implements UnaryOperation<T> {
+public class TerminalUnaryPredicate<T> implements UnaryPredicate<T> {
 
     private final String name;
     private final Predicate<T> predicate;
@@ -43,9 +44,9 @@ public class TerminalUnaryOperation<T> implements UnaryOperation<T> {
      * @throws NullPointerException
      *     Any of the supplied arguments are {@code null}.
      */
-    public static <S> TerminalUnaryOperation<S> of(String name, Predicate<S> predicate,
+    public static <S> TerminalUnaryPredicate<S> of(String name, Predicate<S> predicate,
                                                    RationaleGenerator<S> rationaleGenerator) {
-        return new TerminalUnaryOperation<>(
+        return new TerminalUnaryPredicate<>(
             name,
             s -> s != null && predicate.test(s),
             rationaleGenerator
@@ -70,11 +71,11 @@ public class TerminalUnaryOperation<T> implements UnaryOperation<T> {
      * @throws NullPointerException
      *     Any of the supplied arguments are {@code null}.
      */
-    public static <S> TerminalUnaryOperation<S> ofNullable(String name, Predicate<S> predicate, RationaleGenerator<S> rationaleGenerator) {
-        return new TerminalUnaryOperation<>(name, predicate, rationaleGenerator);
+    public static <S> TerminalUnaryPredicate<S> ofNullable(String name, Predicate<S> predicate, RationaleGenerator<S> rationaleGenerator) {
+        return new TerminalUnaryPredicate<>(name, predicate, rationaleGenerator);
     }
 
-    private TerminalUnaryOperation(String name, Predicate<T> predicate, RationaleGenerator<T> rationaleGenerator) {
+    private TerminalUnaryPredicate(String name, Predicate<T> predicate, RationaleGenerator<T> rationaleGenerator) {
         this.name = requireNonNull(name);
         this.predicate = requireNonNull(predicate);
         this.rationaleGenerator = requireNonNull(rationaleGenerator);
@@ -87,7 +88,7 @@ public class TerminalUnaryOperation<T> implements UnaryOperation<T> {
 
     @Override
     public Evaluation evaluate(final T subject) {
-        return new EvaluatedOperation(
+        return new EvaluatedPredicate(
             name,
             predicate.test(subject) ? PASSED : FAILED,
             () -> rationaleGenerator.generate(subject)

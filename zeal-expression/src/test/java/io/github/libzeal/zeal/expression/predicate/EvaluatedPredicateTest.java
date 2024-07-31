@@ -1,4 +1,4 @@
-package io.github.libzeal.zeal.expression.operation;
+package io.github.libzeal.zeal.expression.predicate;
 
 import io.github.libzeal.zeal.expression.evaluation.Rationale;
 import io.github.libzeal.zeal.expression.evaluation.Result;
@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class EvaluatedOperationTest {
+class EvaluatedPredicateTest {
 
     private Result result;
     private String name;
@@ -25,7 +25,7 @@ class EvaluatedOperationTest {
     void givenNullResult_whenConstruct_thenExceptionThrown() {
         assertThrows(
             NullPointerException.class,
-            () -> new EvaluatedOperation("foo", null, () -> rationale)
+            () -> new EvaluatedPredicate("foo", null, () -> rationale)
         );
     }
 
@@ -33,7 +33,7 @@ class EvaluatedOperationTest {
     void givenNullName_whenConstruct_thenExceptionThrown() {
         assertThrows(
             NullPointerException.class,
-            () -> new EvaluatedOperation(null, Result.PASSED, () -> rationale)
+            () -> new EvaluatedPredicate(null, Result.PASSED, () -> rationale)
         );
     }
 
@@ -41,14 +41,14 @@ class EvaluatedOperationTest {
     void givenNullRationale_whenConstruct_thenExceptionThrown() {
         assertThrows(
             NullPointerException.class,
-            () -> new EvaluatedOperation("foo", Result.PASSED, null)
+            () -> new EvaluatedPredicate("foo", Result.PASSED, null)
         );
     }
 
     @Test
     void whenConstruct_thenValidDataReturned() {
 
-        EvaluatedOperation expression = new EvaluatedOperation(name, result, () -> rationale);
+        EvaluatedPredicate expression = new EvaluatedPredicate(name, result, () -> rationale);
 
         assertEquals(result, expression.result());
         assertEquals(name, expression.name());

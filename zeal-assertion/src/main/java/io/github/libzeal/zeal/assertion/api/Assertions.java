@@ -6,13 +6,16 @@ import io.github.libzeal.zeal.expression.UnaryExpression;
 import io.github.libzeal.zeal.expression.evaluation.Evaluation;
 import io.github.libzeal.zeal.expression.evaluation.Result;
 
+/**
+ * Basic assertions
+ */
 public class Assertions {
 
     private Assertions() {
     }
 
     /**
-     * Asserts that the supplied expression evaluates to {@link Result.PASSED} with a default message if that 
+     * Asserts that the supplied expression evaluates to {@link Result#PASSED} with a default message if that
      * evaluation fails. See {@link Assertions#require(UnaryExpression)} for more information.
      *
      * An example usage of this method would be:
@@ -51,7 +54,7 @@ public class Assertions {
     }
 
     /**
-     * Asserts that the supplied expression evaluates to {@link Result.PASSED}. If the supplied evaluation passes, the
+     * Asserts that the supplied expression evaluates to {@link Result#PASSED}. If the supplied evaluation passes, the
      * subject of the expression is returned.
      * <p/>
      * If the expression fails, then an exception is thrown. The expression thrown on failure depends on the
@@ -60,7 +63,8 @@ public class Assertions {
      *      <li>The supplied expression is {@code null}: {@link NullPointerException}</li>
      *      <li>The evaluation returned by {@link UnaryExpression#evaluate()} is {@code null}:
      *      {@link NullPointerException}</li>
-     *      <li>The expression evaluates to {@link Result.FAILED} and the subject is {@code null}: {@link PreconditionNullPointerException}</li>
+     *      <li>The expression evaluates to {@link Result#FAILED} and the subject is {@code null}:
+     *      {@link PreconditionNullPointerException}</li>
      *      <li>All other circumstances: {@link PreconditionIllegalArgumentException}</li>
      * </ol>
      * An example usage of this method would be:

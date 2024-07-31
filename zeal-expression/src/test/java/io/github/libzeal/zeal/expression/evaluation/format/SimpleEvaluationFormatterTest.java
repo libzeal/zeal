@@ -3,7 +3,7 @@ package io.github.libzeal.zeal.expression.evaluation.format;
 import io.github.libzeal.zeal.expression.evaluation.Evaluation;
 import io.github.libzeal.zeal.expression.evaluation.Rationale;
 import io.github.libzeal.zeal.expression.evaluation.Result;
-import io.github.libzeal.zeal.expression.operation.EvaluatedOperation;
+import io.github.libzeal.zeal.expression.predicate.EvaluatedPredicate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -166,7 +166,7 @@ class SimpleEvaluationFormatterTest {
         final Rationale failingRationale = new Rationale("expected2", "actual2", "hint2");
         final Evaluation failingExpression = expression(failingResult, failingName, failingRationale);
 
-        final EvaluatedOperation compound = new EvaluatedOperation(
+        final EvaluatedPredicate compound = new EvaluatedPredicate(
             compoundExpressionName, Result.FAILED,
             Rationale::empty,
             Arrays.asList(passingExpression, failingExpression)
@@ -201,7 +201,7 @@ class SimpleEvaluationFormatterTest {
         final Rationale skippedRationale = Rationale.empty();
         final Evaluation skippedExpression = expression(skippedResult, skippedName, skippedRationale);
 
-        final EvaluatedOperation compound = new EvaluatedOperation(
+        final EvaluatedPredicate compound = new EvaluatedPredicate(
             compoundExpressionName, Result.FAILED,
             Rationale::empty,
             Arrays.asList(passingExpression, failingExpression, skippedExpression)
