@@ -41,6 +41,10 @@ public class EvaluatedExpressionAssertion<T> {
         assertActualIs("Passed: " + passed + ", Failed: " + failed + ", Skipped: " + skipped);
     }
 
+    public void assertHintIs(final String hint) {
+        assertEquals(hint, eval.rationale().hint().orElse(null));
+    }
+
     public void assertHasNoChildren() {
         assertTrue(eval.children().isEmpty());
     }

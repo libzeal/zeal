@@ -3,6 +3,7 @@ package io.github.libzeal.zeal.expression.predicate.unary;
 import io.github.libzeal.zeal.expression.evaluation.Evaluation;
 import io.github.libzeal.zeal.expression.evaluation.Rationale;
 import io.github.libzeal.zeal.expression.evaluation.Result;
+import io.github.libzeal.zeal.expression.evaluation.SimpleRationale;
 import io.github.libzeal.zeal.expression.predicate.EvaluatedPredicate;
 
 import java.util.ArrayList;
@@ -109,7 +110,7 @@ public class DisjunctiveUnaryPredicate<T> implements CompoundUnaryPredicate<T> {
         }
 
         final Result compountResult = computeResult(passed, failed, total);
-        final Supplier<Rationale> rationale = computeRationale(passed, failed, skipped);
+        final Rationale rationale = computeRationale(passed, failed, skipped);
 
         return new EvaluatedPredicate(name, compountResult, rationale, evaluated);
     }
@@ -130,14 +131,12 @@ public class DisjunctiveUnaryPredicate<T> implements CompoundUnaryPredicate<T> {
         }
     }
 
-    private Supplier<Rationale> computeRationale(final int passed, final int failed, final int skipped) {
-        return () -> {
+    private Rationale computeRationale(final int passed, final int failed, final int skipped) {
 
-            final String expected = "At least one child must pass";
-            final String actual =
-                "Passed: " + passed + ", Failed: " + failed + ", Skipped: " + skipped;
+        final String expected = "At least one child must pass";
+        final String actual =
+            "Passed: " + passed + ", Failed: " + failed + ", Skipped: " + skipped;
 
-            return new Rationale(expected, actual);
-        };
+        return new SimpleRationale(expected, actual);
     }
 }

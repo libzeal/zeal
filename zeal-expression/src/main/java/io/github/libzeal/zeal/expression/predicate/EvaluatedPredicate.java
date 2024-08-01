@@ -7,7 +7,6 @@ import io.github.libzeal.zeal.expression.predicate.unary.UnaryPredicate;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
 
@@ -21,7 +20,7 @@ public class EvaluatedPredicate implements Evaluation {
 
     private final String name;
     private final Result result;
-    private final Supplier<Rationale> rationale;
+    private final Rationale rationale;
     private final List<Evaluation> children;
 
     /**
@@ -30,15 +29,14 @@ public class EvaluatedPredicate implements Evaluation {
      * @param name
      *     The name of the operation that generated this evaluation.
      * @param rationale
-     *     The rationale for the evaluation results. This rationale is supplied using a {@link Supplier} to ensure that
-     *     the computation for the rationale is not performed unless the rationale is requested.
+     *     The rationale for the evaluation results.
      *
      * @return A skipped evaluation.
      *
      * @throws NullPointerException
      *     Any of the supplied arguments are {@code null}.
      */
-    public static EvaluatedPredicate skipped(final String name, final Supplier<Rationale> rationale) {
+    public static EvaluatedPredicate skipped(final String name, final Rationale rationale) {
         return EvaluatedPredicate.skipped(name, rationale, Collections.emptyList());
     }
 
@@ -48,8 +46,7 @@ public class EvaluatedPredicate implements Evaluation {
      * @param name
      *     The name of the operation that generated this evaluation.
      * @param rationale
-     *     The rationale for the evaluation results. This rationale is supplied using a {@link Supplier} to ensure that
-     *     the computation for the rationale is not performed unless the rationale is requested.
+     *     The rationale for the evaluation results.
      * @param children
      *     The children of the evaluation.
      *
@@ -58,33 +55,9 @@ public class EvaluatedPredicate implements Evaluation {
      * @throws NullPointerException
      *     Any of the supplied arguments are {@code null}.
      */
-    public static EvaluatedPredicate skipped(final String name, final Supplier<Rationale> rationale,
+    public static EvaluatedPredicate skipped(final String name, final Rationale rationale,
                                              List<Evaluation> children) {
         return new EvaluatedPredicate(name, Result.SKIPPED, rationale, children);
-    }
-
-    /**
-     * Creates a new evaluation.
-     *
-     * @param name
-     *     The name of the operation that generated this evaluation.
-     * @param result
-     *     The result of the evaluation.
-     * @param rationale
-     *     The rationale for the evaluation results. This rationale is supplied using a {@link Supplier} to ensure that
-     *     the computation for the rationale is not performed unless the rationale is requested.
-     * @param children
-     *     The children of the evaluation.
-     *
-     * @throws NullPointerException
-     *     Any of the supplied arguments are {@code null}.
-     */
-    public EvaluatedPredicate(final String name, final Result result, final Supplier<Rationale> rationale,
-                              final List<Evaluation> children) {
-        this.result = requireNonNull(result);
-        this.name = requireNonNull(name);
-        this.rationale = requireNonNull(rationale);
-        this.children = requireNonNull(children);
     }
 
     /**
@@ -95,14 +68,36 @@ public class EvaluatedPredicate implements Evaluation {
      * @param result
      *     The result of the evaluation.
      * @param rationale
-     *     The rationale for the evaluation results. This rationale is supplied using a {@link Supplier} to ensure that
-     *     the computation for the rationale is not performed unless the rationale is requested.
+     *     The rationale for the evaluation results.
      *
      * @throws NullPointerException
      *     Any of the supplied arguments are {@code null}.
      */
-    public EvaluatedPredicate(final String name, final Result result, final Supplier<Rationale> rationale) {
+    public EvaluatedPredicate(final String name, final Result result, final Rationale rationale) {
         this(name, result, rationale, Collections.emptyList());
+    }
+
+    /**
+     * Creates a new evaluation.
+     *
+     * @param name
+     *     The name of the operation that generated this evaluation.
+     * @param result
+     *     The result of the evaluation.
+     * @param rationale
+     *     The rationale for the evaluation results.
+     * @param children
+     *     The children of the evaluation.
+     *
+     * @throws NullPointerException
+     *     Any of the supplied arguments are {@code null}.
+     */
+    public EvaluatedPredicate(final String name, final Result result, final Rationale rationale,
+                              final List<Evaluation> children) {
+        this.result = requireNonNull(result);
+        this.name = requireNonNull(name);
+        this.rationale = requireNonNull(rationale);
+        this.children = requireNonNull(children);
     }
 
     @Override
@@ -117,7 +112,7 @@ public class EvaluatedPredicate implements Evaluation {
 
     @Override
     public Rationale rationale() {
-        return rationale.get();
+        return rationale;
     }
 
     @Override

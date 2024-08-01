@@ -1,8 +1,8 @@
 package io.github.libzeal.zeal.expression.predicate;
 
 import io.github.libzeal.zeal.expression.evaluation.Evaluation;
-import io.github.libzeal.zeal.expression.evaluation.Rationale;
 import io.github.libzeal.zeal.expression.evaluation.Result;
+import io.github.libzeal.zeal.expression.evaluation.SimpleRationale;
 import io.github.libzeal.zeal.expression.predicate.unary.UnaryPredicate;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -27,7 +27,7 @@ public class Predicates {
         UnaryPredicate<Object> predicate = mock(UnaryPredicate.class);
         doReturn(evaluation).when(predicate).evaluate(any(Object.class));
         doReturn(name).when(predicate).name();
-        doReturn(EvaluatedPredicate.skipped(name, Rationale::skipped)).when(predicate).skip();
+        doReturn(EvaluatedPredicate.skipped(name, SimpleRationale.skipped())).when(predicate).skip();
 
         return predicate;
     }

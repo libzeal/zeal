@@ -1,7 +1,7 @@
 package io.github.libzeal.zeal.expression.predicate.unary;
 
 import io.github.libzeal.zeal.expression.evaluation.Evaluation;
-import io.github.libzeal.zeal.expression.evaluation.Rationale;
+import io.github.libzeal.zeal.expression.evaluation.SimpleRationale;
 import io.github.libzeal.zeal.expression.predicate.EvaluatedPredicate;
 
 /**
@@ -41,6 +41,6 @@ public interface UnaryPredicate<T> {
      * @return A skipped evaluation.
      */
     default Evaluation skip() {
-        return EvaluatedPredicate.skipped(name(), Rationale::skipped);
+        return EvaluatedPredicate.skipped(name(), SimpleRationale.skipped());
     }
 }

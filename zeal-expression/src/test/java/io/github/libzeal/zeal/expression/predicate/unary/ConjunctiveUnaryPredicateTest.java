@@ -1,10 +1,8 @@
-package io.github.libzeal.zeal.expression.predicate;
+package io.github.libzeal.zeal.expression.predicate.unary;
 
 import io.github.libzeal.zeal.expression.evaluation.Evaluation;
-import io.github.libzeal.zeal.expression.evaluation.Rationale;
 import io.github.libzeal.zeal.expression.evaluation.Result;
-import io.github.libzeal.zeal.expression.predicate.unary.ConjunctiveUnaryPredicate;
-import io.github.libzeal.zeal.expression.predicate.unary.UnaryPredicate;
+import io.github.libzeal.zeal.expression.evaluation.SimpleRationale;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -176,7 +174,7 @@ class ConjunctiveUnaryPredicateTest {
 
         assertEquals(predicate.name(), skippedEvaluation.name());
         assertEquals(Result.SKIPPED, skippedEvaluation.result());
-        assertEquals(Rationale.skipped(), skippedEvaluation.rationale());
+        assertEquals(SimpleRationale.skipped(), skippedEvaluation.rationale());
         assertTrue(skippedEvaluation.children().isEmpty());
     }
 
@@ -192,7 +190,7 @@ class ConjunctiveUnaryPredicateTest {
 
         assertEquals(predicate.name(), skippedEvaluation.name());
         assertEquals(Result.SKIPPED, skippedEvaluation.result());
-        assertEquals(Rationale.skipped(), skippedEvaluation.rationale());
+        assertEquals(SimpleRationale.skipped(), skippedEvaluation.rationale());
         assertEquals(1, skippedEvaluation.children().size());
         assertHasChildWithName(skippedEvaluation, subPredicateName);
     }
@@ -212,7 +210,7 @@ class ConjunctiveUnaryPredicateTest {
 
         assertEquals(predicate.name(), skippedEvaluation.name());
         assertEquals(Result.SKIPPED, skippedEvaluation.result());
-        assertEquals(Rationale.skipped(), skippedEvaluation.rationale());
+        assertEquals(SimpleRationale.skipped(), skippedEvaluation.rationale());
         assertEquals(2, skippedEvaluation.children().size());
         assertHasChildWithName(skippedEvaluation, subPredicateName1);
         assertHasChildWithName(skippedEvaluation, subPredicateName2);

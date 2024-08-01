@@ -45,6 +45,7 @@ public class ExpressionTestCaseBuilder<T, E extends ObjectExpression<T, E>> {
         private Function<T, String> name;
         private BiFunction<?, ?, String> expectedValue;
         private BiFunction<?, ?, String> actualValue;
+        private BiFunction<?, ?, String> hint;
 
         public ArgumentBuilder(ExpressionTestCaseBuilder<T, E> testCaseBuilder, BiConsumer<E, T> modifier) {
             this.testCaseBuilder = testCaseBuilder;
@@ -93,6 +94,15 @@ public class ExpressionTestCaseBuilder<T, E extends ObjectExpression<T, E>> {
             return this;
         }
 
+        public ArgumentBuilder<T, E> expectedHint(String value) {
+            return expectedHint((e, v) -> value);
+        }
+
+        public ArgumentBuilder<T, E> expectedHint(BiFunction<T, ?, String> hint) {
+            this.hint = hint;
+            return this;
+        }
+
         private String testCaseName() {
 
             if (testCaseName == null) {
@@ -104,7 +114,7 @@ public class ExpressionTestCaseBuilder<T, E extends ObjectExpression<T, E>> {
         }
 
         private Arguments toArguments() {
-            return Arguments.of(testCaseName(), modifier, value, state, name, expectedValue, actualValue);
+            return Arguments.of(testCaseName(), modifier, value, state, name, expectedValue, actualValue, hint);
         }
 
         public ExpressionTestCaseBuilder<T, E> addTest() {

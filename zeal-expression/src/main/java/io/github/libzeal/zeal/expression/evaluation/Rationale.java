@@ -19,95 +19,26 @@ import java.util.Optional;
  * @author Justin Albano
  * @since 0.2.0
  */
-public class Rationale {
-
-    private final String expected;
-    private final String actual;
-    private final String hint;
-
-    /**
-     * Creates an empty rationale, where the expected value, actual value, and hint are all blank strings.
-     *
-     * @return An empty rationale.
-     */
-    public static Rationale empty() {
-        return new Rationale("", "");
-    }
-
-    /**
-     * Creates a rationale that denotes that an evaluation has been skipped.
-     *
-     * @return A rationale for a skipped evaluation.
-     */
-    public static Rationale skipped() {
-        return new Rationale("(skipped)", "(skipped)");
-    }
-
-    /**
-     * Creates a new rationale without a hint.
-     *
-     * @param expected
-     *     The expected value.
-     * @param actual
-     *     The actual value.
-     */
-    public Rationale(String expected, String actual) {
-        this(expected, actual, null);
-    }
-
-    /**
-     * Creates a new rationale without a hint.
-     *
-     * @param expected
-     *     The expected value.
-     * @param actual
-     *     The actual value.
-     * @param hint
-     *     A hint as to how the expected and actual values should match.
-     */
-    public Rationale(String expected, String actual, String hint) {
-        this.expected = expected;
-        this.actual = actual;
-        this.hint = hint;
-    }
+public interface Rationale {
 
     /**
      * Obtains the expected value for the evaluation.
      *
      * @return The expected value for the evaluation.
      */
-    public String expected() {
-        return expected;
-    }
+    String expected();
 
     /**
      * Obtains the actual value for the evaluation.
      *
      * @return The actual value for the evaluation.
      */
-    public String actual() {
-        return actual;
-    }
+    String actual();
 
     /**
      * Obtains the optional hint for the evaluation.
      *
      * @return An {@link Optional} populated with the hint if a hint is available; an empty {@link Optional} otherwise.
      */
-    public Optional<String> hint() {
-        return Optional.ofNullable(hint);
-    }
-
-    @Override
-    public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Rationale)) return false;
-        final Rationale rationale = (Rationale) o;
-        return Objects.equals(expected, rationale.expected) && Objects.equals(actual, rationale.actual) && Objects.equals(hint, rationale.hint);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(expected, actual, hint);
-    }
+    Optional<String> hint();
 }

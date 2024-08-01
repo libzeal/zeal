@@ -277,6 +277,7 @@ class StringExpressionTest extends ObjectExpressionTest<String, StringExpression
                 .expectedName("includes[a]")
                 .expectedExpectedValue("includes[a]")
                 .expectedActualValue("includes[a]")
+                .expectedHint("'a' found at index 0")
                 .addTest()
             .newTest((expression, value) -> expression.includes('a'))
                 .value("b")
@@ -284,6 +285,7 @@ class StringExpressionTest extends ObjectExpressionTest<String, StringExpression
                 .expectedName("includes[a]")
                 .expectedExpectedValue("includes[a]")
                 .expectedActualValue("excludes[a]")
+                .expectedHint("String does not include 'a'")
                 .addTest()
             .newTest((expression, value) -> expression.includes("a"))
                 .value("ab")
@@ -291,6 +293,7 @@ class StringExpressionTest extends ObjectExpressionTest<String, StringExpression
                 .expectedName("includes[a]")
                 .expectedExpectedValue("includes[a]")
                 .expectedActualValue("includes[a]")
+                .expectedHint("\"a\" found at index 0")
                 .addTest()
             .newTest((expression, value) -> expression.includes("a"))
                 .value("b")
@@ -298,6 +301,7 @@ class StringExpressionTest extends ObjectExpressionTest<String, StringExpression
                 .expectedName("includes[a]")
                 .expectedExpectedValue("includes[a]")
                 .expectedActualValue("excludes[a]")
+                .expectedHint("String does not include \"a\"")
                 .addTest();
     }
 
@@ -308,6 +312,7 @@ class StringExpressionTest extends ObjectExpressionTest<String, StringExpression
                 .expectedName("excludes[a]")
                 .expectedExpectedValue("excludes[a]")
                 .expectedActualValue("includes[a]")
+                .expectedHint("'a' found at index 0")
                 .addTest()
             .newTest((expression, value) -> expression.excludes('a'))
                 .value("b")
@@ -315,6 +320,7 @@ class StringExpressionTest extends ObjectExpressionTest<String, StringExpression
                 .expectedName("excludes[a]")
                 .expectedExpectedValue("excludes[a]")
                 .expectedActualValue("excludes[a]")
+                .expectedHint("String does not include 'a'")
                 .addTest()
             .newTest((expression, value) -> expression.excludes("a"))
                 .value("ab")
@@ -322,6 +328,7 @@ class StringExpressionTest extends ObjectExpressionTest<String, StringExpression
                 .expectedName("excludes[a]")
                 .expectedExpectedValue("excludes[a]")
                 .expectedActualValue("includes[a]")
+                .expectedHint("\"a\" found at index 0")
                 .addTest()
             .newTest((expression, value) -> expression.excludes("a"))
                 .value("b")
@@ -329,6 +336,7 @@ class StringExpressionTest extends ObjectExpressionTest<String, StringExpression
                 .expectedName("excludes[a]")
                 .expectedExpectedValue("excludes[a]")
                 .expectedActualValue("excludes[a]")
+                .expectedHint("String does not include \"a\"")
                 .addTest();
     }
 

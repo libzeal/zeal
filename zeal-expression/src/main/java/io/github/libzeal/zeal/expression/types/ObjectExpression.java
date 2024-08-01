@@ -3,9 +3,9 @@ package io.github.libzeal.zeal.expression.types;
 import io.github.libzeal.zeal.expression.UnaryExpression;
 import io.github.libzeal.zeal.expression.condition.Condition;
 import io.github.libzeal.zeal.expression.evaluation.Evaluation;
-import io.github.libzeal.zeal.expression.predicate.DeferredRationaleGenerator;
-import io.github.libzeal.zeal.expression.predicate.RationaleGenerator;
+import io.github.libzeal.zeal.expression.evaluation.Rationale;
 import io.github.libzeal.zeal.expression.predicate.ValueSupplier;
+import io.github.libzeal.zeal.expression.predicate.DeferredRationale;
 import io.github.libzeal.zeal.expression.predicate.unary.ConjunctiveUnaryPredicate;
 import io.github.libzeal.zeal.expression.predicate.unary.TerminalUnaryPredicate;
 import io.github.libzeal.zeal.expression.predicate.unary.UnaryPredicate;
@@ -104,15 +104,15 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
      * in which they are appended (first in, first evaluated). The only exception to this rule is a {@link #isNotNull()}
      * evaluation. If a {@link #isNotNull()} is appended to the chain, it is automatically evaluated first.
      *
-     * @param operation
+     * @param predicate
      *     The evaluation to append.
      *
      * @return This expression (fluent interface).
      */
     @SuppressWarnings("unchecked")
-    protected final B appendEvaluation(UnaryPredicate<T> operation) {
+    protected final B appendEvaluation(UnaryPredicate<T> predicate) {
 
-        children.append(operation);
+        children.append(predicate);
 
         return (B) this;
     }
@@ -120,7 +120,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
     /**
      * A builder used to create {@link UnaryPredicate} objects.
      */
-    protected class OperationBuilder {
+    protected class PredicateBuilder {
 
         private final boolean nullable;
         private final Predicate<T> test;
@@ -129,7 +129,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
         private ValueSupplier<T> actual = ObjectExpression::stringOf;
         private ValueSupplier<T> hint = null;
 
-        private OperationBuilder(boolean nullable, Predicate<T> test) {
+        private PredicateBuilder(boolean nullable, Predicate<T> test) {
             this.nullable = nullable;
             this.test = test;
         }
@@ -142,7 +142,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
          *
          * @return This builder (fluent interface).
          */
-        public OperationBuilder name(String name) {
+        public PredicateBuilder name(String name) {
             this.name = name;
             return this;
         }
@@ -155,7 +155,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
          *
          * @return This builder (fluent interface).
          */
-        public OperationBuilder expectedValue(ValueSupplier<T> expected) {
+        public PredicateBuilder expectedValue(ValueSupplier<T> expected) {
             this.expected = expected;
             return this;
         }
@@ -168,7 +168,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
          *
          * @return This builder (fluent interface).
          */
-        public OperationBuilder expectedValue(String expected) {
+        public PredicateBuilder expectedValue(String expected) {
             return expectedValue(ValueSupplier.of(expected));
         }
 
@@ -180,7 +180,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
          *
          * @return This builder (fluent interface).
          */
-        public OperationBuilder actualValue(ValueSupplier<T> actual) {
+        public PredicateBuilder actualValue(ValueSupplier<T> actual) {
             this.actual = actual;
             return this;
         }
@@ -193,7 +193,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
          *
          * @return This builder (fluent interface).
          */
-        public OperationBuilder hint(ValueSupplier<T> hint) {
+        public PredicateBuilder hint(ValueSupplier<T> hint) {
             this.hint = hint;
             return this;
         }
@@ -206,7 +206,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
          *
          * @return This builder (fluent interface).
          */
-        public OperationBuilder hint(String hint) {
+        public PredicateBuilder hint(String hint) {
             return hint(ValueSupplier.of(hint));
         }
 
@@ -227,13 +227,13 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
 
         private UnaryPredicate<T> build() {
 
-            final RationaleGenerator<T> generator = new DeferredRationaleGenerator<>(expected, actual, hint);
+            final Rationale rationale = new DeferredRationale<>(subject, expected, actual, hint);
 
             if (nullable) {
-                return TerminalUnaryPredicate.ofNullable(name, test, generator);
+                return TerminalUnaryPredicate.ofNullable(name, test, rationale);
             }
             else {
-                return TerminalUnaryPredicate.of(name, test, generator);
+                return TerminalUnaryPredicate.of(name, test, rationale);
             }
         }
     }
@@ -250,8 +250,8 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
      * @throws NullPointerException
      *     The supplied test was {@code null}.
      */
-    protected final OperationBuilder newOperation(Predicate<T> test) {
-        return new OperationBuilder(false, requireNonNull(test));
+    protected final PredicateBuilder newPredicate(Predicate<T> test) {
+        return new PredicateBuilder(false, requireNonNull(test));
     }
 
     /**
@@ -268,12 +268,12 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
      * @throws NullPointerException
      *     The supplied test was {@code null}.
      */
-    protected final OperationBuilder newNullableOperation(Predicate<T> test) {
-        return new OperationBuilder(true, requireNonNull(test));
+    protected final PredicateBuilder newNullablePredicate(Predicate<T> test) {
+        return new PredicateBuilder(true, requireNonNull(test));
     }
 
     /**
-     * Adds an operation to the expression that checks if the subject is not {@code null}.
+     * Adds a predicate to the expression that checks if the subject is not {@code null}.
      *
      * @return This expression (fluent interface).
      *
@@ -297,26 +297,26 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
      *     order in which they are chained on the expression.
      */
     public final B isNotNull() {
-        return newNullableOperation(Objects::nonNull)
+        return newNullablePredicate(Objects::nonNull)
             .name("isNotNull")
             .expectedValue("not[(null)]")
             .prepend();
     }
 
     /**
-     * Adds an operation to the expression that checks if the subject is {@code null}.
+     * Adds a predicate to the expression that checks if the subject is {@code null}.
      *
      * @return This expression (fluent interface).
      */
     public B isNull() {
-        return newNullableOperation(Objects::isNull)
+        return newNullablePredicate(Objects::isNull)
             .name("isNull")
             .expectedValue("(null)")
             .append();
     }
 
     /**
-     * Adds an operation to the expression that checks if the subject exactly matches the supplied type.
+     * Adds a predicate to the expression that checks if the subject exactly matches the supplied type.
      * <p/>
      * Note: If the subject is a subtype of the supplied type, this check will fail.
      *
@@ -327,7 +327,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
      */
     public B isType(final Class<?> type) {
 
-        OperationBuilder builder = newOperation(o -> o.getClass().equals(type));
+        PredicateBuilder builder = newPredicate(o -> o.getClass().equals(type));
 
         if (type == null) {
             builder.name("isType[(null)]")
@@ -345,7 +345,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
     }
 
     /**
-     * Adds an operation to the expression that checks if the subject is not an exact match of the supplied type.
+     * Adds a predicate to the expression that checks if the subject is not an exact match of the supplied type.
      *
      * @param type
      *     The type to test the subject against. This evaluation will always fail if the supplied type is {@code null}.
@@ -354,7 +354,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
      */
     public B isNotType(final Class<?> type) {
 
-        OperationBuilder builder = newOperation(o -> type != null && !o.getClass().equals(type));
+        PredicateBuilder builder = newPredicate(o -> type != null && !o.getClass().equals(type));
 
         if (type == null) {
             builder.name("isNotType[(null)]")
@@ -372,7 +372,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
     }
 
     /**
-     * Adds an operation to the expression that checks if the subject matches or is a subtype of the supplied type.
+     * Adds a predicate to the expression that checks if the subject matches or is a subtype of the supplied type.
      *
      * @param type
      *     The type to test the subject against. This evaluation will always fail if the supplied type is {@code null}.
@@ -388,7 +388,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
      */
     public B isInstanceOf(final Class<?> type) {
 
-        OperationBuilder builder = newOperation(o -> type != null && type.isAssignableFrom(o.getClass()));
+        PredicateBuilder builder = newPredicate(o -> type != null && type.isAssignableFrom(o.getClass()));
 
         if (type == null) {
             builder.name("isInstanceOf[(null)]")
@@ -406,7 +406,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
     }
 
     /**
-     * Adds an operation to the expression that checks if the subject does not exactly match or is not a subtype of the
+     * Adds a predicate to the expression that checks if the subject does not exactly match or is not a subtype of the
      * supplied type.
      *
      * @param type
@@ -423,7 +423,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
      */
     public B isNotInstanceOf(final Class<?> type) {
 
-        OperationBuilder builder = newOperation(o -> type != null && !type.isAssignableFrom(o.getClass()));
+        PredicateBuilder builder = newPredicate(o -> type != null && !type.isAssignableFrom(o.getClass()));
 
         if (type == null) {
             builder.name("isNotInstanceOf[(null)]")
@@ -441,7 +441,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
     }
 
     /**
-     * Adds an operation to the expression that checks if the subject is the same as the supplied object.
+     * Adds a predicate to the expression that checks if the subject is the same as the supplied object.
      * <p/>
      * This evaluation will pass if the subject and supplied object are both {@code null}.
      *
@@ -457,7 +457,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
      *             </code></pre>
      */
     public B is(final Object other) {
-        return newNullableOperation(o -> o == other)
+        return newNullablePredicate(o -> o == other)
             .name("is[" + stringOf(other) + "]")
             .expectedValue(o -> stringOf(other))
             .hint("Subject should be identical to " + other + " (using ==)")
@@ -465,7 +465,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
     }
 
     /**
-     * Adds an operation to the expression that checks if the subject is not the same as the supplied object.
+     * Adds a predicate to the expression that checks if the subject is not the same as the supplied object.
      * <p/>
      * This evaluation will fail if the subject and supplied object are both {@code null}.
      *
@@ -481,7 +481,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
      *             </code></pre>
      */
     public B isNot(final Object other) {
-        return newNullableOperation(o -> o != other)
+        return newNullablePredicate(o -> o != other)
             .name("isNot[" + stringOf(other) + "]")
             .expectedValue("not[" + stringOf(other) + "]")
             .hint("Subject should not be identical to " + other + " (using !=)")
@@ -489,7 +489,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
     }
 
     /**
-     * Adds an operation to the expression that checks if the subject is equal to the supplied object.
+     * Adds a predicate to the expression that checks if the subject is equal to the supplied object.
      * <p/>
      * This evaluation will pass if the subject and supplied object are both {@code null}.
      *
@@ -506,7 +506,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
      * @see Objects#equals(Object, Object)
      */
     public B isEqualTo(final Object other) {
-        return newNullableOperation(o -> Objects.equals(o, other))
+        return newNullablePredicate(o -> Objects.equals(o, other))
             .name("isEqualTo[" + stringOf(other) + "]")
             .expectedValue(stringOf(other))
             .hint("Subject should be equal to " + other + " (using subject.equals(" + other + "))")
@@ -514,7 +514,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
     }
 
     /**
-     * Adds an operation to the expression that checks if the subject is not equal to the supplied object.
+     * Adds a predicate to the expression that checks if the subject is not equal to the supplied object.
      * <p/>
      * This evaluation will fail if the subject and supplied object are both {@code null}.
      *
@@ -531,7 +531,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
      * @see Objects#equals(Object, Object)
      */
     public B isNotEqualTo(final Object other) {
-        return newNullableOperation(o -> !Objects.equals(o, other))
+        return newNullablePredicate(o -> !Objects.equals(o, other))
             .name("isNotEqualTo[" + stringOf(other) + "]")
             .expectedValue("not[" + stringOf(other) + "]")
             .hint("Subject should be equal to " + other + " (using !subject.equals(" + other + "))")
@@ -539,7 +539,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
     }
 
     /**
-     * Adds an operation to the expression that checks if the hash code of the subject is equal to the supplied hash
+     * Adds a predicate to the expression that checks if the hash code of the subject is equal to the supplied hash
      * code.
      *
      * @param hashCode
@@ -554,7 +554,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
      *             </code></pre>
      */
     public B hashCodeIs(final int hashCode) {
-        return newOperation(o -> o.hashCode() == hashCode)
+        return newPredicate(o -> o.hashCode() == hashCode)
             .name("hashCode == " + hashCode)
             .expectedValue(String.valueOf(hashCode))
             .actualValue(subject -> String.valueOf(subject.hashCode()))
@@ -562,7 +562,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
     }
 
     /**
-     * Adds an operation to the expression that checks if the hash code of the subject is not equal to the supplied hash
+     * Adds a predicate to the expression that checks if the hash code of the subject is not equal to the supplied hash
      * code.
      *
      * @param hashCode
@@ -577,7 +577,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
      *             </code></pre>
      */
     public B hashCodeIsNot(final int hashCode) {
-        return newOperation(o -> o.hashCode() != hashCode)
+        return newPredicate(o -> o.hashCode() != hashCode)
             .name("hashCode != " + hashCode)
             .expectedValue("not[" + hashCode + "]")
             .actualValue(subject -> String.valueOf(subject.hashCode()))
@@ -585,7 +585,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
     }
 
     /**
-     * Adds an operation to the expression that checks if the {@code toString()} value of the subject is equal to the
+     * Adds a predicate to the expression that checks if the {@code toString()} value of the subject is equal to the
      * supplied value.
      *
      * @param expected
@@ -600,7 +600,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
      *             </code></pre>
      */
     public B toStringIs(final String expected) {
-        return newOperation(o -> o.toString().equals(expected))
+        return newPredicate(o -> o.toString().equals(expected))
             .name("toString().equals(" + expected + ")")
             .expectedValue(expected)
             .hint("Subject's toString() value should equal " + expected + " (using subject.toString().equals(" + expected + "))")
@@ -608,7 +608,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
     }
 
     /**
-     * Adds an operation to the expression that checks if the {@code toString()} value of the subject is not equal to the
+     * Adds a predicate to the expression that checks if the {@code toString()} value of the subject is not equal to the
      * supplied value.
      *
      * @param expected
@@ -623,7 +623,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
      *             </code></pre>
      */
     public B toStringIsNot(final String expected) {
-        return newOperation(o -> !o.toString().equals(expected))
+        return newPredicate(o -> !o.toString().equals(expected))
             .name("not[toString().equals(" + expected + ")]")
             .expectedValue("not[" + expected + "]")
             .hint("Subject's toString() value should not equal " + expected + " (using !subject.toString().equals(" + expected + "))")
@@ -631,7 +631,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
     }
 
     /**
-     * Adds an operation to the expression that checks if the supplied predicate is true.
+     * Adds a predicate to the expression that checks if the supplied predicate is true.
      *
      * @param predicate
      *     The predicate to test.
@@ -639,7 +639,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
      * @return This expression (fluent interface).
      */
     public B satisfies(final Predicate<T> predicate) {
-        return newOperation(predicate)
+        return newPredicate(predicate)
             .name("predicate")
             .expectedValue(PREDICATE_SATISFIED)
             .actualValue(o -> predicate.test(o) ? PREDICATE_SATISFIED : PREDICATE_UNSATISFIED)
@@ -647,7 +647,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
     }
 
     /**
-     * Adds an operation to the expression that checks if the supplied condition is true.
+     * Adds a predicate to the expression that checks if the supplied condition is true.
      *
      * @param condition
      *     The condition to test.
@@ -655,7 +655,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
      * @return This expression (fluent interface).
      */
     public B satisfies(final Condition<T> condition) {
-        return newOperation(condition)
+        return newPredicate(condition)
             .name("condition: " + conditionName(condition))
             .expectedValue(CONDITION_SATISFIED)
             .actualValue(o -> condition.test(o) ? CONDITION_SATISFIED : CONDITION_UNSATISFIED)
@@ -663,7 +663,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
     }
 
     /**
-     * Adds an operation to the expression that checks if the supplied predicate is false.
+     * Adds a predicate to the expression that checks if the supplied predicate is false.
      *
      * @param predicate
      *     The predicate to test.
@@ -671,7 +671,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
      * @return This expression (fluent interface).
      */
     public B doesNotSatisfy(final Predicate<T> predicate) {
-        return newOperation(o -> !predicate.test(o))
+        return newPredicate(o -> !predicate.test(o))
             .name("not[predicate]")
             .expectedValue(PREDICATE_UNSATISFIED)
             .actualValue(o -> predicate.test(o) ? PREDICATE_SATISFIED : PREDICATE_UNSATISFIED)
@@ -679,7 +679,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
     }
 
     /**
-     * Adds an operation to the expression that checks if the supplied condition is false.
+     * Adds a predicate to the expression that checks if the supplied condition is false.
      *
      * @param condition
      *     The condition to test.
@@ -687,7 +687,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
      * @return This expression (fluent interface).
      */
     public B doesNotSatisfy(final Condition<T> condition) {
-        return newOperation(o -> !condition.test(o))
+        return newPredicate(o -> !condition.test(o))
             .name("not[condition: " + conditionName(condition) + "]")
             .expectedValue(CONDITION_UNSATISFIED)
             .actualValue(o -> condition.test(o) ? CONDITION_SATISFIED : CONDITION_UNSATISFIED)

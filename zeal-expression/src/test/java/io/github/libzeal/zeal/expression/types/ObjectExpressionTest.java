@@ -102,7 +102,8 @@ public abstract class ObjectExpressionTest<T, E extends ObjectExpression<T, E>> 
         Result expectedState,
         Function<T, String> expectedName,
         BiFunction<E, T, String> expectedExpectedValue,
-        BiFunction<E, T, String> expectedActualValue
+        BiFunction<E, T, String> expectedActualValue,
+        BiFunction<E, T, String> expectedHint
     ) {
 
         E expression = expression(value);
@@ -116,8 +117,12 @@ public abstract class ObjectExpressionTest<T, E extends ObjectExpression<T, E>> 
         assertNotNull(first);
         firstEvaluation.assertStateIs(expectedState);
         firstEvaluation.assertNameIs(expectedName.apply(value));
-        firstEvaluation.assertExpectedIs(expectedExpectedValue.apply(expression,value));
-        firstEvaluation.assertActualIs(expectedActualValue.apply(expression,value));
+        firstEvaluation.assertExpectedIs(expectedExpectedValue.apply(expression, value));
+        firstEvaluation.assertActualIs(expectedActualValue.apply(expression, value));
+
+        if (expectedHint != null) {
+            firstEvaluation.assertHintIs(expectedHint.apply(expression, value));
+        }
     }
 
     private Stream<Arguments> testCaseStream() {
