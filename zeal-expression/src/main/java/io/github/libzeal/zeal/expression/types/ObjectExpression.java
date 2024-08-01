@@ -61,7 +61,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
      *     The subject of the expression.
      */
     protected ObjectExpression(T subject) {
-        this(subject, "Object[" + stringOf(subject) + "] evaluation");
+        this(subject, "Object[" + stringify(subject) + "] evaluation");
     }
 
     /**
@@ -72,7 +72,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
      *
      * @return A human-readable representation of the supplied object.
      */
-    protected static String stringOf(Object o) {
+    protected static String stringify(Object o) {
         return o == null ? "(null)" : o.toString();
     }
 
@@ -126,7 +126,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
         private final Predicate<T> test;
         private String name = "<unnamed>";
         private ValueSupplier<T> expected = s -> "<not set>";
-        private ValueSupplier<T> actual = ObjectExpression::stringOf;
+        private ValueSupplier<T> actual = ObjectExpression::stringify;
         private ValueSupplier<T> hint = null;
 
         private PredicateBuilder(boolean nullable, Predicate<T> test) {
@@ -327,7 +327,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
      */
     public B isType(final Class<?> type) {
 
-        PredicateBuilder builder = newPredicate(o -> o.getClass().equals(type));
+        final PredicateBuilder builder = newPredicate(o -> o.getClass().equals(type));
 
         if (type == null) {
             builder.name("isType[(null)]")
@@ -354,7 +354,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
      */
     public B isNotType(final Class<?> type) {
 
-        PredicateBuilder builder = newPredicate(o -> type != null && !o.getClass().equals(type));
+        final PredicateBuilder builder = newPredicate(o -> type != null && !o.getClass().equals(type));
 
         if (type == null) {
             builder.name("isNotType[(null)]")
@@ -388,7 +388,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
      */
     public B isInstanceOf(final Class<?> type) {
 
-        PredicateBuilder builder = newPredicate(o -> type != null && type.isAssignableFrom(o.getClass()));
+        final PredicateBuilder builder = newPredicate(o -> type != null && type.isAssignableFrom(o.getClass()));
 
         if (type == null) {
             builder.name("isInstanceOf[(null)]")
@@ -423,7 +423,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
      */
     public B isNotInstanceOf(final Class<?> type) {
 
-        PredicateBuilder builder = newPredicate(o -> type != null && !type.isAssignableFrom(o.getClass()));
+        final PredicateBuilder builder = newPredicate(o -> type != null && !type.isAssignableFrom(o.getClass()));
 
         if (type == null) {
             builder.name("isNotInstanceOf[(null)]")
@@ -458,8 +458,8 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
      */
     public B is(final Object other) {
         return newNullablePredicate(o -> o == other)
-            .name("is[" + stringOf(other) + "]")
-            .expectedValue(o -> stringOf(other))
+            .name("is[" + stringify(other) + "]")
+            .expectedValue(o -> stringify(other))
             .hint("Subject should be identical to " + other + " (using ==)")
             .append();
     }
@@ -482,8 +482,8 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
      */
     public B isNot(final Object other) {
         return newNullablePredicate(o -> o != other)
-            .name("isNot[" + stringOf(other) + "]")
-            .expectedValue("not[" + stringOf(other) + "]")
+            .name("isNot[" + stringify(other) + "]")
+            .expectedValue("not[" + stringify(other) + "]")
             .hint("Subject should not be identical to " + other + " (using !=)")
             .append();
     }
@@ -507,8 +507,8 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
      */
     public B isEqualTo(final Object other) {
         return newNullablePredicate(o -> Objects.equals(o, other))
-            .name("isEqualTo[" + stringOf(other) + "]")
-            .expectedValue(stringOf(other))
+            .name("isEqualTo[" + stringify(other) + "]")
+            .expectedValue(stringify(other))
             .hint("Subject should be equal to " + other + " (using subject.equals(" + other + "))")
             .append();
     }
@@ -532,8 +532,8 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
      */
     public B isNotEqualTo(final Object other) {
         return newNullablePredicate(o -> !Objects.equals(o, other))
-            .name("isNotEqualTo[" + stringOf(other) + "]")
-            .expectedValue("not[" + stringOf(other) + "]")
+            .name("isNotEqualTo[" + stringify(other) + "]")
+            .expectedValue("not[" + stringify(other) + "]")
             .hint("Subject should be equal to " + other + " (using !subject.equals(" + other + "))")
             .append();
     }
@@ -580,7 +580,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
         return newPredicate(o -> o.hashCode() != hashCode)
             .name("hashCode != " + hashCode)
             .expectedValue("not[" + hashCode + "]")
-            .actualValue(subject -> String.valueOf(subject.hashCode()))
+            .actualValue(o -> String.valueOf(o.hashCode()))
             .append();
     }
 

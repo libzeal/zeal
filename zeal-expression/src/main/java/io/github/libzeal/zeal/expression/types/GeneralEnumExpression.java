@@ -5,8 +5,11 @@ package io.github.libzeal.zeal.expression.types;
  *
  * @param <T>
  *     The type of the enum being evaluated.
+ *
+ * @author Justin Albano
+ * @since 0.2.0
  */
-public class GeneralEnumExpression<T extends Enum<T>> extends EnumExpression<T, GeneralEnumExpression<T>> {
+public final class GeneralEnumExpression<T extends Enum<T>> extends EnumExpression<T, GeneralEnumExpression<T>> {
 
     /**
      * Creates a new expression for the supplied subject.

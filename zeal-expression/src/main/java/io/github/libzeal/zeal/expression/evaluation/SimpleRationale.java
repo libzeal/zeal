@@ -12,6 +12,8 @@ import java.util.Optional;
  */
 public class SimpleRationale implements Rationale {
 
+    private static final SimpleRationale EMPTY = new SimpleRationale("", "");
+    private static final SimpleRationale SKIPPED = new SimpleRationale("(skipped)", "(skipped)");
     private final String expected;
     private final String actual;
     private final String hint;
@@ -22,7 +24,7 @@ public class SimpleRationale implements Rationale {
      * @return An empty rationale.
      */
     public static SimpleRationale empty() {
-        return new SimpleRationale("", "");
+        return EMPTY;
     }
 
     /**
@@ -31,7 +33,7 @@ public class SimpleRationale implements Rationale {
      * @return A rationale for a skipped evaluation.
      */
     public static SimpleRationale skipped() {
-        return new SimpleRationale("(skipped)", "(skipped)");
+        return SKIPPED;
     }
 
     /**
