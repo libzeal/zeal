@@ -2,6 +2,9 @@ package io.github.libzeal.zeal.expression.types;
 
 /**
  * An expression used to evaluate {@link String} instances.
+ *
+ * @author Justin Albano
+ * @since 0.2.0
  */
 public class StringExpression extends ObjectExpression<String, StringExpression> {
 

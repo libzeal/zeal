@@ -5,6 +5,9 @@ package io.github.libzeal.zeal.expression.types;
  *
  * @param <T>
  *     The type of the object being evaluated.
+ *
+ * @author Justin Albano
+ * @since 0.2.0
  */
 public final class GeneralObjectExpression<T> extends ObjectExpression<T, GeneralObjectExpression<T>> {
 

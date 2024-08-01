@@ -1,5 +1,7 @@
 package io.github.libzeal.zeal.expression.api;
 
+import io.github.libzeal.zeal.expression.types.boxed.BoxedIntegerExpression;
+import io.github.libzeal.zeal.expression.types.boxed.BoxedLongExpression;
 import io.github.libzeal.zeal.expression.types.GeneralEnumExpression;
 import io.github.libzeal.zeal.expression.types.GeneralObjectExpression;
 import io.github.libzeal.zeal.expression.types.StringExpression;
@@ -30,18 +32,52 @@ public class Expressions {
     }
 
     /**
-     * Wraps a string as an expression.
+     * Wraps a {@link Enum<T>} as an expression.
      *
      * @param value
-     *     The string to wrap.
+     *     The {@link Enum<T>} to wrap.
+     * @param <T>
+     *     The type of the enum.
      *
-     * @return An expression that wraps the supplied string.
+     * @return An expression that wraps the supplied {@link Enum<T>}.
+     */
+    public static <T extends Enum<T>> GeneralEnumExpression<T> that(T value) {
+        return new GeneralEnumExpression<>(value);
+    }
+
+    /**
+     * Wraps a {@link String} as an expression.
+     *
+     * @param value
+     *     The {@link String} to wrap.
+     *
+     * @return An expression that wraps the supplied {@link String}.
      */
     public static StringExpression that(String value) {
         return new StringExpression(value);
     }
 
-    public static <T extends Enum<T>> GeneralEnumExpression<T> that(T value) {
-        return new GeneralEnumExpression<>(value);
+    /**
+     * Wraps a {@link Long} as an expression.
+     *
+     * @param value
+     *     The {@link Long} to wrap.
+     *
+     * @return An expression that wraps the supplied {@link Long}.
+     */
+    public static BoxedLongExpression that(Long value) {
+        return new BoxedLongExpression(value);
+    }
+
+    /**
+     * Wraps a {@link Integer} as an expression.
+     *
+     * @param value
+     *     The {@link Integer} to wrap.
+     *
+     * @return An expression that wraps the supplied {@link Integer}.
+     */
+    public static BoxedIntegerExpression that(Integer value) {
+        return new BoxedIntegerExpression(value);
     }
 }

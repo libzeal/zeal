@@ -49,9 +49,12 @@
                             io.github.libzeal.zeal.expression,
                             io.github.libzeal.zeal.expression.api,
                             io.github.libzeal.zeal.expression.condition,
+                            io.github.libzeal.zeal.expression.evaluation,
+                            io.github.libzeal.zeal.expression.evaluation.format,
                             io.github.libzeal.zeal.expression.predicate,
-                            io.github.libzeal.zeal.expression.predicate.format,
-                            io.github.libzeal.zeal.expression.types
+                            io.github.libzeal.zeal.expression.predicate.unary,
+                            io.github.libzeal.zeal.expression.types,
+                            io.github.libzeal.zeal.expression.types.boxed
                         </Export-Package>
                     </instructions>
                 </configuration>
