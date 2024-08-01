@@ -4,12 +4,12 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class RationaleTest {
+class SimpleRationaleTest {
 
     @Test
     void whenEmptyRationale_thenFieldsAreAllBlank() {
 
-        final Rationale rationale = Rationale.empty();
+        final Rationale rationale = SimpleRationale.empty();
 
         assertEquals("", rationale.expected());
         assertEquals("", rationale.actual());
@@ -22,7 +22,7 @@ class RationaleTest {
         final String expected = "foo";
         final String actual = "bar";
 
-        Rationale rationale = new Rationale(expected, actual);
+        Rationale rationale = new SimpleRationale(expected, actual);
 
         assertEquals(expected, rationale.expected());
         assertEquals(actual, rationale.actual());
@@ -36,7 +36,7 @@ class RationaleTest {
         final String actual = "bar";
         final String hint = "baz";
 
-        Rationale rationale = new Rationale(expected, actual, hint);
+        Rationale rationale = new SimpleRationale(expected, actual, hint);
 
         assertEquals(expected, rationale.expected());
         assertEquals(actual, rationale.actual());

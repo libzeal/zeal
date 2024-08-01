@@ -3,6 +3,7 @@ package io.github.libzeal.zeal.expression.evaluation.format;
 import io.github.libzeal.zeal.expression.evaluation.Evaluation;
 import io.github.libzeal.zeal.expression.evaluation.Rationale;
 import io.github.libzeal.zeal.expression.evaluation.Result;
+import io.github.libzeal.zeal.expression.evaluation.SimpleRationale;
 import io.github.libzeal.zeal.expression.predicate.EvaluatedPredicate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -95,7 +96,7 @@ class SimpleEvaluationFormatterTest {
 
         final Result result = Result.FAILED;
         final String name = "foo";
-        final Rationale rationale = new Rationale("expected", "actual", "hint");
+        final Rationale rationale = new SimpleRationale("expected", "actual", "hint");
         final Evaluation expression = expression(result, name, rationale);
 
         assertEquals(
@@ -158,17 +159,17 @@ class SimpleEvaluationFormatterTest {
 
         final Result passingResult = Result.PASSED;
         final String passingName = "foo1";
-        final Rationale passingRationale = new Rationale("expected1", "actual1", "hint1");
+        final Rationale passingRationale = new SimpleRationale("expected1", "actual1", "hint1");
         final Evaluation passingExpression = expression(passingResult, passingName, passingRationale);
 
         final Result failingResult = Result.FAILED;
         final String failingName = "foo2";
-        final Rationale failingRationale = new Rationale("expected2", "actual2", "hint2");
+        final Rationale failingRationale = new SimpleRationale("expected2", "actual2", "hint2");
         final Evaluation failingExpression = expression(failingResult, failingName, failingRationale);
 
         final EvaluatedPredicate compound = new EvaluatedPredicate(
             compoundExpressionName, Result.FAILED,
-            Rationale::empty,
+            SimpleRationale.empty(),
             Arrays.asList(passingExpression, failingExpression)
         );
 
@@ -188,22 +189,22 @@ class SimpleEvaluationFormatterTest {
 
         final Result passingResult = Result.PASSED;
         final String passingName = "foo1";
-        final Rationale passingRationale = new Rationale("expected1", "actual1", "hint1");
+        final Rationale passingRationale = new SimpleRationale("expected1", "actual1", "hint1");
         final Evaluation passingExpression = expression(passingResult, passingName, passingRationale);
 
         final Result failingResult = Result.FAILED;
         final String failingName = "foo2";
-        final Rationale failingRationale = new Rationale("expected2", "actual2", "hint2");
+        final Rationale failingRationale = new SimpleRationale("expected2", "actual2", "hint2");
         final Evaluation failingExpression = expression(failingResult, failingName, failingRationale);
 
         final Result skippedResult = Result.SKIPPED;
         final String skippedName = "foo3";
-        final Rationale skippedRationale = Rationale.empty();
+        final Rationale skippedRationale = SimpleRationale.empty();
         final Evaluation skippedExpression = expression(skippedResult, skippedName, skippedRationale);
 
         final EvaluatedPredicate compound = new EvaluatedPredicate(
             compoundExpressionName, Result.FAILED,
-            Rationale::empty,
+            SimpleRationale.empty(),
             Arrays.asList(passingExpression, failingExpression, skippedExpression)
         );
 

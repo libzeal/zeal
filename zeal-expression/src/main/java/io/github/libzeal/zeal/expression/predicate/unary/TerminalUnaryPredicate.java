@@ -3,7 +3,6 @@ package io.github.libzeal.zeal.expression.predicate.unary;
 import io.github.libzeal.zeal.expression.evaluation.Evaluation;
 import io.github.libzeal.zeal.expression.evaluation.Rationale;
 import io.github.libzeal.zeal.expression.predicate.EvaluatedPredicate;
-import io.github.libzeal.zeal.expression.predicate.RationaleGenerator;
 
 import java.util.function.Predicate;
 
@@ -23,7 +22,7 @@ public class TerminalUnaryPredicate<T> implements UnaryPredicate<T> {
 
     private final String name;
     private final Predicate<T> predicate;
-    private final RationaleGenerator<T> rationaleGenerator;
+    private final Rationale rationale;
 
     /**
      * Creates an operation where the predicate fails if the supplied subject is {@code null} (a non-nullable
@@ -34,7 +33,7 @@ public class TerminalUnaryPredicate<T> implements UnaryPredicate<T> {
      * @param predicate
      *     The predicate for the operation. This predicate fails is the supplied subject is {@null} (a non-nullable
      *     predicate).
-     * @param rationaleGenerator
+     * @param rationale
      *     A generator used to create a rationale for the operation when it is evaluated.
      * @param <S>
      *     The type of the subject.
@@ -45,11 +44,11 @@ public class TerminalUnaryPredicate<T> implements UnaryPredicate<T> {
      *     Any of the supplied arguments are {@code null}.
      */
     public static <S> TerminalUnaryPredicate<S> of(String name, Predicate<S> predicate,
-                                                   RationaleGenerator<S> rationaleGenerator) {
+                                                   Rationale rationale) {
         return new TerminalUnaryPredicate<>(
             name,
             s -> s != null && predicate.test(s),
-            rationaleGenerator
+            rationale
         );
     }
 
@@ -61,7 +60,7 @@ public class TerminalUnaryPredicate<T> implements UnaryPredicate<T> {
      * @param predicate
      *     The predicate for the operation. This predicate accepts a {@code null} subject (a nullable predicate). Note
      *     that the predicate itself cannot be {@code null}.
-     * @param rationaleGenerator
+     * @param rationale
      *     A generator used to create a rationale for the operation when it is evaluated.
      * @param <S>
      *     The type of the subject.
@@ -71,14 +70,14 @@ public class TerminalUnaryPredicate<T> implements UnaryPredicate<T> {
      * @throws NullPointerException
      *     Any of the supplied arguments are {@code null}.
      */
-    public static <S> TerminalUnaryPredicate<S> ofNullable(String name, Predicate<S> predicate, RationaleGenerator<S> rationaleGenerator) {
-        return new TerminalUnaryPredicate<>(name, predicate, rationaleGenerator);
+    public static <S> TerminalUnaryPredicate<S> ofNullable(String name, Predicate<S> predicate, Rationale rationale) {
+        return new TerminalUnaryPredicate<>(name, predicate, rationale);
     }
 
-    private TerminalUnaryPredicate(String name, Predicate<T> predicate, RationaleGenerator<T> rationaleGenerator) {
+    private TerminalUnaryPredicate(String name, Predicate<T> predicate, Rationale rationale) {
         this.name = requireNonNull(name);
         this.predicate = requireNonNull(predicate);
-        this.rationaleGenerator = requireNonNull(rationaleGenerator);
+        this.rationale = requireNonNull(rationale);
     }
 
     @Override
@@ -91,7 +90,7 @@ public class TerminalUnaryPredicate<T> implements UnaryPredicate<T> {
         return new EvaluatedPredicate(
             name,
             predicate.test(subject) ? PASSED : FAILED,
-            () -> rationaleGenerator.generate(subject)
+            rationale
         );
     }
 }

@@ -4,7 +4,7 @@ import io.github.libzeal.zeal.expression.evaluation.Evaluation;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class PredicateAssertions {
+public class PredicateAssertions {
 
     private PredicateAssertions() {}
 

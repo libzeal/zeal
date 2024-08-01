@@ -1,10 +1,8 @@
-package io.github.libzeal.zeal.expression.predicate;
+package io.github.libzeal.zeal.expression.predicate.unary;
 
 import io.github.libzeal.zeal.expression.evaluation.Evaluation;
-import io.github.libzeal.zeal.expression.evaluation.Rationale;
 import io.github.libzeal.zeal.expression.evaluation.Result;
-import io.github.libzeal.zeal.expression.predicate.unary.DisjunctiveUnaryPredicate;
-import io.github.libzeal.zeal.expression.predicate.unary.UnaryPredicate;
+import io.github.libzeal.zeal.expression.evaluation.SimpleRationale;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -13,7 +11,6 @@ import java.util.ArrayList;
 import static io.github.libzeal.zeal.expression.predicate.PredicateAssertions.assertHasChildWithName;
 import static io.github.libzeal.zeal.expression.predicate.Predicates.unaryPredicate;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 class DisjunctiveUnaryPredicateTest {
@@ -177,7 +174,7 @@ class DisjunctiveUnaryPredicateTest {
 
         assertEquals(predicate.name(), skippedEvaluation.name());
         assertEquals(Result.SKIPPED, skippedEvaluation.result());
-        assertEquals(Rationale.skipped(), skippedEvaluation.rationale());
+        assertEquals(SimpleRationale.skipped(), skippedEvaluation.rationale());
         assertTrue(skippedEvaluation.children().isEmpty());
     }
 
@@ -193,7 +190,7 @@ class DisjunctiveUnaryPredicateTest {
 
         assertEquals(predicate.name(), skippedEvaluation.name());
         assertEquals(Result.SKIPPED, skippedEvaluation.result());
-        assertEquals(Rationale.skipped(), skippedEvaluation.rationale());
+        assertEquals(SimpleRationale.skipped(), skippedEvaluation.rationale());
         assertEquals(1, skippedEvaluation.children().size());
         assertHasChildWithName(skippedEvaluation, subPredicateName);
     }
@@ -213,7 +210,7 @@ class DisjunctiveUnaryPredicateTest {
 
         assertEquals(predicate.name(), skippedEvaluation.name());
         assertEquals(Result.SKIPPED, skippedEvaluation.result());
-        assertEquals(Rationale.skipped(), skippedEvaluation.rationale());
+        assertEquals(SimpleRationale.skipped(), skippedEvaluation.rationale());
         assertEquals(2, skippedEvaluation.children().size());
         assertHasChildWithName(skippedEvaluation, subPredicateName1);
         assertHasChildWithName(skippedEvaluation, subPredicateName2);

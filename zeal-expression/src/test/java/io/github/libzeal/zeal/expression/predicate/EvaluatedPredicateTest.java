@@ -2,6 +2,7 @@ package io.github.libzeal.zeal.expression.predicate;
 
 import io.github.libzeal.zeal.expression.evaluation.Rationale;
 import io.github.libzeal.zeal.expression.evaluation.Result;
+import io.github.libzeal.zeal.expression.evaluation.SimpleRationale;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -18,22 +19,22 @@ class EvaluatedPredicateTest {
 
         result = Result.PASSED;
         name = "foo";
-        rationale = Rationale.empty();
-    }
-
-    @Test
-    void givenNullResult_whenConstruct_thenExceptionThrown() {
-        assertThrows(
-            NullPointerException.class,
-            () -> new EvaluatedPredicate("foo", null, () -> rationale)
-        );
+        rationale = SimpleRationale.empty();
     }
 
     @Test
     void givenNullName_whenConstruct_thenExceptionThrown() {
         assertThrows(
             NullPointerException.class,
-            () -> new EvaluatedPredicate(null, Result.PASSED, () -> rationale)
+            () -> new EvaluatedPredicate(null, Result.PASSED, rationale)
+        );
+    }
+
+    @Test
+    void givenNullResult_whenConstruct_thenExceptionThrown() {
+        assertThrows(
+            NullPointerException.class,
+            () -> new EvaluatedPredicate("foo", null, rationale)
         );
     }
 
@@ -48,7 +49,7 @@ class EvaluatedPredicateTest {
     @Test
     void whenConstruct_thenValidDataReturned() {
 
-        EvaluatedPredicate expression = new EvaluatedPredicate(name, result, () -> rationale);
+        EvaluatedPredicate expression = new EvaluatedPredicate(name, result, rationale);
 
         assertEquals(result, expression.result());
         assertEquals(name, expression.name());

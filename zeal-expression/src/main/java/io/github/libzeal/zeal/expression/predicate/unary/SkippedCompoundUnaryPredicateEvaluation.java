@@ -3,6 +3,7 @@ package io.github.libzeal.zeal.expression.predicate.unary;
 import io.github.libzeal.zeal.expression.evaluation.Evaluation;
 import io.github.libzeal.zeal.expression.evaluation.Rationale;
 import io.github.libzeal.zeal.expression.evaluation.Result;
+import io.github.libzeal.zeal.expression.evaluation.SimpleRationale;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +32,7 @@ public class SkippedCompoundUnaryPredicateEvaluation<T> implements Evaluation {
 
     @Override
     public Rationale rationale() {
-        return Rationale.skipped();
+        return SimpleRationale.skipped();
     }
 
     @Override
