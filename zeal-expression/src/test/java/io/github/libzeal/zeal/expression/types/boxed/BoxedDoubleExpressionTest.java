@@ -28,6 +28,7 @@ class BoxedDoubleExpressionTest extends ObjectExpressionTest<Double, BoxedDouble
     protected void extendTestCases(ExpressionTestCaseBuilder<Double, BoxedDoubleExpression> builder) {
         isEqualToTestCases(builder);
         isNotEqualToTestCases(builder);
+        isWithinDeltaTestCases(builder);
         isLessThanTestCases(builder);
         ltTestCases(builder);
         isGreaterThanTestCases(builder);
@@ -80,6 +81,10 @@ class BoxedDoubleExpressionTest extends ObjectExpressionTest<Double, BoxedDouble
                 .expectedExpectedValue("not[" + stringify(1.0) + "]")
                 .expectedActualValue(stringify(2.0))
                 .addTest();
+    }
+
+    private void isWithinDeltaTestCases(final ExpressionTestCaseBuilder<Double, BoxedDoubleExpression> builder) {
+        // FIXME Add test cases
     }
 
     private void isLessThanTestCases(final ExpressionTestCaseBuilder<Double, BoxedDoubleExpression> builder) {
