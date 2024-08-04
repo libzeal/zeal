@@ -5,7 +5,6 @@ import io.github.libzeal.zeal.expression.test.ExpressionTestCaseBuilder;
 import static io.github.libzeal.zeal.expression.evaluation.Result.FAILED;
 import static io.github.libzeal.zeal.expression.evaluation.Result.PASSED;
 
-@SuppressWarnings("java:S2187")
 class StringExpressionTest extends ObjectExpressionTest<String, StringExpression> {
 
     @Override
