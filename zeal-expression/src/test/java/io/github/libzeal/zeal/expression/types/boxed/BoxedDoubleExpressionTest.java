@@ -1,7 +1,6 @@
 package io.github.libzeal.zeal.expression.types.boxed;
 
 import io.github.libzeal.zeal.expression.test.ExpressionTestCaseBuilder;
-import io.github.libzeal.zeal.expression.types.ObjectExpressionTest;
 
 import static io.github.libzeal.zeal.expression.evaluation.Result.FAILED;
 import static io.github.libzeal.zeal.expression.evaluation.Result.PASSED;
@@ -41,14 +40,55 @@ class BoxedDoubleExpressionTest extends BoxedNumericExpressionTest<Double, Boxed
 
     @Override
     protected void customTestCases(ExpressionTestCaseBuilder<Double, BoxedDoubleExpression> builder) {
-        isWithinDeltaTestCases(builder);
+        isEqualToTestCases(builder);
         isFiniteTestCases(builder);
         isInfiniteTestCases(builder);
         isNanTestCases(builder);
     }
 
-    private void isWithinDeltaTestCases(final ExpressionTestCaseBuilder<Double, BoxedDoubleExpression> builder) {
-        // FIXME Add test cases
+    private void isEqualToTestCases(final ExpressionTestCaseBuilder<Double, BoxedDoubleExpression> builder) {
+        builder.newTest((expression, value) -> expression.isEqualTo(1.0, 1.0))
+                .value(-0.1)
+                .expectedState(FAILED)
+                .expectedName("isEqualTo[1.0 +/- 1.0]")
+                .expectedExpectedValue("1.0 +/- 1.0")
+                .expectedActualValue(stringify(-0.1))
+                .addTest()
+            .newTest((expression, value) -> expression.isEqualTo(1.0, 1.0))
+                .value(0.0)
+                .expectedState(PASSED)
+                .expectedName("isEqualTo[1.0 +/- 1.0]")
+                .expectedExpectedValue("1.0 +/- 1.0")
+                .expectedActualValue(stringify(0.0))
+                .addTest()
+            .newTest((expression, value) -> expression.isEqualTo(1.0, 1.0))
+                .value(0.1)
+                .expectedState(PASSED)
+                .expectedName("isEqualTo[1.0 +/- 1.0]")
+                .expectedExpectedValue("1.0 +/- 1.0")
+                .expectedActualValue(stringify(0.1))
+                .addTest()
+            .newTest((expression, value) -> expression.isEqualTo(1.0, 1.0))
+                .value(1.9)
+                .expectedState(PASSED)
+                .expectedName("isEqualTo[1.0 +/- 1.0]")
+                .expectedExpectedValue("1.0 +/- 1.0")
+                .expectedActualValue(stringify(1.9))
+                .addTest()
+            .newTest((expression, value) -> expression.isEqualTo(1.0, 1.0))
+                .value(2.0)
+                .expectedState(PASSED)
+                .expectedName("isEqualTo[1.0 +/- 1.0]")
+                .expectedExpectedValue("1.0 +/- 1.0")
+                .expectedActualValue(stringify(2.0))
+                .addTest()
+            .newTest((expression, value) -> expression.isEqualTo(1.0, 1.0))
+                .value(2.1)
+                .expectedState(FAILED)
+                .expectedName("isEqualTo[1.0 +/- 1.0]")
+                .expectedExpectedValue("1.0 +/- 1.0")
+                .expectedActualValue(stringify(2.1))
+                .addTest();
     }
 
     private void isFiniteTestCases(final ExpressionTestCaseBuilder<Double, BoxedDoubleExpression> builder) {
