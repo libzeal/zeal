@@ -1,7 +1,19 @@
 package io.github.libzeal.zeal.expression.types.boxed;
 
+/**
+ * An expression used to evaluate {@link Float} instances.
+ *
+ * @author Justin Albano
+ * @since 0.2.0
+ */
 public class BoxedFloatExpression extends BoxedNumericExpression<Float, BoxedFloatExpression> {
 
+    /**
+     * Creates a new expression.
+     *
+     * @param subject
+     *     The subject of the expression.
+     */
     public BoxedFloatExpression(final Float subject) {
         super(subject, "Float expression");
     }

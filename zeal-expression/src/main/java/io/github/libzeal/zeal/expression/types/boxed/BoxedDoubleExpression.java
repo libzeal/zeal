@@ -1,7 +1,19 @@
 package io.github.libzeal.zeal.expression.types.boxed;
 
+/**
+ * An expression used to evaluate {@link Double} instances.
+ *
+ * @author Justin Albano
+ * @since 0.2.0
+ */
 public class BoxedDoubleExpression extends BoxedNumericExpression<Double, BoxedDoubleExpression> {
 
+    /**
+     * Creates a new expression.
+     *
+     * @param subject
+     *     The subject of the expression.
+     */
     public BoxedDoubleExpression(final Double subject) {
         super(subject, "Double expression");
     }
