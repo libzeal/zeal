@@ -6,12 +6,30 @@ public class BoxedDoubleExpression extends BoxedNumericExpression<Double, BoxedD
         super(subject, "Double expression");
     }
 
+    /**
+     * Adds a predicate to the expression that checks if the subject within the supplied delta. The formula used to
+     * evaluate the predicate is:
+     *
+     * <pre><code>abs(subject - value) <= delta</code></pre>
+     *
+     * @param value
+     *     The value to compare to the subject.
+     * @param delta
+     *     The delta used to compare the expected value to the subject.
+     *
+     * @return This expression (fluent interface).
+     */
     public BoxedDoubleExpression isWithinDelta(final Double value, final Double delta) {
         return newPredicate(d ->  Math.abs(d - value) < delta)
             .expectedValue(value + " +/- " + delta)
             .append();
     }
 
+    /**
+     * Adds a predicate to the expression that checks if the subject is finite.
+     *
+     * @return This expression (fluent interface).
+     */
     public BoxedDoubleExpression isFinite() {
         return newPredicate(Double::isFinite)
             .name("isFinite")
@@ -19,6 +37,11 @@ public class BoxedDoubleExpression extends BoxedNumericExpression<Double, BoxedD
             .append();
     }
 
+    /**
+     * Adds a predicate to the expression that checks if the subject is infinite.
+     *
+     * @return This expression (fluent interface).
+     */
     public BoxedDoubleExpression isInfinite() {
         return newPredicate(l -> l.isInfinite())
             .name("isInfinite")
@@ -26,6 +49,11 @@ public class BoxedDoubleExpression extends BoxedNumericExpression<Double, BoxedD
             .append();
     }
 
+    /**
+     * Adds a predicate to the expression that checks if the subject is not a number (NaN).
+     *
+     * @return This expression (fluent interface).
+     */
     public BoxedDoubleExpression isNaN() {
         return newPredicate(l -> l.isNaN())
             .name("isNaN")

@@ -6,12 +6,30 @@ public class BoxedFloatExpression extends BoxedNumericExpression<Float, BoxedFlo
         super(subject, "Float expression");
     }
 
+    /**
+     * Adds a predicate to the expression that checks if the subject within the supplied delta. The formula used to
+     * evaluate the predicate is:
+     *
+     * <pre><code>abs(subject - value) <= delta</code></pre>
+     *
+     * @param value
+     *     The value to compare to the subject.
+     * @param delta
+     *     The delta used to compare the expected value to the subject.
+     *
+     * @return This expression (fluent interface).
+     */
     public BoxedFloatExpression isWithinDelta(final Float value, final Float delta) {
-        return newPredicate(d ->  Math.abs(d - value) < delta)
+        return newPredicate(d -> Math.abs(d - value) <= delta)
             .expectedValue(value + " +/- " + delta)
             .append();
     }
 
+    /**
+     * Adds a predicate to the expression that checks if the subject is finite.
+     *
+     * @return This expression (fluent interface).
+     */
     public BoxedFloatExpression isFinite() {
         return newPredicate(Float::isFinite)
             .name("isFinite")
@@ -19,6 +37,11 @@ public class BoxedFloatExpression extends BoxedNumericExpression<Float, BoxedFlo
             .append();
     }
 
+    /**
+     * Adds a predicate to the expression that checks if the subject is infinite.
+     *
+     * @return This expression (fluent interface).
+     */
     public BoxedFloatExpression isInfinite() {
         return newPredicate(l -> l.isInfinite())
             .name("isInfinite")
@@ -26,6 +49,11 @@ public class BoxedFloatExpression extends BoxedNumericExpression<Float, BoxedFlo
             .append();
     }
 
+    /**
+     * Adds a predicate to the expression that checks if the subject is not a number (NaN).
+     *
+     * @return This expression (fluent interface).
+     */
     public BoxedFloatExpression isNaN() {
         return newPredicate(l -> l.isNaN())
             .name("isNaN")
