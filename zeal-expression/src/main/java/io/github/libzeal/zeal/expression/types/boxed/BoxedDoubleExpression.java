@@ -19,10 +19,7 @@ public class BoxedDoubleExpression extends BoxedNumericExpression<Double, BoxedD
     }
 
     /**
-     * Adds a predicate to the expression that checks if the subject within the supplied delta. The formula used to
-     * evaluate the predicate is:
-     *
-     * <pre><code>abs(subject - value) <= delta</code></pre>
+     * Adds a predicate to the expression that checks if the subject is equal within the supplied delta.
      *
      * @param value
      *     The value to compare to the subject.
@@ -30,9 +27,14 @@ public class BoxedDoubleExpression extends BoxedNumericExpression<Double, BoxedD
      *     The delta used to compare the expected value to the subject.
      *
      * @return This expression (fluent interface).
+     *
+     * @implSpec The formula used to evaluate the predicate is:
+     *
+     *     <pre><code>abs(subject - value) <= delta</code></pre>
      */
-    public BoxedDoubleExpression isWithinDelta(final Double value, final Double delta) {
-        return newPredicate(d ->  Math.abs(d - value) < delta)
+    public BoxedDoubleExpression isEqualTo(final Double value, final Double delta) {
+        return newPredicate(d -> Math.abs(d - value) <= delta)
+            .name("isEqualTo[" + value + " +/- " + delta + "]")
             .expectedValue(value + " +/- " + delta)
             .append();
     }

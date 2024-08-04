@@ -40,14 +40,55 @@ class BoxedFloatExpressionTest extends BoxedNumericExpressionTest<Float, BoxedFl
 
     @Override
     protected void customTestCases(ExpressionTestCaseBuilder<Float, BoxedFloatExpression> builder) {
-        isWithinDeltaTestCases(builder);
+        isEqualToTestCases(builder);
         isFiniteTestCases(builder);
         isInfiniteTestCases(builder);
         isNanTestCases(builder);
     }
 
-    private void isWithinDeltaTestCases(final ExpressionTestCaseBuilder<Float, BoxedFloatExpression> builder) {
-        // FIXME Add test cases
+    private void isEqualToTestCases(final ExpressionTestCaseBuilder<Float, BoxedFloatExpression> builder) {
+        builder.newTest((expression, value) -> expression.isEqualTo(1.0f, 1.0f))
+                .value(-0.1f)
+                .expectedState(FAILED)
+                .expectedName("isEqualTo[1.0 +/- 1.0]")
+                .expectedExpectedValue("1.0 +/- 1.0")
+                .expectedActualValue(stringify(-0.1f))
+                .addTest()
+            .newTest((expression, value) -> expression.isEqualTo(1.0f, 1.0f))
+                .value(0.0f)
+                .expectedState(PASSED)
+                .expectedName("isEqualTo[1.0 +/- 1.0]")
+                .expectedExpectedValue("1.0 +/- 1.0")
+                .expectedActualValue(stringify(0.0f))
+                .addTest()
+            .newTest((expression, value) -> expression.isEqualTo(1.0f, 1.0f))
+                .value(0.1f)
+                .expectedState(PASSED)
+                .expectedName("isEqualTo[1.0 +/- 1.0]")
+                .expectedExpectedValue("1.0 +/- 1.0")
+                .expectedActualValue(stringify(0.1f))
+                .addTest()
+            .newTest((expression, value) -> expression.isEqualTo(1.0f, 1.0f))
+                .value(1.9f)
+                .expectedState(PASSED)
+                .expectedName("isEqualTo[1.0 +/- 1.0]")
+                .expectedExpectedValue("1.0 +/- 1.0")
+                .expectedActualValue(stringify(1.9f))
+                .addTest()
+            .newTest((expression, value) -> expression.isEqualTo(1.0f, 1.0f))
+                .value(2.0f)
+                .expectedState(PASSED)
+                .expectedName("isEqualTo[1.0 +/- 1.0]")
+                .expectedExpectedValue("1.0 +/- 1.0")
+                .expectedActualValue(stringify(2.0))
+                .addTest()
+            .newTest((expression, value) -> expression.isEqualTo(1.0f, 1.0f))
+                .value(2.1f)
+                .expectedState(FAILED)
+                .expectedName("isEqualTo[1.0 +/- 1.0]")
+                .expectedExpectedValue("1.0 +/- 1.0")
+                .expectedActualValue(stringify(2.1f))
+                .addTest();
     }
 
     private void isFiniteTestCases(final ExpressionTestCaseBuilder<Float, BoxedFloatExpression> builder) {

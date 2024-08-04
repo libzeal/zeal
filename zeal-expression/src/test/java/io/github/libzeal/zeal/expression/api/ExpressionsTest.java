@@ -47,4 +47,44 @@ class ExpressionsTest {
 
         assertNotNull(expression);
     }
+
+    @Test
+    void givenValidValue_whenThatBoxedInteger_thenExpressionReturned() {
+
+        Expression expression = Expressions.that(Integer.valueOf(1));
+
+        assertNotNull(expression);
+    }
+
+    @Test
+    void givenValidValue_whenThatBoxedLong_thenExpressionReturned() {
+
+        Expression expression = Expressions.that(Long.valueOf(1));
+
+        assertNotNull(expression);
+    }
+
+    @Test
+    void givenValidValue_whenThatBoxedDouble_thenExpressionReturned() {
+
+        Expression expression = Expressions.that(Double.valueOf(1));
+
+        assertNotNull(expression);
+    }
+
+    @Test
+    void givenValidValue_whenThatBoxedFloat_thenExpressionReturned() {
+
+        Expression expression = Expressions.that(Float.valueOf(1));
+
+        assertNotNull(expression);
+    }
+
+    @Test
+    void givenValidValue_whenThatBoxedBoolean_thenExpressionReturned() {
+
+        Expression expression = Expressions.that(Boolean.TRUE);
+
+        assertNotNull(expression);
+    }
 }
