@@ -8,6 +8,7 @@ import io.github.libzeal.zeal.expression.evaluation.Evaluation;
  * @author Justin Albano
  * @since 0.2.0
  */
+@FunctionalInterface
 public interface Expression {
 
     /**

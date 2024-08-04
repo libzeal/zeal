@@ -72,7 +72,7 @@ public class ObjectExpression<T, B extends ObjectExpression<T, B>> implements Un
      *
      * @return A human-readable representation of the supplied object.
      */
-    protected static String stringify(Object o) {
+    public static String stringify(Object o) {
         return o == null ? "(null)" : o.toString();
     }
 

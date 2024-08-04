@@ -2,12 +2,16 @@ package io.github.libzeal.zeal.assertion.api;
 
 import io.github.libzeal.zeal.assertion.error.PreconditionIllegalArgumentException;
 import io.github.libzeal.zeal.assertion.error.PreconditionNullPointerException;
+import io.github.libzeal.zeal.expression.Expression;
 import io.github.libzeal.zeal.expression.UnaryExpression;
 import io.github.libzeal.zeal.expression.evaluation.Evaluation;
 import io.github.libzeal.zeal.expression.evaluation.Result;
 
 /**
- * Basic assertions
+ * Basic assertions that verify expressions.
+ *
+ * @author Justin Albano
+ * @since 0.2.0
  */
 public class Assertions {
 
@@ -139,7 +143,7 @@ public class Assertions {
         }
     }
 
-    private static boolean isFailed(Evaluation eval) {
+    private static boolean isFailed(final Evaluation eval) {
         return eval.result().equals(Result.FAILED);
     }
 }
