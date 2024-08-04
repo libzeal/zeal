@@ -1,70 +1,69 @@
 package io.github.libzeal.zeal.expression.types.boxed;
 
 import io.github.libzeal.zeal.expression.test.ExpressionTestCaseBuilder;
-import io.github.libzeal.zeal.expression.types.ObjectExpressionTest;
 
 import static io.github.libzeal.zeal.expression.evaluation.Result.FAILED;
 import static io.github.libzeal.zeal.expression.evaluation.Result.PASSED;
 import static io.github.libzeal.zeal.expression.types.ObjectExpression.stringify;
 
-class BoxedDoubleExpressionTest extends BoxedNumericExpressionTest<Double, BoxedDoubleExpression>  {
+class BoxedFloatExpressionTest extends BoxedNumericExpressionTest<Float, BoxedFloatExpression>  {
 
     @Override
-    protected BoxedDoubleExpression expression(final Double value) {
-        return new BoxedDoubleExpression(value);
+    protected BoxedFloatExpression expression(final Float value) {
+        return new BoxedFloatExpression(value);
     }
 
     @Override
-    protected Double exampleNegativeValue() {
-        return -1.0;
+    protected Float exampleNegativeValue() {
+        return -1.0f;
     }
 
     @Override
-    protected Double exampleZeroValue() {
-        return 0.0;
+    protected Float exampleZeroValue() {
+        return 0.0f;
     }
 
     @Override
-    protected Double examplePositiveValue() {
-        return 1.0;
+    protected Float examplePositiveValue() {
+        return 1.0f;
     }
 
     @Override
-    protected Double exampleMaximumValue() {
-        return Double.MAX_VALUE;
+    protected Float exampleMaximumValue() {
+        return Float.MAX_VALUE;
     }
 
     @Override
-    protected Double exampleMinimumValue() {
-        return Double.MIN_VALUE;
+    protected Float exampleMinimumValue() {
+        return Float.MIN_VALUE;
     }
 
     @Override
-    protected void customTestCases(ExpressionTestCaseBuilder<Double, BoxedDoubleExpression> builder) {
+    protected void customTestCases(ExpressionTestCaseBuilder<Float, BoxedFloatExpression> builder) {
         isWithinDeltaTestCases(builder);
         isFiniteTestCases(builder);
         isInfiniteTestCases(builder);
         isNanTestCases(builder);
     }
 
-    private void isWithinDeltaTestCases(final ExpressionTestCaseBuilder<Double, BoxedDoubleExpression> builder) {
+    private void isWithinDeltaTestCases(final ExpressionTestCaseBuilder<Float, BoxedFloatExpression> builder) {
         // FIXME Add test cases
     }
 
-    private void isFiniteTestCases(final ExpressionTestCaseBuilder<Double, BoxedDoubleExpression> builder) {
+    private void isFiniteTestCases(final ExpressionTestCaseBuilder<Float, BoxedFloatExpression> builder) {
         builder.newTest((expression, value) -> expression.isFinite())
-                .value(Double.POSITIVE_INFINITY)
+                .value(Float.POSITIVE_INFINITY)
                 .expectedState(FAILED)
                 .expectedName("isFinite")
                 .expectedExpectedValue("finite")
-                .expectedActualValue(stringify(Double.POSITIVE_INFINITY))
+                .expectedActualValue(stringify(Float.POSITIVE_INFINITY))
                 .addTest()
             .newTest((expression, value) -> expression.isFinite())
-                .value(Double.NEGATIVE_INFINITY)
+                .value(Float.NEGATIVE_INFINITY)
                 .expectedState(FAILED)
                 .expectedName("isFinite")
                 .expectedExpectedValue("finite")
-                .expectedActualValue(stringify(Double.NEGATIVE_INFINITY))
+                .expectedActualValue(stringify(Float.NEGATIVE_INFINITY))
                 .addTest()
             .newTest((expression, value) -> expression.isFinite())
                 .value(exampleZeroValue())
@@ -75,20 +74,20 @@ class BoxedDoubleExpressionTest extends BoxedNumericExpressionTest<Double, Boxed
                 .addTest();
     }
 
-    private void isInfiniteTestCases(final ExpressionTestCaseBuilder<Double, BoxedDoubleExpression> builder) {
+    private void isInfiniteTestCases(final ExpressionTestCaseBuilder<Float, BoxedFloatExpression> builder) {
         builder.newTest((expression, value) -> expression.isInfinite())
-                .value(Double.POSITIVE_INFINITY)
+                .value(Float.POSITIVE_INFINITY)
                 .expectedState(PASSED)
                 .expectedName("isInfinite")
                 .expectedExpectedValue("infinite")
-                .expectedActualValue(stringify(Double.POSITIVE_INFINITY))
+                .expectedActualValue(stringify(Float.POSITIVE_INFINITY))
                 .addTest()
             .newTest((expression, value) -> expression.isInfinite())
-                .value(Double.NEGATIVE_INFINITY)
+                .value(Float.NEGATIVE_INFINITY)
                 .expectedState(PASSED)
                 .expectedName("isInfinite")
                 .expectedExpectedValue("infinite")
-                .expectedActualValue(stringify(Double.NEGATIVE_INFINITY))
+                .expectedActualValue(stringify(Float.NEGATIVE_INFINITY))
                 .addTest()
             .newTest((expression, value) -> expression.isInfinite())
                 .value(exampleZeroValue())
@@ -99,13 +98,13 @@ class BoxedDoubleExpressionTest extends BoxedNumericExpressionTest<Double, Boxed
                 .addTest();
     }
 
-    private void isNanTestCases(final ExpressionTestCaseBuilder<Double, BoxedDoubleExpression> builder) {
+    private void isNanTestCases(final ExpressionTestCaseBuilder<Float, BoxedFloatExpression> builder) {
         builder.newTest((expression, value) -> expression.isNaN())
-                .value(Double.NaN)
+                .value(Float.NaN)
                 .expectedState(PASSED)
                 .expectedName("isNaN")
                 .expectedExpectedValue("NaN")
-                .expectedActualValue(stringify(Double.NaN))
+                .expectedActualValue(stringify(Float.NaN))
                 .addTest()
             .newTest((expression, value) -> expression.isNaN())
                 .value(exampleZeroValue())

@@ -174,6 +174,18 @@ public abstract class BoxedNumericExpression<T extends Number, E extends ObjectE
     }
 
     /**
+     * Adds a predicate to the expression that checks if the subject is not equal to 0.
+     *
+     * @return This expression (fluent interface).
+     */
+    public E isNotZero() {
+        return newPredicate(t -> !eq(t, zero()))
+            .name("isNotZero")
+            .expectedValue("not[" + zero() + "]")
+            .append();
+    }
+
+    /**
      * Adds a predicate to the expression that checks if the subject is positive (greater than 0).
      *
      * @return This expression (fluent interface).
