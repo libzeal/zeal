@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>zeal-expression</artifactId>
+    <artifactId>zeal-expression-lang</artifactId>
     <packaging>bundle</packaging>
 
     <parent>
@@ -20,14 +20,6 @@
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>io.github.libzeal</groupId>
-            <artifactId>zeal-expression-lang</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.github.libzeal</groupId>
-            <artifactId>zeal-expression-types</artifactId>
-        </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
@@ -54,7 +46,12 @@
                 <configuration>
                     <instructions>
                         <Export-Package>
-                            io.github.libzeal.zeal.expression
+                            io.github.libzeal.zeal.expression.lang,
+                            io.github.libzeal.zeal.expression.lang.condition,
+                            io.github.libzeal.zeal.expression.lang.evaluation,
+                            io.github.libzeal.zeal.expression.lang.evaluation.format,
+                            io.github.libzeal.zeal.expression.lang.predicate,
+                            io.github.libzeal.zeal.expression.lang.predicate.unary
                         </Export-Package>
                     </instructions>
                 </configuration>

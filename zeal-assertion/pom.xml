@@ -45,7 +45,7 @@
                 <configuration>
                     <instructions>
                         <Export-Package>
-                            io.github.libzeal.zeal.assertion.api,
+                            io.github.libzeal.zeal.assertion,
                             io.github.libzeal.zeal.assertion.error
                         </Export-Package>
                     </instructions>
