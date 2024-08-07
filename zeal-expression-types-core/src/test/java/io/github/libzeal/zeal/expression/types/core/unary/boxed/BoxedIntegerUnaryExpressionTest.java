@@ -5,7 +5,7 @@ import io.github.libzeal.zeal.expression.types.core.unary.test.ExpressionTestCas
 import static io.github.libzeal.zeal.expression.lang.evaluation.Result.FAILED;
 import static io.github.libzeal.zeal.expression.lang.evaluation.Result.PASSED;
 
-class BoxedIntegerUnaryExpressionTest extends BoxedNumericExpressionTest<Integer, BoxedIntegerUnaryExpression>  {
+class BoxedIntegerUnaryExpressionTest extends BoxedWholeNumberUnaryExpressionTest<Integer, BoxedIntegerUnaryExpression> {
 
     @Override
     protected BoxedIntegerUnaryExpression expression(final Integer value) {
@@ -38,84 +38,12 @@ class BoxedIntegerUnaryExpressionTest extends BoxedNumericExpressionTest<Integer
     }
 
     @Override
-    protected void customTestCases(ExpressionTestCaseBuilder<Integer, BoxedIntegerUnaryExpression> builder) {
-        isEvenTestCases(builder);
-        isOddTestCases(builder);
+    protected Integer add(final Integer a, final short b) {
+        return a + b;
     }
 
-    private void isEvenTestCases(final ExpressionTestCaseBuilder<Integer, BoxedIntegerUnaryExpression> builder) {
-        builder.newTest((expression, value) -> expression.isEven())
-                .value(2)
-                .expectedState(PASSED)
-                .expectedName("isEven")
-                .expectedExpectedValue("% 2 := 0")
-                .expectedActualValue("2")
-                .addTest()
-            .newTest((expression, value) -> expression.isEven())
-                .value(1)
-                .expectedState(FAILED)
-                .expectedName("isEven")
-                .expectedExpectedValue("% 2 := 0")
-                .expectedActualValue("1")
-                .addTest()
-            .newTest((expression, value) -> expression.isEven())
-                .value(0)
-                .expectedState(PASSED)
-                .expectedName("isEven")
-                .expectedExpectedValue("% 2 := 0")
-                .expectedActualValue("0")
-                .addTest()
-            .newTest((expression, value) -> expression.isEven())
-                .value(-1)
-                .expectedState(FAILED)
-                .expectedName("isEven")
-                .expectedExpectedValue("% 2 := 0")
-                .expectedActualValue("-1")
-                .addTest()
-            .newTest((expression, value) -> expression.isEven())
-                .value(-2)
-                .expectedState(PASSED)
-                .expectedName("isEven")
-                .expectedExpectedValue("% 2 := 0")
-                .expectedActualValue("-2")
-                .addTest();
-    }
-
-    private void isOddTestCases(final ExpressionTestCaseBuilder<Integer, BoxedIntegerUnaryExpression> builder) {
-        builder.newTest((expression, value) -> expression.isOdd())
-                .value(2)
-                .expectedState(FAILED)
-                .expectedName("isOdd")
-                .expectedExpectedValue("% 2 != 0")
-                .expectedActualValue("2")
-                .addTest()
-            .newTest((expression, value) -> expression.isOdd())
-                .value(1)
-                .expectedState(PASSED)
-                .expectedName("isOdd")
-                .expectedExpectedValue("% 2 != 0")
-                .expectedActualValue("1")
-                .addTest()
-            .newTest((expression, value) -> expression.isOdd())
-                .value(0)
-                .expectedState(FAILED)
-                .expectedName("isOdd")
-                .expectedExpectedValue("% 2 != 0")
-                .expectedActualValue("0")
-                .addTest()
-            .newTest((expression, value) -> expression.isOdd())
-                .value(-1)
-                .expectedState(PASSED)
-                .expectedName("isOdd")
-                .expectedExpectedValue("% 2 != 0")
-                .expectedActualValue("-1")
-                .addTest()
-            .newTest((expression, value) -> expression.isOdd())
-                .value(-2)
-                .expectedState(FAILED)
-                .expectedName("isOdd")
-                .expectedExpectedValue("% 2 != 0")
-                .expectedActualValue("-2")
-                .addTest();
+    @Override
+    protected Integer subtract(final Integer a, final short b) {
+        return a - b;
     }
 }

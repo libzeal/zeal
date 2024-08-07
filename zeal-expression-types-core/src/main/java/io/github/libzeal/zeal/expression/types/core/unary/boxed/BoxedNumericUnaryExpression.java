@@ -1,16 +1,25 @@
 package io.github.libzeal.zeal.expression.types.core.unary.boxed;
 
 import io.github.libzeal.zeal.expression.types.core.unary.ObjectUnaryExpression;
+import io.github.libzeal.zeal.expression.types.core.unary.UnaryPredicateBuilder;
 
 import java.util.function.Predicate;
 
+/**
+ * An expression used to evaluate {@link Number} instances.
+ *
+ * @param <T>
+ *     The type of the subject.
+ * @param <E>
+ *     The type of the subclass.
+ *
+ * @author Justin Albano
+ * @see ObjectUnaryExpression
+ * @since 0.2.0
+ */
 public abstract class BoxedNumericUnaryExpression<T extends Number, E extends ObjectUnaryExpression<T, E>> extends ObjectUnaryExpression<T, E> {
 
     private static final String CANNOT_COMPARE_TO_NULL = "Always fail: cannot compare to subject to (null)";
-
-    protected BoxedNumericUnaryExpression(final T subject) {
-        super(subject);
-    }
 
     protected BoxedNumericUnaryExpression(final T subject, final String name) {
         super(subject, name);
@@ -34,10 +43,10 @@ public abstract class BoxedNumericUnaryExpression<T extends Number, E extends Ob
     }
 
     private E nullProtectedValueExpression(final T value, final String name,
-                                                             final String expectedValue,
-                                                             final Predicate<T> longPredicate) {
+                                           final String expectedValue,
+                                           final Predicate<T> longPredicate) {
 
-        final PredicateBuilder builder = newPredicate(longPredicate)
+        final UnaryPredicateBuilder<T, E> builder = newPredicate(longPredicate)
             .name(name);
 
         if (value == null) {
@@ -234,12 +243,19 @@ public abstract class BoxedNumericUnaryExpression<T extends Number, E extends Ob
     }
 
     protected abstract T zero();
+
     protected abstract T min();
+
     protected abstract T max();
+
     protected abstract boolean eq(T a, T b);
+
     protected abstract boolean lt(T a, T b);
+
     protected abstract boolean gt(T a, T b);
+
     protected abstract boolean gte(T a, T b);
+
     protected abstract boolean lte(T a, T b);
 
 }

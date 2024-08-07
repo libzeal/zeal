@@ -6,7 +6,7 @@ package io.github.libzeal.zeal.expression.types.core.unary.boxed;
  * @author Justin Albano
  * @since 0.2.0
  */
-public class BoxedIntegerUnaryExpression extends BoxedNumericUnaryExpression<Integer, BoxedIntegerUnaryExpression> {
+public class BoxedIntegerUnaryExpression extends BoxedWholeNumberUnaryExpression<Integer, BoxedIntegerUnaryExpression> {
 
     /**
      * Creates a new expression.
@@ -16,30 +16,6 @@ public class BoxedIntegerUnaryExpression extends BoxedNumericUnaryExpression<Int
      */
     public BoxedIntegerUnaryExpression(final Integer subject) {
         super(subject, "Integer expression");
-    }
-
-    /**
-     * Adds a predicate to the expression that checks if the subject is even.
-     *
-     * @return This expression (fluent interface).
-     */
-    public BoxedIntegerUnaryExpression isEven() {
-        return newPredicate(l -> l % 2 == 0)
-            .name("isEven")
-            .expectedValue("% 2 := 0")
-            .append();
-    }
-
-    /**
-     * Adds a predicate to the expression that checks if the subject is odd.
-     *
-     * @return This expression (fluent interface).
-     */
-    public BoxedIntegerUnaryExpression isOdd() {
-        return newPredicate(l -> l % 2 != 0)
-            .name("isOdd")
-            .expectedValue("% 2 != 0")
-            .append();
     }
 
     @Override

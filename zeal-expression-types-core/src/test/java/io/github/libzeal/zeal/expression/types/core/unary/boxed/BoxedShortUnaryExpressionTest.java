@@ -1,11 +1,6 @@
 package io.github.libzeal.zeal.expression.types.core.unary.boxed;
 
-import io.github.libzeal.zeal.expression.types.core.unary.test.ExpressionTestCaseBuilder;
-
-import static io.github.libzeal.zeal.expression.lang.evaluation.Result.FAILED;
-import static io.github.libzeal.zeal.expression.lang.evaluation.Result.PASSED;
-
-class BoxedShortUnaryExpressionTest extends BoxedNumericExpressionTest<Short, BoxedShortUnaryExpression>  {
+class BoxedShortUnaryExpressionTest extends BoxedWholeNumberUnaryExpressionTest<Short, BoxedShortUnaryExpression> {
 
     @Override
     protected BoxedShortUnaryExpression expression(final Short value) {
@@ -38,84 +33,12 @@ class BoxedShortUnaryExpressionTest extends BoxedNumericExpressionTest<Short, Bo
     }
 
     @Override
-    protected void customTestCases(ExpressionTestCaseBuilder<Short, BoxedShortUnaryExpression> builder) {
-        isEvenTestCases(builder);
-        isOddTestCases(builder);
+    protected Short add(final Short a, final short b) {
+        return (short) (a + b);
     }
 
-    private void isEvenTestCases(final ExpressionTestCaseBuilder<Short, BoxedShortUnaryExpression> builder) {
-        builder.newTest((expression, value) -> expression.isEven())
-                .value((short) 2)
-                .expectedState(PASSED)
-                .expectedName("isEven")
-                .expectedExpectedValue("% 2 := 0")
-                .expectedActualValue("2")
-                .addTest()
-            .newTest((expression, value) -> expression.isEven())
-                .value((short) 1)
-                .expectedState(FAILED)
-                .expectedName("isEven")
-                .expectedExpectedValue("% 2 := 0")
-                .expectedActualValue("1")
-                .addTest()
-            .newTest((expression, value) -> expression.isEven())
-                .value((short) 0)
-                .expectedState(PASSED)
-                .expectedName("isEven")
-                .expectedExpectedValue("% 2 := 0")
-                .expectedActualValue("0")
-                .addTest()
-            .newTest((expression, value) -> expression.isEven())
-                .value((short) -1)
-                .expectedState(FAILED)
-                .expectedName("isEven")
-                .expectedExpectedValue("% 2 := 0")
-                .expectedActualValue("-1")
-                .addTest()
-            .newTest((expression, value) -> expression.isEven())
-                .value((short) -2)
-                .expectedState(PASSED)
-                .expectedName("isEven")
-                .expectedExpectedValue("% 2 := 0")
-                .expectedActualValue("-2")
-                .addTest();
-    }
-
-    private void isOddTestCases(final ExpressionTestCaseBuilder<Short, BoxedShortUnaryExpression> builder) {
-        builder.newTest((expression, value) -> expression.isOdd())
-                .value((short) 2)
-                .expectedState(FAILED)
-                .expectedName("isOdd")
-                .expectedExpectedValue("% 2 != 0")
-                .expectedActualValue("2")
-                .addTest()
-            .newTest((expression, value) -> expression.isOdd())
-                .value((short) 1)
-                .expectedState(PASSED)
-                .expectedName("isOdd")
-                .expectedExpectedValue("% 2 != 0")
-                .expectedActualValue("1")
-                .addTest()
-            .newTest((expression, value) -> expression.isOdd())
-                .value((short) 0)
-                .expectedState(FAILED)
-                .expectedName("isOdd")
-                .expectedExpectedValue("% 2 != 0")
-                .expectedActualValue("0")
-                .addTest()
-            .newTest((expression, value) -> expression.isOdd())
-                .value((short) -1)
-                .expectedState(PASSED)
-                .expectedName("isOdd")
-                .expectedExpectedValue("% 2 != 0")
-                .expectedActualValue("-1")
-                .addTest()
-            .newTest((expression, value) -> expression.isOdd())
-                .value((short) -2)
-                .expectedState(FAILED)
-                .expectedName("isOdd")
-                .expectedExpectedValue("% 2 != 0")
-                .expectedActualValue("-2")
-                .addTest();
+    @Override
+    protected Short subtract(final Short a, final short b) {
+        return (short) (a - b);
     }
 }

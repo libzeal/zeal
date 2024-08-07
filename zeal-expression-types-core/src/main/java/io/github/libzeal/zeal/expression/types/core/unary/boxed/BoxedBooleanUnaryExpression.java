@@ -29,7 +29,7 @@ public class BoxedBooleanUnaryExpression extends ObjectUnaryExpression<Boolean, 
         return newPredicate(Boolean::booleanValue)
             .name("isTrue")
             .expectedValue("true")
-            .actualValue(value -> String.valueOf(value.booleanValue()))
+            .actualBooleanValue(value -> value)
             .append();
     }
 
@@ -42,7 +42,7 @@ public class BoxedBooleanUnaryExpression extends ObjectUnaryExpression<Boolean, 
         return newPredicate(b -> !b)
             .name("isFalse")
             .expectedValue("false")
-            .actualValue(value -> String.valueOf(value.booleanValue()))
+            .actualBooleanValue(value -> value)
             .append();
     }
 }
