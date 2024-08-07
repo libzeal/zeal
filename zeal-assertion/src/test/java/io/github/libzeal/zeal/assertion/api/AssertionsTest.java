@@ -1,10 +1,11 @@
 package io.github.libzeal.zeal.assertion.api;
 
+import io.github.libzeal.zeal.assertion.Assertions;
 import io.github.libzeal.zeal.assertion.error.PreconditionIllegalArgumentException;
 import io.github.libzeal.zeal.assertion.error.PreconditionNullPointerException;
-import io.github.libzeal.zeal.expression.UnaryExpression;
-import io.github.libzeal.zeal.expression.evaluation.Evaluation;
-import io.github.libzeal.zeal.expression.evaluation.Result;
+import io.github.libzeal.zeal.expression.lang.evaluation.Evaluation;
+import io.github.libzeal.zeal.expression.lang.evaluation.Result;
+import io.github.libzeal.zeal.expression.lang.UnaryExpression;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

@@ -1,9 +1,7 @@
 package io.github.libzeal.zeal.assertion.test;
 
-import java.util.Collection;
-
-import static io.github.libzeal.zeal.assertion.api.Assertions.require;
-import static io.github.libzeal.zeal.expression.api.Expressions.that;
+import static io.github.libzeal.zeal.assertion.Assertions.require;
+import static io.github.libzeal.zeal.expression.Expressions.that;
 
 public class Test {
 

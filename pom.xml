@@ -67,6 +67,8 @@
     <modules>
         <module>zeal-assertion</module>
         <module>zeal-expression</module>
+        <module>zeal-expression-lang</module>
+        <module>zeal-expression-types</module>
         <module>zeal-report-aggregate</module>
     </modules>
 
@@ -80,6 +82,16 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>zeal-expression</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>zeal-expression-lang</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>zeal-expression-types</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
