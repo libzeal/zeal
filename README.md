@@ -26,10 +26,10 @@ implementation 'io.github.libzeal:zeal-assertion:0.2.0'
 A simple Zeal precondition can be written on a single line:
 
 ```java
-require(that("foo").isNotNull().isNotBlank());
+require(value("foo").isNotNull().isNotBlank());
 ```
 
-The `that` method creates an evaluation from the string `foo`, and the `require` method evaluates that expression. The `isNotNull()` and `isNotBlank()` calls add two predicates to the expression that are checked when it is evaluated. These three concepts are part of every Zeal assertion:
+The `value` method creates an evaluation from the string `foo`, and the `require` method evaluates that expression. The `isNotNull()` and `isNotBlank()` calls add two predicates to the expression that are checked when it is evaluated. These three concepts are part of every Zeal assertion:
 1. Expressions
 2. Predicates
 3. Evaluators
@@ -37,7 +37,7 @@ The `that` method creates an evaluation from the string `foo`, and the `require`
 While many assertion libraries are available, Zeal is designed on the principle that expressions are separated from their evaluation. Therefore, the same expression can be evaluated differently, and custom expressions can be supplied to any evaluator. For example, the same expression above can be evaluated as a postcondition using the `ensure` method:
 
 ```java
-ensure(that("foo").isNotNull().isNotBlank());
+ensure(value("foo").isNotNull().isNotBlank());
 ```
 
 Likewise, we can evaluate any expression as a precondition:
@@ -57,11 +57,11 @@ require(expression);
 Zeal is based on the concept of an expression, particularly unary expressions. A unary expression is a statement about a single subject that evaluates to true or false. For example, if we look at the sample from before:
 
 ```java
-require(that("foo").isNotNull().isNotBlank());
+require(value("foo").isNotNull().isNotBlank());
 ```
 
 ### Expressions
-`that("foo").isNotNull().isNotBlank()` is the expression, while `foo` is the subject of the expression. `isNotNull()` and `isNotBlank()` are predicates, which evaluate a single subject. The `that` method creates a unary expression from the supplied argument. The resulting expression is based on the type of the argument. For example, `that("foo")` results in a `StringUnaryExpression` while `that(1.0)` results in a `BoxedDoubleUnaryExpression`. Each expression has predicates available that can be added to the expression. For example,  `StringUnaryExpression` has `isNotBlank()`, while `BoxedDoubleExpression` has `isGreaterThan(Double other)`.
+`value("foo").isNotNull().isNotBlank()` is the expression, while `foo` is the subject of the expression. `isNotNull()` and `isNotBlank()` are predicates, which evaluate a single subject. The `value` method creates a unary expression from the supplied argument. The resulting expression is based on the type of the argument. For example, `value("foo")` results in a `StringUnaryExpression` while `value(1.0)` results in a `BoxedDoubleUnaryExpression`. Each expression has predicates available that can be added to the expression. For example,  `StringUnaryExpression` has `isNotBlank()`, while `BoxedDoubleExpression` has `isGreaterThan(Double other)`.
 
 > **Note**: Calling a predicate method does not perform any evaluation on the subject.
 
@@ -71,7 +71,7 @@ For example, calling `isNotBlank()` does not immediately check if the subject is
 Unary expressions are a special kind of expression because they allow us to return a single subject. For example, we can obtain the subject of a unary expression by calling the `subject()` method:
 
 ```java
-UnaryExpression<String> expression = that("foo");
+UnaryExpression<String> expression = value("foo");
 String subject = expression.subject();
 ```
 
@@ -84,8 +84,8 @@ class Credentials {
     private final String password;
 
     public Credentials(String username, String password) {
-        this.username = require(that(username).isNotNull().isNotBlank());
-        this.password = require(that(password).isNotNull().isLongerThan(8));
+        this.username = require(value(username).isNotNull().isNotBlank());
+        this.password = require(value(password).isNotNull().isLongerThan(8));
     }
 
     // ...other methods...
