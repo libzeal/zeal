@@ -20,4 +20,29 @@ public interface Condition<T> extends Predicate<T> {
      * @return The name of the condition.
      */
     String name();
+
+    /**
+     * Creates the logical negation of the supplied condition.
+     *
+     * @param wrapped
+     *     The condition to wrap.
+     * @param <T>
+     *     The type of the subject.
+     *
+     * @return The logical negation of the supplied condition.
+     */
+    static <T> Condition<T> not(Condition<T> wrapped) {
+        return new Condition<T>() {
+
+            @Override
+            public boolean test(final T t) {
+                return !wrapped.test(t);
+            }
+
+            @Override
+            public String name() {
+                return "not[" + wrapped.name() + "]";
+            }
+        };
+    }
 }
