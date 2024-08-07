@@ -1,7 +1,7 @@
 package io.github.libzeal.zeal.expression.types.core.unary;
 
-import io.github.libzeal.zeal.expression.lang.evaluation.Rationale;
-import io.github.libzeal.zeal.expression.lang.predicate.DeferredRationale;
+import io.github.libzeal.zeal.expression.lang.predicate.RationaleGenerator;
+import io.github.libzeal.zeal.expression.lang.predicate.SimpleRationaleGenerator;
 import io.github.libzeal.zeal.expression.lang.predicate.ValueSupplier;
 import io.github.libzeal.zeal.expression.lang.predicate.unary.TerminalUnaryPredicate;
 import io.github.libzeal.zeal.expression.lang.predicate.unary.UnaryPredicate;
@@ -20,7 +20,6 @@ import java.util.function.ToLongFunction;
 public class UnaryPredicateBuilder<T, E extends ObjectUnaryExpression<T, E>> {
 
     private final BuildableExpression<T, E> parent;
-    private final T subject;
     private final boolean nullable;
     private final Predicate<T> test;
     private String name = "<unnamed>";
@@ -28,22 +27,29 @@ public class UnaryPredicateBuilder<T, E extends ObjectUnaryExpression<T, E>> {
     private ValueSupplier<T> actual = ObjectUnaryExpression::stringify;
     private ValueSupplier<T> hint = null;
 
+    public static <T, E extends ObjectUnaryExpression<T, E>> UnaryPredicateBuilder<T, E> notNullable(final BuildableExpression<T, E> parent,
+                                                          final Predicate<T> test) {
+        return new UnaryPredicateBuilder<>(parent, false, test);
+    }
+
+    public static <T, E extends ObjectUnaryExpression<T, E>> UnaryPredicateBuilder<T, E> nullable(final BuildableExpression<T, E> parent,
+                                                                                                     final Predicate<T> test) {
+        return new UnaryPredicateBuilder<>(parent, true, test);
+    }
+
     /**
      * Creates a new builder.
      *
      * @param parent
      *     The parent of the builder where predicates will be prepended and appended.
-     * @param subject
-     *     The subject of that will be used to evaluate the predicate.
      * @param nullable
      *     A flag denoting if the predicate can be nullable.
      * @param test
      *     The predicate (test) to evaluate.
      */
-    protected UnaryPredicateBuilder(final BuildableExpression<T, E> parent, final T subject, final boolean nullable,
+    private UnaryPredicateBuilder(final BuildableExpression<T, E> parent, final boolean nullable,
                                     final Predicate<T> test) {
         this.parent = parent;
-        this.subject = subject;
         this.nullable = nullable;
         this.test = test;
     }
@@ -347,13 +353,13 @@ public class UnaryPredicateBuilder<T, E extends ObjectUnaryExpression<T, E>> {
 
     private UnaryPredicate<T> build() {
 
-        final Rationale rationale = new DeferredRationale<>(subject, expected, actual, hint);
+        final RationaleGenerator<T> rationaleGenerator = new SimpleRationaleGenerator<>(expected, actual, hint);
 
         if (nullable) {
-            return TerminalUnaryPredicate.ofNullable(name, test, rationale);
+            return TerminalUnaryPredicate.ofNullable(name, test, rationaleGenerator);
         }
         else {
-            return TerminalUnaryPredicate.of(name, test, rationale);
+            return TerminalUnaryPredicate.of(name, test, rationaleGenerator);
         }
     }
 
