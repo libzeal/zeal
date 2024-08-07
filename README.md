@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/64060b6e-cee1-4431-a755-bc029c37bb09" />
+  <img alt="Zeal Logo" src="/assets/zeal-logo.svg" />
 </p>
 
 # Zeal
