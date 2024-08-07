@@ -29,7 +29,7 @@ public class StringUnaryExpression extends ObjectUnaryExpression<String, StringU
         return newPredicate(String::isEmpty)
             .name("isEmpty")
             .expectedValue("true")
-            .actualValue(s -> String.valueOf(s.isEmpty()))
+            .actualBooleanValue(String::isEmpty)
             .append();
     }
 
@@ -45,7 +45,7 @@ public class StringUnaryExpression extends ObjectUnaryExpression<String, StringU
         return newPredicate(s -> !s.isEmpty())
             .name("isNotEmpty")
             .expectedValue("true")
-            .actualValue(s -> String.valueOf(!s.isEmpty()))
+            .actualBooleanValue(s -> !s.isEmpty())
             .append();
     }
 
@@ -58,7 +58,7 @@ public class StringUnaryExpression extends ObjectUnaryExpression<String, StringU
         return newPredicate(s -> s.trim().isEmpty())
             .name("isBlank")
             .expectedValue("true")
-            .actualValue(s -> String.valueOf(s.trim().isEmpty()))
+            .actualBooleanValue(s -> s.trim().isEmpty())
             .append();
     }
 
@@ -71,7 +71,7 @@ public class StringUnaryExpression extends ObjectUnaryExpression<String, StringU
         return newPredicate(s -> !s.trim().isEmpty())
             .name("isNotBlank")
             .expectedValue("true")
-            .actualValue(s -> String.valueOf(!s.trim().isEmpty()))
+            .actualBooleanValue(s -> !s.trim().isEmpty())
             .append();
     }
 
@@ -477,8 +477,8 @@ public class StringUnaryExpression extends ObjectUnaryExpression<String, StringU
     public StringUnaryExpression hasAtIndex(final char needle, final int index) {
         return newPredicate(s -> s.indexOf(needle) == index)
             .name("indexOf[" + needle + "] := " + index)
-            .expectedValue(String.valueOf(index))
-            .actualValue(subject -> String.valueOf(subject.indexOf(needle)))
+            .expectedIntValue(index)
+            .actualIntValue(subject -> subject.indexOf(needle))
             .append();
     }
 
@@ -496,8 +496,8 @@ public class StringUnaryExpression extends ObjectUnaryExpression<String, StringU
     public StringUnaryExpression hasAtIndex(final String needle, final int index) {
         return newPredicate(s -> s.indexOf(needle) == index)
             .name("indexOf[" + needle + "] := " + index)
-            .expectedValue(String.valueOf(index))
-            .actualValue(subject -> String.valueOf(subject.indexOf(needle)))
+            .expectedIntValue(index)
+            .actualIntValue(subject -> subject.indexOf(needle))
             .append();
     }
 
@@ -516,7 +516,7 @@ public class StringUnaryExpression extends ObjectUnaryExpression<String, StringU
         return newPredicate(s -> s.indexOf(needle) != index)
             .name("indexOf[" + needle + "] != " + index)
             .expectedValue(s -> "not[" + index + "]")
-            .actualValue(subject -> String.valueOf(subject.indexOf(needle)))
+            .actualIntValue(subject -> subject.indexOf(needle))
             .append();
     }
 
@@ -535,7 +535,7 @@ public class StringUnaryExpression extends ObjectUnaryExpression<String, StringU
         return newPredicate(s -> s.indexOf(needle) != index)
             .name("indexOf[" + needle + "] != " + index)
             .expectedValue(s -> "not[" + index + "]")
-            .actualValue(subject -> String.valueOf(subject.indexOf(needle)))
+            .actualIntValue(subject -> subject.indexOf(needle))
             .append();
     }
 
@@ -553,8 +553,8 @@ public class StringUnaryExpression extends ObjectUnaryExpression<String, StringU
     public StringUnaryExpression hasAtLastIndex(final char needle, final int index) {
         return newPredicate(s -> s.lastIndexOf(needle) == index)
             .name("lastIndexOf[" + needle + "] := " + index)
-            .expectedValue(String.valueOf(index))
-            .actualValue(subject -> String.valueOf(subject.lastIndexOf(needle)))
+            .expectedIntValue(index)
+            .actualIntValue(subject -> subject.lastIndexOf(needle))
             .append();
     }
 
@@ -572,8 +572,8 @@ public class StringUnaryExpression extends ObjectUnaryExpression<String, StringU
     public StringUnaryExpression hasAtLastIndex(final String needle, final int index) {
         return newPredicate(s -> s.lastIndexOf(needle) == index)
             .name("lastIndexOf[" + needle + "] := " + index)
-            .expectedValue(String.valueOf(index))
-            .actualValue(subject -> String.valueOf(subject.lastIndexOf(needle)))
+            .expectedIntValue(index)
+            .actualIntValue(subject -> subject.lastIndexOf(needle))
             .append();
     }
 
@@ -592,7 +592,7 @@ public class StringUnaryExpression extends ObjectUnaryExpression<String, StringU
         return newPredicate(s -> s.lastIndexOf(needle) != index)
             .name("lastIndexOf[" + needle + "] != " + index)
             .expectedValue(s -> "not[" + index + "]")
-            .actualValue(subject -> String.valueOf(subject.lastIndexOf(needle)))
+            .actualIntValue(subject -> subject.lastIndexOf(needle))
             .append();
     }
 
@@ -611,7 +611,7 @@ public class StringUnaryExpression extends ObjectUnaryExpression<String, StringU
         return newPredicate(s -> s.lastIndexOf(needle) != index)
             .name("lastIndexOf[" + needle + "] != " + index)
             .expectedValue(s -> "not[" + index + "]")
-            .actualValue(subject -> String.valueOf(subject.lastIndexOf(needle)))
+            .actualIntValue(subject -> subject.lastIndexOf(needle))
             .append();
     }
 }

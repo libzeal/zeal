@@ -6,7 +6,7 @@ package io.github.libzeal.zeal.expression.types.core.unary.boxed;
  * @author Justin Albano
  * @since 0.2.0
  */
-public class BoxedLongUnaryExpression extends BoxedNumericUnaryExpression<Long, BoxedLongUnaryExpression> {
+public class BoxedLongUnaryExpression extends BoxedWholeNumberUnaryExpression<Long, BoxedLongUnaryExpression> {
 
     /**
      * Creates a new expression.
@@ -16,30 +16,6 @@ public class BoxedLongUnaryExpression extends BoxedNumericUnaryExpression<Long, 
      */
     public BoxedLongUnaryExpression(final Long subject) {
         super(subject, "Long expression");
-    }
-
-    /**
-     * Adds a predicate to the expression that checks if the subject is even.
-     *
-     * @return This expression (fluent interface).
-     */
-    public BoxedLongUnaryExpression isEven() {
-        return newPredicate(l -> l % 2 == 0)
-            .name("isEven")
-            .expectedValue("% 2 := 0")
-            .append();
-    }
-
-    /**
-     * Adds a predicate to the expression that checks if the subject is odd.
-     *
-     * @return This expression (fluent interface).
-     */
-    public BoxedLongUnaryExpression isOdd() {
-        return newPredicate(l -> l % 2 != 0)
-            .name("isOdd")
-            .expectedValue("% 2 != 0")
-            .append();
     }
 
     @Override

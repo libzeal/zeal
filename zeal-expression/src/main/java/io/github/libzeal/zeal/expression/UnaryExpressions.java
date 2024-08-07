@@ -115,4 +115,16 @@ public class UnaryExpressions {
     public static BoxedBooleanUnaryExpression value(final Boolean value) {
         return new BoxedBooleanUnaryExpression(value);
     }
+
+    /**
+     * Wraps a {@link Byte} as an expression.
+     *
+     * @param value
+     *     The {@link Byte} to wrap.
+     *
+     * @return An expression that wraps the supplied {@link Byte}.
+     */
+    public static BoxedByteUnaryExpression value(final Byte value) {
+        return new BoxedByteUnaryExpression(value);
+    }
 }

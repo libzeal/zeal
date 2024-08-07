@@ -53,8 +53,8 @@ public abstract class EnumExpression<T extends Enum<T>, B extends EnumExpression
     public B ordinalIs(final int ordinal) {
         return newPredicate(s -> s.ordinal() == ordinal)
             .name("ordinalIs[" + ordinal + "]")
-            .expectedValue(String.valueOf(ordinal))
-            .actualValue(value -> String.valueOf(value.ordinal()))
+            .expectedIntValue(ordinal)
+            .actualIntValue(Enum::ordinal)
             .append();
     }
 
@@ -70,7 +70,7 @@ public abstract class EnumExpression<T extends Enum<T>, B extends EnumExpression
         return newPredicate(s -> s.ordinal() != ordinal)
             .name("not[ordinalIs[" + ordinal + "]]")
             .expectedValue(value -> "not[" + ordinal + "]")
-            .actualValue(value -> String.valueOf(value.ordinal()))
+            .actualIntValue(Enum::ordinal)
             .append();
     }
 

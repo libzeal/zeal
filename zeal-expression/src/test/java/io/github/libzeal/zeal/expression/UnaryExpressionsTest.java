@@ -88,4 +88,12 @@ class UnaryExpressionsTest {
 
         assertNotNull(expression);
     }
+
+    @Test
+    void givenValidValue_whenThatBoxedByte_thenExpressionReturned() {
+
+        Expression expression = UnaryExpressions.value((byte) 1);
+
+        assertNotNull(expression);
+    }
 }

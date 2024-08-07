@@ -3,11 +3,7 @@ package io.github.libzeal.zeal.expression.types.core.unary;
 import io.github.libzeal.zeal.expression.lang.UnaryExpression;
 import io.github.libzeal.zeal.expression.lang.condition.Condition;
 import io.github.libzeal.zeal.expression.lang.evaluation.Evaluation;
-import io.github.libzeal.zeal.expression.lang.evaluation.Rationale;
-import io.github.libzeal.zeal.expression.lang.predicate.ValueSupplier;
-import io.github.libzeal.zeal.expression.lang.predicate.DeferredRationale;
 import io.github.libzeal.zeal.expression.lang.predicate.unary.ConjunctiveUnaryPredicate;
-import io.github.libzeal.zeal.expression.lang.predicate.unary.TerminalUnaryPredicate;
 import io.github.libzeal.zeal.expression.lang.predicate.unary.UnaryPredicate;
 
 import java.util.Objects;
@@ -26,7 +22,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @param <T>
  *     The type of the subject.
- * @param <B>
+ * @param <E>
  *     The type of the subclass. This type is an example of the
  *     <a href="https://stackoverflow.com/q/4173254/2403253">Curiously Recurring Template Pattern (CRTP)</a>
  *     . This type allows for the fluent interface methods of this class to return the subtype object, rather than
@@ -41,7 +37,7 @@ import static java.util.Objects.requireNonNull;
  * @author Justin Albano
  * @since 0.2.0
  */
-public class ObjectUnaryExpression<T, B extends ObjectUnaryExpression<T, B>> implements UnaryExpression<T> {
+public class ObjectUnaryExpression<T, E extends ObjectUnaryExpression<T, E>> implements UnaryExpression<T> {
 
     private static final String PREDICATE_SATISFIED = "Predicate satisfied";
     private static final String PREDICATE_UNSATISFIED = "Predicate unsatisfied";
@@ -53,6 +49,7 @@ public class ObjectUnaryExpression<T, B extends ObjectUnaryExpression<T, B>> imp
 
     private final T subject;
     private final ConjunctiveUnaryPredicate<T> children;
+    private final UnaryPredicateBuilder.BuildableExpression<T, E> buildable;
 
     /**
      * Creates an object expression with the supplied subject. This constructor uses a default name for the expression.
@@ -87,6 +84,25 @@ public class ObjectUnaryExpression<T, B extends ObjectUnaryExpression<T, B>> imp
     protected ObjectUnaryExpression(T subject, String name) {
         this.subject = subject;
         this.children = new ConjunctiveUnaryPredicate<>(name);
+        this.buildable = buildable();
+    }
+
+    @SuppressWarnings("unchecked")
+    private UnaryPredicateBuilder.BuildableExpression<T, E> buildable() {
+        return new UnaryPredicateBuilder.BuildableExpression<T, E>() {
+
+            @Override
+            public E prepend(final UnaryPredicate<T> predicate) {
+                children.prepend(predicate);
+                return (E) ObjectUnaryExpression.this;
+            }
+
+            @Override
+            public E append(final UnaryPredicate<T> predicate) {
+                children.append(predicate);
+                return (E) ObjectUnaryExpression.this;
+            }
+        };
     }
 
     @Override
@@ -97,145 +113,6 @@ public class ObjectUnaryExpression<T, B extends ObjectUnaryExpression<T, B>> imp
     @Override
     public final Evaluation evaluate() {
         return children.evaluate(subject);
-    }
-
-    /**
-     * Appends the supplied evaluation to the chain of evaluations. Appended evaluations will be evaluated in the order
-     * in which they are appended (first in, first evaluated). The only exception to this rule is a {@link #isNotNull()}
-     * evaluation. If a {@link #isNotNull()} is appended to the chain, it is automatically evaluated first.
-     *
-     * @param predicate
-     *     The evaluation to append.
-     *
-     * @return This expression (fluent interface).
-     */
-    @SuppressWarnings("unchecked")
-    protected final B appendEvaluation(UnaryPredicate<T> predicate) {
-
-        children.append(predicate);
-
-        return (B) this;
-    }
-
-    /**
-     * A builder used to create {@link UnaryPredicate} objects.
-     */
-    protected class PredicateBuilder {
-
-        private final boolean nullable;
-        private final Predicate<T> test;
-        private String name = "<unnamed>";
-        private ValueSupplier<T> expected = s -> "<not set>";
-        private ValueSupplier<T> actual = ObjectUnaryExpression::stringify;
-        private ValueSupplier<T> hint = null;
-
-        private PredicateBuilder(boolean nullable, Predicate<T> test) {
-            this.nullable = nullable;
-            this.test = test;
-        }
-
-        /**
-         * Sets the name of the evaluation.
-         *
-         * @param name
-         *     The name of the evaluation.
-         *
-         * @return This builder (fluent interface).
-         */
-        public PredicateBuilder name(String name) {
-            this.name = name;
-            return this;
-        }
-
-        /**
-         * Sets the expected valued of the evaluation.
-         *
-         * @param expected
-         *     The expected value of the evaluation.
-         *
-         * @return This builder (fluent interface).
-         */
-        public PredicateBuilder expectedValue(ValueSupplier<T> expected) {
-            this.expected = expected;
-            return this;
-        }
-
-        /**
-         * Sets the expected valued of the evaluation.
-         *
-         * @param expected
-         *     The expected value of the evaluation.
-         *
-         * @return This builder (fluent interface).
-         */
-        public PredicateBuilder expectedValue(String expected) {
-            return expectedValue(ValueSupplier.of(expected));
-        }
-
-        /**
-         * Sets the actual valued of the evaluation.
-         *
-         * @param actual
-         *     The actual value of the evaluation.
-         *
-         * @return This builder (fluent interface).
-         */
-        public PredicateBuilder actualValue(ValueSupplier<T> actual) {
-            this.actual = actual;
-            return this;
-        }
-
-        /**
-         * Sets the hint for the evaluation.
-         *
-         * @param hint
-         *     The hint for the evaluation.
-         *
-         * @return This builder (fluent interface).
-         */
-        public PredicateBuilder hint(ValueSupplier<T> hint) {
-            this.hint = hint;
-            return this;
-        }
-
-        /**
-         * Sets the hint for the evaluation.
-         *
-         * @param hint
-         *     The hint for the evaluation.
-         *
-         * @return This builder (fluent interface).
-         */
-        public PredicateBuilder hint(String hint) {
-            return hint(ValueSupplier.of(hint));
-        }
-
-        /**
-         * Appends the evaluation being built to the evaluation chain.
-         *
-         * @return This builder (fluent interface).
-         */
-        public B append() {
-            return appendEvaluation(build());
-        }
-
-        @SuppressWarnings("unchecked")
-        private B prepend() {
-            children.prepend(build());
-            return (B) ObjectUnaryExpression.this;
-        }
-
-        private UnaryPredicate<T> build() {
-
-            final Rationale rationale = new DeferredRationale<>(subject, expected, actual, hint);
-
-            if (nullable) {
-                return TerminalUnaryPredicate.ofNullable(name, test, rationale);
-            }
-            else {
-                return TerminalUnaryPredicate.of(name, test, rationale);
-            }
-        }
     }
 
     /**
@@ -250,8 +127,8 @@ public class ObjectUnaryExpression<T, B extends ObjectUnaryExpression<T, B>> imp
      * @throws NullPointerException
      *     The supplied test was {@code null}.
      */
-    protected final PredicateBuilder newPredicate(Predicate<T> test) {
-        return new PredicateBuilder(false, requireNonNull(test));
+    protected final UnaryPredicateBuilder<T, E> newPredicate(Predicate<T> test) {
+        return new UnaryPredicateBuilder<>(buildable, subject, false, requireNonNull(test));
     }
 
     /**
@@ -268,8 +145,8 @@ public class ObjectUnaryExpression<T, B extends ObjectUnaryExpression<T, B>> imp
      * @throws NullPointerException
      *     The supplied test was {@code null}.
      */
-    protected final PredicateBuilder newNullablePredicate(Predicate<T> test) {
-        return new PredicateBuilder(true, requireNonNull(test));
+    protected final UnaryPredicateBuilder<T, E> newNullablePredicate(Predicate<T> test) {
+        return new UnaryPredicateBuilder<>(buildable, subject, true, requireNonNull(test));
     }
 
     /**
@@ -296,7 +173,7 @@ public class ObjectUnaryExpression<T, B extends ObjectUnaryExpression<T, B>> imp
      *     first. If the expression does not include {@link #isNotNull()}, then the evaluations are evaluated in the
      *     order in which they are chained on the expression.
      */
-    public final B isNotNull() {
+    public final E isNotNull() {
         return newNullablePredicate(Objects::nonNull)
             .name("isNotNull")
             .expectedValue("not[(null)]")
@@ -308,7 +185,7 @@ public class ObjectUnaryExpression<T, B extends ObjectUnaryExpression<T, B>> imp
      *
      * @return This expression (fluent interface).
      */
-    public B isNull() {
+    public E isNull() {
         return newNullablePredicate(Objects::isNull)
             .name("isNull")
             .expectedValue("(null)")
@@ -325,9 +202,9 @@ public class ObjectUnaryExpression<T, B extends ObjectUnaryExpression<T, B>> imp
      *
      * @return This expression (fluent interface).
      */
-    public B isType(final Class<?> type) {
+    public E isType(final Class<?> type) {
 
-        final PredicateBuilder builder = newPredicate(o -> o.getClass().equals(type));
+        final UnaryPredicateBuilder<T, E> builder = newPredicate(o -> o.getClass().equals(type));
 
         if (type == null) {
             builder.name("isType[(null)]")
@@ -352,9 +229,9 @@ public class ObjectUnaryExpression<T, B extends ObjectUnaryExpression<T, B>> imp
      *
      * @return This expression (fluent interface).
      */
-    public B isNotType(final Class<?> type) {
+    public E isNotType(final Class<?> type) {
 
-        final PredicateBuilder builder = newPredicate(o -> type != null && !o.getClass().equals(type));
+        final UnaryPredicateBuilder<T, E> builder = newPredicate(o -> type != null && !o.getClass().equals(type));
 
         if (type == null) {
             builder.name("isNotType[(null)]")
@@ -386,9 +263,9 @@ public class ObjectUnaryExpression<T, B extends ObjectUnaryExpression<T, B>> imp
      *             </code></pre>
      * @see Class#isAssignableFrom(Class)
      */
-    public B isInstanceOf(final Class<?> type) {
+    public E isInstanceOf(final Class<?> type) {
 
-        final PredicateBuilder builder = newPredicate(o -> type != null && type.isAssignableFrom(o.getClass()));
+        final UnaryPredicateBuilder<T, E> builder = newPredicate(o -> type != null && type.isAssignableFrom(o.getClass()));
 
         if (type == null) {
             builder.name("isInstanceOf[(null)]")
@@ -421,9 +298,9 @@ public class ObjectUnaryExpression<T, B extends ObjectUnaryExpression<T, B>> imp
      *             </code></pre>
      * @see Class#isAssignableFrom(Class)
      */
-    public B isNotInstanceOf(final Class<?> type) {
+    public E isNotInstanceOf(final Class<?> type) {
 
-        final PredicateBuilder builder = newPredicate(o -> type != null && !type.isAssignableFrom(o.getClass()));
+        final UnaryPredicateBuilder<T, E> builder = newPredicate(o -> type != null && !type.isAssignableFrom(o.getClass()));
 
         if (type == null) {
             builder.name("isNotInstanceOf[(null)]")
@@ -456,7 +333,7 @@ public class ObjectUnaryExpression<T, B extends ObjectUnaryExpression<T, B>> imp
      *                 subject == object
      *             </code></pre>
      */
-    public B is(final Object other) {
+    public E is(final Object other) {
         return newNullablePredicate(o -> o == other)
             .name("is[" + stringify(other) + "]")
             .expectedValue(o -> stringify(other))
@@ -480,7 +357,7 @@ public class ObjectUnaryExpression<T, B extends ObjectUnaryExpression<T, B>> imp
      *                 subject != object
      *             </code></pre>
      */
-    public B isNot(final Object other) {
+    public E isNot(final Object other) {
         return newNullablePredicate(o -> o != other)
             .name("isNot[" + stringify(other) + "]")
             .expectedValue("not[" + stringify(other) + "]")
@@ -505,7 +382,7 @@ public class ObjectUnaryExpression<T, B extends ObjectUnaryExpression<T, B>> imp
      *             </code></pre>
      * @see Objects#equals(Object, Object)
      */
-    public B isEqualTo(final Object other) {
+    public E isEqualTo(final Object other) {
         return newNullablePredicate(o -> Objects.equals(o, other))
             .name("isEqualTo[" + stringify(other) + "]")
             .expectedValue(stringify(other))
@@ -530,7 +407,7 @@ public class ObjectUnaryExpression<T, B extends ObjectUnaryExpression<T, B>> imp
      *             </code></pre>
      * @see Objects#equals(Object, Object)
      */
-    public B isNotEqualTo(final Object other) {
+    public E isNotEqualTo(final Object other) {
         return newNullablePredicate(o -> !Objects.equals(o, other))
             .name("isNotEqualTo[" + stringify(other) + "]")
             .expectedValue("not[" + stringify(other) + "]")
@@ -553,11 +430,11 @@ public class ObjectUnaryExpression<T, B extends ObjectUnaryExpression<T, B>> imp
      *                 subject.hashCode() == hashCode
      *             </code></pre>
      */
-    public B hashCodeIs(final int hashCode) {
+    public E hashCodeIs(final int hashCode) {
         return newPredicate(o -> o.hashCode() == hashCode)
             .name("hashCode == " + hashCode)
-            .expectedValue(String.valueOf(hashCode))
-            .actualValue(subject -> String.valueOf(subject.hashCode()))
+            .expectedIntValue(hashCode)
+            .actualIntValue(Object::hashCode)
             .append();
     }
 
@@ -576,11 +453,11 @@ public class ObjectUnaryExpression<T, B extends ObjectUnaryExpression<T, B>> imp
      *                 subject.hashCode() != hashCode
      *             </code></pre>
      */
-    public B hashCodeIsNot(final int hashCode) {
+    public E hashCodeIsNot(final int hashCode) {
         return newPredicate(o -> o.hashCode() != hashCode)
             .name("hashCode != " + hashCode)
             .expectedValue("not[" + hashCode + "]")
-            .actualValue(o -> String.valueOf(o.hashCode()))
+            .actualIntValue(Object::hashCode)
             .append();
     }
 
@@ -599,7 +476,7 @@ public class ObjectUnaryExpression<T, B extends ObjectUnaryExpression<T, B>> imp
      *                 subject.toString().equals(expected)
      *             </code></pre>
      */
-    public B toStringIs(final String expected) {
+    public E toStringIs(final String expected) {
         return newPredicate(o -> o.toString().equals(expected))
             .name("toString().equals(" + expected + ")")
             .expectedValue(expected)
@@ -622,7 +499,7 @@ public class ObjectUnaryExpression<T, B extends ObjectUnaryExpression<T, B>> imp
      *                 !subject.toString().equals(expected)
      *             </code></pre>
      */
-    public B toStringIsNot(final String expected) {
+    public E toStringIsNot(final String expected) {
         return newPredicate(o -> !o.toString().equals(expected))
             .name("not[toString().equals(" + expected + ")]")
             .expectedValue("not[" + expected + "]")
@@ -638,7 +515,7 @@ public class ObjectUnaryExpression<T, B extends ObjectUnaryExpression<T, B>> imp
      *
      * @return This expression (fluent interface).
      */
-    public B satisfies(final Predicate<T> predicate) {
+    public E satisfies(final Predicate<T> predicate) {
         return newPredicate(predicate)
             .name("predicate")
             .expectedValue(PREDICATE_SATISFIED)
@@ -654,7 +531,7 @@ public class ObjectUnaryExpression<T, B extends ObjectUnaryExpression<T, B>> imp
      *
      * @return This expression (fluent interface).
      */
-    public B satisfies(final Condition<T> condition) {
+    public E satisfies(final Condition<T> condition) {
         return newPredicate(condition)
             .name("condition: " + conditionName(condition))
             .expectedValue(CONDITION_SATISFIED)
@@ -670,7 +547,7 @@ public class ObjectUnaryExpression<T, B extends ObjectUnaryExpression<T, B>> imp
      *
      * @return This expression (fluent interface).
      */
-    public B doesNotSatisfy(final Predicate<T> predicate) {
+    public E doesNotSatisfy(final Predicate<T> predicate) {
         return newPredicate(o -> !predicate.test(o))
             .name("not[predicate]")
             .expectedValue(PREDICATE_UNSATISFIED)
@@ -686,7 +563,7 @@ public class ObjectUnaryExpression<T, B extends ObjectUnaryExpression<T, B>> imp
      *
      * @return This expression (fluent interface).
      */
-    public B doesNotSatisfy(final Condition<T> condition) {
+    public E doesNotSatisfy(final Condition<T> condition) {
         return newPredicate(o -> !condition.test(o))
             .name("not[condition: " + conditionName(condition) + "]")
             .expectedValue(CONDITION_UNSATISFIED)
