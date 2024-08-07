@@ -1,7 +1,7 @@
 package io.github.libzeal.zeal.assertion.test;
 
 import static io.github.libzeal.zeal.assertion.Assertions.require;
-import static io.github.libzeal.zeal.expression.Expressions.that;
+import static io.github.libzeal.zeal.expression.UnaryExpressions.that;
 
 public class Test {
 
