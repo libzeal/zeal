@@ -1,7 +1,7 @@
 package io.github.libzeal.zeal.assertion.test;
 
 import static io.github.libzeal.zeal.assertion.Assertions.require;
-import static io.github.libzeal.zeal.expression.UnaryExpressions.that;
+import static io.github.libzeal.zeal.expression.UnaryExpressions.value;
 
 public class Test {
 
@@ -10,7 +10,7 @@ public class Test {
         Object value = new Object();
 
 //        require(that(value).isType(Object.class).is("bar").isType(Collection.class).isNotNull(), "foo");
-        require(that(Foo.FOO).is(Foo.FOO).ordinalIs(1), "Foo");
+        require(value(Foo.FOO).is(Foo.FOO).ordinalIs(1), "Foo");
 
     }
 
