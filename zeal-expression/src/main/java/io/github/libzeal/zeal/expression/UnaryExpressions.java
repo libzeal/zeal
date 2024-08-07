@@ -1,9 +1,9 @@
 package io.github.libzeal.zeal.expression;
 
-import io.github.libzeal.zeal.expression.types.unary.GeneralEnumUnaryExpression;
-import io.github.libzeal.zeal.expression.types.unary.GeneralObjectExpression;
-import io.github.libzeal.zeal.expression.types.unary.StringUnaryExpression;
-import io.github.libzeal.zeal.expression.types.unary.boxed.*;
+import io.github.libzeal.zeal.expression.types.core.unary.GeneralEnumUnaryExpression;
+import io.github.libzeal.zeal.expression.types.core.unary.GeneralObjectExpression;
+import io.github.libzeal.zeal.expression.types.core.unary.StringUnaryExpression;
+import io.github.libzeal.zeal.expression.types.core.unary.boxed.*;
 
 /**
  * A class containing static methods that wrap common values as unary expressions.
@@ -26,7 +26,7 @@ public class UnaryExpressions {
      *
      * @return An expression that wraps the supplied value.
      */
-    public static <T> GeneralObjectExpression<T> that(final T value) {
+    public static <T> GeneralObjectExpression<T> value(final T value) {
         return new GeneralObjectExpression<>(value);
     }
 
@@ -40,7 +40,7 @@ public class UnaryExpressions {
      *
      * @return An expression that wraps the supplied {@link Enum<T>}.
      */
-    public static <T extends Enum<T>> GeneralEnumUnaryExpression<T> that(final T value) {
+    public static <T extends Enum<T>> GeneralEnumUnaryExpression<T> value(final T value) {
         return new GeneralEnumUnaryExpression<>(value);
     }
 
@@ -52,7 +52,7 @@ public class UnaryExpressions {
      *
      * @return An expression that wraps the supplied {@link String}.
      */
-    public static StringUnaryExpression that(final String value) {
+    public static StringUnaryExpression value(final String value) {
         return new StringUnaryExpression(value);
     }
 
@@ -64,7 +64,7 @@ public class UnaryExpressions {
      *
      * @return An expression that wraps the supplied {@link Long}.
      */
-    public static BoxedLongUnaryExpression that(final Long value) {
+    public static BoxedLongUnaryExpression value(final Long value) {
         return new BoxedLongUnaryExpression(value);
     }
 
@@ -76,7 +76,7 @@ public class UnaryExpressions {
      *
      * @return An expression that wraps the supplied {@link Integer}.
      */
-    public static BoxedIntegerUnaryExpression that(final Integer value) {
+    public static BoxedIntegerUnaryExpression value(final Integer value) {
         return new BoxedIntegerUnaryExpression(value);
     }
 
@@ -88,7 +88,7 @@ public class UnaryExpressions {
      *
      * @return An expression that wraps the supplied {@link Double}.
      */
-    public static BoxedDoubleUnaryExpression that(final Double value) {
+    public static BoxedDoubleUnaryExpression value(final Double value) {
         return new BoxedDoubleUnaryExpression(value);
     }
 
@@ -100,7 +100,7 @@ public class UnaryExpressions {
      *
      * @return An expression that wraps the supplied {@link Float}.
      */
-    public static BoxedFloatUnaryExpression that(final Float value) {
+    public static BoxedFloatUnaryExpression value(final Float value) {
         return new BoxedFloatUnaryExpression(value);
     }
 
@@ -112,7 +112,7 @@ public class UnaryExpressions {
      *
      * @return An expression that wraps the supplied {@link Boolean}.
      */
-    public static BoxedBooleanUnaryExpression that(final Boolean value) {
+    public static BoxedBooleanUnaryExpression value(final Boolean value) {
         return new BoxedBooleanUnaryExpression(value);
     }
 }

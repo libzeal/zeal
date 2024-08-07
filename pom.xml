@@ -68,7 +68,7 @@
         <module>zeal-assertion</module>
         <module>zeal-expression</module>
         <module>zeal-expression-lang</module>
-        <module>zeal-expression-types</module>
+        <module>zeal-expression-types-core</module>
         <module>zeal-report-aggregate</module>
     </modules>
 
@@ -91,7 +91,7 @@
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>zeal-expression-types</artifactId>
+                <artifactId>zeal-expression-types-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
