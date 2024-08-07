@@ -1,0 +1,118 @@
+package io.github.libzeal.zeal.expression;
+
+import io.github.libzeal.zeal.expression.types.unary.GeneralEnumUnaryExpression;
+import io.github.libzeal.zeal.expression.types.unary.GeneralObjectExpression;
+import io.github.libzeal.zeal.expression.types.unary.StringUnaryExpression;
+import io.github.libzeal.zeal.expression.types.unary.boxed.*;
+
+/**
+ * A class containing static methods that wrap common values as unary expressions.
+ *
+ * @author Justin Albano
+ * @since 0.2.0
+ */
+public class UnaryExpressions {
+
+    private UnaryExpressions() {
+    }
+
+    /**Integer
+     * Wraps an object as an expression. This method is used when a more-specific expression is not available.
+     *
+     * @param value
+     *     The value to wrap.
+     * @param <T>
+     *     The type of the object being wrapped.
+     *
+     * @return An expression that wraps the supplied value.
+     */
+    public static <T> GeneralObjectExpression<T> that(final T value) {
+        return new GeneralObjectExpression<>(value);
+    }
+
+    /**
+     * Wraps a {@link Enum<T>} as an expression.
+     *
+     * @param value
+     *     The {@link Enum<T>} to wrap.
+     * @param <T>
+     *     The type of the enum.
+     *
+     * @return An expression that wraps the supplied {@link Enum<T>}.
+     */
+    public static <T extends Enum<T>> GeneralEnumUnaryExpression<T> that(final T value) {
+        return new GeneralEnumUnaryExpression<>(value);
+    }
+
+    /**
+     * Wraps a {@link String} as an expression.
+     *
+     * @param value
+     *     The {@link String} to wrap.
+     *
+     * @return An expression that wraps the supplied {@link String}.
+     */
+    public static StringUnaryExpression that(final String value) {
+        return new StringUnaryExpression(value);
+    }
+
+    /**
+     * Wraps a {@link Long} as an expression.
+     *
+     * @param value
+     *     The {@link Long} to wrap.
+     *
+     * @return An expression that wraps the supplied {@link Long}.
+     */
+    public static BoxedLongUnaryExpression that(final Long value) {
+        return new BoxedLongUnaryExpression(value);
+    }
+
+    /**
+     * Wraps a {@link Integer} as an expression.
+     *
+     * @param value
+     *     The {@link Integer} to wrap.
+     *
+     * @return An expression that wraps the supplied {@link Integer}.
+     */
+    public static BoxedIntegerUnaryExpression that(final Integer value) {
+        return new BoxedIntegerUnaryExpression(value);
+    }
+
+    /**
+     * Wraps a {@link Double} as an expression.
+     *
+     * @param value
+     *     The {@link Double} to wrap.
+     *
+     * @return An expression that wraps the supplied {@link Double}.
+     */
+    public static BoxedDoubleUnaryExpression that(final Double value) {
+        return new BoxedDoubleUnaryExpression(value);
+    }
+
+    /**
+     * Wraps a {@link Float} as an expression.
+     *
+     * @param value
+     *     The {@link Float} to wrap.
+     *
+     * @return An expression that wraps the supplied {@link Float}.
+     */
+    public static BoxedFloatUnaryExpression that(final Float value) {
+        return new BoxedFloatUnaryExpression(value);
+    }
+
+    /**
+     * Wraps a {@link Boolean} as an expression.
+     *
+     * @param value
+     *     The {@link Boolean} to wrap.
+     *
+     * @return An expression that wraps the supplied {@link Boolean}.
+     */
+    public static BoxedBooleanUnaryExpression that(final Boolean value) {
+        return new BoxedBooleanUnaryExpression(value);
+    }
+}

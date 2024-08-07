@@ -50,8 +50,8 @@
                 <configuration>
                     <instructions>
                         <Export-Package>
-                            io.github.libzeal.zeal.expression.lang.types,
-                            io.github.libzeal.zeal.expression.lang.types.boxed
+                            io.github.libzeal.zeal.expression.types.unary,
+                            io.github.libzeal.zeal.expression.types.unary.boxed
                         </Export-Package>
                     </instructions>
                 </configuration>
