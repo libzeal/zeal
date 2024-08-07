@@ -3,7 +3,7 @@
 </p>
 
 # Zeal
-Zeal is a Java assertion library built on a rich expression language. Zeal is designed to be simple but extensible and can be added to nearly any Java project without fuss.
+Zeal is a Java assertion library built on a rich expression language. Simple, extensible, no fuss.
 
 ## Adding It
 For Maven, the dependency is:
