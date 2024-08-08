@@ -1,5 +1,5 @@
 <p align="center">
-  <img alt="Zeal Logo" src="/assets/zeal-logo.svg" style="margin: -30px -75px -80px -75px"/>
+  <img alt="Zeal Logo" src="/assets/zeal-logo.svg" />
 </p>
 
 # Zeal
