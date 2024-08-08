@@ -4,8 +4,6 @@ import io.github.libzeal.zeal.expression.lang.evaluation.Evaluation;
 import io.github.libzeal.zeal.expression.lang.evaluation.Result;
 import org.junit.jupiter.api.Assertions;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 public class EvaluatedExpressionAssertion<T> {
 
     private final Evaluation eval;

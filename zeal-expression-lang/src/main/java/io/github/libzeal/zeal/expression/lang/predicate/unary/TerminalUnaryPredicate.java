@@ -1,7 +1,6 @@
 package io.github.libzeal.zeal.expression.lang.predicate.unary;
 
 import io.github.libzeal.zeal.expression.lang.evaluation.Evaluation;
-import io.github.libzeal.zeal.expression.lang.evaluation.Rationale;
 import io.github.libzeal.zeal.expression.lang.predicate.EvaluatedPredicate;
 import io.github.libzeal.zeal.expression.lang.predicate.RationaleGenerator;
 

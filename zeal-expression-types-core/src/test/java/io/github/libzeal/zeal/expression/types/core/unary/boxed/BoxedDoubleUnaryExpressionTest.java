@@ -6,7 +6,7 @@ import io.github.libzeal.zeal.expression.types.core.unary.test.ExpressionTestCas
 import static io.github.libzeal.zeal.expression.lang.evaluation.Result.FAILED;
 import static io.github.libzeal.zeal.expression.lang.evaluation.Result.PASSED;
 
-class BoxedDoubleUnaryExpressionTest extends BoxedNumericUnaryExpressionTest<Double, BoxedDoubleUnaryExpression> {
+class BoxedDoubleUnaryExpressionTest extends BoxedNumberUnaryExpressionTest<Double, BoxedDoubleUnaryExpression> {
 
     @Override
     protected BoxedDoubleUnaryExpression expression(final Double value) {

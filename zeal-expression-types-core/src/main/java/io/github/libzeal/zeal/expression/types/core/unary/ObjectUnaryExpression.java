@@ -6,7 +6,6 @@ import io.github.libzeal.zeal.expression.lang.evaluation.Evaluation;
 import io.github.libzeal.zeal.expression.lang.predicate.unary.ConjunctiveUnaryPredicate;
 import io.github.libzeal.zeal.expression.lang.predicate.unary.UnaryPredicate;
 
-import java.util.Arrays;
 import java.util.Objects;
 import java.util.function.Predicate;
 
