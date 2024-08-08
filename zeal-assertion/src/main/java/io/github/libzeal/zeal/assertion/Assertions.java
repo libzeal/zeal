@@ -1,8 +1,5 @@
 package io.github.libzeal.zeal.assertion;
 
-import io.github.libzeal.zeal.assertion.error.PreconditionIllegalArgumentException;
-import io.github.libzeal.zeal.assertion.error.PreconditionNullPointerException;
-import io.github.libzeal.zeal.expression.lang.evaluation.Evaluation;
 import io.github.libzeal.zeal.expression.lang.evaluation.Result;
 import io.github.libzeal.zeal.expression.lang.UnaryExpression;
 
@@ -53,7 +50,7 @@ public class Assertions {
      * @see Assertions#require(UnaryExpression)
      */
     public static <T> T require(final UnaryExpression<T> expression) {
-        return require(expression, null);
+        return Requirement.create().require(expression);
     }
 
     /**
@@ -103,46 +100,6 @@ public class Assertions {
      *     {@code null}.
      */
     public static <T> T require(final UnaryExpression<T> expression, final String message) {
-
-        String formattedMessage = formattedMessage(message);
-
-        if (expression == null) {
-            throw new NullPointerException("Cannot evaluate null expression");
-        }
-
-        final Evaluation evaluation = expression.evaluate();
-
-        if (evaluation == null) {
-            throw new NullPointerException("Cannot process null evaluation");
-        }
-
-        final T subject = expression.subject();
-
-        if (isFailed(evaluation)) {
-
-            if (subject == null) {
-                throw new PreconditionNullPointerException(evaluation, formattedMessage);
-            }
-            else {
-                throw new PreconditionIllegalArgumentException(evaluation, formattedMessage);
-            }
-        }
-        else {
-            return subject;
-        }
-    }
-
-    private static String formattedMessage(final String message) {
-
-        if (message == null) {
-            return "Precondition failed";
-        }
-        else {
-            return message;
-        }
-    }
-
-    private static boolean isFailed(final Evaluation eval) {
-        return eval.result().equals(Result.FAILED);
+        return Requirement.create().require(expression, message);
     }
 }

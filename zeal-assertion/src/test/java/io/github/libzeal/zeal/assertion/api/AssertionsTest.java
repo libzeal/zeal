@@ -1,8 +1,7 @@
 package io.github.libzeal.zeal.assertion.api;
 
 import io.github.libzeal.zeal.assertion.Assertions;
-import io.github.libzeal.zeal.assertion.error.PreconditionIllegalArgumentException;
-import io.github.libzeal.zeal.assertion.error.PreconditionNullPointerException;
+import io.github.libzeal.zeal.assertion.error.PreconditionFailedException;
 import io.github.libzeal.zeal.expression.lang.evaluation.Evaluation;
 import io.github.libzeal.zeal.expression.lang.evaluation.Result;
 import io.github.libzeal.zeal.expression.lang.UnaryExpression;
@@ -53,7 +52,7 @@ class AssertionsTest {
         final UnaryExpression<Object> expression = expression(evaluation, null);
 
         assertThrows(
-            PreconditionNullPointerException.class,
+            NullPointerException.class,
             () -> Assertions.require(expression)
         );
     }
@@ -76,7 +75,7 @@ class AssertionsTest {
         final UnaryExpression<Object> expression = expression(evaluation, subject);
 
         assertThrows(
-            PreconditionIllegalArgumentException.class,
+            PreconditionFailedException.class,
             () -> Assertions.require(expression)
         );
     }
@@ -161,7 +160,7 @@ class AssertionsTest {
         final UnaryExpression<Object> expression = expression(evaluation, subject);
 
         assertThrows(
-            PreconditionNullPointerException.class,
+            NullPointerException.class,
             () -> Assertions.require(expression, "some message")
         );
     }
@@ -175,7 +174,7 @@ class AssertionsTest {
         final UnaryExpression<Object> expression = expression(evaluation, subject);
 
         assertThrows(
-            PreconditionIllegalArgumentException.class,
+            PreconditionFailedException.class,
             () -> Assertions.require(expression, "some message")
         );
     }
@@ -262,7 +261,7 @@ class AssertionsTest {
         final UnaryExpression<Object> expression = expression(evaluation, subject);
 
         assertThrows(
-            PreconditionNullPointerException.class,
+            NullPointerException.class,
             () -> Assertions.require(expression, null)
         );
     }
@@ -276,7 +275,7 @@ class AssertionsTest {
         final UnaryExpression<Object> expression = expression(evaluation, subject);
 
         assertThrows(
-            PreconditionIllegalArgumentException.class,
+            PreconditionFailedException.class,
             () -> Assertions.require(expression, null)
         );
     }

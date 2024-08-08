@@ -25,6 +25,10 @@
             <artifactId>zeal-expression</artifactId>
         </dependency>
         <dependency>
+            <groupId>io.github.libzeal</groupId>
+            <artifactId>zeal-expression-lang</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
             <scope>test</scope>
