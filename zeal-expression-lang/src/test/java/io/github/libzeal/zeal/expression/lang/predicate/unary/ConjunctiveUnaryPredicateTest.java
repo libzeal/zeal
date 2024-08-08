@@ -1,16 +1,15 @@
 package io.github.libzeal.zeal.expression.lang.predicate.unary;
 
-import io.github.libzeal.zeal.expression.lang.predicate.PredicateAssertions;
-import io.github.libzeal.zeal.expression.lang.predicate.Predicates;
 import io.github.libzeal.zeal.expression.lang.evaluation.Evaluation;
 import io.github.libzeal.zeal.expression.lang.evaluation.Result;
 import io.github.libzeal.zeal.expression.lang.evaluation.SimpleRationale;
+import io.github.libzeal.zeal.expression.lang.predicate.PredicateAssertions;
+import io.github.libzeal.zeal.expression.lang.predicate.Predicates;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 
-import static io.github.libzeal.zeal.expression.lang.predicate.Predicates.unaryPredicate;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 

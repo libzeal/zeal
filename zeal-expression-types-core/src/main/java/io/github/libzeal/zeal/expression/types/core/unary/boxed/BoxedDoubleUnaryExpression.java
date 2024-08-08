@@ -6,7 +6,7 @@ package io.github.libzeal.zeal.expression.types.core.unary.boxed;
  * @author Justin Albano
  * @since 0.2.0
  */
-public class BoxedDoubleUnaryExpression extends BoxedNumericUnaryExpression<Double, BoxedDoubleUnaryExpression> {
+public class BoxedDoubleUnaryExpression extends BoxedNumberUnaryExpression<Double, BoxedDoubleUnaryExpression> {
 
     /**
      * Creates a new expression.

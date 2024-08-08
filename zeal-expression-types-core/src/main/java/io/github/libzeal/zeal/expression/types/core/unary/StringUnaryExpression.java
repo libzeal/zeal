@@ -8,6 +8,8 @@ package io.github.libzeal.zeal.expression.types.core.unary;
  */
 public class StringUnaryExpression extends ObjectUnaryExpression<String, StringUnaryExpression> {
 
+    public static final String LENGTH_EQUAL_PREFIX = "length := ";
+
     /**
      * Creates a new expression.
      *
@@ -86,8 +88,8 @@ public class StringUnaryExpression extends ObjectUnaryExpression<String, StringU
     public StringUnaryExpression hasLengthOf(final long length) {
         return newPredicate(s -> s.length() == length)
             .name("hasLengthOf[" + length + "]")
-            .expectedValue("length := " + length)
-            .actualValue(value -> "length := " + value.length())
+            .expectedValue(LENGTH_EQUAL_PREFIX + length)
+            .actualValue(value -> LENGTH_EQUAL_PREFIX + value.length())
             .append();
     }
 
@@ -103,7 +105,7 @@ public class StringUnaryExpression extends ObjectUnaryExpression<String, StringU
         return newPredicate(s -> s.length() > length)
             .name("isLongerThan[" + length + "]")
             .expectedValue("length > " + length)
-            .actualValue(value -> "length := " + value.length())
+            .actualValue(value -> LENGTH_EQUAL_PREFIX + value.length())
             .append();
     }
 
@@ -120,7 +122,7 @@ public class StringUnaryExpression extends ObjectUnaryExpression<String, StringU
         return newPredicate(s -> s.length() >= length)
             .name("isLongerThanOrEqualTo[" + length + "]")
             .expectedValue("length >= " + length)
-            .actualValue(value -> "length := " + value.length())
+            .actualValue(value -> LENGTH_EQUAL_PREFIX + value.length())
             .append();
     }
 
@@ -136,7 +138,7 @@ public class StringUnaryExpression extends ObjectUnaryExpression<String, StringU
         return newPredicate(s -> s.length() < length)
             .name("isShorterThan[" + length + "]")
             .expectedValue("length < " + length)
-            .actualValue(value -> "length := " + value.length())
+            .actualValue(value -> LENGTH_EQUAL_PREFIX + value.length())
             .append();
     }
 
@@ -153,7 +155,7 @@ public class StringUnaryExpression extends ObjectUnaryExpression<String, StringU
         return newPredicate(s -> s.length() <= length)
             .name("isShorterThanOrEqualTo[" + length + "]")
             .expectedValue("length <= " + length)
-            .actualValue(value -> "length := " + value.length())
+            .actualValue(value -> LENGTH_EQUAL_PREFIX + value.length())
             .append();
     }
 
@@ -167,15 +169,23 @@ public class StringUnaryExpression extends ObjectUnaryExpression<String, StringU
      */
     public StringUnaryExpression includes(final char c) {
         return newPredicate(s -> s.indexOf(c) != -1)
-            .name("includes[" + c + "]")
-            .expectedValue("includes[" + c + "]")
+            .name(includesName(c))
+            .expectedValue(includesName(c))
             .actualValue(s -> needleInHaystackActualValue(s, c))
             .hint(s -> needleInHaystackHint(s, c))
             .append();
     }
 
+    private static String includesName(final char c){
+        return "includes[" + c + "]";
+    }
+
     private static String needleInHaystackActualValue(String s, char c) {
-        return s.indexOf(c) != -1 ? "includes[" + c + "]" : "excludes[" + c + "]";
+        return s.indexOf(c) != -1 ? includesName(c) : excludesName(c);
+    }
+
+    private static String excludesName(final char c){
+        return "excludes[" + c + "]";
     }
 
     private static String needleInHaystackHint(String s, char c) {
@@ -200,15 +210,23 @@ public class StringUnaryExpression extends ObjectUnaryExpression<String, StringU
      */
     public StringUnaryExpression includes(final CharSequence sequence) {
         return newPredicate(s -> s.contains(sequence))
-            .name("includes[" + sequence + "]")
-            .expectedValue("includes[" + sequence + "]")
+            .name(includesName(sequence))
+            .expectedValue(includesName(sequence))
             .actualValue(s -> needleInHaystackActualValue(s, sequence))
             .hint(s -> needleInHaystackHint(s, sequence))
             .append();
     }
 
+    private static String includesName(final CharSequence c){
+        return "includes[" + c + "]";
+    }
+
     private static String needleInHaystackActualValue(String s, CharSequence sequence) {
-        return s.contains(sequence) ? "includes[" + sequence + "]" : "excludes[" + sequence + "]";
+        return s.contains(sequence) ? includesName(sequence) : excludesName(sequence);
+    }
+
+    private static String excludesName(final CharSequence c){
+        return "excludes[" + c + "]";
     }
 
     private static String needleInHaystackHint(String s, CharSequence sequence) {
@@ -233,8 +251,8 @@ public class StringUnaryExpression extends ObjectUnaryExpression<String, StringU
      */
     public StringUnaryExpression excludes(final char c) {
         return newPredicate(s -> s.indexOf(c) == -1)
-            .name("excludes[" + c + "]")
-            .expectedValue("excludes[" + c + "]")
+            .name(excludesName(c))
+            .expectedValue(excludesName(c))
             .actualValue(s -> needleInHaystackActualValue(s, c))
             .hint(s -> needleInHaystackHint(s, c))
             .append();
@@ -250,8 +268,8 @@ public class StringUnaryExpression extends ObjectUnaryExpression<String, StringU
      */
     public StringUnaryExpression excludes(final CharSequence sequence) {
         return newPredicate(s -> !s.contains(sequence))
-            .name("excludes[" + sequence + "]")
-            .expectedValue("excludes[" + sequence + "]")
+            .name(excludesName(sequence))
+            .expectedValue(excludesName(sequence))
             .actualValue(s -> needleInHaystackActualValue(s, sequence))
             .hint(s -> needleInHaystackHint(s, sequence))
             .append();

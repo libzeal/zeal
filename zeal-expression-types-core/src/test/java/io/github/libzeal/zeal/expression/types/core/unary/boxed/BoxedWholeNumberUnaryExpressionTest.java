@@ -6,7 +6,7 @@ import static io.github.libzeal.zeal.expression.lang.evaluation.Result.FAILED;
 import static io.github.libzeal.zeal.expression.lang.evaluation.Result.PASSED;
 
 public abstract class BoxedWholeNumberUnaryExpressionTest<T extends Number, E extends BoxedWholeNumberUnaryExpression<T, E>>
-    extends BoxedNumericUnaryExpressionTest<T, E> {
+    extends BoxedNumberUnaryExpressionTest<T, E> {
 
     @Override
     protected void customTestCases(final ExpressionTestCaseBuilder<T, E> builder) {

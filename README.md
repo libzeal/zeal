@@ -104,3 +104,16 @@ All other predicates are evaluated in order.
 ### Postconditions
 
 ### Assertions
+
+## Supported Types
+The following types have equivalent expressions supported in the [core types](/zeal-expression-types-core) module:
+* `Object`
+* `String`
+* `Enum`
+* `Long`
+* `Integer`
+* `Short`
+* `Double`
+* `Float`
+* `Boolean`
+* `Byte`

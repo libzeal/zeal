@@ -7,7 +7,7 @@ import io.github.libzeal.zeal.expression.types.core.unary.ObjectUnaryExpressionT
 import static io.github.libzeal.zeal.expression.lang.evaluation.Result.FAILED;
 import static io.github.libzeal.zeal.expression.lang.evaluation.Result.PASSED;
 
-public abstract class BoxedNumericUnaryExpressionTest<T extends Number, E extends BoxedNumericUnaryExpression<T, E>>
+public abstract class BoxedNumberUnaryExpressionTest<T extends Number, E extends BoxedNumberUnaryExpression<T, E>>
     extends ObjectUnaryExpressionTest<T, E> {
 
     @Override

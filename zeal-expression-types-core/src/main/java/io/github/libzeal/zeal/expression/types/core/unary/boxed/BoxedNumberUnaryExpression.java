@@ -17,11 +17,19 @@ import java.util.function.Predicate;
  * @see ObjectUnaryExpression
  * @since 0.2.0
  */
-public abstract class BoxedNumericUnaryExpression<T extends Number, E extends ObjectUnaryExpression<T, E>> extends ObjectUnaryExpression<T, E> {
+public abstract class BoxedNumberUnaryExpression<T extends Number, E extends ObjectUnaryExpression<T, E>> extends ObjectUnaryExpression<T, E> {
 
     private static final String CANNOT_COMPARE_TO_NULL = "Always fail: cannot compare to subject to (null)";
 
-    protected BoxedNumericUnaryExpression(final T subject, final String name) {
+    /**
+     * Creates a new expression.
+     *
+     * @param subject
+     *     The subject of the expression.
+     * @param name
+     *     The name of the expression.
+     */
+    protected BoxedNumberUnaryExpression(final T subject, final String name) {
         super(subject, name);
     }
 

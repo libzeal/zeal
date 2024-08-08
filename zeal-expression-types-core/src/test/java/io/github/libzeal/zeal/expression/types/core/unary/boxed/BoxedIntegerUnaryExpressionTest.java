@@ -1,10 +1,5 @@
 package io.github.libzeal.zeal.expression.types.core.unary.boxed;
 
-import io.github.libzeal.zeal.expression.types.core.unary.test.ExpressionTestCaseBuilder;
-
-import static io.github.libzeal.zeal.expression.lang.evaluation.Result.FAILED;
-import static io.github.libzeal.zeal.expression.lang.evaluation.Result.PASSED;
-
 class BoxedIntegerUnaryExpressionTest extends BoxedWholeNumberUnaryExpressionTest<Integer, BoxedIntegerUnaryExpression> {
 
     @Override

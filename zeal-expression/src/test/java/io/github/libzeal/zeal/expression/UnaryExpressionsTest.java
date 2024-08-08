@@ -1,6 +1,5 @@
 package io.github.libzeal.zeal.expression;
 
-import io.github.libzeal.zeal.expression.UnaryExpressions;
 import io.github.libzeal.zeal.expression.lang.Expression;
 import io.github.libzeal.zeal.expression.lang.evaluation.Result;
 import org.junit.jupiter.api.Test;
