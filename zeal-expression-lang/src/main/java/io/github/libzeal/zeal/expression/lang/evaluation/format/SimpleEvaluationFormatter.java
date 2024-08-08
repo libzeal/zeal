@@ -67,7 +67,7 @@ public class SimpleEvaluationFormatter implements EvaluationFormatter {
 
         switch (state) {
             case PASSED:
-                return "PASS";
+                return " OK ";
             case FAILED:
                 return "FAIL";
             default:
@@ -156,7 +156,7 @@ public class SimpleEvaluationFormatter implements EvaluationFormatter {
                 name +
                 "\n" +
                 format(rationale, 0) +
-                "\n\n";
+                "\n";
         }
     }
 }

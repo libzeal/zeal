@@ -57,7 +57,7 @@ class SimpleEvaluationFormatterTest {
 
     private static String expectedPassingOutput(final String name, final int indent) {
         return indent(indent) +
-            "[PASS] " +
+            "[ OK ] " +
             name;
     }
 
@@ -100,7 +100,7 @@ class SimpleEvaluationFormatterTest {
         final Evaluation expression = expression(result, name, rationale);
 
         assertEquals(
-            expectedRootCauseOutput(name, rationale) + "\n\n" +
+            expectedRootCauseOutput(name, rationale) + "\n" +
                 expectedFailingOutput(name, rationale, 0),
             formatter.format(expression)
         );
@@ -174,7 +174,7 @@ class SimpleEvaluationFormatterTest {
         );
 
         assertEquals(
-            expectedRootCauseOutput(failingName, failingRationale) + "\n\n" +
+            expectedRootCauseOutput(failingName, failingRationale) + "\n" +
                 "[FAIL] " + compoundExpressionName + "\n" +
                 expectedPassingOutput(passingName, 1) + "\n" +
                 expectedFailingOutput(failingName, failingRationale, 1),
@@ -209,7 +209,7 @@ class SimpleEvaluationFormatterTest {
         );
 
         assertEquals(
-            expectedRootCauseOutput(failingName, failingRationale) + "\n\n" +
+            expectedRootCauseOutput(failingName, failingRationale) + "\n" +
                 "[FAIL] " + compoundExpressionName + "\n" +
                 expectedPassingOutput(passingName, 1) + "\n" +
                 expectedFailingOutput(failingName, failingRationale, 1) + "\n" +
