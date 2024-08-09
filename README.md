@@ -234,5 +234,7 @@ The following types have equivalent expressions supported in the [core types](/z
 * `Short`
 * `Double`
 * `Float`
+* `Number`
 * `Boolean`
 * `Byte`
+* `Character`

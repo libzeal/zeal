@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 class UnaryExpressionsTest {
 
     @Test
-    void givenNullValue_whenThatGeneralObject_thenExpressionReturned() {
+    void givenNullValue_whenValueGeneralObject_thenExpressionReturned() {
 
         Expression expression = UnaryExpressions.value((Object) null);
 
@@ -17,7 +17,7 @@ class UnaryExpressionsTest {
     }
 
     @Test
-    void givenValidValue_whenThatGeneralObject_thenExpressionReturned() {
+    void givenValidValue_whenValueGeneralObject_thenExpressionReturned() {
 
         Expression expression = UnaryExpressions.value(new Object());
 
@@ -25,7 +25,7 @@ class UnaryExpressionsTest {
     }
 
     @Test
-    void givenNullValue_whenThatString_thenExpressionReturned() {
+    void givenNullValue_whenValueString_thenExpressionReturned() {
 
         Expression expression = UnaryExpressions.value((String) null);
 
@@ -33,7 +33,7 @@ class UnaryExpressionsTest {
     }
 
     @Test
-    void givenValidValue_whenThatString_thenExpressionReturned() {
+    void givenValidValue_whenValueString_thenExpressionReturned() {
 
         Expression expression = UnaryExpressions.value("foo");
 
@@ -41,7 +41,7 @@ class UnaryExpressionsTest {
     }
 
     @Test
-    void givenValidValue_whenThatEnum_thenExpressionReturned() {
+    void givenValidValue_whenValueEnum_thenExpressionReturned() {
 
         Expression expression = UnaryExpressions.value(Result.PASSED);
 
@@ -49,7 +49,7 @@ class UnaryExpressionsTest {
     }
 
     @Test
-    void givenValidValue_whenThatBoxedInteger_thenExpressionReturned() {
+    void givenValidValue_whenValueBoxedInteger_thenExpressionReturned() {
 
         Expression expression = UnaryExpressions.value(Integer.valueOf(1));
 
@@ -57,7 +57,7 @@ class UnaryExpressionsTest {
     }
 
     @Test
-    void givenValidValue_whenThatBoxedLong_thenExpressionReturned() {
+    void givenValidValue_whenValueBoxedLong_thenExpressionReturned() {
 
         Expression expression = UnaryExpressions.value(Long.valueOf(1));
 
@@ -65,7 +65,7 @@ class UnaryExpressionsTest {
     }
 
     @Test
-    void givenValidValue_whenThatBoxedDouble_thenExpressionReturned() {
+    void givenValidValue_whenValueBoxedDouble_thenExpressionReturned() {
 
         Expression expression = UnaryExpressions.value(Double.valueOf(1));
 
@@ -73,7 +73,7 @@ class UnaryExpressionsTest {
     }
 
     @Test
-    void givenValidValue_whenThatBoxedFloat_thenExpressionReturned() {
+    void givenValidValue_whenValueBoxedFloat_thenExpressionReturned() {
 
         Expression expression = UnaryExpressions.value(Float.valueOf(1));
 
@@ -81,7 +81,7 @@ class UnaryExpressionsTest {
     }
 
     @Test
-    void givenValidValue_whenThatBoxedBoolean_thenExpressionReturned() {
+    void givenValidValue_whenValueBoxedBoolean_thenExpressionReturned() {
 
         Expression expression = UnaryExpressions.value(Boolean.TRUE);
 
@@ -89,9 +89,17 @@ class UnaryExpressionsTest {
     }
 
     @Test
-    void givenValidValue_whenThatBoxedByte_thenExpressionReturned() {
+    void givenValidValue_whenValueBoxedByte_thenExpressionReturned() {
 
-        Expression expression = UnaryExpressions.value((byte) 1);
+        Expression expression = UnaryExpressions.value(Byte.valueOf((byte) 0x01));
+
+        assertNotNull(expression);
+    }
+
+    @Test
+    void givenValidValue_whenValueBoxedCharacter_thenExpressionReturned() {
+
+        Expression expression = UnaryExpressions.value(Character.valueOf('c'));
 
         assertNotNull(expression);
     }

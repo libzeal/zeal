@@ -127,4 +127,16 @@ public class UnaryExpressions {
     public static BoxedByteUnaryExpression value(final Byte value) {
         return new BoxedByteUnaryExpression(value);
     }
+
+    /**
+     * Wraps a {@link Character} as an expression.
+     *
+     * @param value
+     *     The {@link Character} to wrap.
+     *
+     * @return An expression that wraps the supplied {@link Character}.
+     */
+    public static BoxedCharacterUnaryExpression value(final Character value) {
+        return new BoxedCharacterUnaryExpression(value);
+    }
 }

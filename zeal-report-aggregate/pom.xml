@@ -28,6 +28,14 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>zeal-expression</artifactId>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>zeal-expression-lang</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>zeal-expression-types-core</artifactId>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
