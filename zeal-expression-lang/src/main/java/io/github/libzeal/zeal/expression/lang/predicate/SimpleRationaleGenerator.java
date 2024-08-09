@@ -38,11 +38,11 @@ public class SimpleRationaleGenerator<T> implements RationaleGenerator<T> {
     }
 
     @Override
-    public Rationale generate(final T subject) {
+    public Rationale generate(final T subject, boolean passed) {
 
-        final String generatedExpected = expected.compute(subject);
-        final String generatedActual = actual.compute(subject);
-        final String generatedHint = hint == null ? null : hint.compute(subject);
+        final String generatedExpected = expected.compute(subject, passed);
+        final String generatedActual = actual.compute(subject, passed);
+        final String generatedHint = hint == null ? null : hint.compute(subject, passed);
 
         return new SimpleRationale(generatedExpected, generatedActual, generatedHint);
     }

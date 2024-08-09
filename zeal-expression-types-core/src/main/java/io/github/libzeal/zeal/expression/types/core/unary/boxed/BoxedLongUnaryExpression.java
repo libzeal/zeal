@@ -4,6 +4,7 @@ package io.github.libzeal.zeal.expression.types.core.unary.boxed;
  * An expression used to evaluate {@link Long} instances.
  *
  * @author Justin Albano
+ * @implNote Many of the predicates of this expression require unboxing, resulting in some performance loss.
  * @since 0.2.0
  */
 public class BoxedLongUnaryExpression extends BoxedWholeNumberUnaryExpression<Long, BoxedLongUnaryExpression> {

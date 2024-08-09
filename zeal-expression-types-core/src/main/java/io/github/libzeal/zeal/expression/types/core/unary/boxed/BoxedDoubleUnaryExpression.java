@@ -4,6 +4,7 @@ package io.github.libzeal.zeal.expression.types.core.unary.boxed;
  * An expression used to evaluate {@link Double} instances.
  *
  * @author Justin Albano
+ * @implNote Many of the predicates of this expression require unboxing, resulting in some performance loss.
  * @since 0.2.0
  */
 public class BoxedDoubleUnaryExpression extends BoxedNumberUnaryExpression<Double, BoxedDoubleUnaryExpression> {
@@ -35,7 +36,7 @@ public class BoxedDoubleUnaryExpression extends BoxedNumberUnaryExpression<Doubl
     public BoxedDoubleUnaryExpression isEqualTo(final Double value, final Double delta) {
         return newPredicate(d -> Math.abs(d - value) <= delta)
             .name("isEqualTo[" + value + " +/- " + delta + "]")
-            .expectedValue(value + " +/- " + delta)
+            .expected(value + " +/- " + delta)
             .append();
     }
 
@@ -47,7 +48,7 @@ public class BoxedDoubleUnaryExpression extends BoxedNumberUnaryExpression<Doubl
     public BoxedDoubleUnaryExpression isFinite() {
         return newPredicate(Double::isFinite)
             .name("isFinite")
-            .expectedValue("finite")
+            .expected("finite")
             .append();
     }
 
@@ -59,7 +60,7 @@ public class BoxedDoubleUnaryExpression extends BoxedNumberUnaryExpression<Doubl
     public BoxedDoubleUnaryExpression isInfinite() {
         return newPredicate(l -> l.isInfinite())
             .name("isInfinite")
-            .expectedValue("infinite")
+            .expected("infinite")
             .append();
     }
 
@@ -71,7 +72,7 @@ public class BoxedDoubleUnaryExpression extends BoxedNumberUnaryExpression<Doubl
     public BoxedDoubleUnaryExpression isNaN() {
         return newPredicate(l -> l.isNaN())
             .name("isNaN")
-            .expectedValue("NaN")
+            .expected("NaN")
             .append();
     }
 

@@ -29,7 +29,7 @@ public abstract class BoxedWholeNumberUnaryExpression<T extends Number, E extend
     public E isEven() {
         return newPredicate(l -> l.longValue() % 2 == 0)
             .name("isEven")
-            .expectedValue("% 2 := 0")
+            .expected("% 2 := 0")
             .append();
     }
 
@@ -41,7 +41,7 @@ public abstract class BoxedWholeNumberUnaryExpression<T extends Number, E extend
     public E isOdd() {
         return newPredicate(l -> l.longValue() % 2 != 0)
             .name("isOdd")
-            .expectedValue("% 2 != 0")
+            .expected("% 2 != 0")
             .append();
     }
 }

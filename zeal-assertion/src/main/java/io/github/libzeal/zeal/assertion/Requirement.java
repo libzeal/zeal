@@ -43,6 +43,10 @@ public class Requirement {
         return new Requirement(this.onNullExceptionSupplier, this.onFailExceptionSupplier, formatter);
     }
 
+    public Requirement thatThrowsIllegalArgumentExceptionOnNull() {
+        return thatThrowsOnNull(IllegalArgumentException::new);
+    }
+
     public <T> T require(final UnaryExpression<T> expression) {
         return require(expression, "Precondition failed");
     }

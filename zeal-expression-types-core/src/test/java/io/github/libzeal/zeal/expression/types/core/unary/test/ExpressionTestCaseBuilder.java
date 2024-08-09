@@ -6,7 +6,6 @@ import org.junit.jupiter.params.provider.Arguments;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -23,7 +22,7 @@ public class ExpressionTestCaseBuilder<T, E extends ObjectUnaryExpression<T, E>>
         this.arguments = new ArrayList<>();
     }
 
-    public ArgumentBuilder<T, E> newTest(BiConsumer<E, T> modifier) {
+    public ArgumentBuilder<T, E> newTest(BiFunction<E, T, E> modifier) {
         return new ArgumentBuilder<>(this, modifier);
     }
 
@@ -38,7 +37,7 @@ public class ExpressionTestCaseBuilder<T, E extends ObjectUnaryExpression<T, E>>
     public static class ArgumentBuilder<T, E extends ObjectUnaryExpression<T, E>> {
 
         private final ExpressionTestCaseBuilder<T, E> testCaseBuilder;
-        private final BiConsumer<E, T> modifier;
+        private final BiFunction<E, T, E> modifier;
         private String testCaseName;
         private T value;
         private Result state;
@@ -47,7 +46,7 @@ public class ExpressionTestCaseBuilder<T, E extends ObjectUnaryExpression<T, E>>
         private BiFunction<?, ?, String> actualValue;
         private BiFunction<?, ?, String> hint;
 
-        public ArgumentBuilder(ExpressionTestCaseBuilder<T, E> testCaseBuilder, BiConsumer<E, T> modifier) {
+        public ArgumentBuilder(ExpressionTestCaseBuilder<T, E> testCaseBuilder, BiFunction<E, T, E> modifier) {
             this.testCaseBuilder = testCaseBuilder;
             this.modifier = modifier;
         }
@@ -76,20 +75,20 @@ public class ExpressionTestCaseBuilder<T, E extends ObjectUnaryExpression<T, E>>
             return this;
         }
 
-        public ArgumentBuilder<T, E> expectedExpectedValue(String value) {
-            return expectedExpectedValue((e, v) -> value);
+        public ArgumentBuilder<T, E> expectedExpected(String value) {
+            return expectedExpected((e, v) -> value);
         }
 
-        public ArgumentBuilder<T, E> expectedExpectedValue(BiFunction<?, ?, String> value) {
+        public ArgumentBuilder<T, E> expectedExpected(BiFunction<?, ?, String> value) {
             this.expectedValue = value;
             return this;
         }
 
-        public ArgumentBuilder<T, E> expectedActualValue(String value) {
-            return expectedActualValue((e, v) -> value);
+        public ArgumentBuilder<T, E> expectedActual(String value) {
+            return expectedActual((e, v) -> value);
         }
 
-        public ArgumentBuilder<T, E> expectedActualValue(BiFunction<T, ?, String> value) {
+        public ArgumentBuilder<T, E> expectedActual(BiFunction<T, ?, String> value) {
             this.actualValue = value;
             return this;
         }

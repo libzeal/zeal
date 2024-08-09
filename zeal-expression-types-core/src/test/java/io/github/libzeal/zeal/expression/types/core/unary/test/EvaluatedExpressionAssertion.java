@@ -43,8 +43,4 @@ public class EvaluatedExpressionAssertion<T> {
     public void assertHintIs(final String hint) {
         Assertions.assertEquals(hint, eval.rationale().hint().orElse(null));
     }
-
-    public void assertHasNoChildren() {
-        Assertions.assertTrue(eval.children().isEmpty());
-    }
 }

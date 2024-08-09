@@ -4,6 +4,7 @@ package io.github.libzeal.zeal.expression.types.core.unary.boxed;
  * An expression used to evaluate {@link Float} instances.
  *
  * @author Justin Albano
+ * @implNote Many of the predicates of this expression require unboxing, resulting in some performance loss.
  * @since 0.2.0
  */
 public class BoxedFloatUnaryExpression extends BoxedNumberUnaryExpression<Float, BoxedFloatUnaryExpression> {
@@ -35,7 +36,7 @@ public class BoxedFloatUnaryExpression extends BoxedNumberUnaryExpression<Float,
     public BoxedFloatUnaryExpression isEqualTo(final Float value, final Float delta) {
         return newPredicate(d -> Math.abs(d - value) <= delta)
             .name("isEqualTo[" + value + " +/- " + delta + "]")
-            .expectedValue(value + " +/- " + delta)
+            .expected(value + " +/- " + delta)
             .append();
     }
 
@@ -47,7 +48,7 @@ public class BoxedFloatUnaryExpression extends BoxedNumberUnaryExpression<Float,
     public BoxedFloatUnaryExpression isFinite() {
         return newPredicate(Float::isFinite)
             .name("isFinite")
-            .expectedValue("finite")
+            .expected("finite")
             .append();
     }
 
@@ -59,7 +60,7 @@ public class BoxedFloatUnaryExpression extends BoxedNumberUnaryExpression<Float,
     public BoxedFloatUnaryExpression isInfinite() {
         return newPredicate(l -> l.isInfinite())
             .name("isInfinite")
-            .expectedValue("infinite")
+            .expected("infinite")
             .append();
     }
 
@@ -71,7 +72,7 @@ public class BoxedFloatUnaryExpression extends BoxedNumberUnaryExpression<Float,
     public BoxedFloatUnaryExpression isNaN() {
         return newPredicate(l -> l.isNaN())
             .name("isNaN")
-            .expectedValue("NaN")
+            .expected("NaN")
             .append();
     }
 

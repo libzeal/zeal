@@ -8,6 +8,7 @@ import io.github.libzeal.zeal.expression.lang.evaluation.Rationale;
  * @param <T>
  *     The type of the subject.
  */
+@FunctionalInterface
 public interface RationaleGenerator<T> {
 
     /**
@@ -18,5 +19,5 @@ public interface RationaleGenerator<T> {
      *
      * @return A rationale based on the supplied subject.
      */
-    Rationale generate(T subject);
+    Rationale generate(T subject, boolean passed);
 }
