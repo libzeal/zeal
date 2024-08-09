@@ -2,8 +2,6 @@ package io.github.libzeal.zeal.expression.lang.predicate;
 
 import io.github.libzeal.zeal.expression.lang.evaluation.Rationale;
 
-import java.util.function.Function;
-
 /**
  * A formatter that consumes a subject and provides a string representation. This interface is intended to be used to
  * generate the expected and actual values of an {@link Rationale}.
@@ -12,35 +10,19 @@ import java.util.function.Function;
  *     The type of the subject.
  */
 @FunctionalInterface
-public interface ValueSupplier<T> extends Function<T, String>  {
+public interface ValueSupplier<T> {
 
     /**
      * Computes the value based on the supplied subject.
      *
      * @param subject
      *     The subject to compute the value for.
+     * @param passed
+     *     A flag denoting if the evaluation for which the value is supplied passed or failed. This flag is passed in as
+     *     optimization that allows implementations to know if the evaluation passed without having to recompute the
+     *     evaluation.
      *
      * @return The computed value.
      */
-    String compute(T subject);
-
-    @Override
-    default String apply(T t) {
-        return compute(t);
-    }
-
-    /**
-     * Creates a {@link ValueSupplier} that always computes to the supplied value. This method can be thought of as a
-     * convenience method to adapt the supplied string value to the {@link ValueSupplier} functional interface.
-     *
-     * @param value
-     *     The value to return from the {@link ValueSupplier}.
-     * @param <S>
-     *     The type of the subject.
-     *
-     * @return A {@link ValueSupplier} that always results in the supplied value.
-     */
-    static <S> ValueSupplier<S> of(String value) {
-        return s -> value;
-    }
+    String compute(T subject, boolean passed);
 }

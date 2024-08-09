@@ -6,6 +6,7 @@ import io.github.libzeal.zeal.expression.types.core.unary.ObjectUnaryExpression;
  * An expression used to evaluate {@link Boolean} instances.
  *
  * @author Justin Albano
+ * @implNote Many of the predicates of this expression require unboxing, resulting in some performance loss.
  * @since 0.2.0
  */
 public class BoxedBooleanUnaryExpression extends ObjectUnaryExpression<Boolean, BoxedBooleanUnaryExpression> {
@@ -28,8 +29,8 @@ public class BoxedBooleanUnaryExpression extends ObjectUnaryExpression<Boolean, 
     public BoxedBooleanUnaryExpression isTrue() {
         return newPredicate(Boolean::booleanValue)
             .name("isTrue")
-            .expectedValue("true")
-            .actualBooleanValue(value -> value)
+            .expected("true")
+            .actual((s, passed) -> String.valueOf(s))
             .append();
     }
 
@@ -41,8 +42,8 @@ public class BoxedBooleanUnaryExpression extends ObjectUnaryExpression<Boolean, 
     public BoxedBooleanUnaryExpression isFalse() {
         return newPredicate(b -> !b)
             .name("isFalse")
-            .expectedValue("false")
-            .actualBooleanValue(value -> value)
+            .expected("false")
+            .actual((s, passed) -> String.valueOf(s))
             .append();
     }
 }

@@ -53,8 +53,8 @@ public abstract class EnumExpression<T extends Enum<T>, B extends EnumExpression
     public B ordinalIs(final int ordinal) {
         return newPredicate(s -> s.ordinal() == ordinal)
             .name("ordinalIs[" + ordinal + "]")
-            .expectedIntValue(ordinal)
-            .actualIntValue(Enum::ordinal)
+            .expected(ordinal)
+            .actual((s, passed) -> String.valueOf(s.ordinal()))
             .append();
     }
 
@@ -69,8 +69,8 @@ public abstract class EnumExpression<T extends Enum<T>, B extends EnumExpression
     public B ordinalIsNot(final int ordinal) {
         return newPredicate(s -> s.ordinal() != ordinal)
             .name("not[ordinalIs[" + ordinal + "]]")
-            .expectedValue(value -> "not[" + ordinal + "]")
-            .actualIntValue(Enum::ordinal)
+            .expected((value, passed) -> "not[" + ordinal + "]")
+            .actual((s, passed) -> String.valueOf(s.ordinal()))
             .append();
     }
 
@@ -85,8 +85,8 @@ public abstract class EnumExpression<T extends Enum<T>, B extends EnumExpression
     public B nameIs(final String name) {
         return newPredicate(s -> s.name().equals(name))
             .name("nameIs[" + name + "]")
-            .expectedValue(name)
-            .actualValue(Enum::name)
+            .expected(name)
+            .actual((s, passed) -> s.name())
             .append();
     }
 
@@ -101,8 +101,8 @@ public abstract class EnumExpression<T extends Enum<T>, B extends EnumExpression
     public B nameIsNot(final String name) {
         return newPredicate(s -> !s.name().equals(name))
             .name("not[nameIs[" + name + "]]")
-            .expectedValue("not[" + name + "]")
-            .actualValue(Enum::name)
+            .expected("not[" + name + "]")
+            .actual((s, passed) -> s.name())
             .append();
     }
 
@@ -118,8 +118,8 @@ public abstract class EnumExpression<T extends Enum<T>, B extends EnumExpression
     public B caseInsensitiveNameIs(final String name) {
         return newPredicate(s -> s.name().equalsIgnoreCase(name))
             .name("caseInsensitiveNameIs[" + name + "]")
-            .expectedValue("caseInsensitive[" + name + "]")
-            .actualValue(Enum::name)
+            .expected("caseInsensitive[" + name + "]")
+            .actual((s, passed) -> s.name())
             .append();
     }
 
@@ -135,8 +135,8 @@ public abstract class EnumExpression<T extends Enum<T>, B extends EnumExpression
     public B caseInsensitiveNameIsNot(final String name) {
         return newPredicate(s -> !s.name().equalsIgnoreCase(name))
             .name("not[caseInsensitiveNameIs[" + name + "]]")
-            .expectedValue("not[caseInsensitive[" + name + "]]")
-            .actualValue(Enum::name)
+            .expected("not[caseInsensitive[" + name + "]]")
+            .actual((s, passed) -> s.name())
             .append();
     }
 }

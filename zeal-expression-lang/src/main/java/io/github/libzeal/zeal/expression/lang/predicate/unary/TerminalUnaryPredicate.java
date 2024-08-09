@@ -88,10 +88,13 @@ public class TerminalUnaryPredicate<T> implements UnaryPredicate<T> {
 
     @Override
     public Evaluation evaluate(final T subject) {
+
+        final boolean passed = predicate.test(subject);
+
         return new EvaluatedPredicate(
             name,
-            predicate.test(subject) ? PASSED : FAILED,
-            rationaleGenerator.generate(subject)
+            passed ? PASSED : FAILED,
+            rationaleGenerator.generate(subject, passed)
         );
     }
 }

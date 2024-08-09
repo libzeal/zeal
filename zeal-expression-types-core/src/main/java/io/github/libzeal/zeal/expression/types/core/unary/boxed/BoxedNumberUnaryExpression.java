@@ -58,10 +58,10 @@ public abstract class BoxedNumberUnaryExpression<T extends Number, E extends Obj
             .name(name);
 
         if (value == null) {
-            builder.expectedValue(CANNOT_COMPARE_TO_NULL);
+            builder.expected(CANNOT_COMPARE_TO_NULL);
         }
         else {
-            builder.expectedValue(expectedValue);
+            builder.expected(expectedValue);
         }
 
         return builder.append();
@@ -162,7 +162,7 @@ public abstract class BoxedNumberUnaryExpression<T extends Number, E extends Obj
     public E isMaxValue() {
         return newPredicate(t -> eq(t, max()))
             .name("isMax")
-            .expectedValue(String.valueOf(max()))
+            .expected(String.valueOf(max()))
             .append();
     }
 
@@ -174,7 +174,7 @@ public abstract class BoxedNumberUnaryExpression<T extends Number, E extends Obj
     public E isMinValue() {
         return newPredicate(t -> eq(t, min()))
             .name("isMin")
-            .expectedValue(String.valueOf(min()))
+            .expected(String.valueOf(min()))
             .append();
     }
 
@@ -186,7 +186,7 @@ public abstract class BoxedNumberUnaryExpression<T extends Number, E extends Obj
     public E isZero() {
         return newPredicate(t -> eq(t, zero()))
             .name("isZero")
-            .expectedValue(String.valueOf(zero()))
+            .expected(String.valueOf(zero()))
             .append();
     }
 
@@ -198,7 +198,7 @@ public abstract class BoxedNumberUnaryExpression<T extends Number, E extends Obj
     public E isNotZero() {
         return newPredicate(t -> !eq(t, zero()))
             .name("isNotZero")
-            .expectedValue("not[" + zero() + "]")
+            .expected("not[" + zero() + "]")
             .append();
     }
 
@@ -210,7 +210,7 @@ public abstract class BoxedNumberUnaryExpression<T extends Number, E extends Obj
     public E isPositive() {
         return newPredicate(t -> gt(t, zero()))
             .name("isPositive")
-            .expectedValue("> " + zero())
+            .expected("> " + zero())
             .append();
     }
 
@@ -222,7 +222,7 @@ public abstract class BoxedNumberUnaryExpression<T extends Number, E extends Obj
     public E isNotPositive() {
         return newPredicate(t -> lte(t, zero()))
             .name("isNotPositive")
-            .expectedValue("<= " + zero())
+            .expected("<= " + zero())
             .append();
     }
 
@@ -234,7 +234,7 @@ public abstract class BoxedNumberUnaryExpression<T extends Number, E extends Obj
     public E isNegative() {
         return newPredicate(t -> lt(t, zero()))
             .name("isNegative")
-            .expectedValue("< " + zero())
+            .expected("< " + zero())
             .append();
     }
 
@@ -246,7 +246,7 @@ public abstract class BoxedNumberUnaryExpression<T extends Number, E extends Obj
     public E isNotNegative() {
         return newPredicate(t -> gte(t, zero()))
             .name("isNotNegative")
-            .expectedValue(">= " + zero())
+            .expected(">= " + zero())
             .append();
     }
 

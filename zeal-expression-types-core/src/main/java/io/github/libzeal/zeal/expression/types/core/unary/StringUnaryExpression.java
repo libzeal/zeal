@@ -1,5 +1,7 @@
 package io.github.libzeal.zeal.expression.types.core.unary;
 
+import io.github.libzeal.zeal.expression.lang.predicate.ValueSupplier;
+
 /**
  * An expression used to evaluate {@link String} instances.
  *
@@ -8,7 +10,13 @@ package io.github.libzeal.zeal.expression.types.core.unary;
  */
 public class StringUnaryExpression extends ObjectUnaryExpression<String, StringUnaryExpression> {
 
-    public static final String LENGTH_EQUAL_PREFIX = "length := ";
+    private static final String EQUALS_OPERATOR = ":=";
+    private static final String NOT_EQUALS_OPERATOR = "!=";
+    private static final String LENGTH_EQUAL_PREFIX = "length " + EQUALS_OPERATOR + " ";
+    private static final String OCCURS = "occurs";
+    private static final String INDEX_OF_PREFIX = "indexOf";
+    private static final String LAST_INDEX_OF_PREFIX = "lastIndexOf";
+    private static final String OCCURRENCES_PREFIX = "occurrences";
 
     /**
      * Creates a new expression.
@@ -30,9 +38,13 @@ public class StringUnaryExpression extends ObjectUnaryExpression<String, StringU
     public StringUnaryExpression isEmpty() {
         return newPredicate(String::isEmpty)
             .name("isEmpty")
-            .expectedValue("true")
-            .actualBooleanValue(String::isEmpty)
+            .expected("true")
+            .actual(isPredicatedPassed())
             .append();
+    }
+
+    private static ValueSupplier<String> isPredicatedPassed() {
+        return (o, passed) -> passed ? "true" : "false";
     }
 
     /**
@@ -46,8 +58,8 @@ public class StringUnaryExpression extends ObjectUnaryExpression<String, StringU
     public StringUnaryExpression isNotEmpty() {
         return newPredicate(s -> !s.isEmpty())
             .name("isNotEmpty")
-            .expectedValue("true")
-            .actualBooleanValue(s -> !s.isEmpty())
+            .expected("true")
+            .actual(isPredicatedPassed())
             .append();
     }
 
@@ -59,8 +71,8 @@ public class StringUnaryExpression extends ObjectUnaryExpression<String, StringU
     public StringUnaryExpression isBlank() {
         return newPredicate(s -> s.trim().isEmpty())
             .name("isBlank")
-            .expectedValue("true")
-            .actualBooleanValue(s -> s.trim().isEmpty())
+            .expected("true")
+            .actual(isPredicatedPassed())
             .append();
     }
 
@@ -72,8 +84,8 @@ public class StringUnaryExpression extends ObjectUnaryExpression<String, StringU
     public StringUnaryExpression isNotBlank() {
         return newPredicate(s -> !s.trim().isEmpty())
             .name("isNotBlank")
-            .expectedValue("true")
-            .actualBooleanValue(s -> !s.trim().isEmpty())
+            .expected("true")
+            .actual(isPredicatedPassed())
             .append();
     }
 
@@ -88,8 +100,8 @@ public class StringUnaryExpression extends ObjectUnaryExpression<String, StringU
     public StringUnaryExpression hasLengthOf(final long length) {
         return newPredicate(s -> s.length() == length)
             .name("hasLengthOf[" + length + "]")
-            .expectedValue(LENGTH_EQUAL_PREFIX + length)
-            .actualValue(value -> LENGTH_EQUAL_PREFIX + value.length())
+            .expected(LENGTH_EQUAL_PREFIX + length)
+            .actual((s, passed) -> LENGTH_EQUAL_PREFIX + s.length())
             .append();
     }
 
@@ -104,8 +116,8 @@ public class StringUnaryExpression extends ObjectUnaryExpression<String, StringU
     public StringUnaryExpression isLongerThan(final long length) {
         return newPredicate(s -> s.length() > length)
             .name("isLongerThan[" + length + "]")
-            .expectedValue("length > " + length)
-            .actualValue(value -> LENGTH_EQUAL_PREFIX + value.length())
+            .expected("length > " + length)
+            .actual((value, passed) -> LENGTH_EQUAL_PREFIX + value.length())
             .append();
     }
 
@@ -121,8 +133,8 @@ public class StringUnaryExpression extends ObjectUnaryExpression<String, StringU
     public StringUnaryExpression isLongerThanOrEqualTo(long length) {
         return newPredicate(s -> s.length() >= length)
             .name("isLongerThanOrEqualTo[" + length + "]")
-            .expectedValue("length >= " + length)
-            .actualValue(value -> LENGTH_EQUAL_PREFIX + value.length())
+            .expected("length >= " + length)
+            .actual((value, passed) -> LENGTH_EQUAL_PREFIX + value.length())
             .append();
     }
 
@@ -137,8 +149,8 @@ public class StringUnaryExpression extends ObjectUnaryExpression<String, StringU
     public StringUnaryExpression isShorterThan(long length) {
         return newPredicate(s -> s.length() < length)
             .name("isShorterThan[" + length + "]")
-            .expectedValue("length < " + length)
-            .actualValue(value -> LENGTH_EQUAL_PREFIX + value.length())
+            .expected("length < " + length)
+            .actual((value, passed) -> LENGTH_EQUAL_PREFIX + value.length())
             .append();
     }
 
@@ -154,8 +166,8 @@ public class StringUnaryExpression extends ObjectUnaryExpression<String, StringU
     public StringUnaryExpression isShorterThanOrEqualTo(long length) {
         return newPredicate(s -> s.length() <= length)
             .name("isShorterThanOrEqualTo[" + length + "]")
-            .expectedValue("length <= " + length)
-            .actualValue(value -> LENGTH_EQUAL_PREFIX + value.length())
+            .expected("length <= " + length)
+            .actual((value, passed) -> LENGTH_EQUAL_PREFIX + value.length())
             .append();
     }
 
@@ -170,18 +182,14 @@ public class StringUnaryExpression extends ObjectUnaryExpression<String, StringU
     public StringUnaryExpression includes(final char c) {
         return newPredicate(s -> s.indexOf(c) != -1)
             .name(includesName(c))
-            .expectedValue(includesName(c))
-            .actualValue(s -> needleInHaystackActualValue(s, c))
-            .hint(s -> needleInHaystackHint(s, c))
+            .expected(includesName(c))
+            .actual((s, passed) -> passed ? includesName(c) : excludesName(c))
+            .hint((s, passed) -> needleInHaystackHint(s, c))
             .append();
     }
 
     private static String includesName(final char c){
         return "includes[" + c + "]";
-    }
-
-    private static String needleInHaystackActualValue(String s, char c) {
-        return s.indexOf(c) != -1 ? includesName(c) : excludesName(c);
     }
 
     private static String excludesName(final char c){
@@ -211,18 +219,14 @@ public class StringUnaryExpression extends ObjectUnaryExpression<String, StringU
     public StringUnaryExpression includes(final CharSequence sequence) {
         return newPredicate(s -> s.contains(sequence))
             .name(includesName(sequence))
-            .expectedValue(includesName(sequence))
-            .actualValue(s -> needleInHaystackActualValue(s, sequence))
-            .hint(s -> needleInHaystackHint(s, sequence))
+            .expected(includesName(sequence))
+            .actual((s, passed) -> passed ? includesName(sequence) : excludesName(sequence))
+            .hint((s, passed) -> needleInHaystackHint(s, sequence))
             .append();
     }
 
     private static String includesName(final CharSequence c){
         return "includes[" + c + "]";
-    }
-
-    private static String needleInHaystackActualValue(String s, CharSequence sequence) {
-        return s.contains(sequence) ? includesName(sequence) : excludesName(sequence);
     }
 
     private static String excludesName(final CharSequence c){
@@ -252,9 +256,9 @@ public class StringUnaryExpression extends ObjectUnaryExpression<String, StringU
     public StringUnaryExpression excludes(final char c) {
         return newPredicate(s -> s.indexOf(c) == -1)
             .name(excludesName(c))
-            .expectedValue(excludesName(c))
-            .actualValue(s -> needleInHaystackActualValue(s, c))
-            .hint(s -> needleInHaystackHint(s, c))
+            .expected(excludesName(c))
+            .actual((s, passed) -> passed ? excludesName(c) : includesName(c))
+            .hint((s, passed) -> needleInHaystackHint(s, c))
             .append();
     }
 
@@ -269,9 +273,9 @@ public class StringUnaryExpression extends ObjectUnaryExpression<String, StringU
     public StringUnaryExpression excludes(final CharSequence sequence) {
         return newPredicate(s -> !s.contains(sequence))
             .name(excludesName(sequence))
-            .expectedValue(excludesName(sequence))
-            .actualValue(s -> needleInHaystackActualValue(s, sequence))
-            .hint(s -> needleInHaystackHint(s, sequence))
+            .expected(excludesName(sequence))
+            .actual((s, passed) -> passed ? excludesName(sequence) : includesName(sequence))
+            .hint((s, passed) -> needleInHaystackHint(s, sequence))
             .append();
     }
 
@@ -286,11 +290,11 @@ public class StringUnaryExpression extends ObjectUnaryExpression<String, StringU
      *
      * @return This expression (fluent interface).
      */
-    public StringUnaryExpression occurs(final char c, final long times) {
+    public StringUnaryExpression occursName(final char c, final long times) {
         return newPredicate(s -> characterCount(s, c) == times)
-            .name("occurs[" + c + "] := " + times)
-            .expectedValue("occurrences := " + times)
-            .actualValue(value -> "occurrences := " + characterCount(value, c))
+            .name(occursName(c, times, EQUALS_OPERATOR))
+            .expected(OCCURRENCES_PREFIX + " " + EQUALS_OPERATOR + " " + times)
+            .actual((value, passed) -> OCCURRENCES_PREFIX + " " + EQUALS_OPERATOR + " " + characterCount(value, c))
             .append();
     }
 
@@ -298,6 +302,10 @@ public class StringUnaryExpression extends ObjectUnaryExpression<String, StringU
         return s.chars()
             .filter(ch -> ch == c)
             .count();
+    }
+
+    private static String occursName(final char c, final long times, final String operator) {
+        return OCCURS + "[" + c + "] " + operator + " " + times;
     }
 
     /**
@@ -313,9 +321,9 @@ public class StringUnaryExpression extends ObjectUnaryExpression<String, StringU
      */
     public StringUnaryExpression occursMoreThan(final char c, final long times) {
         return newPredicate(s -> characterCount(s, c) > times)
-            .name("occurs[" + c + "] > " + times)
-            .expectedValue("occurrences > " + times)
-            .actualValue(value -> "occurrences := " + characterCount(value, c))
+            .name(occursName(c, times, ">"))
+            .expected(OCCURRENCES_PREFIX + " > " + times)
+            .actual((value, passed) -> OCCURRENCES_PREFIX + " " + EQUALS_OPERATOR + " " + characterCount(value, c))
             .append();
     }
 
@@ -332,9 +340,9 @@ public class StringUnaryExpression extends ObjectUnaryExpression<String, StringU
      */
     public StringUnaryExpression occursMoreThanOrEqualTo(final char c, final long times) {
         return newPredicate(s -> characterCount(s, c) >= times)
-            .name("occurs[" + c + "] >= " + times)
-            .expectedValue("occurrences >= " + times)
-            .actualValue(value -> "occurrences := " + characterCount(value, c))
+            .name(occursName(c, times, ">="))
+            .expected(OCCURRENCES_PREFIX + " >= " + times)
+            .actual((value, passed) -> OCCURRENCES_PREFIX + " " + EQUALS_OPERATOR + " " + characterCount(value, c))
             .append();
     }
 
@@ -351,9 +359,9 @@ public class StringUnaryExpression extends ObjectUnaryExpression<String, StringU
      */
     public StringUnaryExpression occursLessThan(final char c, final long times) {
         return newPredicate(s -> characterCount(s, c) < times)
-            .name("occurs[" + c + "] < " + times)
-            .expectedValue("occurrences < " + times)
-            .actualValue(value -> "occurrences := " + characterCount(value, c))
+            .name(occursName(c, times, "<"))
+            .expected(OCCURRENCES_PREFIX + " < " + times)
+            .actual((value, passed) -> OCCURRENCES_PREFIX + " " + EQUALS_OPERATOR + " " + characterCount(value, c))
             .append();
     }
 
@@ -370,9 +378,9 @@ public class StringUnaryExpression extends ObjectUnaryExpression<String, StringU
      */
     public StringUnaryExpression occursLessThanOrEqualTo(final char c, final long times) {
         return newPredicate(s -> characterCount(s, c) <= times)
-            .name("occurs[" + c + "] <= " + times)
-            .expectedValue("occurrences <= " + times)
-            .actualValue(value -> "occurrences := " + characterCount(value, c))
+            .name(occursName(c, times, "<="))
+            .expected(OCCURRENCES_PREFIX + " <= " + times)
+            .actual((value, passed) -> OCCURRENCES_PREFIX + " " + EQUALS_OPERATOR + " " + characterCount(value, c))
             .append();
     }
 
@@ -387,7 +395,7 @@ public class StringUnaryExpression extends ObjectUnaryExpression<String, StringU
     public StringUnaryExpression startsWith(final String prefix) {
         return newPredicate(s -> s.startsWith(prefix))
             .name("startsWith[" + prefix + "]")
-            .expectedValue("startsWith[" + prefix + "]")
+            .expected("startsWith[" + prefix + "]")
             .append();
     }
 
@@ -402,7 +410,7 @@ public class StringUnaryExpression extends ObjectUnaryExpression<String, StringU
     public StringUnaryExpression doesNotStartWith(final String prefix) {
         return newPredicate(s -> !s.startsWith(prefix))
             .name("doesNotStartWith[" + prefix + "]")
-            .expectedValue("not[startsWith[" + prefix + "]]")
+            .expected("not[startsWith[" + prefix + "]]")
             .append();
     }
 
@@ -417,7 +425,7 @@ public class StringUnaryExpression extends ObjectUnaryExpression<String, StringU
     public StringUnaryExpression endsWith(final String suffix) {
         return newPredicate(s -> s.endsWith(suffix))
             .name("endsWith[" + suffix + "]")
-            .expectedValue("endsWith[" + suffix + "]")
+            .expected("endsWith[" + suffix + "]")
             .append();
     }
 
@@ -432,7 +440,7 @@ public class StringUnaryExpression extends ObjectUnaryExpression<String, StringU
     public StringUnaryExpression doesNotEndWith(final String suffix) {
         return newPredicate(s -> !s.endsWith(suffix))
             .name("doesNotEndWith[" + suffix + "]")
-            .expectedValue("not[endsWith[" + suffix + "]]")
+            .expected("not[endsWith[" + suffix + "]]")
             .append();
     }
 
@@ -447,7 +455,7 @@ public class StringUnaryExpression extends ObjectUnaryExpression<String, StringU
     public StringUnaryExpression matches(final String regex) {
         return newPredicate(s -> s.matches(regex))
             .name("matches[" + regex + "]")
-            .expectedValue("matches[" + regex + "]")
+            .expected("matches[" + regex + "]")
             .append();
     }
 
@@ -462,7 +470,7 @@ public class StringUnaryExpression extends ObjectUnaryExpression<String, StringU
     public StringUnaryExpression doesNotMatch(final String regex) {
         return newPredicate(s -> !s.matches(regex))
             .name("doesNotMatch[" + regex + "]")
-            .expectedValue("not[matches[" + regex + "]]")
+            .expected("not[matches[" + regex + "]]")
             .append();
     }
 
@@ -477,7 +485,7 @@ public class StringUnaryExpression extends ObjectUnaryExpression<String, StringU
     public StringUnaryExpression isCaseInsensitiveEqualTo(final String other) {
         return newPredicate(s -> s.equalsIgnoreCase(other))
             .name("caseInsensitiveEqualTo[" + other + "]")
-            .expectedValue(other)
+            .expected(other)
             .append();
     }
 
@@ -494,9 +502,9 @@ public class StringUnaryExpression extends ObjectUnaryExpression<String, StringU
      */
     public StringUnaryExpression hasAtIndex(final char needle, final int index) {
         return newPredicate(s -> s.indexOf(needle) == index)
-            .name("indexOf[" + needle + "] := " + index)
-            .expectedIntValue(index)
-            .actualIntValue(subject -> subject.indexOf(needle))
+            .name(INDEX_OF_PREFIX + "[" + needle + "] " + EQUALS_OPERATOR + " " + index)
+            .expected(index)
+            .actual((s, passed) -> String.valueOf(s.indexOf(needle)))
             .append();
     }
 
@@ -513,9 +521,9 @@ public class StringUnaryExpression extends ObjectUnaryExpression<String, StringU
      */
     public StringUnaryExpression hasAtIndex(final String needle, final int index) {
         return newPredicate(s -> s.indexOf(needle) == index)
-            .name("indexOf[" + needle + "] := " + index)
-            .expectedIntValue(index)
-            .actualIntValue(subject -> subject.indexOf(needle))
+            .name(INDEX_OF_PREFIX + "[" + needle + "] " + EQUALS_OPERATOR + " " + index)
+            .expected(index)
+            .actual((s, passed) -> String.valueOf(s.indexOf(needle)))
             .append();
     }
 
@@ -532,9 +540,9 @@ public class StringUnaryExpression extends ObjectUnaryExpression<String, StringU
      */
     public StringUnaryExpression doesNotHaveAtIndex(final char needle, final int index) {
         return newPredicate(s -> s.indexOf(needle) != index)
-            .name("indexOf[" + needle + "] != " + index)
-            .expectedValue(s -> "not[" + index + "]")
-            .actualIntValue(subject -> subject.indexOf(needle))
+            .name(INDEX_OF_PREFIX + "[" + needle + "] " + NOT_EQUALS_OPERATOR + " " + index)
+            .expected((s, passed) -> "not[" + index + "]")
+            .actual((s, passed) -> String.valueOf(s.indexOf(needle)))
             .append();
     }
 
@@ -551,9 +559,9 @@ public class StringUnaryExpression extends ObjectUnaryExpression<String, StringU
      */
     public StringUnaryExpression doesNotHaveAtIndex(final String needle, final int index) {
         return newPredicate(s -> s.indexOf(needle) != index)
-            .name("indexOf[" + needle + "] != " + index)
-            .expectedValue(s -> "not[" + index + "]")
-            .actualIntValue(subject -> subject.indexOf(needle))
+            .name(INDEX_OF_PREFIX  + "[" + needle + "] " + NOT_EQUALS_OPERATOR + " " + index)
+            .expected((s, passed) -> "not[" + index + "]")
+            .actual((s, passed) -> String.valueOf(s.indexOf(needle)))
             .append();
     }
 
@@ -570,9 +578,9 @@ public class StringUnaryExpression extends ObjectUnaryExpression<String, StringU
      */
     public StringUnaryExpression hasAtLastIndex(final char needle, final int index) {
         return newPredicate(s -> s.lastIndexOf(needle) == index)
-            .name("lastIndexOf[" + needle + "] := " + index)
-            .expectedIntValue(index)
-            .actualIntValue(subject -> subject.lastIndexOf(needle))
+            .name(LAST_INDEX_OF_PREFIX + "[" + needle + "] " + EQUALS_OPERATOR + " " + index)
+            .expected(index)
+            .actual((s, passed) -> String.valueOf(s.lastIndexOf(needle)))
             .append();
     }
 
@@ -589,9 +597,9 @@ public class StringUnaryExpression extends ObjectUnaryExpression<String, StringU
      */
     public StringUnaryExpression hasAtLastIndex(final String needle, final int index) {
         return newPredicate(s -> s.lastIndexOf(needle) == index)
-            .name("lastIndexOf[" + needle + "] := " + index)
-            .expectedIntValue(index)
-            .actualIntValue(subject -> subject.lastIndexOf(needle))
+            .name(LAST_INDEX_OF_PREFIX + "[" + needle + "] " + EQUALS_OPERATOR + " " + index)
+            .expected(index)
+            .actual((s, passed) -> String.valueOf(s.lastIndexOf(needle)))
             .append();
     }
 
@@ -608,9 +616,9 @@ public class StringUnaryExpression extends ObjectUnaryExpression<String, StringU
      */
     public StringUnaryExpression doesNotHaveAtLastIndex(final char needle, final int index) {
         return newPredicate(s -> s.lastIndexOf(needle) != index)
-            .name("lastIndexOf[" + needle + "] != " + index)
-            .expectedValue(s -> "not[" + index + "]")
-            .actualIntValue(subject -> subject.lastIndexOf(needle))
+            .name(LAST_INDEX_OF_PREFIX + "[" + needle + "] " + NOT_EQUALS_OPERATOR + " " + index)
+            .expected((s, passed) -> "not[" + index + "]")
+            .actual((s, passed) -> String.valueOf(s.lastIndexOf(needle)))
             .append();
     }
 
@@ -627,9 +635,9 @@ public class StringUnaryExpression extends ObjectUnaryExpression<String, StringU
      */
     public StringUnaryExpression doesNotHaveAtLastIndex(final String needle, final int index) {
         return newPredicate(s -> s.lastIndexOf(needle) != index)
-            .name("lastIndexOf[" + needle + "] != " + index)
-            .expectedValue(s -> "not[" + index + "]")
-            .actualIntValue(subject -> subject.lastIndexOf(needle))
+            .name(LAST_INDEX_OF_PREFIX + "[" + needle + "] " + NOT_EQUALS_OPERATOR + " " + index)
+            .expected((s, passed) -> "not[" + index + "]")
+            .actual((s, passed) -> String.valueOf(s.lastIndexOf(needle)))
             .append();
     }
 }

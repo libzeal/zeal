@@ -34,15 +34,15 @@ public class BoxedBooleanUnaryExpressionTest extends ObjectUnaryExpressionTest<B
                 .value(true)
                 .expectedState(PASSED)
                 .expectedName("isTrue")
-                .expectedExpectedValue("true")
-                .expectedActualValue("true")
+                .expectedExpected("true")
+                .expectedActual("true")
                 .addTest()
             .newTest((expression, value) -> expression.isTrue())
                 .value(false)
                 .expectedState(FAILED)
                 .expectedName("isTrue")
-                .expectedExpectedValue("true")
-                .expectedActualValue("false")
+                .expectedExpected("true")
+                .expectedActual("false")
                 .addTest();
     }
 
@@ -51,15 +51,15 @@ public class BoxedBooleanUnaryExpressionTest extends ObjectUnaryExpressionTest<B
                 .value(true)
                 .expectedState(FAILED)
                 .expectedName("isFalse")
-                .expectedExpectedValue("false")
-                .expectedActualValue("true")
+                .expectedExpected("false")
+                .expectedActual("true")
                 .addTest()
             .newTest((expression, value) -> expression.isFalse())
                 .value(false)
                 .expectedState(PASSED)
                 .expectedName("isFalse")
-                .expectedExpectedValue("false")
-                .expectedActualValue("false")
+                .expectedExpected("false")
+                .expectedActual("false")
                 .addTest();
     }
 }

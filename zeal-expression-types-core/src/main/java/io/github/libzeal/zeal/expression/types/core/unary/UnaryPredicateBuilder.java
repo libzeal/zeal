@@ -7,9 +7,8 @@ import io.github.libzeal.zeal.expression.lang.predicate.unary.TerminalUnaryPredi
 import io.github.libzeal.zeal.expression.lang.predicate.unary.UnaryPredicate;
 
 import java.util.function.Predicate;
-import java.util.function.ToDoubleFunction;
-import java.util.function.ToIntFunction;
-import java.util.function.ToLongFunction;
+
+import static io.github.libzeal.zeal.expression.types.core.unary.ObjectUnaryExpression.stringify;
 
 /**
  * A builder used to create {@link UnaryPredicate} objects.
@@ -23,8 +22,8 @@ public class UnaryPredicateBuilder<T, E extends ObjectUnaryExpression<T, E>> {
     private final boolean nullable;
     private final Predicate<T> test;
     private String name = "<unnamed>";
-    private ValueSupplier<T> expected = s -> "<not set>";
-    private ValueSupplier<T> actual = ObjectUnaryExpression::stringify;
+    private ValueSupplier<T> expected = (s, passed) -> "<not set>";
+    private ValueSupplier<T> actual = (s, passed) -> stringify(s);
     private ValueSupplier<T> hint = null;
 
     public static <T, E extends ObjectUnaryExpression<T, E>> UnaryPredicateBuilder<T, E> notNullable(final BuildableExpression<T, E> parent,
@@ -62,7 +61,7 @@ public class UnaryPredicateBuilder<T, E extends ObjectUnaryExpression<T, E>> {
      *
      * @return This builder (fluent interface).
      */
-    public UnaryPredicateBuilder<T, E> name(String name) {
+    public UnaryPredicateBuilder<T, E> name(final String name) {
         this.name = name;
         return this;
     }
@@ -75,7 +74,7 @@ public class UnaryPredicateBuilder<T, E extends ObjectUnaryExpression<T, E>> {
      *
      * @return This builder (fluent interface).
      */
-    public UnaryPredicateBuilder<T, E> expectedValue(ValueSupplier<T> expected) {
+    public UnaryPredicateBuilder<T, E> expected(final ValueSupplier<T> expected) {
         this.expected = expected;
         return this;
     }
@@ -88,8 +87,8 @@ public class UnaryPredicateBuilder<T, E extends ObjectUnaryExpression<T, E>> {
      *
      * @return This builder (fluent interface).
      */
-    public UnaryPredicateBuilder<T, E> expectedValue(String expected) {
-        return expectedValue(ValueSupplier.of(expected));
+    public UnaryPredicateBuilder<T, E> expected(final String expected) {
+        return expected((subject, passed) -> expected);
     }
 
     /**
@@ -100,100 +99,8 @@ public class UnaryPredicateBuilder<T, E extends ObjectUnaryExpression<T, E>> {
      *
      * @return This builder (fluent interface).
      */
-    public UnaryPredicateBuilder<T, E> expectedIntValue(ToIntFunction<T> expected) {
-        this.expected = s -> String.valueOf(expected.applyAsInt(s));
-        return this;
-    }
-
-    /**
-     * Sets the expected valued of the evaluation.
-     *
-     * @param expected
-     *     The expected value of the evaluation.
-     *
-     * @return This builder (fluent interface).
-     */
-    public UnaryPredicateBuilder<T, E> expectedLongValue(ToLongFunction<T> expected) {
-        this.expected = s -> String.valueOf(expected.applyAsLong(s));
-        return this;
-    }
-
-    /**
-     * Sets the expected valued of the evaluation.
-     *
-     * @param expected
-     *     The expected value of the evaluation.
-     *
-     * @return This builder (fluent interface).
-     */
-    public UnaryPredicateBuilder<T, E> expectedDoubleValue(ToDoubleFunction<T> expected) {
-        this.expected = s -> String.valueOf(expected.applyAsDouble(s));
-        return this;
-    }
-
-    /**
-     * Sets the expected valued of the evaluation.
-     *
-     * @param expected
-     *     The expected value of the evaluation.
-     *
-     * @return This builder (fluent interface).
-     */
-    public UnaryPredicateBuilder<T, E> expectedBooleanValue(Predicate<T> expected) {
-        this.expected = s -> String.valueOf(expected.test(s));
-        return this;
-    }
-
-    /**
-     * Sets the expected valued of the evaluation.
-     *
-     * @param expected
-     *     The expected value of the evaluation.
-     *
-     * @return This builder (fluent interface).
-     */
-    public UnaryPredicateBuilder<T, E> expectedIntValue(int expected) {
-        this.expected = s -> String.valueOf(expected);
-        return this;
-    }
-
-    /**
-     * Sets the expected valued of the evaluation.
-     *
-     * @param expected
-     *     The expected value of the evaluation.
-     *
-     * @return This builder (fluent interface).
-     */
-    public UnaryPredicateBuilder<T, E> expectedLongValue(long expected) {
-        this.expected = s -> String.valueOf(expected);
-        return this;
-    }
-
-    /**
-     * Sets the expected valued of the evaluation.
-     *
-     * @param expected
-     *     The expected value of the evaluation.
-     *
-     * @return This builder (fluent interface).
-     */
-    public UnaryPredicateBuilder<T, E> expectedDoubleValue(final double expected) {
-        this.expected = s -> String.valueOf(expected);
-        return this;
-    }
-
-    /**
-     * Sets the expected valued of the evaluation.
-     *
-     * @param expected
-     *     The expected value of the evaluation.
-     *
-     * @return This builder (fluent interface).
-     */
-    public UnaryPredicateBuilder<T, E> expectedBooleanValue(final boolean expected) {
-        this.expected = s -> String.valueOf(expected);
-        return this;
+    public UnaryPredicateBuilder<T, E> expected(final long expected) {
+        return expected((subject, passed) -> String.valueOf(expected));
     }
 
     /**
@@ -204,7 +111,7 @@ public class UnaryPredicateBuilder<T, E extends ObjectUnaryExpression<T, E>> {
      *
      * @return This builder (fluent interface).
      */
-    public UnaryPredicateBuilder<T, E> actualValue(ValueSupplier<T> actual) {
+    public UnaryPredicateBuilder<T, E> actual(final ValueSupplier<T> actual) {
         this.actual = actual;
         return this;
     }
@@ -217,100 +124,8 @@ public class UnaryPredicateBuilder<T, E extends ObjectUnaryExpression<T, E>> {
      *
      * @return This builder (fluent interface).
      */
-    public UnaryPredicateBuilder<T, E> actualIntValue(ToIntFunction<T> actual) {
-        this.actual = s -> String.valueOf(actual.applyAsInt(s));
-        return this;
-    }
-
-    /**
-     * Sets the actual valued of the evaluation.
-     *
-     * @param actual
-     *     The actual value of the evaluation.
-     *
-     * @return This builder (fluent interface).
-     */
-    public UnaryPredicateBuilder<T, E> actualLongValue(ToLongFunction<T> actual) {
-        this.actual = s -> String.valueOf(actual.applyAsLong(s));
-        return this;
-    }
-
-    /**
-     * Sets the actual valued of the evaluation.
-     *
-     * @param actual
-     *     The actual value of the evaluation.
-     *
-     * @return This builder (fluent interface).
-     */
-    public UnaryPredicateBuilder<T, E> actualDoubleValue(ToDoubleFunction<T> actual) {
-        this.actual = s -> String.valueOf(actual.applyAsDouble(s));
-        return this;
-    }
-
-    /**
-     * Sets the actual valued of the evaluation.
-     *
-     * @param actual
-     *     The actual value of the evaluation.
-     *
-     * @return This builder (fluent interface).
-     */
-    public UnaryPredicateBuilder<T, E> actualBooleanValue(Predicate<T> actual) {
-        this.actual = s -> String.valueOf(actual.test(s));
-        return this;
-    }
-
-    /**
-     * Sets the actual valued of the evaluation.
-     *
-     * @param actual
-     *     The actual value of the evaluation.
-     *
-     * @return This builder (fluent interface).
-     */
-    public UnaryPredicateBuilder<T, E> actualIntValue(int actual) {
-        this.actual = s -> String.valueOf(actual);
-        return this;
-    }
-
-    /**
-     * Sets the actual valued of the evaluation.
-     *
-     * @param actual
-     *     The actual value of the evaluation.
-     *
-     * @return This builder (fluent interface).
-     */
-    public UnaryPredicateBuilder<T, E> actualLongValue(long actual) {
-        this.actual = s -> String.valueOf(actual);
-        return this;
-    }
-
-    /**
-     * Sets the actual valued of the evaluation.
-     *
-     * @param actual
-     *     The actual value of the evaluation.
-     *
-     * @return This builder (fluent interface).
-     */
-    public UnaryPredicateBuilder<T, E> actualDoubleValue(final double actual) {
-        this.actual = s -> String.valueOf(actual);
-        return this;
-    }
-
-    /**
-     * Sets the actual valued of the evaluation.
-     *
-     * @param actual
-     *     The actual value of the evaluation.
-     *
-     * @return This builder (fluent interface).
-     */
-    public UnaryPredicateBuilder<T, E> actualBooleanValue(final boolean actual) {
-        this.actual = s -> String.valueOf(actual);
-        return this;
+    public UnaryPredicateBuilder<T, E> actual(final String actual) {
+        return actual((subject, passed) -> actual);
     }
 
     /**
@@ -335,7 +150,7 @@ public class UnaryPredicateBuilder<T, E extends ObjectUnaryExpression<T, E>> {
      * @return This builder (fluent interface).
      */
     public UnaryPredicateBuilder<T, E> hint(final String hint) {
-        return hint(ValueSupplier.of(hint));
+        return hint((subject, passed) -> hint);
     }
 
     /**

@@ -11,7 +11,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -97,7 +96,7 @@ public abstract class ObjectUnaryExpressionTest<T, E extends ObjectUnaryExpressi
     @MethodSource("testCaseStream")
     final void whenEvaluate_thenCorrectEvaluation(
         String testCaseName,
-        BiConsumer<E, T> modifier,
+        BiFunction<E, T, E> modifier,
         T value,
         Result expectedState,
         Function<T, String> expectedName,
@@ -108,7 +107,10 @@ public abstract class ObjectUnaryExpressionTest<T, E extends ObjectUnaryExpressi
 
         E expression = expression(value);
 
-        modifier.accept(expression, value);
+        E returnedExpression = modifier.apply(expression, value);
+
+        assertNotNull(returnedExpression);
+        assertEquals(expression.getClass(), returnedExpression.getClass());
 
         Evaluation eval = expression.evaluate();
         Evaluation first = eval.children().get(0);
@@ -158,15 +160,15 @@ public abstract class ObjectUnaryExpressionTest<T, E extends ObjectUnaryExpressi
                 .value(null)
                 .expectedState(PASSED)
                 .expectedName("isNull")
-                .expectedExpectedValue("(null)")
-                .expectedActualValue("(null)")
+                .expectedExpected("(null)")
+                .expectedActual("(null)")
                 .addTest()
             .newTest((expression, value) -> expression.isNull())
                 .value(exampleValue1())
                 .expectedState(FAILED)
                 .expectedName("isNull")
-                .expectedExpectedValue("(null)")
-                .expectedActualValue(exampleValue1().toString())
+                .expectedExpected("(null)")
+                .expectedActual(exampleValue1().toString())
                 .addTest();
     }
 
@@ -175,15 +177,15 @@ public abstract class ObjectUnaryExpressionTest<T, E extends ObjectUnaryExpressi
                 .value(null)
                 .expectedState(FAILED)
                 .expectedName("isNotNull")
-                .expectedExpectedValue("not[(null)]")
-                .expectedActualValue("(null)")
+                .expectedExpected("not[(null)]")
+                .expectedActual("(null)")
                 .addTest()
             .newTest((expression, value) -> expression.isNotNull())
                 .value(exampleValue1())
                 .expectedState(PASSED)
                 .expectedName("isNotNull")
-                .expectedExpectedValue("not[(null)]")
-                .expectedActualValue(exampleValue1().toString())
+                .expectedExpected("not[(null)]")
+                .expectedActual(exampleValue1().toString())
                 .addTest();
     }
 
@@ -195,22 +197,22 @@ public abstract class ObjectUnaryExpressionTest<T, E extends ObjectUnaryExpressi
                 .value(nonNullValue)
                 .expectedState(PASSED)
                 .expectedName("isType[" + nonNullValue.getClass() + "]")
-                .expectedExpectedValue(nonNullValue.getClass().toString())
-                .expectedActualValue(nonNullValue.getClass().toString())
+                .expectedExpected(nonNullValue.getClass().toString())
+                .expectedActual(nonNullValue.getClass().toString())
                 .addTest()
             .newTest((expression, value) -> expression.isType(CanonicalClass.class))
                 .value(nonNullValue)
                 .expectedState(FAILED)
                 .expectedName("isType[" + CanonicalClass.class + "]")
-                .expectedExpectedValue(CanonicalClass.class.toString())
-                .expectedActualValue(nonNullValue.getClass().toString())
+                .expectedExpected(CanonicalClass.class.toString())
+                .expectedActual(nonNullValue.getClass().toString())
                 .addTest()
             .newTest((expression, value) -> expression.isType(null))
                 .value(nonNullValue)
                 .expectedState(FAILED)
                 .expectedName("isType[(null)]")
-                .expectedExpectedValue("Always fail: cannot compare to (null) type")
-                .expectedActualValue(nonNullValue.getClass().toString())
+                .expectedExpected("Always fail: cannot compare to (null) type")
+                .expectedActual(nonNullValue.getClass().toString())
                 .addTest();
     }
 
@@ -222,22 +224,22 @@ public abstract class ObjectUnaryExpressionTest<T, E extends ObjectUnaryExpressi
                 .value(nonNullValue)
                 .expectedState(FAILED)
                 .expectedName("isNotType[" + nonNullValue.getClass() + "]")
-                .expectedExpectedValue("not[" + nonNullValue.getClass() + "]")
-                .expectedActualValue(nonNullValue.getClass().toString())
+                .expectedExpected("not[" + nonNullValue.getClass() + "]")
+                .expectedActual(nonNullValue.getClass().toString())
                 .addTest()
             .newTest((expression, value) -> expression.isNotType(CanonicalClass.class))
                 .value(nonNullValue)
                 .expectedState(PASSED)
                 .expectedName("isNotType[" + CanonicalClass.class + "]")
-                .expectedExpectedValue("not[" + CanonicalClass.class + "]")
-                .expectedActualValue((expression, value) -> value.getClass().toString())
+                .expectedExpected("not[" + CanonicalClass.class + "]")
+                .expectedActual((expression, value) -> value.getClass().toString())
                 .addTest()
             .newTest((expression, value) -> expression.isNotType(null))
                 .value(nonNullValue)
                 .expectedState(FAILED)
                 .expectedName("isNotType[(null)]")
-                .expectedExpectedValue("Always fail: cannot compare to (null) type")
-                .expectedActualValue(nonNullValue.getClass().toString())
+                .expectedExpected("Always fail: cannot compare to (null) type")
+                .expectedActual(nonNullValue.getClass().toString())
                 .addTest();
     }
 
@@ -249,29 +251,29 @@ public abstract class ObjectUnaryExpressionTest<T, E extends ObjectUnaryExpressi
                 .value(nonNullValue)
                 .expectedState(PASSED)
                 .expectedName("isInstanceOf[" + nonNullValue.getClass() + "]")
-                .expectedExpectedValue("instanceof[" + nonNullValue.getClass() + "]")
-                .expectedActualValue(nonNullValue.getClass().toString())
+                .expectedExpected("instanceof[" + nonNullValue.getClass() + "]")
+                .expectedActual(nonNullValue.getClass().toString())
                 .addTest()
             .newTest((expression, value) -> expression.isInstanceOf(Object.class))
                 .value(nonNullValue)
                 .expectedState(PASSED)
                 .expectedName("isInstanceOf[" + Object.class + "]")
-                .expectedExpectedValue("instanceof[" + Object.class + "]")
-                .expectedActualValue(nonNullValue.getClass().toString())
+                .expectedExpected("instanceof[" + Object.class + "]")
+                .expectedActual(nonNullValue.getClass().toString())
                 .addTest()
             .newTest((expression, value) -> expression.isInstanceOf(CanonicalClass.class))
                 .value(nonNullValue)
                 .expectedState(FAILED)
                 .expectedName("isInstanceOf[" + CanonicalClass.class + "]")
-                .expectedExpectedValue("instanceof[" + CanonicalClass.class + "]")
-                .expectedActualValue(nonNullValue.getClass().toString())
+                .expectedExpected("instanceof[" + CanonicalClass.class + "]")
+                .expectedActual(nonNullValue.getClass().toString())
                 .addTest()
             .newTest((expression, value) -> expression.isInstanceOf(null))
                 .value(nonNullValue)
                 .expectedState(FAILED)
                 .expectedName("isInstanceOf[(null)]")
-                .expectedExpectedValue("Always fail: cannot compare to (null) type")
-                .expectedActualValue(nonNullValue.getClass().toString())
+                .expectedExpected("Always fail: cannot compare to (null) type")
+                .expectedActual(nonNullValue.getClass().toString())
                 .addTest();
     }
 
@@ -283,29 +285,29 @@ public abstract class ObjectUnaryExpressionTest<T, E extends ObjectUnaryExpressi
                 .value(nonNullValue)
                 .expectedState(FAILED)
                 .expectedName("isNotInstanceOf[" + nonNullValue.getClass() + "]")
-                .expectedExpectedValue("not[instanceof[" + nonNullValue.getClass() +"]]")
-                .expectedActualValue(nonNullValue.getClass().toString())
+                .expectedExpected("not[instanceof[" + nonNullValue.getClass() +"]]")
+                .expectedActual(nonNullValue.getClass().toString())
                 .addTest()
             .newTest((expression, value) -> expression.isNotInstanceOf(Object.class))
                 .value(nonNullValue)
                 .expectedState(FAILED)
                 .expectedName("isNotInstanceOf[" + Object.class + "]")
-                .expectedExpectedValue("not[instanceof[" + Object.class + "]]")
-                .expectedActualValue(nonNullValue.getClass().toString())
+                .expectedExpected("not[instanceof[" + Object.class + "]]")
+                .expectedActual(nonNullValue.getClass().toString())
                 .addTest()
             .newTest((expression, value) -> expression.isNotInstanceOf(CanonicalClass.class))
                 .value(nonNullValue)
                 .expectedState(PASSED)
                 .expectedName("isNotInstanceOf[" + CanonicalClass.class + "]")
-                .expectedExpectedValue("not[instanceof["  + CanonicalClass.class +  "]]")
-                .expectedActualValue(nonNullValue.getClass().toString())
+                .expectedExpected("not[instanceof["  + CanonicalClass.class +  "]]")
+                .expectedActual(nonNullValue.getClass().toString())
                 .addTest()
             .newTest((expression, value) -> expression.isNotInstanceOf(null))
                 .value(nonNullValue)
                 .expectedState(FAILED)
                 .expectedName("isNotInstanceOf[(null)]")
-                .expectedExpectedValue("Always fail: cannot compare to (null) type")
-                .expectedActualValue(nonNullValue.getClass().toString())
+                .expectedExpected("Always fail: cannot compare to (null) type")
+                .expectedActual(nonNullValue.getClass().toString())
                 .addTest();
     }
 
@@ -318,22 +320,22 @@ public abstract class ObjectUnaryExpressionTest<T, E extends ObjectUnaryExpressi
                 .value(value1)
                 .expectedState(PASSED)
                 .expectedName("is[" + value1 + "]")
-                .expectedExpectedValue((expression, value) -> value.toString())
-                .expectedActualValue(value1.toString())
+                .expectedExpected((expression, value) -> value.toString())
+                .expectedActual(value1.toString())
                 .addTest()
             .newTest((expression, value) -> expression.is(value1))
                 .value(value2)
                 .expectedState(FAILED)
                 .expectedName("is[" + value1 + "]")
-                .expectedExpectedValue(value1.toString())
-                .expectedActualValue((expression, value) -> value.toString())
+                .expectedExpected(value1.toString())
+                .expectedActual((expression, value) -> value.toString())
                 .addTest()
             .newTest((expression, value) -> expression.is(null))
                 .value(null)
                 .expectedState(PASSED)
                 .expectedName("is[(null)]")
-                .expectedExpectedValue("(null)")
-                .expectedActualValue("(null)")
+                .expectedExpected("(null)")
+                .expectedActual("(null)")
                 .addTest();
     }
 
@@ -346,22 +348,22 @@ public abstract class ObjectUnaryExpressionTest<T, E extends ObjectUnaryExpressi
                 .value(value1)
                 .expectedState(FAILED)
                 .expectedName("isNot[" + value1 + "]")
-                .expectedExpectedValue("not[" + value1.toString() + "]")
-                .expectedActualValue((expression, value) -> value.toString())
+                .expectedExpected("not[" + value1.toString() + "]")
+                .expectedActual((expression, value) -> value.toString())
                 .addTest()
             .newTest((expression, value) -> expression.isNot(value1))
                 .value(value2)
                 .expectedState(PASSED)
                 .expectedName("isNot[" + value1 + "]")
-                .expectedExpectedValue("not[" + value1 + "]")
-                .expectedActualValue((expression, value) -> value.toString())
+                .expectedExpected("not[" + value1 + "]")
+                .expectedActual((expression, value) -> value.toString())
                 .addTest()
             .newTest((expression, value) -> expression.isNot(null))
                 .value(null)
                 .expectedState(FAILED)
                 .expectedName("isNot[(null)]")
-                .expectedExpectedValue("not[(null)]")
-                .expectedActualValue("(null)")
+                .expectedExpected("not[(null)]")
+                .expectedActual("(null)")
                 .addTest();
     }
 
@@ -374,22 +376,22 @@ public abstract class ObjectUnaryExpressionTest<T, E extends ObjectUnaryExpressi
                 .value(value1)
                 .expectedState(PASSED)
                 .expectedName(value -> "isEqualTo[" + value1 + "]")
-                .expectedExpectedValue((expression, value) -> value.toString())
-                .expectedActualValue((expression, value) -> value.toString())
+                .expectedExpected((expression, value) -> value.toString())
+                .expectedActual((expression, value) -> value.toString())
                 .addTest()
             .newTest((expression, value) -> expression.isEqualTo(value1))
                 .value(value2)
                 .expectedState(FAILED)
                 .expectedName(value -> "isEqualTo[" + value1 + "]")
-                .expectedExpectedValue((expression, value) -> value1.toString())
-                .expectedActualValue((expression, value) -> value.toString())
+                .expectedExpected((expression, value) -> value1.toString())
+                .expectedActual((expression, value) -> value.toString())
                 .addTest()
             .newTest((expression, value) -> expression.isEqualTo(null))
                 .value(null)
                 .expectedState(PASSED)
                 .expectedName("isEqualTo[(null)]")
-                .expectedExpectedValue("(null)")
-                .expectedActualValue("(null)")
+                .expectedExpected("(null)")
+                .expectedActual("(null)")
                 .addTest();
     }
 
@@ -402,22 +404,22 @@ public abstract class ObjectUnaryExpressionTest<T, E extends ObjectUnaryExpressi
                 .value(value1)
                 .expectedState(FAILED)
                 .expectedName(value -> "isNotEqualTo[" + value + "]")
-                .expectedExpectedValue((expression, value) -> "not[" + value.toString() + "]")
-                .expectedActualValue((expression, value) -> value.toString())
+                .expectedExpected((expression, value) -> "not[" + value.toString() + "]")
+                .expectedActual((expression, value) -> value.toString())
                 .addTest()
             .newTest((expression, value) -> expression.isNotEqualTo(value1))
                 .value(value2)
                 .expectedState(PASSED)
                 .expectedName(value -> "isNotEqualTo[" + value1 + "]")
-                .expectedExpectedValue((expression, value) -> "not[" + value1.toString() + "]")
-                .expectedActualValue((expression, value) -> value.toString())
+                .expectedExpected((expression, value) -> "not[" + value1.toString() + "]")
+                .expectedActual((expression, value) -> value.toString())
                 .addTest()
             .newTest((expression, value) -> expression.isNotEqualTo(null))
                 .value(null)
                 .expectedState(FAILED)
                 .expectedName("isNotEqualTo[(null)]")
-                .expectedExpectedValue("not[(null)]")
-                .expectedActualValue("(null)")
+                .expectedExpected("not[(null)]")
+                .expectedActual("(null)")
                 .addTest();
     }
 
@@ -430,15 +432,15 @@ public abstract class ObjectUnaryExpressionTest<T, E extends ObjectUnaryExpressi
                 .value(value1)
                 .expectedState(PASSED)
                 .expectedName(value -> "hashCode == " + value.hashCode())
-                .expectedExpectedValue((expression, value) -> String.valueOf(value1.hashCode()))
-                .expectedActualValue((expression, value) -> String.valueOf(value.hashCode()))
+                .expectedExpected((expression, value) -> String.valueOf(value1.hashCode()))
+                .expectedActual((expression, value) -> String.valueOf(value.hashCode()))
                 .addTest()
             .newTest((expression, value) -> expression.hashCodeIs(value1.hashCode()))
                 .value(value2)
                 .expectedState(FAILED)
                 .expectedName(value -> "hashCode == " + value1.hashCode())
-                .expectedExpectedValue((expression, value) -> String.valueOf(value1.hashCode()))
-                .expectedActualValue((expression, value) -> String.valueOf(value.hashCode()))
+                .expectedExpected((expression, value) -> String.valueOf(value1.hashCode()))
+                .expectedActual((expression, value) -> String.valueOf(value.hashCode()))
                 .addTest();
     }
 
@@ -451,15 +453,15 @@ public abstract class ObjectUnaryExpressionTest<T, E extends ObjectUnaryExpressi
                 .value(value1)
                 .expectedState(FAILED)
                 .expectedName(value -> "hashCode != " + value.hashCode())
-                .expectedExpectedValue((expression, value) -> "not[" + value.hashCode() + "]")
-                .expectedActualValue((expression, value) -> String.valueOf(value.hashCode()))
+                .expectedExpected((expression, value) -> "not[" + value.hashCode() + "]")
+                .expectedActual((expression, value) -> String.valueOf(value.hashCode()))
                 .addTest()
             .newTest((expression, value) -> expression.hashCodeIsNot(value1.hashCode()))
                 .value(value2)
                 .expectedState(PASSED)
                 .expectedName(value -> "hashCode != " + value1.hashCode())
-                .expectedExpectedValue((expression, value) -> "not[" + value1.hashCode() + "]")
-                .expectedActualValue((expression, value) -> String.valueOf(value.hashCode()))
+                .expectedExpected((expression, value) -> "not[" + value1.hashCode() + "]")
+                .expectedActual((expression, value) -> String.valueOf(value.hashCode()))
                 .addTest();
     }
 
@@ -472,15 +474,15 @@ public abstract class ObjectUnaryExpressionTest<T, E extends ObjectUnaryExpressi
                 .value(value1)
                 .expectedState(PASSED)
                 .expectedName(value -> "toString().equals(" + value1 + ")")
-                .expectedExpectedValue((expression, value) -> value1.toString())
-                .expectedActualValue((expression, value) -> value.toString())
+                .expectedExpected((expression, value) -> value1.toString())
+                .expectedActual((expression, value) -> value.toString())
             .addTest()
                 .newTest((expression, value) -> expression.toStringIs(value1.toString()))
                 .value(value2)
                 .expectedState(FAILED)
                 .expectedName(value -> "toString().equals(" + value1 + ")")
-                .expectedExpectedValue((expression, value) -> value1.toString())
-                .expectedActualValue((expression, value) -> value.toString())
+                .expectedExpected((expression, value) -> value1.toString())
+                .expectedActual((expression, value) -> value.toString())
                 .addTest();
     }
 
@@ -493,15 +495,15 @@ public abstract class ObjectUnaryExpressionTest<T, E extends ObjectUnaryExpressi
                 .value(value1)
                 .expectedState(FAILED)
                 .expectedName(value -> "not[toString().equals(" + value1 + ")]")
-                .expectedExpectedValue((expression, value) -> "not[" + value1 + "]")
-                .expectedActualValue((expression, value) -> value.toString())
+                .expectedExpected((expression, value) -> "not[" + value1 + "]")
+                .expectedActual((expression, value) -> value.toString())
                 .addTest()
             .newTest((expression, value) -> expression.toStringIsNot(value1.toString()))
                 .value(value2)
                 .expectedState(PASSED)
                 .expectedName(value -> "not[toString().equals(" + value1 + ")]")
-                .expectedExpectedValue((expression, value) -> "not[" + value1 + "]")
-                .expectedActualValue((expression, value) -> value.toString())
+                .expectedExpected((expression, value) -> "not[" + value1 + "]")
+                .expectedActual((expression, value) -> value.toString())
                 .addTest();
     }
 
@@ -513,15 +515,15 @@ public abstract class ObjectUnaryExpressionTest<T, E extends ObjectUnaryExpressi
                 .value(value1)
                 .expectedState(PASSED)
                 .expectedName("predicate")
-                .expectedExpectedValue("Predicate satisfied")
-                .expectedActualValue("Predicate satisfied")
+                .expectedExpected("Predicate satisfied")
+                .expectedActual("Predicate satisfied")
                 .addTest()
             .newTest((expression, value) -> expression.satisfies(o -> false))
                 .value(value1)
                 .expectedState(FAILED)
                 .expectedName("predicate")
-                .expectedExpectedValue("Predicate satisfied")
-                .expectedActualValue("Predicate unsatisfied")
+                .expectedExpected("Predicate satisfied")
+                .expectedActual("Predicate unsatisfied")
                 .addTest();
     }
 
@@ -533,15 +535,15 @@ public abstract class ObjectUnaryExpressionTest<T, E extends ObjectUnaryExpressi
                 .value(value1)
                 .expectedState(FAILED)
                 .expectedName("not[predicate]")
-                .expectedExpectedValue("Predicate unsatisfied")
-                .expectedActualValue("Predicate satisfied")
+                .expectedExpected("Predicate unsatisfied")
+                .expectedActual("Predicate satisfied")
                 .addTest()
             .newTest((expression, value) -> expression.doesNotSatisfy(o -> false))
                 .value(value1)
                 .expectedState(PASSED)
                 .expectedName("not[predicate]")
-                .expectedExpectedValue("Predicate unsatisfied")
-                .expectedActualValue("Predicate unsatisfied")
+                .expectedExpected("Predicate unsatisfied")
+                .expectedActual("Predicate unsatisfied")
                 .addTest();
     }
 
@@ -553,15 +555,15 @@ public abstract class ObjectUnaryExpressionTest<T, E extends ObjectUnaryExpressi
                 .value(value1)
                 .expectedState(PASSED)
                 .expectedName("condition: " + alwaysTrueCondition.name())
-                .expectedExpectedValue("Condition satisfied")
-                .expectedActualValue("Condition satisfied")
+                .expectedExpected("Condition satisfied")
+                .expectedActual("Condition satisfied")
                 .addTest()
             .newTest((expression, value) -> expression.satisfies(alwaysFalseCondition))
                 .value(value1)
                 .expectedState(FAILED)
                 .expectedName("condition: " + alwaysFalseCondition.name())
-                .expectedExpectedValue("Condition satisfied")
-                .expectedActualValue("Condition unsatisfied")
+                .expectedExpected("Condition satisfied")
+                .expectedActual("Condition unsatisfied")
                 .addTest();
     }
 
@@ -573,15 +575,15 @@ public abstract class ObjectUnaryExpressionTest<T, E extends ObjectUnaryExpressi
                 .value(value1)
                 .expectedState(FAILED)
                 .expectedName("not[condition: " + alwaysTrueCondition.name() + "]")
-                .expectedExpectedValue("Condition unsatisfied")
-                .expectedActualValue("Condition satisfied")
+                .expectedExpected("Condition unsatisfied")
+                .expectedActual("Condition satisfied")
                 .addTest()
             .newTest((expression, value) -> expression.doesNotSatisfy(alwaysFalseCondition))
                 .value(value1)
                 .expectedState(PASSED)
                 .expectedName("not[condition: " + alwaysFalseCondition.name() + "]")
-                .expectedExpectedValue("Condition unsatisfied")
-                .expectedActualValue("Condition unsatisfied")
+                .expectedExpected("Condition unsatisfied")
+                .expectedActual("Condition unsatisfied")
                 .addTest();
     }
 
