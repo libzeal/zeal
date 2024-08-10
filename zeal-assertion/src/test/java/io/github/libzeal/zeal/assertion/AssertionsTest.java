@@ -1,10 +1,10 @@
-package io.github.libzeal.zeal.assertion.api;
+package io.github.libzeal.zeal.assertion;
 
 import io.github.libzeal.zeal.assertion.Assertions;
 import io.github.libzeal.zeal.assertion.error.PreconditionFailedException;
+import io.github.libzeal.zeal.expression.lang.UnaryExpression;
 import io.github.libzeal.zeal.expression.lang.evaluation.Evaluation;
 import io.github.libzeal.zeal.expression.lang.evaluation.Result;
-import io.github.libzeal.zeal.expression.lang.UnaryExpression;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

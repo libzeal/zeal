@@ -96,19 +96,6 @@ A custom message can be added to the `AssertionFailedException` thrown when the 
 confirm(value(name).startsWith(firstName), "First name must be the first name in a full name");
 ```
 
-A confirmation can be configured to throw a different exception or use a different formatter by instantiating a 
-`Confirmation` object and calling the `confirm` method on that object:
-
-```java
-import io.github.libzeal.zeal.assertion.Confirmation;
-
-Confirmation assertion = Confirmation.create()
-    .thatThrowsOnFail(InvalidNameException::new)
-    .withFormatter(customFormatter);
-
-assertion.confirm(value(name).startsWith(firstName));
-```
-
 #### Preconditions
 A precondition is created using the `require` method, which:
 * Throws a `NullPointerException` (NPE) if the expression fails and the subject is `null`
@@ -141,26 +128,6 @@ The [convention](https://stackoverflow.com/q/3881/2403253) is to throw an NPE if
 > is controversy about whether an NPE or `IllegalArgumentException` should be thrown. The convention of an NPE is 
 > used by default and an option is provided for throwing another exception on `null` (see `Requirement.
 > thatThrowsOnNull` below).
-
-This default behavior can be changed by instantiating a `Requirement` object:
-
-```java
-import io.github.libzeal.zeal.assertion.Requirement;
-
-Requirement assertion = Requirement.create()
-    .thatThrowsOnNull(MyCustomException::new)
-    .thatThrowsOnFail(AnotherCustomExcetpion::new)
-    .withFormatter(customFormatter);
-
-assertion.require(value(username).isNotNull().isNotBlank());
-```
-
-A simplified method is provided on `Requirement` that configures the assertion to throw an 
-`IllegalArgumentException` on `null`, since this is such a common use case:
-
-```java
-Requirement.thatThrowsIllegalArgumentExceptionOnNull();
-```
 
 #### Postconditions
 
