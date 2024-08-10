@@ -1,12 +1,12 @@
 package io.github.libzeal.zeal.assertion.error;
 
 /**
- * Exception thrown when a precondition fails.
+ * Exception thrown when a postcondition fails.
  *
  * @author Justin Albano
  * @since 0.2.0
  */
-public class PreconditionFailedException extends IllegalArgumentException {
+public class PostconditionFailedException extends IllegalStateException {
 
     /**
      * Creates a new exception.
@@ -14,7 +14,7 @@ public class PreconditionFailedException extends IllegalArgumentException {
      * @param message
      *     The message for the exception.
      */
-    public PreconditionFailedException(final String message) {
+    public PostconditionFailedException(final String message) {
         super(message);
     }
 }
