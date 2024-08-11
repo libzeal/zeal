@@ -1,16 +1,21 @@
 package io.github.libzeal.zeal.assertion;
 
 import io.github.libzeal.zeal.assertion.error.PostconditionFailedException;
-import io.github.libzeal.zeal.expression.lang.UnaryExpression;
 import io.github.libzeal.zeal.expression.lang.evaluation.Result;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.ArgumentsProvider;
+import org.junit.jupiter.params.provider.ArgumentsSource;
 
-import static io.github.libzeal.zeal.assertion.AssertionTestExpectations.message;
-import static io.github.libzeal.zeal.assertion.Expressions.expression;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.doReturn;
+import java.util.stream.Stream;
 
+import static io.github.libzeal.zeal.assertion.AssertionExpressionEvaluator.Messages.*;
+import static io.github.libzeal.zeal.assertion.test.CommonAssertionTestHelper.*;
+import static io.github.libzeal.zeal.assertion.test.Expressions.*;
+
+@SuppressWarnings("java:S2699")
 class AssuranceTest {
 
     private Assurance assurance;
@@ -20,219 +25,96 @@ class AssuranceTest {
         assurance = Assurance.create();
     }
 
-    @Test
-    void givenNullExpression_whenEnsure_thenExceptionThrown() {
-        assertThrows(
-            NullPointerException.class,
-            () -> assurance.ensure(null)
+    @ParameterizedTest(name = "{0}")
+    @ArgumentsSource(ExceptionThrownArgumentsProvider.class)
+    void whenEnsure(final ExceptionTestCaseData testData) {
+        whenCall_thenExceptionThrown(
+            testData,
+            assurance::ensure,
+            Assurance.DEFAULT_MESSAGE
         );
     }
 
-    @Test
-    void givenNullEvaluation_whenEnsure_thenExceptionThrown() {
-
-        final UnaryExpression<Object> expression = expression();
-        doReturn(null).when(expression).evaluate();
-
-        assertThrows(
-            NullPointerException.class,
-            () -> assurance.ensure(expression)
+    @ParameterizedTest(name = "{0}")
+    @ArgumentsSource(ExceptionThrownArgumentsProvider.class)
+    void whenEnsureWithMessage(final ExceptionTestCaseData testData) {
+        whenCallWithMessage_thenExceptionThrown(
+            testData,
+            assurance::ensure
         );
     }
 
-    @Test
-    void givenNullEvaluationResult_whenEnsure_thenExceptionThrown() {
-
-        final UnaryExpression<Object> expression = expression(null, null);
-
-        assertThrows(
-            NullPointerException.class,
-            () -> assurance.ensure(expression)
+    @ParameterizedTest(name = "{0}")
+    @ArgumentsSource(ExceptionThrownArgumentsProvider.class)
+    void whenEnsureWithMissingMessage(final ExceptionTestCaseData testData) {
+        whenCallWithMissingMessage_thenExceptionThrown(
+            testData,
+            assurance::ensure
         );
     }
 
-    @Test
-    void givenPassingEvaluationAndNullSubject_whenEnsure_thenSubjectReturned() {
-
-        final Result passed = Result.PASSED;
-        final UnaryExpression<Object> expression = expression(passed, null);
-
-        Object result = assurance.ensure(expression);
-
-        assertNull(result);
-    }
-
-    @Test
-    void givenSkippedEvaluationAndNullSubject_whenEnsure_thenSubjectReturned() {
-
-        final Result result = Result.SKIPPED;
-        final UnaryExpression<Object> expression = expression(result, null);
-
-        Object returnedSubject = assurance.ensure(expression);
-
-        assertNull(returnedSubject);
-    }
-
-    @Test
-    void givenSkippedEvaluationAndValidSubject_whenEnsure_thenSubjectReturned() {
-
-        final Result result = Result.SKIPPED;
-        final Object subject = new Object();
-        final UnaryExpression<Object> expression = expression(result, subject);
-
-        Object returnedSubject = assurance.ensure(expression);
-
-        assertEquals(subject, returnedSubject);
-    }
-
-    @Test
-    void givenFailedEvaluationAndNullSubject_whenEnsure_thenExceptionThrown() {
-
-        final Result result = Result.FAILED;
-        final UnaryExpression<Object> expression = expression(result, null);
-
-        RuntimeException exception = assertThrows(
-            PostconditionFailedException.class,
-            () -> assurance.ensure(expression)
-        );
-
-        assertEquals(message(expression, Assurance.DEFAULT_MESSAGE), exception.getMessage());
-    }
-
-    @Test
-    void givenFailedEvaluationAndValidSubject_whenEnsure_thenExceptionThrown() {
-
-        final Result result = Result.FAILED;
-        final UnaryExpression<Object> expression = expression(result, new Object());
-
-        RuntimeException exception = assertThrows(
-            PostconditionFailedException.class,
-            () -> assurance.ensure(expression)
-        );
-
-        assertEquals(message(expression, Assurance.DEFAULT_MESSAGE), exception.getMessage());
-    }
-
-    @Test
-    void givenNullExpression_whenEnsureWithMessage_thenExceptionThrown() {
-        assertThrows(
-            NullPointerException.class,
-            () -> assurance.ensure(null, "foo")
+    @ParameterizedTest(name = "{0}")
+    @ArgumentsSource(SubjectReturnedArgumentsProvider.class)
+    void whenEnsure_thenSubjectReturned(final SubjectReturnedDataSet testData) {
+        whenCall_thenSubjectReturned(
+            testData,
+            assurance::ensure
         );
     }
 
-    @Test
-    void givenNullEvaluation_whenEnsureWithMessage_thenExceptionThrown() {
-
-        final UnaryExpression<Object> expression = expression();
-        doReturn(null).when(expression).evaluate();
-
-        assertThrows(
-            NullPointerException.class,
-            () -> assurance.ensure(expression, "foo")
+    @ParameterizedTest(name = "{0}")
+    @ArgumentsSource(SubjectReturnedArgumentsProvider.class)
+    void whenEnsureWithMessage_thenSubjectReturned(final SubjectReturnedDataSet testData) {
+        whenCallWithMessage_thenSubjectReturned(
+            testData,
+            assurance::ensure
         );
     }
 
-    @Test
-    void givenNullEvaluationResult_whenEnsureWithMessage_thenExceptionThrown() {
+    static final class ExceptionThrownArgumentsProvider implements ArgumentsProvider {
 
-        final UnaryExpression<Object> expression = expression(null, null);
-
-        assertThrows(
-            NullPointerException.class,
-            () -> assurance.ensure(expression, "foo")
-        );
-    }
-
-    @Test
-    void givenPassingEvaluationAndNullSubject_whenEnsureWithMessage_thenSubjectReturned() {
-
-        final Result passed = Result.PASSED;
-        final UnaryExpression<Object> expression = expression(passed, null);
-
-        Object result = assurance.ensure(expression, "foo");
-
-        assertNull(result);
-    }
-
-    @Test
-    void givenSkippedEvaluationAndNullSubject_whenEnsureWithMessage_thenSubjectReturned() {
-
-        final Result result = Result.SKIPPED;
-        final UnaryExpression<Object> expression = expression(result, null);
-
-        Object returnedSubject = assurance.ensure(expression, "foo");
-
-        assertNull(returnedSubject);
-    }
-
-    @Test
-    void givenSkippedEvaluationAndValidSubject_whenEnsureWithMessage_thenSubjectReturned() {
-
-        final Result result = Result.SKIPPED;
-        final Object subject = new Object();
-        final UnaryExpression<Object> expression = expression(result, subject);
-
-        Object returnedSubject = assurance.ensure(expression, "foo");
-
-        assertEquals(subject, returnedSubject);
-    }
-
-    @Test
-    void givenFailedEvaluationAndNullSubject_whenEnsureWithMessage_thenExceptionThrown() {
-
-        final String message = "foo";
-        final Result result = Result.FAILED;
-        final UnaryExpression<Object> expression = expression(result, null);
-
-        RuntimeException exception = assertThrows(
-            PostconditionFailedException.class,
-            () -> assurance.ensure(expression, message)
-        );
-
-        assertEquals(message(expression, message), exception.getMessage());
-    }
-
-    @Test
-    void givenFailedEvaluationAndValidSubject_whenEnsureWithMessage_thenExceptionThrown() {
-
-        final String message = "foo";
-        final Result result = Result.FAILED;
-        final UnaryExpression<Object> expression = expression(result, new Object());
-
-        RuntimeException exception = assertThrows(
-            PostconditionFailedException.class,
-            () -> assurance.ensure(expression, message)
-        );
-
-        assertEquals(message(expression, message), exception.getMessage());
-    }
-
-    @Test
-    void givenFailedEvaluationAndNullSubjectAndNullMessage_whenEnsureWithMessage_thenExceptionThrown() {
-
-        final Result result = Result.FAILED;
-        final UnaryExpression<Object> expression = expression(result, null);
-
-        RuntimeException exception = assertThrows(
-            PostconditionFailedException.class,
-            () -> assurance.ensure(expression, null)
-        );
-
-        assertEquals(message(expression, ""), exception.getMessage());
-    }
-
-    @Test
-    void givenFailedEvaluationAndValidSubjectAndNullMessage_whenEnsureWithMessage_thenExceptionThrown() {
-
-        final Result result = Result.FAILED;
-        final UnaryExpression<Object> expression = expression(result, new Object());
-
-        RuntimeException exception = assertThrows(
-            PostconditionFailedException.class,
-            () -> assurance.ensure(expression, null)
-        );
-
-        assertEquals(message(expression, ""), exception.getMessage());
+        @Override
+        public Stream<? extends Arguments> provideArguments(final ExtensionContext extensionContext) throws Exception {
+            return Stream.of(
+                Arguments.of(
+                    new ExceptionTestCaseData(
+                        "Null expression",
+                        null,
+                        NullPointerException.class,
+                        NULL_EXPRESSION
+                    )
+                ),
+                Arguments.of(
+                    new ExceptionTestCaseData(
+                        "Null evaluation",
+                        expressionWithNullEvaluation(),
+                        NullPointerException.class,
+                        NULL_EVALUATION
+                    )
+                ),
+                Arguments.of(
+                    new ExceptionTestCaseData(
+                        "Null result",
+                        expressionWithNullResult(),
+                        NullPointerException.class,
+                        NULL_RESULT
+                    )
+                ),
+                Arguments.of(
+                    new ExceptionTestCaseData(
+                        "Failed evaluation and null subject",
+                        expression(Result.FAILED, null),
+                        PostconditionFailedException.class
+                    )
+                ),
+                Arguments.of(
+                    new ExceptionTestCaseData(
+                        "Failed evaluation and non-null subject",
+                        expression(Result.FAILED, new Object()),
+                        PostconditionFailedException.class
+                    )
+                )
+            );
+        }
     }
 }
