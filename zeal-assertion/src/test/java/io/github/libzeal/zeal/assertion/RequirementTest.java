@@ -1,8 +1,8 @@
 package io.github.libzeal.zeal.assertion;
 
 import io.github.libzeal.zeal.assertion.error.PreconditionFailedException;
-import io.github.libzeal.zeal.assertion.test.CommonAssertionTestHelper;
 import io.github.libzeal.zeal.expression.lang.evaluation.Result;
+import io.github.libzeal.zeal.expression.lang.evaluation.format.SimpleEvaluationFormatter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -13,23 +13,25 @@ import org.junit.jupiter.params.provider.ArgumentsSource;
 import java.util.stream.Stream;
 
 import static io.github.libzeal.zeal.assertion.AssertionExpressionEvaluator.Messages.*;
-import static io.github.libzeal.zeal.assertion.test.CommonAssertionTestHelper.*;
+import static io.github.libzeal.zeal.assertion.AssertionTestCases.*;
 import static io.github.libzeal.zeal.assertion.test.Expressions.*;
 
 @SuppressWarnings("java:S2699")
 class RequirementTest {
 
     private Requirement requirement;
+    private AssertionTestCases helper;
 
     @BeforeEach
     void setUp() {
         requirement = Requirement.create();
+        helper = new AssertionTestCases(new SimpleEvaluationFormatter());
     }
 
     @ParameterizedTest(name = "{0}")
     @ArgumentsSource(RequirementTest.ExceptionThrownArgumentsProvider.class)
-    void whenRequire(final CommonAssertionTestHelper.ExceptionTestCaseData testData) {
-        whenCall_thenExceptionThrown(
+    void whenRequire(final AssertionTestCases.ExceptionTestCaseData testData) {
+        helper.whenCall_thenExceptionThrown(
             testData,
             requirement::require,
             Requirement.DEFAULT_MESSAGE
@@ -38,8 +40,8 @@ class RequirementTest {
 
     @ParameterizedTest(name = "{0}")
     @ArgumentsSource(RequirementTest.ExceptionThrownArgumentsProvider.class)
-    void whenRequireWithMessage(final CommonAssertionTestHelper.ExceptionTestCaseData testData) {
-        whenCallWithMessage_thenExceptionThrown(
+    void whenRequireWithMessage(final AssertionTestCases.ExceptionTestCaseData testData) {
+        helper.whenCallWithMessage_thenExceptionThrown(
             testData,
             requirement::require
         );
@@ -47,8 +49,8 @@ class RequirementTest {
 
     @ParameterizedTest(name = "{0}")
     @ArgumentsSource(RequirementTest.ExceptionThrownArgumentsProvider.class)
-    void whenRequireWithMissingMessage(final CommonAssertionTestHelper.ExceptionTestCaseData testData) {
-        whenCallWithMissingMessage_thenExceptionThrown(
+    void whenRequireWithMissingMessage(final AssertionTestCases.ExceptionTestCaseData testData) {
+        helper.whenCallWithMissingMessage_thenExceptionThrown(
             testData,
             requirement::require
         );
@@ -57,7 +59,7 @@ class RequirementTest {
     @ParameterizedTest(name = "{0}")
     @ArgumentsSource(SubjectReturnedArgumentsProvider.class)
     void whenRequire_thenSubjectReturned(final SubjectReturnedDataSet testData) {
-        whenCall_thenSubjectReturned(
+        helper.whenCall_thenSubjectReturned(
             testData,
             requirement::require
         );
@@ -66,7 +68,7 @@ class RequirementTest {
     @ParameterizedTest(name = "{0}")
     @ArgumentsSource(SubjectReturnedArgumentsProvider.class)
     void whenRequireWithMessage_thenSubjectReturned(final SubjectReturnedDataSet testData) {
-        whenCallWithMessage_thenSubjectReturned(
+        helper.whenCallWithMessage_thenSubjectReturned(
             testData,
             requirement::require
         );

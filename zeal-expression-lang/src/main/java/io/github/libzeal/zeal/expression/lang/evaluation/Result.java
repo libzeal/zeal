@@ -18,5 +18,17 @@ public enum Result {
     /**
      * An evaluation that was skipped (never evaluated).
      */
-    SKIPPED
+    SKIPPED;
+
+    public boolean isPassed() {
+        return equals(PASSED);
+    }
+
+    public boolean isFailed() {
+        return equals(FAILED);
+    }
+
+    public boolean isSkipped() {
+        return equals(SKIPPED);
+    }
 }

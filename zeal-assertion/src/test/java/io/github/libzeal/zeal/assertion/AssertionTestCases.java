@@ -1,8 +1,9 @@
-package io.github.libzeal.zeal.assertion.test;
+package io.github.libzeal.zeal.assertion;
 
 import io.github.libzeal.zeal.expression.lang.UnaryExpression;
 import io.github.libzeal.zeal.expression.lang.evaluation.Evaluation;
 import io.github.libzeal.zeal.expression.lang.evaluation.Result;
+import io.github.libzeal.zeal.expression.lang.evaluation.format.EvaluationFormatter;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
@@ -14,16 +15,21 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import static io.github.libzeal.zeal.assertion.AssertionTestExpectations.message;
 import static io.github.libzeal.zeal.assertion.test.Expressions.expression;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class CommonAssertionTestHelper {
+public class AssertionTestCases {
 
-    public static void whenCall_thenExceptionThrown(final ExceptionTestCaseData testData,
-                                                    final Consumer<UnaryExpression<Object>> action,
-                                                    final String defaultMessage) {
+    private final EvaluationFormatter formatter;
+
+    public AssertionTestCases(final EvaluationFormatter formatter) {
+        this.formatter = formatter;
+    }
+
+    public void whenCall_thenExceptionThrown(final ExceptionTestCaseData testData,
+                                             final Consumer<UnaryExpression<Object>> action,
+                                             final String defaultMessage) {
 
         final Throwable caught = assertThrows(
             testData.exception(),
@@ -31,12 +37,17 @@ public class CommonAssertionTestHelper {
         );
 
         final String expectedMessage = testData.message()
-            .orElseGet(() -> message(testData.evaluation(), defaultMessage));
+            .orElseGet(() -> AssertionExpressionEvaluator.formatMessage(
+                    formatter,
+                    defaultMessage,
+                    testData.evaluation()
+                )
+            );
 
         assertEquals(expectedMessage, caught.getMessage());
     }
 
-    public static void whenCallWithMessage_thenExceptionThrown(final ExceptionTestCaseData testData,
+    public void whenCallWithMessage_thenExceptionThrown(final ExceptionTestCaseData testData,
                                                                final BiConsumer<UnaryExpression<Object>, String> action) {
 
         final String message = "foo";
@@ -47,12 +58,17 @@ public class CommonAssertionTestHelper {
         );
 
         final String expectedMessage = testData.message()
-            .orElseGet(() -> message(testData.evaluation(), message));
+            .orElseGet(() -> AssertionExpressionEvaluator.formatMessage(
+                    formatter,
+                    message,
+                    testData.evaluation()
+                )
+            );
 
         assertEquals(expectedMessage, caught.getMessage());
     }
 
-    public static void whenCallWithMissingMessage_thenExceptionThrown(final ExceptionTestCaseData testData,
+    public void whenCallWithMissingMessage_thenExceptionThrown(final ExceptionTestCaseData testData,
                                                                 final BiConsumer<UnaryExpression<Object>, String> action) {
 
         final Throwable caught = assertThrows(
@@ -61,12 +77,17 @@ public class CommonAssertionTestHelper {
         );
 
         final String expectedMessage = testData.message()
-            .orElseGet(() -> message(testData.evaluation(), ""));
+            .orElseGet(() -> AssertionExpressionEvaluator.formatMessage(
+                    formatter,
+                    "",
+                    testData.evaluation()
+                )
+            );
 
         assertEquals(expectedMessage, caught.getMessage());
     }
 
-    public static void whenCall_thenSubjectReturned(final SubjectReturnedDataSet testData,
+    public void whenCall_thenSubjectReturned(final SubjectReturnedDataSet testData,
                                                     final Function<UnaryExpression<Object>, Object> action) {
         final Result result = testData.result();
         final Object subject = testData.subject();
@@ -77,7 +98,7 @@ public class CommonAssertionTestHelper {
         assertEquals(subject, returnedSubject);
     }
 
-    public static void whenCallWithMessage_thenSubjectReturned(final SubjectReturnedDataSet testData,
+    public void whenCallWithMessage_thenSubjectReturned(final SubjectReturnedDataSet testData,
                                                                final BiFunction<UnaryExpression<Object>, String, Object> action) {
         final String message = "foo";
         final Result result = testData.result();
