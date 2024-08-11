@@ -75,7 +75,6 @@ io.github.libzeal.zeal.assertion.Assertions
 A confirmation is the equivalent of a basic `assert` and is created using the `confirm` method, which:
 * Throws an `AssertionFailedException` if the expression evaluates to false
 * Returns the subject of a `UnaryExpression` if the expression evaluates to true
-* Returns `void` for all expressions if the expression evaluates to true
 
 `AssertionFailedException` is a subclass of [`IllegalStateException`](https://docs.oracle.com/en/java/javase/21/docs/api///java.base/java/lang/IllegalStateException.html). An example of a simple assertion is:
 
@@ -93,7 +92,7 @@ public String processName(String name) {
 A custom message can be added to the `AssertionFailedException` thrown when the assertion fails:
 
 ```java
-confirm(value(name).startsWith(firstName), "First name must be the first name in a full name");
+confirm(value(name).startsWith(firstName), "First name must be first");
 ```
 
 #### Preconditions
@@ -101,7 +100,6 @@ A precondition is created using the `require` method, which:
 * Throws a `NullPointerException` (NPE) if the expression fails and the subject is `null`
 * Throws a `PreconditionFailedException` if the expression fails for any other reason
 * Returns the subject of a `UnaryExpression` if the expression evaluates to true
-* Returns `void` for all expressions if the expression evaluates to true
 
 An example of a precondition is:
 
@@ -113,7 +111,8 @@ class Credentials {
 
     public Credentials(String username, String password) {
         this.username = require(value(username).isNotNull().isNotBlank());
-        this.password = require(value(password).isNotNull().isLongerThan(8), "Password must has sufficient length");
+        this.password = require(value(password).isNotNull().isLongerThan(8), 
+            "Password must has sufficient length");
     }
 
     // ...other methods...
@@ -130,38 +129,11 @@ The [convention](https://stackoverflow.com/q/3881/2403253) is to throw an NPE if
 > thatThrowsOnNull` below).
 
 #### Postconditions
+A postcondition is created using the `ensure` method, which:
+* Throws a `PostconditionFailedException` if the expression fails for any reason
+* Returns the subject of a `UnaryExpression` if the expression evaluates to true
 
-### Expressions
-#### Unary Expressions
-#### Nullity
-
-### Formatters
-
----
-Old stuff....
-
-Zeal is based on the concept of an expression, particularly unary expressions. A unary expression is a statement about a single subject that evaluates to true or false. For example, if we look at the sample from before:
-
-```java
-require(value("foo").isNotNull().isNotBlank());
-```
-
-### Expressions
-`value("foo").isNotNull().isNotBlank()` is the expression, while `foo` is the subject of the expression. `isNotNull()` and `isNotBlank()` are predicates, which evaluate a single subject. The `value` method creates a unary expression from the supplied argument. The resulting expression is based on the type of the argument. For example, `value("foo")` results in a `StringUnaryExpression` while `value(1.0)` results in a `BoxedDoubleUnaryExpression`. Each expression has predicates available that can be added to the expression. For example,  `StringUnaryExpression` has `isNotBlank()`, while `BoxedDoubleExpression` has `isGreaterThan(Double other)`.
-
-> **Note**: Calling a predicate method does not perform any evaluation on the subject.
-
-For example, calling `isNotBlank()` does not immediately check if the subject is blank. Instead, calling the predicate method adds a predicate to the predicate chain for that expression. When the expression is evaluated, the predicates are evaluated in order and if a predicate fails, then an assertion is thrown. The types of exceptions thrown will depend on the specific evaluator.
-
-#### Unary Expressions
-Unary expressions are a special kind of expression because they allow us to return a single subject. For example, we can obtain the subject of a unary expression by calling the `subject()` method:
-
-```java
-UnaryExpression<String> expression = value("foo");
-String subject = expression.subject();
-```
-
-This may not seem useful, but access to a single subject allows us to return the subject from an evaluator. For example, the subject of an expression can be obtained from the `require` method if all of its predicates pass:
+An example of a precondition is:
 
 ```java
 class Credentials {
@@ -171,25 +143,48 @@ class Credentials {
 
     public Credentials(String username, String password) {
         this.username = require(value(username).isNotNull().isNotBlank());
-        this.password = require(value(password).isNotNull().isLongerThan(8));
+        this.password = require(value(password).isNotNull().isLongerThan(8), 
+            "Password must has sufficient length");
     }
 
     // ...other methods...
 }
 ```
 
-#### The Rule of Nullity
-There is one exception to the rule that predicates are evaluated in order: `isNotNull()`. This predicate is a unique predicate because all other predicates depend on this one being true. For example, if we try to evaluate if a `Double` is greater than some value, it will fail if the subject is `null`. It is important to note that the evaluation did not strictly fail because the subject was not greater than the supplied value, but rather, because the subject was `null`. Therefore, Zeal has a special rule:
+### Expressions
+Expressions are the heart of Zeal. An `Expression` is any object that can be evaluated to true or false (`PASSED` or 
+`FAILED`, respectively in Zeal). Unary expressions in particular are critical to creating Zeal assertions.
 
-> Rule of Nullity: If an expression has a `isNotNull()` predicate, this predicate is evaluated before any other predicate.
+#### Unary Expressions
+Unary expressions evaluate a single subject. This focus on a single subject allows Zeal assertions to return the 
+subject of an evaluation. For example:
 
-All other predicates are evaluated in order.
+```java
+String verifiedName = require(value(name).isLongerThan(8));
+```
 
-### Preconditions
+The `value` method wraps a single object into a unary expression. The unary expression that is created has a set of predicates (such as `isLongerThan`) that can be chained together and used when evaluating the expression. For example:
 
-### Postconditions
+```java
+require(value("foo").isNotBlank().isLongerThan(8));
+```
 
-### Assertions
+Two predicates are added to the expression:
+1. `isNotBlank()`
+2. `isLongerThan(8)`
+
+These predicates are evaluated in order and all predicates must evaluate to true for the expression to evaluate to true (predicates are conjunctive). If any predicate in the chain fails, then all subsequent predicate evaluations are skipped.
+
+#### Nullity
+There is one exception to the rule that predicates are evaluated in order: `isNotNull()`. This predicate is a unique predicate because all other predicates depend on this one being true. 
+
+For example, if we try to evaluate if a `Double` is greater than some value, it will fail if the subject is `null` (greater than does not make sense for the absence of a value). The evaluation did not fail because the subject was not greater than the supplied value, but because the subject was `null`. 
+
+Therefore, Zeal has a special rule:
+
+> If an expression has a `isNotNull()` predicate, this predicate is evaluated before any other predicate.
+
+This ensures that if an assertion wishes to check if a subject is `null`, then the evaluation fails due to the nullity of the subject, not a extraneous reason (such as `isGreaterThan`). If the expression does not contain an `isNotNull` predicate, the first predicate that fails will be considered the source of the failure (since the subject was not explicitly checked for nullity).
 
 ## Supported Types
 The following types have equivalent expressions supported in the [core types](/zeal-expression-types-core) module:
