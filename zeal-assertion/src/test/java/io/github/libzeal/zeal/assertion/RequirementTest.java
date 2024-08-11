@@ -67,7 +67,7 @@ class RequirementTest {
 
     @ParameterizedTest(name = "{0}")
     @ArgumentsSource(SubjectReturnedArgumentsProvider.class)
-    void whenRequireWithMessage_thenSubjectReturned(final SubjectReturnedDataSet testData) {
+    void whenRequireWithMessage_thenSubjectReturned(final SubjectReturnedDataSet testData) throws Throwable {
         helper.whenCallWithMessage_thenSubjectReturned(
             testData,
             requirement::require

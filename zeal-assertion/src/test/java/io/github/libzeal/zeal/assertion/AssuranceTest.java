@@ -67,7 +67,7 @@ class AssuranceTest {
 
     @ParameterizedTest(name = "{0}")
     @ArgumentsSource(SubjectReturnedArgumentsProvider.class)
-    void whenEnsureWithMessage_thenSubjectReturned(final SubjectReturnedDataSet testData) {
+    void whenEnsureWithMessage_thenSubjectReturned(final SubjectReturnedDataSet testData) throws Throwable {
         helper.whenCallWithMessage_thenSubjectReturned(
             testData,
             assurance::ensure

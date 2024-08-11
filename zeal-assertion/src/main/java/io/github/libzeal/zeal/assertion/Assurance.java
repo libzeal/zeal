@@ -15,10 +15,10 @@ import io.github.libzeal.zeal.expression.lang.evaluation.Result;
 public class Assurance {
 
     static final String DEFAULT_MESSAGE = "Postcondition failed";
-    private final AssertionExpressionEvaluator evaluator;
+    private final AssertionExpressionEvaluator<PostconditionFailedException, PostconditionFailedException> evaluator;
 
     private Assurance() {
-        this.evaluator = new AssertionExpressionEvaluator(
+        this.evaluator = new AssertionExpressionEvaluator<>(
             new SimpleEvaluationFormatter(),
             PostconditionFailedException::new,
             PostconditionFailedException::new
