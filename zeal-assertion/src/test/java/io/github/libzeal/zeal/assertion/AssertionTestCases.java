@@ -9,8 +9,6 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
 
 import java.util.Optional;
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -48,13 +46,13 @@ public class AssertionTestCases {
     }
 
     public void whenCallWithMessage_thenExceptionThrown(final ExceptionTestCaseData testData,
-                                                               final BiConsumer<UnaryExpression<Object>, String> action) {
+                                                               final EvaluationWithMessageAction action) {
 
         final String message = "foo";
 
         final Throwable caught = assertThrows(
             testData.exception(),
-            () -> action.accept(testData.expression(), message)
+            () -> action.perform(testData.expression(), message)
         );
 
         final String expectedMessage = testData.message()
@@ -69,11 +67,11 @@ public class AssertionTestCases {
     }
 
     public void whenCallWithMissingMessage_thenExceptionThrown(final ExceptionTestCaseData testData,
-                                                                final BiConsumer<UnaryExpression<Object>, String> action) {
+                                                                final EvaluationWithMessageAction action) {
 
         final Throwable caught = assertThrows(
             testData.exception(),
-            () -> action.accept(testData.expression(), null)
+            () -> action.perform(testData.expression(), null)
         );
 
         final String expectedMessage = testData.message()
@@ -99,13 +97,13 @@ public class AssertionTestCases {
     }
 
     public void whenCallWithMessage_thenSubjectReturned(final SubjectReturnedDataSet testData,
-                                                               final BiFunction<UnaryExpression<Object>, String, Object> action) {
+                                                               final EvaluationWithMessageAction action) throws Throwable {
         final String message = "foo";
         final Result result = testData.result();
         final Object subject = testData.subject();
         final UnaryExpression<Object> expression = expression(result, subject);
 
-        Object returnedSubject = action.apply(expression, message);
+        Object returnedSubject = action.perform(expression, message);
 
         assertEquals(subject, returnedSubject);
     }
@@ -192,5 +190,10 @@ public class AssertionTestCases {
         public String toString() {
             return name;
         }
+    }
+
+    @FunctionalInterface
+    public interface EvaluationWithMessageAction {
+        Object perform(UnaryExpression<Object> expression, String message) throws Throwable;
     }
 }

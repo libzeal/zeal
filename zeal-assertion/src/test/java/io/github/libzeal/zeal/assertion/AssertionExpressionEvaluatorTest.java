@@ -19,7 +19,7 @@ import static io.github.libzeal.zeal.assertion.test.Expressions.*;
 @SuppressWarnings("java:S2699")
 class AssertionExpressionEvaluatorTest {
 
-    private AssertionExpressionEvaluator evaluator;
+    private AssertionExpressionEvaluator<Throwable, Throwable> evaluator;
     private AssertionTestCases helper;
 
     @BeforeEach
@@ -27,7 +27,7 @@ class AssertionExpressionEvaluatorTest {
 
         final EvaluationFormatter formatter = new SimpleEvaluationFormatter();
 
-        evaluator = new AssertionExpressionEvaluator(formatter, TestRuntimeException::new, TestRuntimeException::new);
+        evaluator = new AssertionExpressionEvaluator<>(formatter, TestRuntimeException::new, TestRuntimeException::new);
         helper = new AssertionTestCases(formatter);
     }
 
@@ -49,7 +49,7 @@ class AssertionExpressionEvaluatorTest {
 
     @ParameterizedTest(name = "{0}")
     @ArgumentsSource(ExceptionThrownArgumentsProvider.class)
-    void whenEnsureWithMissingMessage(final ExceptionTestCaseData testData) {
+    void whenEnsureWithMissingMessage(final ExceptionTestCaseData testData)  {
         helper.whenCallWithMissingMessage_thenExceptionThrown(
             testData,
             evaluator::evaluate
@@ -58,7 +58,7 @@ class AssertionExpressionEvaluatorTest {
 
     @ParameterizedTest(name = "{0}")
     @ArgumentsSource(SubjectReturnedArgumentsProvider.class)
-    void whenEnsureWithMessage_thenSubjectReturned(final SubjectReturnedDataSet testData) {
+    void whenEnsureWithMessage_thenSubjectReturned(final SubjectReturnedDataSet testData) throws Throwable {
         helper.whenCallWithMessage_thenSubjectReturned(
             testData,
             evaluator::evaluate

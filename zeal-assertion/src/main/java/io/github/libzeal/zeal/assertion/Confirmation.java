@@ -15,10 +15,10 @@ import io.github.libzeal.zeal.expression.lang.evaluation.format.SimpleEvaluation
 public class Confirmation {
 
     static final String DEFAULT_MESSAGE = "Assertion failed";
-    private final AssertionExpressionEvaluator evaluator;
+    private final AssertionExpressionEvaluator<AssertionFailedException, AssertionFailedException> evaluator;
 
     public Confirmation() {
-        this.evaluator = new AssertionExpressionEvaluator(
+        this.evaluator = new AssertionExpressionEvaluator<>(
             new SimpleEvaluationFormatter(),
             AssertionFailedException::new,
             AssertionFailedException::new

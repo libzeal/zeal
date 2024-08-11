@@ -14,7 +14,7 @@ import static java.util.Objects.requireNonNull;
  * @author Justin Albano
  * @since 0.2.0
  */
-final class AssertionExpressionEvaluator {
+final class AssertionExpressionEvaluator<N extends Throwable, F extends Throwable> {
 
     @SuppressWarnings("java:S1214")
     interface Messages {
@@ -24,8 +24,8 @@ final class AssertionExpressionEvaluator {
     }
 
     private final EvaluationFormatter formatter;
-    private final ExceptionSupplier onNullExceptionFunc;
-    private final ExceptionSupplier onFailExceptionFunc;
+    private final ExceptionSupplier<N> onNullExceptionFunc;
+    private final ExceptionSupplier<F> onFailExceptionFunc;
 
     /**
      * Creates a new evaluator.
@@ -42,8 +42,8 @@ final class AssertionExpressionEvaluator {
      * @throws NullPointerException
      *     Any of the supplied arguments are {@code null}.
      */
-    AssertionExpressionEvaluator(final EvaluationFormatter formatter, final ExceptionSupplier onNullExceptionFunc,
-                                 final ExceptionSupplier onFailExceptionFunc) {
+    AssertionExpressionEvaluator(final EvaluationFormatter formatter, final ExceptionSupplier<N> onNullExceptionFunc,
+                                 final ExceptionSupplier<F> onFailExceptionFunc) {
         this.formatter = requireNonNull(formatter);
         this.onNullExceptionFunc = requireNonNull(onNullExceptionFunc);
         this.onFailExceptionFunc = requireNonNull(onFailExceptionFunc);
@@ -68,7 +68,7 @@ final class AssertionExpressionEvaluator {
      *     {@link UnaryExpression#evaluate()}) is {@code null}, or the result of the evaluation (when calling
      *     {@link Evaluation#result()} is {@code null}.
      */
-    public <T> T evaluate(final UnaryExpression<T> expression, final String message) {
+    public <T> T evaluate(final UnaryExpression<T> expression, final String message) throws N, F {
 
         if (expression == null) {
             throw new NullPointerException(Messages.NULL_EXPRESSION);
@@ -119,7 +119,7 @@ final class AssertionExpressionEvaluator {
      * @since 0.2.0
      */
     @FunctionalInterface
-    public interface ExceptionSupplier {
+    public interface ExceptionSupplier<T extends Throwable> {
 
         /**
          * Creates a new {@link RuntimeException} from the supplied message.
@@ -129,6 +129,6 @@ final class AssertionExpressionEvaluator {
          *
          * @return The created exception.
          */
-        RuntimeException create(String message);
+        T create(String message);
     }
 }

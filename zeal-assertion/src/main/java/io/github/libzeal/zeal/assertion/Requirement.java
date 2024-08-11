@@ -10,10 +10,10 @@ import io.github.libzeal.zeal.expression.lang.evaluation.format.SimpleEvaluation
 public class Requirement {
 
     static final String DEFAULT_MESSAGE = "Precondition failed";
-    private final AssertionExpressionEvaluator evaluator;
+    private final AssertionExpressionEvaluator<NullPointerException, PreconditionFailedException> evaluator;
 
     public Requirement() {
-        this.evaluator = new AssertionExpressionEvaluator(
+        this.evaluator = new AssertionExpressionEvaluator<>(
             new SimpleEvaluationFormatter(),
             NullPointerException::new,
             PreconditionFailedException::new

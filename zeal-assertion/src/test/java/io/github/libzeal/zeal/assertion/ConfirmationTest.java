@@ -67,7 +67,7 @@ class ConfirmationTest {
 
     @ParameterizedTest(name = "{0}")
     @ArgumentsSource(SubjectReturnedArgumentsProvider.class)
-    void whenConfirmWithMessage_thenSubjectReturned(final SubjectReturnedDataSet testData) {
+    void whenConfirmWithMessage_thenSubjectReturned(final SubjectReturnedDataSet testData) throws Throwable {
         helper.whenCallWithMessage_thenSubjectReturned(
             testData,
             confirmation::confirm

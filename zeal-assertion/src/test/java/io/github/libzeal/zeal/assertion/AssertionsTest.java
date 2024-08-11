@@ -60,7 +60,7 @@ class AssertionsTest {
 
     @ParameterizedTest(name = "{0}")
     @ArgumentsSource(SubjectReturnedArgumentsProvider.class)
-    void whenRequireWithMessage_thenSubjectReturned(final SubjectReturnedDataSet testData) {
+    void whenRequireWithMessage_thenSubjectReturned(final SubjectReturnedDataSet testData) throws Throwable {
         helper.whenCallWithMessage_thenSubjectReturned(
             testData,
             Assertions::require
@@ -110,7 +110,7 @@ class AssertionsTest {
 
     @ParameterizedTest(name = "{0}")
     @ArgumentsSource(SubjectReturnedArgumentsProvider.class)
-    void whenConfirmWithMessage_thenSubjectReturned(final SubjectReturnedDataSet testData) {
+    void whenConfirmWithMessage_thenSubjectReturned(final SubjectReturnedDataSet testData) throws Throwable {
         helper.whenCallWithMessage_thenSubjectReturned(
             testData,
             Assertions::confirm
@@ -160,7 +160,7 @@ class AssertionsTest {
 
     @ParameterizedTest(name = "{0}")
     @ArgumentsSource(SubjectReturnedArgumentsProvider.class)
-    void whenEnsureWithMessage_thenSubjectReturned(final SubjectReturnedDataSet testData) {
+    void whenEnsureWithMessage_thenSubjectReturned(final SubjectReturnedDataSet testData) throws Throwable {
         helper.whenCallWithMessage_thenSubjectReturned(
             testData,
             Assertions::ensure
