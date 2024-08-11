@@ -54,7 +54,6 @@ require(expression);
 Zeal is based a few main concepts:
 1. Evaluators
 2. Expressions
-3. Formatters
 
 ### Evaluators
 An evaluator is a method that evaluates an expression, such as an assertion. Zeal has three basic types of assertions:
