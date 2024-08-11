@@ -18,6 +18,13 @@ import static java.util.Objects.requireNonNull;
  */
 final class AssertionExpressionEvaluator {
 
+    @SuppressWarnings("java:S1214")
+    interface Messages {
+        public static final String NULL_EXPRESSION = "Cannot evaluate null expression";
+        public static final String NULL_EVALUATION = "Cannot process null evaluation";
+        public static final String NULL_RESULT = "Cannot process evaluation with null result";
+    }
+
     private final EvaluationFormatter formatter;
     private final Function<String, RuntimeException> onNullExceptionFunc;
     private final Function<String, RuntimeException> onFailExceptionFunc;
@@ -66,16 +73,16 @@ final class AssertionExpressionEvaluator {
     public <T> T evaluate(final UnaryExpression<T> expression, final String message) {
 
         if (expression == null) {
-            throw new NullPointerException("Cannot evaluate null expression");
+            throw new NullPointerException(Messages.NULL_EXPRESSION);
         }
 
         final Evaluation evaluation = expression.evaluate();
 
         if (evaluation == null) {
-            throw new NullPointerException("Cannot process null evaluation");
+            throw new NullPointerException(Messages.NULL_EVALUATION);
         }
         else if (evaluation.result() == null) {
-            throw new NullPointerException("Cannot process evaluation with null result");
+            throw new NullPointerException(Messages.NULL_RESULT);
         }
 
         final T subject = expression.subject();
