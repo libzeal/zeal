@@ -1,7 +1,7 @@
 package io.github.libzeal.zeal.assertion;
 
-import io.github.libzeal.zeal.assertion.error.AssertionFailedException;
 import io.github.libzeal.zeal.expression.lang.evaluation.Result;
+import io.github.libzeal.zeal.expression.lang.evaluation.format.EvaluationFormatter;
 import io.github.libzeal.zeal.expression.lang.evaluation.format.SimpleEvaluationFormatter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -17,60 +17,51 @@ import static io.github.libzeal.zeal.assertion.AssertionTestCases.*;
 import static io.github.libzeal.zeal.assertion.test.Expressions.*;
 
 @SuppressWarnings("java:S2699")
-class ConfirmationTest {
+class AssertionExpressionEvaluatorTest {
 
-    private Confirmation confirmation;
+    private AssertionExpressionEvaluator evaluator;
     private AssertionTestCases helper;
 
     @BeforeEach
     void setUp() {
-        confirmation = Confirmation.create();
-        helper = new AssertionTestCases(new SimpleEvaluationFormatter());
+
+        final EvaluationFormatter formatter = new SimpleEvaluationFormatter();
+
+        evaluator = new AssertionExpressionEvaluator(formatter, TestRuntimeException::new, TestRuntimeException::new);
+        helper = new AssertionTestCases(formatter);
+    }
+
+    private static final class TestRuntimeException extends RuntimeException {
+
+        public TestRuntimeException(final String message) {
+            super(message);
+        }
     }
 
     @ParameterizedTest(name = "{0}")
     @ArgumentsSource(ExceptionThrownArgumentsProvider.class)
-    void whenConfirm(final AssertionTestCases.ExceptionTestCaseData testData) {
-        helper.whenCall_thenExceptionThrown(
-            testData,
-            confirmation::confirm,
-            Confirmation.DEFAULT_MESSAGE
-        );
-    }
-
-    @ParameterizedTest(name = "{0}")
-    @ArgumentsSource(ExceptionThrownArgumentsProvider.class)
-    void whenConfirmWithMessage(final AssertionTestCases.ExceptionTestCaseData testData) {
+    void whenEnsureWithMessage(final ExceptionTestCaseData testData) {
         helper.whenCallWithMessage_thenExceptionThrown(
             testData,
-            confirmation::confirm
+            evaluator::evaluate
         );
     }
 
     @ParameterizedTest(name = "{0}")
     @ArgumentsSource(ExceptionThrownArgumentsProvider.class)
-    void whenConfirmWithMissingMessage(final AssertionTestCases.ExceptionTestCaseData testData) {
+    void whenEnsureWithMissingMessage(final ExceptionTestCaseData testData) {
         helper.whenCallWithMissingMessage_thenExceptionThrown(
             testData,
-            confirmation::confirm
+            evaluator::evaluate
         );
     }
 
     @ParameterizedTest(name = "{0}")
     @ArgumentsSource(SubjectReturnedArgumentsProvider.class)
-    void whenConfirm_thenSubjectReturned(final SubjectReturnedDataSet testData) {
-        helper.whenCall_thenSubjectReturned(
-            testData,
-            confirmation::confirm
-        );
-    }
-
-    @ParameterizedTest(name = "{0}")
-    @ArgumentsSource(SubjectReturnedArgumentsProvider.class)
-    void whenConfirmWithMessage_thenSubjectReturned(final SubjectReturnedDataSet testData) {
+    void whenEnsureWithMessage_thenSubjectReturned(final SubjectReturnedDataSet testData) {
         helper.whenCallWithMessage_thenSubjectReturned(
             testData,
-            confirmation::confirm
+            evaluator::evaluate
         );
     }
 
@@ -107,14 +98,14 @@ class ConfirmationTest {
                     new ExceptionTestCaseData(
                         "Failed evaluation and null subject",
                         expression(Result.FAILED, null),
-                        AssertionFailedException.class
+                        TestRuntimeException.class
                     )
                 ),
                 Arguments.of(
                     new ExceptionTestCaseData(
                         "Failed evaluation and non-null subject",
                         expression(Result.FAILED, new Object()),
-                        AssertionFailedException.class
+                        TestRuntimeException.class
                     )
                 )
             );

@@ -5,8 +5,6 @@ import io.github.libzeal.zeal.expression.lang.evaluation.Evaluation;
 import io.github.libzeal.zeal.expression.lang.evaluation.Result;
 import io.github.libzeal.zeal.expression.lang.evaluation.format.EvaluationFormatter;
 
-import java.util.function.Function;
-
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -20,14 +18,14 @@ final class AssertionExpressionEvaluator {
 
     @SuppressWarnings("java:S1214")
     interface Messages {
-        public static final String NULL_EXPRESSION = "Cannot evaluate null expression";
-        public static final String NULL_EVALUATION = "Cannot process null evaluation";
-        public static final String NULL_RESULT = "Cannot process evaluation with null result";
+        String NULL_EXPRESSION = "Cannot evaluate null expression";
+        String NULL_EVALUATION = "Cannot process null evaluation";
+        String NULL_RESULT = "Cannot process evaluation with null result";
     }
 
     private final EvaluationFormatter formatter;
-    private final Function<String, RuntimeException> onNullExceptionFunc;
-    private final Function<String, RuntimeException> onFailExceptionFunc;
+    private final ExceptionSupplier onNullExceptionFunc;
+    private final ExceptionSupplier onFailExceptionFunc;
 
     /**
      * Creates a new evaluator.
@@ -44,8 +42,8 @@ final class AssertionExpressionEvaluator {
      * @throws NullPointerException
      *     Any of the supplied arguments are {@code null}.
      */
-    AssertionExpressionEvaluator(final EvaluationFormatter formatter, final Function<String,
-        RuntimeException> onNullExceptionFunc, final Function<String, RuntimeException> onFailExceptionFunc) {
+    AssertionExpressionEvaluator(final EvaluationFormatter formatter, final ExceptionSupplier onNullExceptionFunc,
+                                 final ExceptionSupplier onFailExceptionFunc) {
         this.formatter = requireNonNull(formatter);
         this.onNullExceptionFunc = requireNonNull(onNullExceptionFunc);
         this.onFailExceptionFunc = requireNonNull(onFailExceptionFunc);
@@ -81,21 +79,24 @@ final class AssertionExpressionEvaluator {
         if (evaluation == null) {
             throw new NullPointerException(Messages.NULL_EVALUATION);
         }
-        else if (evaluation.result() == null) {
+
+        final Result result = evaluation.result();
+
+        if (result == null) {
             throw new NullPointerException(Messages.NULL_RESULT);
         }
 
         final T subject = expression.subject();
 
-        if (isFailed(evaluation)) {
+        if (result.isFailed()) {
 
             String formattedMessage = formatMessage(formatter, message, evaluation);
 
             if (subject == null) {
-                throw onNullExceptionFunc.apply(formattedMessage);
+                throw onNullExceptionFunc.create(formattedMessage);
             }
             else {
-                throw onFailExceptionFunc.apply(formattedMessage);
+                throw onFailExceptionFunc.create(formattedMessage);
             }
         }
         else {
@@ -111,7 +112,23 @@ final class AssertionExpressionEvaluator {
         return formattedSuppliedMessage + "\n\n" + formatter.format(evaluation) + "\nStack trace:";
     }
 
-    private static boolean isFailed(final Evaluation eval) {
-        return eval.result().equals(Result.FAILED);
+    /**
+     * A function that consumes a message and creates a {@link RuntimeException}.
+     *
+     * @author Justin Albano
+     * @since 0.2.0
+     */
+    @FunctionalInterface
+    public interface ExceptionSupplier {
+
+        /**
+         * Creates a new {@link RuntimeException} from the supplied message.
+         *
+         * @param message
+         *     The message to use for the exception.
+         *
+         * @return The created exception.
+         */
+        RuntimeException create(String message);
     }
 }

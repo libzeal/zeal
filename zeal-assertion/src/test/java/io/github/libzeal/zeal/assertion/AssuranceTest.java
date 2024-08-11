@@ -2,6 +2,7 @@ package io.github.libzeal.zeal.assertion;
 
 import io.github.libzeal.zeal.assertion.error.PostconditionFailedException;
 import io.github.libzeal.zeal.expression.lang.evaluation.Result;
+import io.github.libzeal.zeal.expression.lang.evaluation.format.SimpleEvaluationFormatter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -12,23 +13,25 @@ import org.junit.jupiter.params.provider.ArgumentsSource;
 import java.util.stream.Stream;
 
 import static io.github.libzeal.zeal.assertion.AssertionExpressionEvaluator.Messages.*;
-import static io.github.libzeal.zeal.assertion.test.CommonAssertionTestHelper.*;
+import static io.github.libzeal.zeal.assertion.AssertionTestCases.*;
 import static io.github.libzeal.zeal.assertion.test.Expressions.*;
 
 @SuppressWarnings("java:S2699")
 class AssuranceTest {
 
     private Assurance assurance;
+    private AssertionTestCases helper;
 
     @BeforeEach
     void setUp() {
         assurance = Assurance.create();
+        helper = new AssertionTestCases(new SimpleEvaluationFormatter());
     }
 
     @ParameterizedTest(name = "{0}")
     @ArgumentsSource(ExceptionThrownArgumentsProvider.class)
     void whenEnsure(final ExceptionTestCaseData testData) {
-        whenCall_thenExceptionThrown(
+        helper.whenCall_thenExceptionThrown(
             testData,
             assurance::ensure,
             Assurance.DEFAULT_MESSAGE
@@ -38,7 +41,7 @@ class AssuranceTest {
     @ParameterizedTest(name = "{0}")
     @ArgumentsSource(ExceptionThrownArgumentsProvider.class)
     void whenEnsureWithMessage(final ExceptionTestCaseData testData) {
-        whenCallWithMessage_thenExceptionThrown(
+        helper.whenCallWithMessage_thenExceptionThrown(
             testData,
             assurance::ensure
         );
@@ -47,7 +50,7 @@ class AssuranceTest {
     @ParameterizedTest(name = "{0}")
     @ArgumentsSource(ExceptionThrownArgumentsProvider.class)
     void whenEnsureWithMissingMessage(final ExceptionTestCaseData testData) {
-        whenCallWithMissingMessage_thenExceptionThrown(
+        helper.whenCallWithMissingMessage_thenExceptionThrown(
             testData,
             assurance::ensure
         );
@@ -56,7 +59,7 @@ class AssuranceTest {
     @ParameterizedTest(name = "{0}")
     @ArgumentsSource(SubjectReturnedArgumentsProvider.class)
     void whenEnsure_thenSubjectReturned(final SubjectReturnedDataSet testData) {
-        whenCall_thenSubjectReturned(
+        helper.whenCall_thenSubjectReturned(
             testData,
             assurance::ensure
         );
@@ -65,7 +68,7 @@ class AssuranceTest {
     @ParameterizedTest(name = "{0}")
     @ArgumentsSource(SubjectReturnedArgumentsProvider.class)
     void whenEnsureWithMessage_thenSubjectReturned(final SubjectReturnedDataSet testData) {
-        whenCallWithMessage_thenSubjectReturned(
+        helper.whenCallWithMessage_thenSubjectReturned(
             testData,
             assurance::ensure
         );
