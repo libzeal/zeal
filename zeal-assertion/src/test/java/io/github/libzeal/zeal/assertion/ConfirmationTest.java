@@ -1,6 +1,6 @@
 package io.github.libzeal.zeal.assertion;
 
-import io.github.libzeal.zeal.assertion.error.AssertionFailedException;
+import io.github.libzeal.zeal.assertion.error.AssertionFailedError;
 import io.github.libzeal.zeal.expression.lang.evaluation.Result;
 import io.github.libzeal.zeal.expression.lang.evaluation.format.SimpleEvaluationFormatter;
 import org.junit.jupiter.api.BeforeEach;
@@ -107,14 +107,14 @@ class ConfirmationTest {
                     new ExceptionTestCaseData(
                         "Failed evaluation and null subject",
                         expression(Result.FAILED, null),
-                        AssertionFailedException.class
+                        AssertionFailedError.class
                     )
                 ),
                 Arguments.of(
                     new ExceptionTestCaseData(
                         "Failed evaluation and non-null subject",
                         expression(Result.FAILED, new Object()),
-                        AssertionFailedException.class
+                        AssertionFailedError.class
                     )
                 )
             );

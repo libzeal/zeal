@@ -1,6 +1,6 @@
 package io.github.libzeal.zeal.assertion;
 
-import io.github.libzeal.zeal.assertion.error.AssertionFailedException;
+import io.github.libzeal.zeal.assertion.error.AssertionFailedError;
 import io.github.libzeal.zeal.expression.lang.UnaryExpression;
 import io.github.libzeal.zeal.expression.lang.evaluation.Evaluation;
 import io.github.libzeal.zeal.expression.lang.evaluation.Result;
@@ -15,13 +15,13 @@ import io.github.libzeal.zeal.expression.lang.evaluation.format.SimpleEvaluation
 public class Confirmation {
 
     static final String DEFAULT_MESSAGE = "Assertion failed";
-    private final AssertionExpressionEvaluator<AssertionFailedException, AssertionFailedException> evaluator;
+    private final AssertionExpressionEvaluator<AssertionFailedError, AssertionFailedError> evaluator;
 
     public Confirmation() {
         this.evaluator = new AssertionExpressionEvaluator<>(
             new SimpleEvaluationFormatter(),
-            AssertionFailedException::new,
-            AssertionFailedException::new
+            AssertionFailedError::new,
+            AssertionFailedError::new
         );
     }
 
@@ -52,7 +52,7 @@ public class Confirmation {
      *         <li>The supplied expression provides a {@code null} {@link Evaluation}</li>
      *         <li>The supplied expression provides a {@code null} evaluation {@link Result}</li>
      *     </ol>
-     * @throws AssertionFailedException
+     * @throws AssertionFailedError
      *     The supplied expression evaluates to false.
      */
     public <T> T confirm(final UnaryExpression<T> expression) {
@@ -78,7 +78,7 @@ public class Confirmation {
      *         <li>The supplied expression provides a {@code null} {@link Evaluation}</li>
      *         <li>The supplied expression provides a {@code null} evaluation {@link Result}</li>
      *     </ol>
-     * @throws AssertionFailedException
+     * @throws AssertionFailedError
      *     The supplied expression evaluates to false.
      */
     public <T> T confirm(final UnaryExpression<T> expression, final String message) {

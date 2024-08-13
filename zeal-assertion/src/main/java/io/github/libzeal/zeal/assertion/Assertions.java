@@ -1,6 +1,6 @@
 package io.github.libzeal.zeal.assertion;
 
-import io.github.libzeal.zeal.assertion.error.AssertionFailedException;
+import io.github.libzeal.zeal.assertion.error.AssertionFailedError;
 import io.github.libzeal.zeal.assertion.error.PostconditionFailedException;
 import io.github.libzeal.zeal.assertion.error.PreconditionFailedException;
 import io.github.libzeal.zeal.expression.lang.UnaryExpression;
@@ -91,7 +91,7 @@ public class Assertions {
      *         <li>The supplied expression provides a {@code null} {@link Evaluation}</li>
      *         <li>The supplied expression provides a {@code null} evaluation {@link Result}</li>
      *     </ol>
-     * @throws AssertionFailedException
+     * @throws AssertionFailedError
      *     The supplied expression evaluates to false.
      * @see Confirmation#confirm(UnaryExpression)
      */
@@ -118,7 +118,7 @@ public class Assertions {
      *         <li>The supplied expression provides a {@code null} {@link Evaluation}</li>
      *         <li>The supplied expression provides a {@code null} evaluation {@link Result}</li>
      *     </ol>
-     * @throws AssertionFailedException
+     * @throws AssertionFailedError
      *     The supplied expression evaluates to false.
      * @see Confirmation#confirm(UnaryExpression, String)
      */
