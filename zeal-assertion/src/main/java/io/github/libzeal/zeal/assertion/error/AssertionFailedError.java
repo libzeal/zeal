@@ -6,7 +6,7 @@ package io.github.libzeal.zeal.assertion.error;
  * @author Justin Albano
  * @since 0.2.0
  */
-public class AssertionFailedException extends IllegalStateException {
+public class AssertionFailedError extends AssertionError {
 
     /**
      * Creates a new exception.
@@ -14,7 +14,7 @@ public class AssertionFailedException extends IllegalStateException {
      * @param message
      *     The message for the exception.
      */
-    public AssertionFailedException(final String message) {
+    public AssertionFailedError(final String message) {
         super(message);
     }
 }
