@@ -45,13 +45,13 @@ require(expression);
 ```
 
 ## Goals
-1. **Simple**: Expression and evaluators clearly document developer's intent.
+1. **Simple**: Expressions and evaluators clearly document developer's intent.
 2. **Portable**: Written in Java 8, OSGi compliant, and under 100 KB
 3. **Independent**: No external dependencies
 4. **Extensible**: Provides expressions for common types, but makes creating new expressions easy
 
 ## The Basics
-Zeal is based a few main concepts:
+Zeal is based on a few main concepts:
 1. Evaluators
 2. Expressions
 
