@@ -3,7 +3,7 @@ package io.github.libzeal.zeal.expression.types.core.unary;
 import io.github.libzeal.zeal.expression.types.core.unary.test.MockEnum;
 
 @SuppressWarnings("java:S2187")
-class GeneralEnumExpressionTest extends EnumUnaryExpressionTest<MockEnum> {
+class GeneralEnumUnaryExpressionTest extends EnumUnaryExpressionTest<MockEnum> {
 
     @Override
     protected GeneralEnumUnaryExpression<MockEnum> expression(MockEnum value) {

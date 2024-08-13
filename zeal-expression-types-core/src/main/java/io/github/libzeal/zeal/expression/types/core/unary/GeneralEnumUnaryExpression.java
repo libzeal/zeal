@@ -9,7 +9,7 @@ package io.github.libzeal.zeal.expression.types.core.unary;
  * @author Justin Albano
  * @since 0.2.0
  */
-public final class GeneralEnumUnaryExpression<T extends Enum<T>> extends EnumExpression<T, GeneralEnumUnaryExpression<T>> {
+public final class GeneralEnumUnaryExpression<T extends Enum<T>> extends EnumUnaryExpression<T, GeneralEnumUnaryExpression<T>> {
 
     /**
      * Creates a new expression for the supplied subject.

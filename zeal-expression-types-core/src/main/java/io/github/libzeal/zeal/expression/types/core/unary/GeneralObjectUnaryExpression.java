@@ -9,7 +9,7 @@ package io.github.libzeal.zeal.expression.types.core.unary;
  * @author Justin Albano
  * @since 0.2.0
  */
-public final class GeneralObjectExpression<T> extends ObjectUnaryExpression<T, GeneralObjectExpression<T>> {
+public final class GeneralObjectUnaryExpression<T> extends ObjectUnaryExpression<T, GeneralObjectUnaryExpression<T>> {
 
     /**
      * Creates a new expression for the supplied subject.
@@ -17,7 +17,7 @@ public final class GeneralObjectExpression<T> extends ObjectUnaryExpression<T, G
      * @param subject
      *     The subject of the expression.
      */
-    public GeneralObjectExpression(T subject) {
+    public GeneralObjectUnaryExpression(T subject) {
         super(subject);
     }
 }

@@ -17,7 +17,7 @@ package io.github.libzeal.zeal.expression.types.core.unary;
  * @see Enum
  * @since 0.2.0
  */
-public abstract class EnumExpression<T extends Enum<T>, B extends EnumExpression<T, B>>
+public abstract class EnumUnaryExpression<T extends Enum<T>, B extends EnumUnaryExpression<T, B>>
     extends ObjectUnaryExpression<T, B> {
 
     /**
@@ -26,7 +26,7 @@ public abstract class EnumExpression<T extends Enum<T>, B extends EnumExpression
      * @param subject
      *     The subject of the expression.
      */
-    protected EnumExpression(T subject) {
+    protected EnumUnaryExpression(T subject) {
         this(subject, "Enum evaluation");
     }
 
@@ -38,7 +38,7 @@ public abstract class EnumExpression<T extends Enum<T>, B extends EnumExpression
      * @param name
      *     The name of the expression.
      */
-    protected EnumExpression(T subject, String name) {
+    protected EnumUnaryExpression(T subject, String name) {
         super(subject, name);
     }
 

@@ -1,7 +1,7 @@
 package io.github.libzeal.zeal.expression;
 
 import io.github.libzeal.zeal.expression.types.core.unary.GeneralEnumUnaryExpression;
-import io.github.libzeal.zeal.expression.types.core.unary.GeneralObjectExpression;
+import io.github.libzeal.zeal.expression.types.core.unary.GeneralObjectUnaryExpression;
 import io.github.libzeal.zeal.expression.types.core.unary.StringUnaryExpression;
 import io.github.libzeal.zeal.expression.types.core.unary.boxed.*;
 
@@ -26,8 +26,8 @@ public class UnaryExpressions {
      *
      * @return An expression that wraps the supplied value.
      */
-    public static <T> GeneralObjectExpression<T> value(final T value) {
-        return new GeneralObjectExpression<>(value);
+    public static <T> GeneralObjectUnaryExpression<T> value(final T value) {
+        return new GeneralObjectUnaryExpression<>(value);
     }
 
     /**

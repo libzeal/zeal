@@ -11,11 +11,14 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.util.Comparator;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static io.github.libzeal.zeal.expression.lang.evaluation.Result.*;
+import static io.github.libzeal.zeal.expression.types.core.unary.ObjectUnaryExpression.CANNOT_COMPARE_USING_NULL_COMPARATOR;
+import static io.github.libzeal.zeal.expression.types.core.unary.ObjectUnaryExpression.stringify;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -52,6 +55,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public abstract class ObjectUnaryExpressionTest<T, E extends ObjectUnaryExpression<T, E>> {
 
+    private final Comparator<T> equalComparator = (a, b) -> 0;
+    private final Comparator<T> lessThanComparator = (a, b) -> -1;
+    private final Comparator<T> greaterThanComparator = (a, b) -> 1;
     private final SimpleCondition<T> alwaysTrueCondition = new SimpleCondition<>("Always true", s -> true);
     private final SimpleCondition<T> alwaysFalseCondition = new SimpleCondition<>("Always false", s -> false);
 
@@ -140,7 +146,9 @@ public abstract class ObjectUnaryExpressionTest<T, E extends ObjectUnaryExpressi
         isTestCases(builder);
         isNotTestCases(builder);
         isEqualToTestCases(builder);
+        isEqualToComparatorTestCases(builder);
         isNotEqualToTestCases(builder);
+        isNotEqualToComparatorTestCases(builder);
         hashCodeIsTestCases(builder);
         hashCodeIsNotTestCases(builder);
         toStringIsTestCases(builder);
@@ -369,8 +377,8 @@ public abstract class ObjectUnaryExpressionTest<T, E extends ObjectUnaryExpressi
 
     private void isEqualToTestCases(ExpressionTestCaseBuilder<T, E> builder) {
 
-        T value1 = exampleValue1();
-        T value2 = exampleValue2();
+        final T value1 = exampleValue1();
+        final T value2 = exampleValue2();
 
         builder.newTest(ObjectUnaryExpression::isEqualTo)
                 .value(value1)
@@ -395,10 +403,82 @@ public abstract class ObjectUnaryExpressionTest<T, E extends ObjectUnaryExpressi
                 .addTest();
     }
 
+    private void isEqualToComparatorTestCases(ExpressionTestCaseBuilder<T, E> builder) {
+
+        final T value1 = exampleValue1();
+        final T value2 = exampleValue2();
+
+        builder.newTest((e, s) -> e.isEqualTo(value1, null))
+                .value(value2)
+                .expectedState(FAILED)
+                .expectedName(value -> "isEqualTo[" + value1 + ", comparator: (null)]")
+                .expectedExpected((expression, value) -> value1.toString())
+                .expectedActual((expression, value) -> value.toString())
+                .expectedHint(CANNOT_COMPARE_USING_NULL_COMPARATOR)
+                .addTest()
+            .newTest((e, s) -> e.isEqualTo(value1, equalComparator))
+                .value(value2)
+                .expectedState(PASSED)
+                .expectedName(value -> "isEqualTo[" + value1 + ", comparator: " + stringify(equalComparator) + "]")
+                .expectedExpected((expression, value) -> value1.toString())
+                .expectedActual((expression, value) -> value.toString())
+                .addTest()
+            .newTest((e, s) -> e.isEqualTo(value1, lessThanComparator))
+                .value(value2)
+                .expectedState(FAILED)
+                .expectedName(value -> "isEqualTo[" + value1 + ", comparator: " + stringify(lessThanComparator) + "]")
+                .expectedExpected((expression, value) -> value1.toString())
+                .expectedActual((expression, value) -> value.toString())
+                .addTest()
+            .newTest((e, s) -> e.isEqualTo(value1, greaterThanComparator))
+                .value(value2)
+                .expectedState(FAILED)
+                .expectedName(value -> "isEqualTo[" + value1 + ", comparator: " + stringify(greaterThanComparator) + "]")
+                .expectedExpected((expression, value) -> value1.toString())
+                .expectedActual((expression, value) -> value.toString())
+                .addTest();
+    }
+
+    private void isNotEqualToComparatorTestCases(ExpressionTestCaseBuilder<T, E> builder) {
+
+        final T value1 = exampleValue1();
+        final T value2 = exampleValue2();
+
+        builder.newTest((e, s) -> e.isNotEqualTo(value1, null))
+                .value(value2)
+                .expectedState(FAILED)
+                .expectedName(value -> "isNotEqualTo[" + value1 + ", comparator: (null)]")
+                .expectedExpected((expression, value) -> value1.toString())
+                .expectedActual((expression, value) -> value.toString())
+                .expectedHint(CANNOT_COMPARE_USING_NULL_COMPARATOR)
+                .addTest()
+            .newTest((e, s) -> e.isNotEqualTo(value1, equalComparator))
+                .value(value2)
+                .expectedState(FAILED)
+                .expectedName(value -> "isNotEqualTo[" + value1 + ", comparator: " + stringify(equalComparator) + "]")
+                .expectedExpected((expression, value) -> value1.toString())
+                .expectedActual((expression, value) -> value.toString())
+                .addTest()
+            .newTest((e, s) -> e.isNotEqualTo(value1, lessThanComparator))
+                .value(value2)
+                .expectedState(PASSED)
+                .expectedName(value -> "isNotEqualTo[" + value1 + ", comparator: " + stringify(lessThanComparator) + "]")
+                .expectedExpected((expression, value) -> value1.toString())
+                .expectedActual((expression, value) -> value.toString())
+                .addTest()
+            .newTest((e, s) -> e.isNotEqualTo(value1, greaterThanComparator))
+                .value(value2)
+                .expectedState(PASSED)
+                .expectedName(value -> "isNotEqualTo[" + value1 + ", comparator: " + stringify(greaterThanComparator) + "]")
+                .expectedExpected((expression, value) -> value1.toString())
+                .expectedActual((expression, value) -> value.toString())
+                .addTest();
+    }
+
     private void isNotEqualToTestCases(ExpressionTestCaseBuilder<T, E> builder) {
 
-        T value1 = exampleValue1();
-        T value2 = exampleValue2();
+        final T value1 = exampleValue1();
+        final T value2 = exampleValue2();
 
         builder.newTest(ObjectUnaryExpression::isNotEqualTo)
                 .value(value1)
@@ -425,8 +505,8 @@ public abstract class ObjectUnaryExpressionTest<T, E extends ObjectUnaryExpressi
 
     private void hashCodeIsTestCases(ExpressionTestCaseBuilder<T, E> builder) {
 
-        T value1 = exampleValue1();
-        T value2 = exampleValue2();
+        final T value1 = exampleValue1();
+        final T value2 = exampleValue2();
 
         builder.newTest((expression, value) -> expression.hashCodeIs(value1.hashCode()))
                 .value(value1)
@@ -446,8 +526,8 @@ public abstract class ObjectUnaryExpressionTest<T, E extends ObjectUnaryExpressi
 
     private void hashCodeIsNotTestCases(ExpressionTestCaseBuilder<T, E> builder) {
 
-        T value1 = exampleValue1();
-        T value2 = exampleValue2();
+        final T value1 = exampleValue1();
+        final T value2 = exampleValue2();
 
         builder.newTest((expression, value) -> expression.hashCodeIsNot(value1.hashCode()))
                 .value(value1)
@@ -467,8 +547,8 @@ public abstract class ObjectUnaryExpressionTest<T, E extends ObjectUnaryExpressi
 
     private void toStringIsTestCases(ExpressionTestCaseBuilder<T, E> builder) {
 
-        T value1 = exampleValue1();
-        T value2 = exampleValue2();
+        final T value1 = exampleValue1();
+        final T value2 = exampleValue2();
 
         builder.newTest((expression, value) -> expression.toStringIs(value1.toString()))
                 .value(value1)
@@ -488,8 +568,8 @@ public abstract class ObjectUnaryExpressionTest<T, E extends ObjectUnaryExpressi
 
     private void toStringIsNotTestCases(ExpressionTestCaseBuilder<T, E> builder) {
 
-        T value1 = exampleValue1();
-        T value2 = exampleValue2();
+        final T value1 = exampleValue1();
+        final T value2 = exampleValue2();
 
         builder.newTest((expression, value) -> expression.toStringIsNot(value1.toString()))
                 .value(value1)
@@ -509,7 +589,7 @@ public abstract class ObjectUnaryExpressionTest<T, E extends ObjectUnaryExpressi
 
     private void satisfiesPredicateTestCases(ExpressionTestCaseBuilder<T, E> builder) {
 
-        T value1 = exampleValue1();
+        final T value1 = exampleValue1();
 
         builder.newTest((expression, value) -> expression.satisfies(o -> true))
                 .value(value1)
@@ -529,7 +609,7 @@ public abstract class ObjectUnaryExpressionTest<T, E extends ObjectUnaryExpressi
 
     private void doesNotSatisfyPredicateTestCases(ExpressionTestCaseBuilder<T, E> builder) {
 
-        T value1 = exampleValue1();
+        final T value1 = exampleValue1();
 
         builder.newTest((expression, value) -> expression.doesNotSatisfy(o -> true))
                 .value(value1)
@@ -549,7 +629,7 @@ public abstract class ObjectUnaryExpressionTest<T, E extends ObjectUnaryExpressi
 
     private void satisfiesConditionTestCases(ExpressionTestCaseBuilder<T, E> builder) {
 
-        T value1 = exampleValue1();
+        final T value1 = exampleValue1();
 
         builder.newTest((expression, value) -> expression.satisfies(alwaysTrueCondition))
                 .value(value1)
@@ -569,7 +649,7 @@ public abstract class ObjectUnaryExpressionTest<T, E extends ObjectUnaryExpressi
 
     private void doesNotSatisfyConditionTestCases(ExpressionTestCaseBuilder<T, E> builder) {
 
-        T value1 = exampleValue1();
+        final T value1 = exampleValue1();
 
         builder.newTest((expression, value) -> expression.doesNotSatisfy(alwaysTrueCondition))
                 .value(value1)

@@ -7,6 +7,7 @@ import io.github.libzeal.zeal.expression.lang.predicate.ValueSupplier;
 import io.github.libzeal.zeal.expression.lang.predicate.unary.ConjunctiveUnaryPredicate;
 import io.github.libzeal.zeal.expression.lang.predicate.unary.UnaryPredicate;
 
+import java.util.Comparator;
 import java.util.Objects;
 import java.util.function.Predicate;
 
@@ -47,6 +48,7 @@ public class ObjectUnaryExpression<T, E extends ObjectUnaryExpression<T, E>> imp
     private static final String ALWAYS_FAIL_CANNOT_COMPARE_TO_NULL_TYPE = "Always fail: cannot compare to (null) type";
     private static final String EVALUATION_WILL_ALWAYS_FAIL_WHEN_COMPARED_TO_A_NULL_TYPE = "Evaluation will always " +
         "fail when compared to a (null) type";
+    static final String CANNOT_COMPARE_USING_NULL_COMPARATOR = "Cannot compare using null comparator";
 
     private final T subject;
     private final ConjunctiveUnaryPredicate<T> children;
@@ -135,8 +137,8 @@ public class ObjectUnaryExpression<T, E extends ObjectUnaryExpression<T, E>> imp
     /**
      * Creates a builder for a new evaluation, where the supplied test may receive a {@code null} subject.
      * <p/>
-     * For example, if the supplied test is {code}(subject, passed) -> subject.toString().equals("hi")</code>, the value of {@code o} may be
-     * {@code null} and should be handled accordingly.
+     * For example, if the supplied test is {code}(subject, passed) -> subject.toString().equals("hi")</code>, the value
+     * of {@code o} may be {@code null} and should be handled accordingly.
      *
      * @param test
      *     The predicate (test) for the evaluation. The subject supplied to the predicate <em>may be {@code null}</em>.
@@ -260,8 +262,8 @@ public class ObjectUnaryExpression<T, E extends ObjectUnaryExpression<T, E>> imp
      * @implNote This check is equivalent to the following statement, where {@code type} is the supplied type and
      *     {@code subject} is the subject of the expression:
      *     <pre><code>
-     *                     type.isAssignableFrom(subject.getClass())
-     *                 </code></pre>
+     *                                     type.isAssignableFrom(subject.getClass())
+     *                                 </code></pre>
      * @see Class#isAssignableFrom(Class)
      */
     public E isInstanceOf(final Class<?> type) {
@@ -295,8 +297,8 @@ public class ObjectUnaryExpression<T, E extends ObjectUnaryExpression<T, E>> imp
      * @implNote This check is equivalent to the following statement, where {@code type} is the supplied type and
      *     {@code subject} is the subject of the expression:
      *     <pre><code>
-     *                     !type.isAssignableFrom(subject.getClass())
-     *                 </code></pre>
+     *                                     !type.isAssignableFrom(subject.getClass())
+     *                                 </code></pre>
      * @see Class#isAssignableFrom(Class)
      */
     public E isNotInstanceOf(final Class<?> type) {
@@ -331,8 +333,8 @@ public class ObjectUnaryExpression<T, E extends ObjectUnaryExpression<T, E>> imp
      * @implNote This check is equivalent to the following statement, where {@code other} is the supplied object and
      *     {@code subject} is the subject of the expression:
      *     <pre><code>
-     *                     subject == object
-     *                 </code></pre>
+     *                                     subject == object
+     *                                 </code></pre>
      */
     public E is(final Object other) {
         return newNullablePredicate(s -> s == other)
@@ -355,8 +357,8 @@ public class ObjectUnaryExpression<T, E extends ObjectUnaryExpression<T, E>> imp
      * @implNote This check is equivalent to the following statement, where {@code other} is the supplied object and
      *     {@code subject} is the subject of the expression:
      *     <pre><code>
-     *                     subject != object
-     *                 </code></pre>
+     *                                     subject != object
+     *                                 </code></pre>
      */
     public E isNot(final Object other) {
         return newNullablePredicate(s -> s != other)
@@ -379,8 +381,8 @@ public class ObjectUnaryExpression<T, E extends ObjectUnaryExpression<T, E>> imp
      * @implNote This check is equivalent to the following statement, where {@code other} is the supplied object and
      *     {@code subject} is the subject of the expression:
      *     <pre><code>
-     *                     Objects.equals(subject, other);
-     *                 </code></pre>
+     *                                     Objects.equals(subject, other);
+     *                                 </code></pre>
      * @see Objects#equals(Object, Object)
      */
     public E isEqualTo(final Object other) {
@@ -389,6 +391,40 @@ public class ObjectUnaryExpression<T, E extends ObjectUnaryExpression<T, E>> imp
             .expected(stringify(other))
             .hint("Subject should be equal to " + other + " (using subject.equals(" + other + "))")
             .append();
+    }
+
+    /**
+     * Adds a predicate to the expression that checks if the subject is equal to the supplied object using the supplied
+     * comparator.
+     * <p/>
+     * This evaluation will fail if the supplied comparator is {@code null}. If the comparator is not {@code null}, this
+     * evaluation will pass if the subject and supplied object are both {@code null}.
+     *
+     * @param other
+     *     The object to test against.
+     * @param comparator
+     *     The {@link Comparator} to use when checking the equality of the supplied object and the subject.
+     *
+     * @return This expression (fluent interface).
+     *
+     * @see Comparator#compare(Object, Object)
+     */
+    public E isEqualTo(final T other, final Comparator<T> comparator) {
+        return comparableEquals(other, comparator)
+            .name("isEqualTo[" + stringify(other) + ", comparator: " + stringify(comparator) + "]")
+            .expected(stringify(other))
+            .append();
+    }
+
+    private UnaryPredicateBuilder<T, E> comparableEquals(final T other, final Comparator<T> comparator) {
+
+        if (comparator == null) {
+            return newNullablePredicate(s -> false)
+                .hint(CANNOT_COMPARE_USING_NULL_COMPARATOR);
+        }
+        else {
+            return newNullablePredicate(s -> comparator.compare(s, other) == 0);
+        }
     }
 
     /**
@@ -404,8 +440,8 @@ public class ObjectUnaryExpression<T, E extends ObjectUnaryExpression<T, E>> imp
      * @implNote This check is equivalent to the following statement, where {@code other} is the supplied object and
      *     {@code subject} is the subject of the expression:
      *     <pre><code>
-     *                     !Objects.equals(subject, other);
-     *                 </code></pre>
+     *                                     !Objects.equals(subject, other);
+     *                                 </code></pre>
      * @see Objects#equals(Object, Object)
      */
     public E isNotEqualTo(final Object other) {
@@ -414,6 +450,40 @@ public class ObjectUnaryExpression<T, E extends ObjectUnaryExpression<T, E>> imp
             .expected("not[" + stringify(other) + "]")
             .hint("Subject should be equal to " + other + " (using !subject.equals(" + other + "))")
             .append();
+    }
+
+    /**
+     * Adds a predicate to the expression that checks if the subject is not equal to the supplied object using the
+     * supplied comparator.
+     * <p/>
+     * This evaluation will fail if the supplied comparator is {@code null}. If the comparator is not {@code null}, this
+     * evaluation will fail if the subject and supplied object are both {@code null}.
+     *
+     * @param other
+     *     The object to test against.
+     * @param comparator
+     *     The {@link Comparator} to use when checking the equality of the supplied object and the subject.
+     *
+     * @return This expression (fluent interface).
+     *
+     * @see Comparator#compare(Object, Object)
+     */
+    public E isNotEqualTo(final T other, final Comparator<T> comparator) {
+        return comparableNotEquals(other, comparator)
+            .name("isNotEqualTo[" + stringify(other) + ", comparator: " + stringify(comparator) + "]")
+            .expected(stringify(other))
+            .append();
+    }
+
+    private UnaryPredicateBuilder<T, E> comparableNotEquals(final T other, final Comparator<T> comparator) {
+
+        if (comparator == null) {
+            return newNullablePredicate(s -> false)
+                .hint(CANNOT_COMPARE_USING_NULL_COMPARATOR);
+        }
+        else {
+            return newNullablePredicate(s -> comparator.compare(s, other) != 0);
+        }
     }
 
     /**
@@ -428,8 +498,8 @@ public class ObjectUnaryExpression<T, E extends ObjectUnaryExpression<T, E>> imp
      * @implNote This check is equivalent to the following statement, where {@code hashCode} is the supplied hash
      *     code and {@code subject} is the subject of the expression:
      *     <pre><code>
-     *                     subject.hashCode() == hashCode
-     *                 </code></pre>
+     *                                     subject.hashCode() == hashCode
+     *                                 </code></pre>
      */
     public E hashCodeIs(final int hashCode) {
         return newPredicate(s -> s.hashCode() == hashCode)
@@ -455,8 +525,8 @@ public class ObjectUnaryExpression<T, E extends ObjectUnaryExpression<T, E>> imp
      * @implNote This check is equivalent to the following statement, where {@code hashCode} is the supplied hash
      *     code and {@code subject} is the subject of the expression:
      *     <pre><code>
-     *                     subject.hashCode() != hashCode
-     *                 </code></pre>
+     *                                     subject.hashCode() != hashCode
+     *                                 </code></pre>
      */
     public E hashCodeIsNot(final int hashCode) {
         return newPredicate(s -> s.hashCode() != hashCode)
@@ -478,8 +548,8 @@ public class ObjectUnaryExpression<T, E extends ObjectUnaryExpression<T, E>> imp
      * @implNote This check is equivalent to the following statement, where {@code expected} is the supplied string
      *     and {@code subject} is the subject of the expression:
      *     <pre><code>
-     *                     subject.toString().equals(expected)
-     *                 </code></pre>
+     *                                     subject.toString().equals(expected)
+     *                                 </code></pre>
      */
     public E toStringIs(final String expected) {
         return newPredicate(s -> s.toString().equals(expected))
@@ -501,8 +571,8 @@ public class ObjectUnaryExpression<T, E extends ObjectUnaryExpression<T, E>> imp
      * @implNote This check is equivalent to the following statement, where {@code expected} is the supplied string
      *     and {@code subject} is the subject of the expression:
      *     <pre><code>
-     *                     !subject.toString().equals(expected)
-     *                 </code></pre>
+     *                                     !subject.toString().equals(expected)
+     *                                 </code></pre>
      */
     public E toStringIsNot(final String expected) {
         return newPredicate(s -> !s.toString().equals(expected))
