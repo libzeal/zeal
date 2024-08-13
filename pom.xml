@@ -4,7 +4,7 @@
 
     <groupId>io.github.libzeal</groupId>
     <artifactId>zeal-parent</artifactId>
-    <version>0.3.0-SNAPSHOT</version>
+    <version>0.2.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>zeal</name>
     <description>Assertion library for Java</description>
