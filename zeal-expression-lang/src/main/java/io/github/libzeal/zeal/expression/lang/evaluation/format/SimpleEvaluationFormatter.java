@@ -89,11 +89,11 @@ public class SimpleEvaluationFormatter implements EvaluationFormatter {
             .append("\n")
             .append(indent(indent))
             .append("- Actual   : ")
-            .append(rationale.actual())
-            .append("\n");
+            .append(rationale.actual());
 
         rationale.hint().ifPresent(hint ->
-            builder.append(indent(indent))
+            builder.append("\n")
+                .append(indent(indent))
                 .append("- Hint     : ")
                 .append(hint)
         );

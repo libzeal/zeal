@@ -34,7 +34,7 @@ public class BoxedFloatUnaryExpression extends BoxedNumberUnaryExpression<Float,
      *     <pre><code>abs(subject - value) <= delta</code></pre>
      */
     public BoxedFloatUnaryExpression isEqualTo(final Float value, final Float delta) {
-        return newPredicate(d -> Math.abs(d - value) <= delta)
+        return newExpression(d -> Math.abs(d - value) <= delta)
             .name("isEqualTo[" + value + " +/- " + delta + "]")
             .expected(value + " +/- " + delta)
             .append();
@@ -46,7 +46,7 @@ public class BoxedFloatUnaryExpression extends BoxedNumberUnaryExpression<Float,
      * @return This expression (fluent interface).
      */
     public BoxedFloatUnaryExpression isFinite() {
-        return newPredicate(Float::isFinite)
+        return newExpression(Float::isFinite)
             .name("isFinite")
             .expected("finite")
             .append();
@@ -58,7 +58,7 @@ public class BoxedFloatUnaryExpression extends BoxedNumberUnaryExpression<Float,
      * @return This expression (fluent interface).
      */
     public BoxedFloatUnaryExpression isInfinite() {
-        return newPredicate(l -> l.isInfinite())
+        return newExpression(l -> l.isInfinite())
             .name("isInfinite")
             .expected("infinite")
             .append();
@@ -70,7 +70,7 @@ public class BoxedFloatUnaryExpression extends BoxedNumberUnaryExpression<Float,
      * @return This expression (fluent interface).
      */
     public BoxedFloatUnaryExpression isNaN() {
-        return newPredicate(l -> l.isNaN())
+        return newExpression(l -> l.isNaN())
             .name("isNaN")
             .expected("NaN")
             .append();

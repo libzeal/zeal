@@ -36,7 +36,7 @@ public class BoxedCharacterUnaryExpression extends ObjectUnaryExpression<Charact
      * @see Character#isLowerCase(char)
      */
     public BoxedCharacterUnaryExpression isLowerCase() {
-        return newPredicate(Character::isLowerCase)
+        return newExpression(Character::isLowerCase)
             .name(IS_LOWER_CASE)
             .expected(IS_LOWER_CASE)
             .append();
@@ -50,7 +50,7 @@ public class BoxedCharacterUnaryExpression extends ObjectUnaryExpression<Charact
      * @see Character#isUpperCase(char)
      */
     public BoxedCharacterUnaryExpression isUpperCase() {
-        return newPredicate(Character::isUpperCase)
+        return newExpression(Character::isUpperCase)
             .name(IS_UPPER_CASE)
             .expected(IS_UPPER_CASE)
             .append();
@@ -64,7 +64,7 @@ public class BoxedCharacterUnaryExpression extends ObjectUnaryExpression<Charact
      * @see Character#isLetter(char)
      */
     public BoxedCharacterUnaryExpression isLetter() {
-        return newPredicate(Character::isLetter)
+        return newExpression(Character::isLetter)
             .name(IS_LETTER)
             .expected(IS_LETTER)
             .append();
@@ -78,7 +78,7 @@ public class BoxedCharacterUnaryExpression extends ObjectUnaryExpression<Charact
      * @see Character#isLetter(char)
      */
     public BoxedCharacterUnaryExpression isNotLetter() {
-        return newPredicate(s -> !Character.isLetter(s))
+        return newExpression(s -> !Character.isLetter(s))
             .name("isNotLetter")
             .expected("not[" + IS_LETTER + "]")
             .append();
@@ -92,7 +92,7 @@ public class BoxedCharacterUnaryExpression extends ObjectUnaryExpression<Charact
      * @see Character#isDigit(char)
      */
     public BoxedCharacterUnaryExpression isDigit() {
-        return newPredicate(Character::isDigit)
+        return newExpression(Character::isDigit)
             .name(IS_DIGIT)
             .expected(IS_DIGIT)
             .append();
@@ -106,7 +106,7 @@ public class BoxedCharacterUnaryExpression extends ObjectUnaryExpression<Charact
      * @see Character#isDigit(char)
      */
     public BoxedCharacterUnaryExpression isNotDigit() {
-        return newPredicate(s -> !Character.isDigit(s))
+        return newExpression(s -> !Character.isDigit(s))
             .name("isNotDigit")
             .expected("not[" + IS_DIGIT + "]")
             .append();
@@ -120,7 +120,7 @@ public class BoxedCharacterUnaryExpression extends ObjectUnaryExpression<Charact
      * @see Character#isLetterOrDigit(char)
      */
     public BoxedCharacterUnaryExpression isLetterOrDigit() {
-        return newPredicate(Character::isLetterOrDigit)
+        return newExpression(Character::isLetterOrDigit)
             .name(IS_LETTER_OR_DIGIT)
             .expected(IS_LETTER_OR_DIGIT)
             .append();
@@ -134,7 +134,7 @@ public class BoxedCharacterUnaryExpression extends ObjectUnaryExpression<Charact
      * @see Character#isLetterOrDigit(char)
      */
     public BoxedCharacterUnaryExpression isNotLetterOrDigit() {
-        return newPredicate(s -> !Character.isLetterOrDigit(s))
+        return newExpression(s -> !Character.isLetterOrDigit(s))
             .name("isNotLetterOrDigit")
             .expected("not[" + IS_LETTER_OR_DIGIT + "]")
             .append();
@@ -148,7 +148,7 @@ public class BoxedCharacterUnaryExpression extends ObjectUnaryExpression<Charact
      * @see Character#isWhitespace(char)
      */
     public BoxedCharacterUnaryExpression isWhitespace() {
-        return newPredicate(Character::isWhitespace)
+        return newExpression(Character::isWhitespace)
             .name(IS_WHITESPACE)
             .expected(IS_WHITESPACE)
             .append();
@@ -162,7 +162,7 @@ public class BoxedCharacterUnaryExpression extends ObjectUnaryExpression<Charact
      * @see Character#isWhitespace(char)
      */
     public BoxedCharacterUnaryExpression isNotWhitespace() {
-        return newPredicate(s -> !Character.isWhitespace(s))
+        return newExpression(s -> !Character.isWhitespace(s))
             .name("isNotWhitespace")
             .expected("not[" + IS_WHITESPACE + "]")
             .append();

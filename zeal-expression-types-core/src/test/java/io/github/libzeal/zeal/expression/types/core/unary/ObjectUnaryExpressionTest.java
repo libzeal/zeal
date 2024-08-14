@@ -1,8 +1,8 @@
 package io.github.libzeal.zeal.expression.types.core.unary;
 
-import io.github.libzeal.zeal.expression.lang.condition.SimpleCondition;
 import io.github.libzeal.zeal.expression.lang.evaluation.Evaluation;
 import io.github.libzeal.zeal.expression.lang.evaluation.Result;
+import io.github.libzeal.zeal.expression.lang.util.Formatter;
 import io.github.libzeal.zeal.expression.types.core.unary.test.EvaluatedExpressionAssertion;
 import io.github.libzeal.zeal.expression.types.core.unary.test.ExpressionTestCaseBuilder;
 import org.junit.jupiter.api.Test;
@@ -18,7 +18,6 @@ import java.util.stream.Stream;
 
 import static io.github.libzeal.zeal.expression.lang.evaluation.Result.*;
 import static io.github.libzeal.zeal.expression.types.core.unary.ObjectUnaryExpression.CANNOT_COMPARE_USING_NULL_COMPARATOR;
-import static io.github.libzeal.zeal.expression.types.core.unary.ObjectUnaryExpression.stringify;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -58,8 +57,6 @@ public abstract class ObjectUnaryExpressionTest<T, E extends ObjectUnaryExpressi
     private final Comparator<T> equalComparator = (a, b) -> 0;
     private final Comparator<T> lessThanComparator = (a, b) -> -1;
     private final Comparator<T> greaterThanComparator = (a, b) -> 1;
-    private final SimpleCondition<T> alwaysTrueCondition = new SimpleCondition<>("Always true", s -> true);
-    private final SimpleCondition<T> alwaysFalseCondition = new SimpleCondition<>("Always false", s -> false);
 
     protected abstract E expression(T value);
 
@@ -155,8 +152,6 @@ public abstract class ObjectUnaryExpressionTest<T, E extends ObjectUnaryExpressi
         toStringIsNotTestCases(builder);
         satisfiesPredicateTestCases(builder);
         doesNotSatisfyPredicateTestCases(builder);
-        satisfiesConditionTestCases(builder);
-        doesNotSatisfyConditionTestCases(builder);
 
         extendTestCases(builder);
 
@@ -338,7 +333,7 @@ public abstract class ObjectUnaryExpressionTest<T, E extends ObjectUnaryExpressi
                 .expectedExpected(value1.toString())
                 .expectedActual((expression, value) -> value.toString())
                 .addTest()
-            .newTest((expression, value) -> expression.is(null))
+            .newTest((expression, value) -> expression.is((T) null))
                 .value(null)
                 .expectedState(PASSED)
                 .expectedName("is[(null)]")
@@ -419,21 +414,29 @@ public abstract class ObjectUnaryExpressionTest<T, E extends ObjectUnaryExpressi
             .newTest((e, s) -> e.isEqualTo(value1, equalComparator))
                 .value(value2)
                 .expectedState(PASSED)
-                .expectedName(value -> "isEqualTo[" + value1 + ", comparator: " + stringify(equalComparator) + "]")
+                .expectedName(value -> {
+                    return "isEqualTo[" + value1 + ", comparator: " + Formatter.stringify(equalComparator) + "]";
+                })
                 .expectedExpected((expression, value) -> value1.toString())
                 .expectedActual((expression, value) -> value.toString())
                 .addTest()
             .newTest((e, s) -> e.isEqualTo(value1, lessThanComparator))
                 .value(value2)
                 .expectedState(FAILED)
-                .expectedName(value -> "isEqualTo[" + value1 + ", comparator: " + stringify(lessThanComparator) + "]")
+                .expectedName(value -> {
+                    String result;
+                    result = Formatter.stringify(lessThanComparator);
+                    return "isEqualTo[" + value1 + ", comparator: " + result + "]";
+                })
                 .expectedExpected((expression, value) -> value1.toString())
                 .expectedActual((expression, value) -> value.toString())
                 .addTest()
             .newTest((e, s) -> e.isEqualTo(value1, greaterThanComparator))
                 .value(value2)
                 .expectedState(FAILED)
-                .expectedName(value -> "isEqualTo[" + value1 + ", comparator: " + stringify(greaterThanComparator) + "]")
+                .expectedName(value -> {
+                    return "isEqualTo[" + value1 + ", comparator: " + Formatter.stringify(greaterThanComparator) + "]";
+                })
                 .expectedExpected((expression, value) -> value1.toString())
                 .expectedActual((expression, value) -> value.toString())
                 .addTest();
@@ -455,21 +458,27 @@ public abstract class ObjectUnaryExpressionTest<T, E extends ObjectUnaryExpressi
             .newTest((e, s) -> e.isNotEqualTo(value1, equalComparator))
                 .value(value2)
                 .expectedState(FAILED)
-                .expectedName(value -> "isNotEqualTo[" + value1 + ", comparator: " + stringify(equalComparator) + "]")
+                .expectedName(value -> {
+                    return "isNotEqualTo[" + value1 + ", comparator: " + Formatter.stringify(equalComparator) + "]";
+                })
                 .expectedExpected((expression, value) -> value1.toString())
                 .expectedActual((expression, value) -> value.toString())
                 .addTest()
             .newTest((e, s) -> e.isNotEqualTo(value1, lessThanComparator))
                 .value(value2)
                 .expectedState(PASSED)
-                .expectedName(value -> "isNotEqualTo[" + value1 + ", comparator: " + stringify(lessThanComparator) + "]")
+                .expectedName(value -> {
+                    return "isNotEqualTo[" + value1 + ", comparator: " + Formatter.stringify(lessThanComparator) + "]";
+                })
                 .expectedExpected((expression, value) -> value1.toString())
                 .expectedActual((expression, value) -> value.toString())
                 .addTest()
             .newTest((e, s) -> e.isNotEqualTo(value1, greaterThanComparator))
                 .value(value2)
                 .expectedState(PASSED)
-                .expectedName(value -> "isNotEqualTo[" + value1 + ", comparator: " + stringify(greaterThanComparator) + "]")
+                .expectedName(value -> {
+                    return "isNotEqualTo[" + value1 + ", comparator: " + Formatter.stringify(greaterThanComparator) + "]";
+                })
                 .expectedExpected((expression, value) -> value1.toString())
                 .expectedActual((expression, value) -> value.toString())
                 .addTest();
@@ -624,46 +633,6 @@ public abstract class ObjectUnaryExpressionTest<T, E extends ObjectUnaryExpressi
                 .expectedName("not[predicate]")
                 .expectedExpected("Predicate unsatisfied")
                 .expectedActual("Predicate unsatisfied")
-                .addTest();
-    }
-
-    private void satisfiesConditionTestCases(ExpressionTestCaseBuilder<T, E> builder) {
-
-        final T value1 = exampleValue1();
-
-        builder.newTest((expression, value) -> expression.satisfies(alwaysTrueCondition))
-                .value(value1)
-                .expectedState(PASSED)
-                .expectedName("condition: " + alwaysTrueCondition.name())
-                .expectedExpected("Condition satisfied")
-                .expectedActual("Condition satisfied")
-                .addTest()
-            .newTest((expression, value) -> expression.satisfies(alwaysFalseCondition))
-                .value(value1)
-                .expectedState(FAILED)
-                .expectedName("condition: " + alwaysFalseCondition.name())
-                .expectedExpected("Condition satisfied")
-                .expectedActual("Condition unsatisfied")
-                .addTest();
-    }
-
-    private void doesNotSatisfyConditionTestCases(ExpressionTestCaseBuilder<T, E> builder) {
-
-        final T value1 = exampleValue1();
-
-        builder.newTest((expression, value) -> expression.doesNotSatisfy(alwaysTrueCondition))
-                .value(value1)
-                .expectedState(FAILED)
-                .expectedName("not[condition: " + alwaysTrueCondition.name() + "]")
-                .expectedExpected("Condition unsatisfied")
-                .expectedActual("Condition satisfied")
-                .addTest()
-            .newTest((expression, value) -> expression.doesNotSatisfy(alwaysFalseCondition))
-                .value(value1)
-                .expectedState(PASSED)
-                .expectedName("not[condition: " + alwaysFalseCondition.name() + "]")
-                .expectedExpected("Condition unsatisfied")
-                .expectedActual("Condition unsatisfied")
                 .addTest();
     }
 

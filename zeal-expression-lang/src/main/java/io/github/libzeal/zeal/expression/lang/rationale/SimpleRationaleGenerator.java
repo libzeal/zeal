@@ -37,6 +37,21 @@ public class SimpleRationaleGenerator<T> implements RationaleGenerator<T> {
         this.hint = hint;
     }
 
+    /**
+     * Creates a new generator.
+     *
+     * @param expected
+     *     The value supplier for the expected value.
+     * @param actual
+     *     The value supplier for the actual value.
+     *
+     * @throws NullPointerException
+     *     The supplied expected and actual value suppliers are {@code null}.
+     */
+    public SimpleRationaleGenerator(final ValueSupplier<T> expected, final ValueSupplier<T> actual) {
+        this(expected, actual, null);
+    }
+
     @Override
     public Rationale generate(final T subject, boolean passed) {
 

@@ -1,5 +1,6 @@
 package io.github.libzeal.zeal.expression.types.core.unary.boxed;
 
+import io.github.libzeal.zeal.expression.lang.util.Formatter;
 import io.github.libzeal.zeal.expression.types.core.unary.ObjectUnaryExpression;
 import io.github.libzeal.zeal.expression.types.core.unary.UnaryExpressionBuilder;
 
@@ -44,7 +45,7 @@ public abstract class BoxedNumberUnaryExpression<T extends Number, E extends Obj
     public E isLessThan(final T value) {
         return nullProtectedValueExpression(
             value,
-            "isLessThan[" + stringify(value) + "]",
+            "isLessThan[" + Formatter.stringify(value) + "]",
             "< " + value,
             t -> value != null && lt(t, value)
         );
@@ -54,7 +55,7 @@ public abstract class BoxedNumberUnaryExpression<T extends Number, E extends Obj
                                            final String expectedValue,
                                            final Predicate<T> longPredicate) {
 
-        final UnaryExpressionBuilder<T, E> builder = newPredicate(longPredicate)
+        final UnaryExpressionBuilder<T, E> builder = newExpression(longPredicate)
             .name(name);
 
         if (value == null) {
@@ -87,7 +88,7 @@ public abstract class BoxedNumberUnaryExpression<T extends Number, E extends Obj
     public E isGreaterThan(final T value) {
         return nullProtectedValueExpression(
             value,
-            "isGreaterThan[" + stringify(value) + "]",
+            "isGreaterThan[" + Formatter.stringify(value) + "]",
             "> " + value,
             t -> value != null && gt(t, value)
         );
@@ -113,7 +114,7 @@ public abstract class BoxedNumberUnaryExpression<T extends Number, E extends Obj
     public E isLessThanOrEqualTo(final T value) {
         return nullProtectedValueExpression(
             value,
-            "isLessThanOrEqualTo[" + stringify(value) + "]",
+            "isLessThanOrEqualTo[" + Formatter.stringify(value) + "]",
             "<= " + value,
             t -> value != null && lte(t, value)
         );
@@ -139,7 +140,7 @@ public abstract class BoxedNumberUnaryExpression<T extends Number, E extends Obj
     public E isGreaterThanOrEqualTo(final T value) {
         return nullProtectedValueExpression(
             value,
-            "isGreaterThanOrEqualTo[" + stringify(value) + "]",
+            "isGreaterThanOrEqualTo[" + Formatter.stringify(value) + "]",
             ">= " + value,
             t -> value != null && gte(t, value)
         );
@@ -160,7 +161,7 @@ public abstract class BoxedNumberUnaryExpression<T extends Number, E extends Obj
      * @return This expression (fluent interface).
      */
     public E isMaxValue() {
-        return newPredicate(t -> eq(t, max()))
+        return newExpression(t -> eq(t, max()))
             .name("isMax")
             .expected(String.valueOf(max()))
             .append();
@@ -172,7 +173,7 @@ public abstract class BoxedNumberUnaryExpression<T extends Number, E extends Obj
      * @return This expression (fluent interface).
      */
     public E isMinValue() {
-        return newPredicate(t -> eq(t, min()))
+        return newExpression(t -> eq(t, min()))
             .name("isMin")
             .expected(String.valueOf(min()))
             .append();
@@ -184,7 +185,7 @@ public abstract class BoxedNumberUnaryExpression<T extends Number, E extends Obj
      * @return This expression (fluent interface).
      */
     public E isZero() {
-        return newPredicate(t -> eq(t, zero()))
+        return newExpression(t -> eq(t, zero()))
             .name("isZero")
             .expected(String.valueOf(zero()))
             .append();
@@ -196,7 +197,7 @@ public abstract class BoxedNumberUnaryExpression<T extends Number, E extends Obj
      * @return This expression (fluent interface).
      */
     public E isNotZero() {
-        return newPredicate(t -> !eq(t, zero()))
+        return newExpression(t -> !eq(t, zero()))
             .name("isNotZero")
             .expected("not[" + zero() + "]")
             .append();
@@ -208,7 +209,7 @@ public abstract class BoxedNumberUnaryExpression<T extends Number, E extends Obj
      * @return This expression (fluent interface).
      */
     public E isPositive() {
-        return newPredicate(t -> gt(t, zero()))
+        return newExpression(t -> gt(t, zero()))
             .name("isPositive")
             .expected("> " + zero())
             .append();
@@ -220,7 +221,7 @@ public abstract class BoxedNumberUnaryExpression<T extends Number, E extends Obj
      * @return This expression (fluent interface).
      */
     public E isNotPositive() {
-        return newPredicate(t -> lte(t, zero()))
+        return newExpression(t -> lte(t, zero()))
             .name("isNotPositive")
             .expected("<= " + zero())
             .append();
@@ -232,7 +233,7 @@ public abstract class BoxedNumberUnaryExpression<T extends Number, E extends Obj
      * @return This expression (fluent interface).
      */
     public E isNegative() {
-        return newPredicate(t -> lt(t, zero()))
+        return newExpression(t -> lt(t, zero()))
             .name("isNegative")
             .expected("< " + zero())
             .append();
@@ -244,7 +245,7 @@ public abstract class BoxedNumberUnaryExpression<T extends Number, E extends Obj
      * @return This expression (fluent interface).
      */
     public E isNotNegative() {
-        return newPredicate(t -> gte(t, zero()))
+        return newExpression(t -> gte(t, zero()))
             .name("isNotNegative")
             .expected(">= " + zero())
             .append();

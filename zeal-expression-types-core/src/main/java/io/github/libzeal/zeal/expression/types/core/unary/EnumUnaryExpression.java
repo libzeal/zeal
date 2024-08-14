@@ -51,7 +51,7 @@ public abstract class EnumUnaryExpression<T extends Enum<T>, B extends EnumUnary
      * @return This expression (fluent interface).
      */
     public B ordinalIs(final int ordinal) {
-        return newPredicate(s -> s.ordinal() == ordinal)
+        return newExpression(s -> s.ordinal() == ordinal)
             .name("ordinalIs[" + ordinal + "]")
             .expected(ordinal)
             .actual((s, passed) -> String.valueOf(s.ordinal()))
@@ -67,7 +67,7 @@ public abstract class EnumUnaryExpression<T extends Enum<T>, B extends EnumUnary
      * @return This expression (fluent interface).
      */
     public B ordinalIsNot(final int ordinal) {
-        return newPredicate(s -> s.ordinal() != ordinal)
+        return newExpression(s -> s.ordinal() != ordinal)
             .name("not[ordinalIs[" + ordinal + "]]")
             .expected((value, passed) -> "not[" + ordinal + "]")
             .actual((s, passed) -> String.valueOf(s.ordinal()))
@@ -83,7 +83,7 @@ public abstract class EnumUnaryExpression<T extends Enum<T>, B extends EnumUnary
      * @return This expression (fluent interface).
      */
     public B nameIs(final String name) {
-        return newPredicate(s -> s.name().equals(name))
+        return newExpression(s -> s.name().equals(name))
             .name("nameIs[" + name + "]")
             .expected(name)
             .actual((s, passed) -> s.name())
@@ -99,7 +99,7 @@ public abstract class EnumUnaryExpression<T extends Enum<T>, B extends EnumUnary
      * @return This expression (fluent interface).
      */
     public B nameIsNot(final String name) {
-        return newPredicate(s -> !s.name().equals(name))
+        return newExpression(s -> !s.name().equals(name))
             .name("not[nameIs[" + name + "]]")
             .expected("not[" + name + "]")
             .actual((s, passed) -> s.name())
@@ -116,7 +116,7 @@ public abstract class EnumUnaryExpression<T extends Enum<T>, B extends EnumUnary
      * @return This expression (fluent interface).
      */
     public B caseInsensitiveNameIs(final String name) {
-        return newPredicate(s -> s.name().equalsIgnoreCase(name))
+        return newExpression(s -> s.name().equalsIgnoreCase(name))
             .name("caseInsensitiveNameIs[" + name + "]")
             .expected("caseInsensitive[" + name + "]")
             .actual((s, passed) -> s.name())
@@ -133,7 +133,7 @@ public abstract class EnumUnaryExpression<T extends Enum<T>, B extends EnumUnary
      * @return This expression (fluent interface).
      */
     public B caseInsensitiveNameIsNot(final String name) {
-        return newPredicate(s -> !s.name().equalsIgnoreCase(name))
+        return newExpression(s -> !s.name().equalsIgnoreCase(name))
             .name("not[caseInsensitiveNameIs[" + name + "]]")
             .expected("not[caseInsensitive[" + name + "]]")
             .actual((s, passed) -> s.name())

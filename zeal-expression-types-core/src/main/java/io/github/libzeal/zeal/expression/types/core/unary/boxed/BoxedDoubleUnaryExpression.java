@@ -34,7 +34,7 @@ public class BoxedDoubleUnaryExpression extends BoxedNumberUnaryExpression<Doubl
      *     <pre><code>abs(subject - value) <= delta</code></pre>
      */
     public BoxedDoubleUnaryExpression isEqualTo(final Double value, final Double delta) {
-        return newPredicate(d -> Math.abs(d - value) <= delta)
+        return newExpression(d -> Math.abs(d - value) <= delta)
             .name("isEqualTo[" + value + " +/- " + delta + "]")
             .expected(value + " +/- " + delta)
             .append();
@@ -46,7 +46,7 @@ public class BoxedDoubleUnaryExpression extends BoxedNumberUnaryExpression<Doubl
      * @return This expression (fluent interface).
      */
     public BoxedDoubleUnaryExpression isFinite() {
-        return newPredicate(Double::isFinite)
+        return newExpression(Double::isFinite)
             .name("isFinite")
             .expected("finite")
             .append();
@@ -58,7 +58,7 @@ public class BoxedDoubleUnaryExpression extends BoxedNumberUnaryExpression<Doubl
      * @return This expression (fluent interface).
      */
     public BoxedDoubleUnaryExpression isInfinite() {
-        return newPredicate(l -> l.isInfinite())
+        return newExpression(l -> l.isInfinite())
             .name("isInfinite")
             .expected("infinite")
             .append();
@@ -70,7 +70,7 @@ public class BoxedDoubleUnaryExpression extends BoxedNumberUnaryExpression<Doubl
      * @return This expression (fluent interface).
      */
     public BoxedDoubleUnaryExpression isNaN() {
-        return newPredicate(l -> l.isNaN())
+        return newExpression(l -> l.isNaN())
             .name("isNaN")
             .expected("NaN")
             .append();

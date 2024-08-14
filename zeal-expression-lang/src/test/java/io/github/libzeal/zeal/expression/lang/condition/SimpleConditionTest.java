@@ -1,5 +1,6 @@
 package io.github.libzeal.zeal.expression.lang.condition;
 
+import io.github.libzeal.zeal.expression.lang.evaluation.Result;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -23,38 +24,31 @@ class SimpleConditionTest {
     }
 
     @Test
-    void givenValidName_whenName_thenCorrectNameReturned() {
+    void givenValidName_whenCreate_thenCorrectNameReturned() {
 
-        String name = "foo";
-
-        Condition<Object> condition = new SimpleCondition<>(name, s -> true);
-
-        assertEquals(name, condition.name());
-    }
-
-    @Test
-    void givenValidName_whenToString_thenCorrectNameReturned() {
-
-        String name = "foo";
+        final Object subject = new Object();
+        final String name = "foo";
 
         Condition<Object> condition = new SimpleCondition<>(name, s -> true);
 
-        assertEquals("Condition[" + name + "]", condition.toString());
+        assertEquals(name, condition.create(subject).name());
     }
 
     @Test
     void givenAlwaysTruePredicate_whenTest_thenConditionResolvesTrue() {
 
-        Condition<Object> condition = new SimpleCondition<>("foo", s -> true);
+        final Object subject = new Object();
+        final Condition<Object> condition = new SimpleCondition<>("foo", s -> true);
 
-        assertTrue(condition.test(new Object()));
+        assertEquals(Result.PASSED, condition.create(subject).evaluate().result());
     }
 
     @Test
     void givenAlwaysFalsePredicate_whenTest_thenConditionResolvesTrue() {
 
-        Condition<Object> condition = new SimpleCondition<>("foo", s -> false);
+        final Object subject = new Object();
+        final Condition<Object> condition = new SimpleCondition<>("foo", s -> false);
 
-        assertFalse(condition.test(new Object()));
+        assertEquals(Result.FAILED, condition.create(subject).evaluate().result());
     }
 }

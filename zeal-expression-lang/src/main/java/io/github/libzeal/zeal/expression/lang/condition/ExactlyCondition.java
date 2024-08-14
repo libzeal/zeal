@@ -5,32 +5,29 @@ import io.github.libzeal.zeal.expression.lang.rationale.RationaleGenerator;
 import io.github.libzeal.zeal.expression.lang.rationale.SimpleRationaleGenerator;
 import io.github.libzeal.zeal.expression.lang.unary.TerminalUnaryExpression;
 
-import java.util.function.Predicate;
+import static io.github.libzeal.zeal.expression.lang.util.Formatter.stringify;
 
-import static java.util.Objects.requireNonNull;
+class ExactlyCondition<T> implements Condition<T> {
 
-class SimpleCondition<T> implements Condition<T> {
+    private final T desired;
 
-    private final String name;
-    private final Predicate<T> predicate;
-
-    public SimpleCondition(final String name, final Predicate<T> predicate) {
-        this.name = requireNonNull(name);
-        this.predicate = requireNonNull(predicate);
+    public ExactlyCondition(final T desired) {
+        this.desired = desired;
     }
 
     @Override
     public Expression create(T subject) {
 
         final RationaleGenerator<T> generator = new SimpleRationaleGenerator<>(
-            (s, passed) -> "satisfied",
-            (s, passed) -> passed ? "satisfied" : "unsatisfied"
+            (s, passed) -> stringify(desired),
+            (s, passed) -> stringify(s),
+            (s, passed) -> "Subject should be identical to " + desired + " (using ==)"
         );
 
         return TerminalUnaryExpression.ofNullable(
-            name,
+            "is[" + stringify(desired) + "]",
             subject,
-            predicate,
+            o -> o == desired,
             generator
         );
     }

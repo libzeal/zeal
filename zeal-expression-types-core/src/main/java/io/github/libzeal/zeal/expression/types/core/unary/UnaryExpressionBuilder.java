@@ -6,10 +6,9 @@ import io.github.libzeal.zeal.expression.lang.rationale.SimpleRationaleGenerator
 import io.github.libzeal.zeal.expression.lang.rationale.ValueSupplier;
 import io.github.libzeal.zeal.expression.lang.unary.TerminalUnaryExpression;
 import io.github.libzeal.zeal.expression.lang.unary.UnaryExpression;
+import io.github.libzeal.zeal.expression.lang.util.Formatter;
 
 import java.util.function.Predicate;
-
-import static io.github.libzeal.zeal.expression.types.core.unary.ObjectUnaryExpression.stringify;
 
 /**
  * A builder used to create {@link Expression} objects.
@@ -25,7 +24,9 @@ public class UnaryExpressionBuilder<T, E extends ObjectUnaryExpression<T, E>> {
     private final Predicate<T> test;
     private String name = "<unnamed>";
     private ValueSupplier<T> expected = (s, passed) -> "<not set>";
-    private ValueSupplier<T> actual = (s, passed) -> stringify(s);
+    private ValueSupplier<T> actual = (s, passed) -> {
+        return Formatter.stringify(s);
+    };
     private ValueSupplier<T> hint = null;
 
     public static <T, E extends ObjectUnaryExpression<T, E>> UnaryExpressionBuilder<T, E> notNullable(final BuildableExpression<T, E> parent, final T subject,

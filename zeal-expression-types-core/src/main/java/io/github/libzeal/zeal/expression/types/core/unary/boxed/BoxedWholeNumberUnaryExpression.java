@@ -27,7 +27,7 @@ public abstract class BoxedWholeNumberUnaryExpression<T extends Number, E extend
      * @return This expression (fluent interface).
      */
     public E isEven() {
-        return newPredicate(l -> l.longValue() % 2 == 0)
+        return newExpression(l -> l.longValue() % 2 == 0)
             .name("isEven")
             .expected("% 2 := 0")
             .append();
@@ -39,7 +39,7 @@ public abstract class BoxedWholeNumberUnaryExpression<T extends Number, E extend
      * @return This expression (fluent interface).
      */
     public E isOdd() {
-        return newPredicate(l -> l.longValue() % 2 != 0)
+        return newExpression(l -> l.longValue() % 2 != 0)
             .name("isOdd")
             .expected("% 2 != 0")
             .append();

@@ -63,4 +63,9 @@ class SkippedCompoundEvaluation implements Evaluation {
 
         return evaluatedChildren;
     }
+
+    @Override
+    public Evaluation withName(final String name) {
+        return new SkippedCompoundEvaluation(name, children);
+    }
 }
