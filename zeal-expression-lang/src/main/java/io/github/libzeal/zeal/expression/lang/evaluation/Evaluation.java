@@ -1,6 +1,7 @@
 package io.github.libzeal.zeal.expression.lang.evaluation;
 
 import io.github.libzeal.zeal.expression.lang.Expression;
+import io.github.libzeal.zeal.expression.lang.rationale.Rationale;
 
 import java.util.List;
 

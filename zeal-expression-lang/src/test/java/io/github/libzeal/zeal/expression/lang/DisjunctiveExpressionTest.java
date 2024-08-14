@@ -1,10 +1,9 @@
-package io.github.libzeal.zeal.expression.lang.predicate.unary;
+package io.github.libzeal.zeal.expression.lang;
 
 import io.github.libzeal.zeal.expression.lang.evaluation.Evaluation;
 import io.github.libzeal.zeal.expression.lang.evaluation.Result;
-import io.github.libzeal.zeal.expression.lang.evaluation.SimpleRationale;
-import io.github.libzeal.zeal.expression.lang.predicate.PredicateAssertions;
-import io.github.libzeal.zeal.expression.lang.predicate.Predicates;
+import io.github.libzeal.zeal.expression.lang.rationale.SimpleRationale;
+import io.github.libzeal.zeal.expression.lang.unary.UnaryExpression;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -13,27 +12,27 @@ import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-class ConjunctiveUnaryPredicateTest {
+class DisjunctiveExpressionTest {
 
     private String name;
-    private ConjunctiveUnaryPredicate<Object> predicate;
+    private DisjunctiveExpression predicate;
 
     @BeforeEach
     void setUp() {
 
         name = "foo";
 
-        predicate = new ConjunctiveUnaryPredicate<>(name, new ArrayList<>());
+        predicate = new DisjunctiveExpression(name, new ArrayList<>());
     }
 
     @Test
     void givenNullName_whenConstruct_thenExceptionThrown() {
 
-        final ArrayList<UnaryPredicate<Object>> list = new ArrayList<>();
+        final ArrayList<Expression> list = new ArrayList<>();
 
         assertThrows(
             NullPointerException.class,
-            () -> new ConjunctiveUnaryPredicate<>(null, list)
+            () -> new DisjunctiveExpression(null, list)
         );
     }
 
@@ -41,7 +40,7 @@ class ConjunctiveUnaryPredicateTest {
     void givenNullPredicateList_whenConstruct_thenExceptionThrown() {
         assertThrows(
             NullPointerException.class,
-            () -> new ConjunctiveUnaryPredicate<>(name, null)
+            () -> new DisjunctiveExpression(name, null)
         );
     }
 
@@ -49,7 +48,7 @@ class ConjunctiveUnaryPredicateTest {
     void givenNullName_whenConstructWithNameOnly_thenExceptionThrown() {
         assertThrows(
             NullPointerException.class,
-            () -> new ConjunctiveUnaryPredicate<>(null)
+            () -> new DisjunctiveExpression(null)
         );
     }
 
@@ -61,9 +60,7 @@ class ConjunctiveUnaryPredicateTest {
     @Test
     void givenNoSubPredicate_whenEvaluate_thenEvaluationIsCorrect() {
 
-        Object subject = new Object();
-
-        Evaluation evaluation = predicate.evaluate(subject);
+        Evaluation evaluation = predicate.evaluate();
 
         assertEquals(Result.PASSED, evaluation.result());
         assertEquals(name, evaluation.name());
@@ -74,12 +71,11 @@ class ConjunctiveUnaryPredicateTest {
     @Test
     void givenOnePassingCriterionAppended_whenEvaluate_thenEvaluationIsCorrect() {
 
-        Object subject = new Object();
-        UnaryPredicate<Object> subPredicate = Predicates.unaryPredicate(Result.PASSED);
+        UnaryExpression<Object> subPredicate = Expressions.unaryExpression(Result.PASSED);
 
         predicate.append(subPredicate);
 
-        Evaluation evaluation = predicate.evaluate(subject);
+        Evaluation evaluation = predicate.evaluate();
 
         assertEquals(Result.PASSED, evaluation.result());
         assertEquals(name, evaluation.name());
@@ -90,12 +86,11 @@ class ConjunctiveUnaryPredicateTest {
     @Test
     void givenOneFailingCriterionAppended_whenEvaluate_thenEvaluationIsCorrect() {
 
-        Object subject = new Object();
-        UnaryPredicate<Object> subPredicate = Predicates.unaryPredicate(Result.FAILED);
+        UnaryExpression<Object> subPredicate = Expressions.unaryExpression(Result.FAILED);
 
         predicate.append(subPredicate);
 
-        Evaluation evaluation = predicate.evaluate(subject);
+        Evaluation evaluation = predicate.evaluate();
 
         assertEquals(Result.FAILED, evaluation.result());
         assertEquals(name, evaluation.name());
@@ -106,12 +101,11 @@ class ConjunctiveUnaryPredicateTest {
     @Test
     void givenOneSkippedCriterionAppended_whenEvaluate_thenEvaluationIsCorrect() {
 
-        Object subject = new Object();
-        UnaryPredicate<Object> subPredicate = Predicates.unaryPredicate(Result.SKIPPED);
+        UnaryExpression<Object> subPredicate = Expressions.unaryExpression(Result.SKIPPED);
 
         predicate.append(subPredicate);
 
-        Evaluation evaluation = predicate.evaluate(subject);
+        Evaluation evaluation = predicate.evaluate();
 
         assertEquals(Result.SKIPPED, evaluation.result());
         assertEquals(name, evaluation.name());
@@ -122,54 +116,52 @@ class ConjunctiveUnaryPredicateTest {
     @Test
     void givenOneFailingPredicatePrependedBeforePassingPredicate_whenEvaluate_thenEvaluationIsCorrect() {
 
-        Object subject = new Object();
-        UnaryPredicate<Object> passingSubPredicate = Predicates.unaryPredicate(Result.PASSED);
-        UnaryPredicate<Object> failingSubPredicate = Predicates.unaryPredicate(Result.FAILED);
+        UnaryExpression<Object> passingSubPredicate = Expressions.unaryExpression(Result.PASSED);
+        UnaryExpression<Object> failingSubPredicate = Expressions.unaryExpression(Result.FAILED);
 
         predicate.append(passingSubPredicate);
         predicate.prepend(failingSubPredicate);
 
-        Evaluation evaluation = predicate.evaluate(subject);
+        Evaluation evaluation = predicate.evaluate();
 
-        assertEquals(Result.FAILED, evaluation.result());
+        assertEquals(Result.PASSED, evaluation.result());
         assertEquals(name, evaluation.name());
         assertNotNull(evaluation.rationale());
         assertEquals(2, evaluation.children().size());
-        assertIsSkipped(passingSubPredicate, subject);
+        assertIsNotSkipped(failingSubPredicate);
     }
 
-    private static void assertIsSkipped(UnaryPredicate<Object> predicate, Object subject) {
+    private static void assertIsSkipped(UnaryExpression<Object> predicate) {
         verify(predicate, times(1)).skip();
-        verify(predicate, never()).evaluate(subject);
+        verify(predicate, never()).evaluate();
     }
 
-    private static void assertIsNotSkipped(UnaryPredicate<Object> predicate, Object subject) {
+    private static void assertIsNotSkipped(UnaryExpression<Object> predicate) {
         verify(predicate, never()).skip();
-        verify(predicate, times(1)).evaluate(subject);
+        verify(predicate, times(1)).evaluate();
     }
 
     @Test
     void givenOnePassingPredicatePrependedBeforeFailingPredicate_whenEvaluate_thenEvaluationIsCorrect() {
 
-        Object subject = new Object();
-        UnaryPredicate<Object> passingSubPredicate = Predicates.unaryPredicate(Result.PASSED);
-        UnaryPredicate<Object> failingSubPredicate = Predicates.unaryPredicate(Result.FAILED);
+        UnaryExpression<Object> passingSubPredicate = Expressions.unaryExpression(Result.PASSED);
+        UnaryExpression<Object> failingSubPredicate = Expressions.unaryExpression(Result.FAILED);
 
         predicate.append(failingSubPredicate);
         predicate.prepend(passingSubPredicate);
 
-        Evaluation evaluation = predicate.evaluate(subject);
+        Evaluation evaluation = predicate.evaluate();
 
-        assertEquals(Result.FAILED, evaluation.result());
+        assertEquals(Result.PASSED, evaluation.result());
         assertEquals(name, evaluation.name());
         assertNotNull(evaluation.rationale());
         assertEquals(2, evaluation.children().size());
-        assertIsNotSkipped(failingSubPredicate, subject);
+        assertIsSkipped(failingSubPredicate);
     }
-    
+
     @Test
     void givenNoChildren_whenSkip_thenEvaluationIsCorrect() {
-        
+
         Evaluation skippedEvaluation = predicate.skip();
 
         assertEquals(predicate.name(), skippedEvaluation.name());
@@ -182,7 +174,7 @@ class ConjunctiveUnaryPredicateTest {
     void givenOneChild_whenSkip_thenEvaluationIsCorrect() {
 
         final String subPredicateName = "predicate 1";
-        UnaryPredicate<Object> subPredicate = Predicates.unaryPredicate(subPredicateName, Result.PASSED);
+        UnaryExpression<Object> subPredicate = Expressions.unaryExpression(subPredicateName, Result.PASSED);
 
         predicate.append(subPredicate);
 
@@ -192,7 +184,7 @@ class ConjunctiveUnaryPredicateTest {
         assertEquals(Result.SKIPPED, skippedEvaluation.result());
         assertEquals(SimpleRationale.skipped(), skippedEvaluation.rationale());
         assertEquals(1, skippedEvaluation.children().size());
-        PredicateAssertions.assertHasChildWithName(skippedEvaluation, subPredicateName);
+        ExpressionAssertions.assertHasChildWithName(skippedEvaluation, subPredicateName);
     }
 
     @Test
@@ -200,8 +192,8 @@ class ConjunctiveUnaryPredicateTest {
 
         final String subPredicateName1 = "predicate 1";
         final String subPredicateName2 = "predicate 2";
-        UnaryPredicate<Object> subPredicate1 = Predicates.unaryPredicate(subPredicateName1, Result.PASSED);
-        UnaryPredicate<Object> subPredicate2 = Predicates.unaryPredicate(subPredicateName2, Result.PASSED);
+        UnaryExpression<Object> subPredicate1 = Expressions.unaryExpression(subPredicateName1, Result.FAILED);
+        UnaryExpression<Object> subPredicate2 = Expressions.unaryExpression(subPredicateName2, Result.FAILED);
 
         predicate.append(subPredicate1);
         predicate.append(subPredicate2);
@@ -212,7 +204,7 @@ class ConjunctiveUnaryPredicateTest {
         assertEquals(Result.SKIPPED, skippedEvaluation.result());
         assertEquals(SimpleRationale.skipped(), skippedEvaluation.rationale());
         assertEquals(2, skippedEvaluation.children().size());
-        PredicateAssertions.assertHasChildWithName(skippedEvaluation, subPredicateName1);
-        PredicateAssertions.assertHasChildWithName(skippedEvaluation, subPredicateName2);
+        ExpressionAssertions.assertHasChildWithName(skippedEvaluation, subPredicateName1);
+        ExpressionAssertions.assertHasChildWithName(skippedEvaluation, subPredicateName2);
     }
 }

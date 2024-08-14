@@ -1,11 +1,11 @@
 package io.github.libzeal.zeal.expression.types.core.unary;
 
-import io.github.libzeal.zeal.expression.lang.UnaryExpression;
+import io.github.libzeal.zeal.expression.lang.ConjunctiveExpression;
+import io.github.libzeal.zeal.expression.lang.Expression;
 import io.github.libzeal.zeal.expression.lang.condition.Condition;
 import io.github.libzeal.zeal.expression.lang.evaluation.Evaluation;
-import io.github.libzeal.zeal.expression.lang.predicate.ValueSupplier;
-import io.github.libzeal.zeal.expression.lang.predicate.unary.ConjunctiveUnaryPredicate;
-import io.github.libzeal.zeal.expression.lang.predicate.unary.UnaryPredicate;
+import io.github.libzeal.zeal.expression.lang.rationale.ValueSupplier;
+import io.github.libzeal.zeal.expression.lang.unary.UnaryExpression;
 
 import java.util.Comparator;
 import java.util.Objects;
@@ -51,8 +51,8 @@ public class ObjectUnaryExpression<T, E extends ObjectUnaryExpression<T, E>> imp
     static final String CANNOT_COMPARE_USING_NULL_COMPARATOR = "Cannot compare using null comparator";
 
     private final T subject;
-    private final ConjunctiveUnaryPredicate<T> children;
-    private final UnaryPredicateBuilder.BuildableExpression<T, E> buildable;
+    private final ConjunctiveExpression children;
+    private final UnaryExpressionBuilder.BuildableExpression<T, E> buildable;
 
     /**
      * Creates an object expression with the supplied subject. This constructor uses a default name for the expression.
@@ -86,23 +86,23 @@ public class ObjectUnaryExpression<T, E extends ObjectUnaryExpression<T, E>> imp
      */
     protected ObjectUnaryExpression(T subject, String name) {
         this.subject = subject;
-        this.children = new ConjunctiveUnaryPredicate<>(name);
+        this.children = new ConjunctiveExpression(name);
         this.buildable = buildable();
     }
 
     @SuppressWarnings("unchecked")
-    private UnaryPredicateBuilder.BuildableExpression<T, E> buildable() {
-        return new UnaryPredicateBuilder.BuildableExpression<T, E>() {
+    private UnaryExpressionBuilder.BuildableExpression<T, E> buildable() {
+        return new UnaryExpressionBuilder.BuildableExpression<T, E>() {
 
             @Override
-            public E prepend(final UnaryPredicate<T> predicate) {
-                children.prepend(predicate);
+            public E prepend(final Expression child) {
+                children.prepend(child);
                 return (E) ObjectUnaryExpression.this;
             }
 
             @Override
-            public E append(final UnaryPredicate<T> predicate) {
-                children.append(predicate);
+            public E append(final Expression child) {
+                children.append(child);
                 return (E) ObjectUnaryExpression.this;
             }
         };
@@ -115,7 +115,7 @@ public class ObjectUnaryExpression<T, E extends ObjectUnaryExpression<T, E>> imp
 
     @Override
     public final Evaluation evaluate() {
-        return children.evaluate(subject);
+        return children.evaluate();
     }
 
     /**
@@ -130,8 +130,8 @@ public class ObjectUnaryExpression<T, E extends ObjectUnaryExpression<T, E>> imp
      * @throws NullPointerException
      *     The supplied test was {@code null}.
      */
-    protected final UnaryPredicateBuilder<T, E> newPredicate(Predicate<T> test) {
-        return UnaryPredicateBuilder.notNullable(buildable, requireNonNull(test));
+    protected final UnaryExpressionBuilder<T, E> newPredicate(Predicate<T> test) {
+        return UnaryExpressionBuilder.notNullable(buildable, subject, requireNonNull(test));
     }
 
     /**
@@ -148,8 +148,8 @@ public class ObjectUnaryExpression<T, E extends ObjectUnaryExpression<T, E>> imp
      * @throws NullPointerException
      *     The supplied test was {@code null}.
      */
-    protected final UnaryPredicateBuilder<T, E> newNullablePredicate(Predicate<T> test) {
-        return UnaryPredicateBuilder.nullable(buildable, requireNonNull(test));
+    protected final UnaryExpressionBuilder<T, E> newNullablePredicate(Predicate<T> test) {
+        return UnaryExpressionBuilder.nullable(buildable, subject, requireNonNull(test));
     }
 
     /**
@@ -207,7 +207,7 @@ public class ObjectUnaryExpression<T, E extends ObjectUnaryExpression<T, E>> imp
      */
     public E isType(final Class<?> type) {
 
-        final UnaryPredicateBuilder<T, E> builder = newPredicate(s -> s.getClass().equals(type));
+        final UnaryExpressionBuilder<T, E> builder = newPredicate(s -> s.getClass().equals(type));
 
         if (type == null) {
             builder.name("isType[(null)]")
@@ -234,7 +234,7 @@ public class ObjectUnaryExpression<T, E extends ObjectUnaryExpression<T, E>> imp
      */
     public E isNotType(final Class<?> type) {
 
-        final UnaryPredicateBuilder<T, E> builder = newPredicate(o -> type != null && !o.getClass().equals(type));
+        final UnaryExpressionBuilder<T, E> builder = newPredicate(o -> type != null && !o.getClass().equals(type));
 
         if (type == null) {
             builder.name("isNotType[(null)]")
@@ -268,7 +268,7 @@ public class ObjectUnaryExpression<T, E extends ObjectUnaryExpression<T, E>> imp
      */
     public E isInstanceOf(final Class<?> type) {
 
-        final UnaryPredicateBuilder<T, E> builder = newPredicate(s -> type != null && type.isAssignableFrom(s.getClass()));
+        final UnaryExpressionBuilder<T, E> builder = newPredicate(s -> type != null && type.isAssignableFrom(s.getClass()));
 
         if (type == null) {
             builder.name("isInstanceOf[(null)]")
@@ -303,7 +303,7 @@ public class ObjectUnaryExpression<T, E extends ObjectUnaryExpression<T, E>> imp
      */
     public E isNotInstanceOf(final Class<?> type) {
 
-        final UnaryPredicateBuilder<T, E> builder = newPredicate(s -> type != null && !type.isAssignableFrom(s.getClass()));
+        final UnaryExpressionBuilder<T, E> builder = newPredicate(s -> type != null && !type.isAssignableFrom(s.getClass()));
 
         if (type == null) {
             builder.name("isNotInstanceOf[(null)]")
@@ -416,7 +416,7 @@ public class ObjectUnaryExpression<T, E extends ObjectUnaryExpression<T, E>> imp
             .append();
     }
 
-    private UnaryPredicateBuilder<T, E> comparableEquals(final T other, final Comparator<T> comparator) {
+    private UnaryExpressionBuilder<T, E> comparableEquals(final T other, final Comparator<T> comparator) {
 
         if (comparator == null) {
             return newNullablePredicate(s -> false)
@@ -475,7 +475,7 @@ public class ObjectUnaryExpression<T, E extends ObjectUnaryExpression<T, E>> imp
             .append();
     }
 
-    private UnaryPredicateBuilder<T, E> comparableNotEquals(final T other, final Comparator<T> comparator) {
+    private UnaryExpressionBuilder<T, E> comparableNotEquals(final T other, final Comparator<T> comparator) {
 
         if (comparator == null) {
             return newNullablePredicate(s -> false)

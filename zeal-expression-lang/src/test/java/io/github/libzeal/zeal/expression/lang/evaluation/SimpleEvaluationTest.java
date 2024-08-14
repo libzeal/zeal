@@ -1,14 +1,13 @@
-package io.github.libzeal.zeal.expression.lang.predicate;
+package io.github.libzeal.zeal.expression.lang.evaluation;
 
-import io.github.libzeal.zeal.expression.lang.evaluation.Rationale;
-import io.github.libzeal.zeal.expression.lang.evaluation.Result;
-import io.github.libzeal.zeal.expression.lang.evaluation.SimpleRationale;
+import io.github.libzeal.zeal.expression.lang.rationale.Rationale;
+import io.github.libzeal.zeal.expression.lang.rationale.SimpleRationale;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class EvaluatedPredicateTest {
+class SimpleEvaluationTest {
 
     private Result result;
     private String name;
@@ -26,7 +25,7 @@ class EvaluatedPredicateTest {
     void givenNullName_whenConstruct_thenExceptionThrown() {
         assertThrows(
             NullPointerException.class,
-            () -> new EvaluatedPredicate(null, Result.PASSED, rationale)
+            () -> new SimpleEvaluation(null, Result.PASSED, rationale)
         );
     }
 
@@ -34,7 +33,7 @@ class EvaluatedPredicateTest {
     void givenNullResult_whenConstruct_thenExceptionThrown() {
         assertThrows(
             NullPointerException.class,
-            () -> new EvaluatedPredicate("foo", null, rationale)
+            () -> new SimpleEvaluation("foo", null, rationale)
         );
     }
 
@@ -42,14 +41,14 @@ class EvaluatedPredicateTest {
     void givenNullRationale_whenConstruct_thenExceptionThrown() {
         assertThrows(
             NullPointerException.class,
-            () -> new EvaluatedPredicate("foo", Result.PASSED, null)
+            () -> new SimpleEvaluation("foo", Result.PASSED, null)
         );
     }
 
     @Test
     void whenConstruct_thenValidDataReturned() {
 
-        EvaluatedPredicate expression = new EvaluatedPredicate(name, result, rationale);
+        SimpleEvaluation expression = new SimpleEvaluation(name, result, rationale);
 
         assertEquals(result, expression.result());
         assertEquals(name, expression.name());

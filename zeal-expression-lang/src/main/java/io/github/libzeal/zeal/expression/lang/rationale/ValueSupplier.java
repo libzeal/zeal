@@ -1,6 +1,4 @@
-package io.github.libzeal.zeal.expression.lang.predicate;
-
-import io.github.libzeal.zeal.expression.lang.evaluation.Rationale;
+package io.github.libzeal.zeal.expression.lang.rationale;
 
 /**
  * A formatter that consumes a subject and provides a string representation. This interface is intended to be used to
@@ -8,6 +6,9 @@ import io.github.libzeal.zeal.expression.lang.evaluation.Rationale;
  *
  * @param <T>
  *     The type of the subject.
+ *
+ * @author Justin Albano
+ * @since 0.2.0
  */
 @FunctionalInterface
 public interface ValueSupplier<T> {

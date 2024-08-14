@@ -1,4 +1,6 @@
-package io.github.libzeal.zeal.expression.lang;
+package io.github.libzeal.zeal.expression.lang.unary;
+
+import io.github.libzeal.zeal.expression.lang.Expression;
 
 /**
  * An expression that has a single subject.

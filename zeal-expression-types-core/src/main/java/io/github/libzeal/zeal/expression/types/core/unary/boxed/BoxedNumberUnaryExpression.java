@@ -1,7 +1,7 @@
 package io.github.libzeal.zeal.expression.types.core.unary.boxed;
 
 import io.github.libzeal.zeal.expression.types.core.unary.ObjectUnaryExpression;
-import io.github.libzeal.zeal.expression.types.core.unary.UnaryPredicateBuilder;
+import io.github.libzeal.zeal.expression.types.core.unary.UnaryExpressionBuilder;
 
 import java.util.function.Predicate;
 
@@ -54,7 +54,7 @@ public abstract class BoxedNumberUnaryExpression<T extends Number, E extends Obj
                                            final String expectedValue,
                                            final Predicate<T> longPredicate) {
 
-        final UnaryPredicateBuilder<T, E> builder = newPredicate(longPredicate)
+        final UnaryExpressionBuilder<T, E> builder = newPredicate(longPredicate)
             .name(name);
 
         if (value == null) {

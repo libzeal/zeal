@@ -2,6 +2,8 @@ package io.github.libzeal.zeal.expression.lang.condition;
 
 import java.util.function.Predicate;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * A named predicate that represents a desired condition that an expression should satisfy. These conditions are usually
  * provided as arguments to a {@code satisfies} method.
@@ -32,6 +34,9 @@ public interface Condition<T> extends Predicate<T> {
      * @return The logical negation of the supplied condition.
      */
     static <T> Condition<T> not(Condition<T> wrapped) {
+
+        requireNonNull(wrapped, "Wrapped condition cannot be null");
+
         return new Condition<T>() {
 
             @Override

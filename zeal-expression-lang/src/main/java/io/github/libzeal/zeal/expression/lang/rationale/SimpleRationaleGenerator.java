@@ -1,7 +1,4 @@
-package io.github.libzeal.zeal.expression.lang.predicate;
-
-import io.github.libzeal.zeal.expression.lang.evaluation.Rationale;
-import io.github.libzeal.zeal.expression.lang.evaluation.SimpleRationale;
+package io.github.libzeal.zeal.expression.lang.rationale;
 
 import static java.util.Objects.requireNonNull;
 
@@ -11,6 +8,9 @@ import static java.util.Objects.requireNonNull;
  *
  * @param <T>
  *     The type of the subject.
+ *
+ * @author Justin Albano
+ * @since 0.2.0
  */
 public class SimpleRationaleGenerator<T> implements RationaleGenerator<T> {
 

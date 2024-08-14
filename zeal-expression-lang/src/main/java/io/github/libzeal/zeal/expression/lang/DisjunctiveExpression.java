@@ -1,55 +1,53 @@
-package io.github.libzeal.zeal.expression.lang.predicate.unary;
+package io.github.libzeal.zeal.expression.lang;
 
 import io.github.libzeal.zeal.expression.lang.evaluation.Evaluation;
-import io.github.libzeal.zeal.expression.lang.evaluation.Rationale;
 import io.github.libzeal.zeal.expression.lang.evaluation.Result;
-import io.github.libzeal.zeal.expression.lang.evaluation.SimpleRationale;
-import io.github.libzeal.zeal.expression.lang.predicate.EvaluatedPredicate;
+import io.github.libzeal.zeal.expression.lang.evaluation.SimpleEvaluation;
+import io.github.libzeal.zeal.expression.lang.rationale.Rationale;
+import io.github.libzeal.zeal.expression.lang.rationale.SimpleRationale;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static io.github.libzeal.zeal.expression.lang.evaluation.Result.*;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A compound predicate where all sub-predicate must be pass for this compound predicate to pass.
- *
- * @param <T>
- *     The type of the subject.
+ * A compound expression where at least one sub-expression must be pass for the compound expression to pass.
  *
  * @author Justin Albano
- * @since 0.2.0
+ * @since 0.2.1
  */
-public class ConjunctiveUnaryPredicate<T> implements CompoundUnaryPredicate<T> {
+public class DisjunctiveExpression implements CompoundExpression {
 
     private final String name;
-    private final List<UnaryPredicate<T>> children;
+    private final List<Expression> children;
 
     /**
-     * Creates a new conjunctive criteria.
+     * Creates a new disjunctive expression.
      *
      * @param name
-     *     The name of the predicate.
+     *     The name of the expression.
      * @param children
-     *     The predicates used initialize the compound predicate.
+     *     The expressions used initialize the compound expression.
      *
      * @throws NullPointerException
      *     Any of the supplied arguments are {@code null}.
      */
-    public ConjunctiveUnaryPredicate(String name, List<UnaryPredicate<T>> children) {
+    public DisjunctiveExpression(String name, List<Expression> children) {
         this.name = requireNonNull(name);
         this.children = requireNonNull(children);
     }
 
     /**
-     * Creates a new conjunctive predicate with an empty default sub-predicate list.
+     * Creates a new disjunctive expression with an empty default sub-expression list.
      *
      * @param name
-     *     The name of the predicate.
+     *     The name of the expression.
      *
-     * @implNote The default sub-predicate list has an initial capacity of 1.
+     * @implNote The default sub-expression list has an initial capacity of 1.
      */
-    public ConjunctiveUnaryPredicate(String name) {
+    public DisjunctiveExpression(String name) {
         this(name, new ArrayList<>(1));
     }
 
@@ -59,22 +57,22 @@ public class ConjunctiveUnaryPredicate<T> implements CompoundUnaryPredicate<T> {
     }
 
     @Override
-    public void append(UnaryPredicate<T> predicate) {
+    public void append(Expression predicate) {
         this.children.add(predicate);
     }
 
     @Override
-    public void prepend(UnaryPredicate<T> predicate) {
+    public void prepend(Expression predicate) {
         this.children.add(0, predicate);
     }
 
     @Override
     public Evaluation skip() {
-        return new SkippedCompoundUnaryPredicateEvaluation<>(name, children);
+        return new SkippedCompoundEvaluation(name, children);
     }
 
     @Override
-    public Evaluation evaluate(final T subject) {
+    public Evaluation evaluate() {
 
         final int total = children.size();
         final List<Evaluation> evaluated = new ArrayList<>(total);
@@ -82,13 +80,13 @@ public class ConjunctiveUnaryPredicate<T> implements CompoundUnaryPredicate<T> {
         int failed = 0;
         int skipped = 0;
 
-        for (UnaryPredicate<T> predicate : children) {
+        for (Expression predicate : children) {
 
-            if (failed > 0) {
+            if (passed > 0) {
                 evaluated.add(predicate.skip());
             }
             else {
-                final Evaluation evaluation = predicate.evaluate(subject);
+                final Evaluation evaluation = predicate.evaluate();
                 final Result result = evaluation.result();
 
                 switch (result) {
@@ -110,28 +108,28 @@ public class ConjunctiveUnaryPredicate<T> implements CompoundUnaryPredicate<T> {
         final Result compountResult = computeResult(passed, failed, total);
         final Rationale rationale = computeRationale(passed, failed, skipped);
 
-        return new EvaluatedPredicate(name, compountResult, rationale, evaluated);
+        return new SimpleEvaluation(name, compountResult, rationale, evaluated);
     }
 
     private Result computeResult(final int passed, final int failed, final int total) {
 
         if (total == 0) {
-            return Result.PASSED;
+            return PASSED;
         }
-        else if (failed > 0) {
-            return Result.FAILED;
+        else if (passed > 0) {
+            return PASSED;
         }
-        else if (passed == total) {
-            return Result.PASSED;
+        else if (failed > 0 && failed == total) {
+            return FAILED;
         }
         else {
-            return Result.SKIPPED;
+            return SKIPPED;
         }
     }
 
     private Rationale computeRationale(final int passed, final int failed, final int skipped) {
 
-        final String expected = "All children must pass";
+        final String expected = "At least one child must pass";
         final String actual =
             "Passed: " + passed + ", Failed: " + failed + ", Skipped: " + skipped;
 

@@ -1,4 +1,4 @@
-package io.github.libzeal.zeal.expression.lang.evaluation;
+package io.github.libzeal.zeal.expression.lang.rationale;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -12,8 +12,9 @@ import java.util.Optional;
  */
 public class SimpleRationale implements Rationale {
 
+    static final String SKIPPED_VALUE = "(skipped)";
     private static final SimpleRationale EMPTY = new SimpleRationale("", "");
-    private static final SimpleRationale SKIPPED = new SimpleRationale("(skipped)", "(skipped)");
+    private static final SimpleRationale SKIPPED = new SimpleRationale(SKIPPED_VALUE, SKIPPED_VALUE);
     private final String expected;
     private final String actual;
     private final String hint;
@@ -81,10 +82,15 @@ public class SimpleRationale implements Rationale {
 
     @Override
     public boolean equals(final Object o) {
+
         if (this == o) return true;
         if (!(o instanceof SimpleRationale)) return false;
+
         final SimpleRationale rationale = (SimpleRationale) o;
-        return Objects.equals(expected, rationale.expected) && Objects.equals(actual, rationale.actual) && Objects.equals(hint, rationale.hint);
+
+        return Objects.equals(expected, rationale.expected) &&
+            Objects.equals(actual, rationale.actual) &&
+            Objects.equals(hint, rationale.hint);
     }
 
     @Override

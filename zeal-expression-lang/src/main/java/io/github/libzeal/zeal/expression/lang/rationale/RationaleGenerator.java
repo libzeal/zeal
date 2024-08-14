@@ -1,12 +1,13 @@
-package io.github.libzeal.zeal.expression.lang.predicate;
-
-import io.github.libzeal.zeal.expression.lang.evaluation.Rationale;
+package io.github.libzeal.zeal.expression.lang.rationale;
 
 /**
  * A generator that creates {@link Rationale} instances based on a supplied subject.
  *
  * @param <T>
  *     The type of the subject.
+ *
+ * @author Justin Albano
+ * @since 0.2.0
  */
 @FunctionalInterface
 public interface RationaleGenerator<T> {

@@ -1,10 +1,10 @@
 package io.github.libzeal.zeal.expression.lang.evaluation.format;
 
 import io.github.libzeal.zeal.expression.lang.evaluation.Evaluation;
-import io.github.libzeal.zeal.expression.lang.evaluation.Rationale;
 import io.github.libzeal.zeal.expression.lang.evaluation.Result;
-import io.github.libzeal.zeal.expression.lang.evaluation.SimpleRationale;
-import io.github.libzeal.zeal.expression.lang.predicate.EvaluatedPredicate;
+import io.github.libzeal.zeal.expression.lang.evaluation.SimpleEvaluation;
+import io.github.libzeal.zeal.expression.lang.rationale.Rationale;
+import io.github.libzeal.zeal.expression.lang.rationale.SimpleRationale;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -124,6 +124,10 @@ class SimpleEvaluationFormatterTest {
 
     private static String format(Rationale rationale, int indent) {
 
+        if (rationale == null) {
+            return "";
+        }
+
         StringBuilder builder = new StringBuilder();
 
         builder.append(indent(indent))
@@ -153,6 +157,20 @@ class SimpleEvaluationFormatterTest {
     }
 
     @Test
+    void givenFailingSingleEvaluationWithNullRationale_whenFormat_thenCorrectStringReturned() {
+
+        final Result result = Result.FAILED;
+        final String name = "foo";
+        final Evaluation expression = expression(result, name, null);
+
+        assertEquals(
+            expectedRootCauseOutput(name, null) + "\n" +
+                expectedFailingOutput(name, null, 0),
+            formatter.format(expression)
+        );
+    }
+
+    @Test
     void givenPassingThenFailingSingleEvaluation_whenFormat_thenCorrectStringReturned() {
 
         final String compoundExpressionName = "Compound Name";
@@ -167,7 +185,7 @@ class SimpleEvaluationFormatterTest {
         final Rationale failingRationale = new SimpleRationale("expected2", "actual2", "hint2");
         final Evaluation failingExpression = expression(failingResult, failingName, failingRationale);
 
-        final EvaluatedPredicate compound = new EvaluatedPredicate(
+        final SimpleEvaluation compound = new SimpleEvaluation(
             compoundExpressionName, Result.FAILED,
             SimpleRationale.empty(),
             Arrays.asList(passingExpression, failingExpression)
@@ -202,7 +220,7 @@ class SimpleEvaluationFormatterTest {
         final Rationale skippedRationale = SimpleRationale.empty();
         final Evaluation skippedExpression = expression(skippedResult, skippedName, skippedRationale);
 
-        final EvaluatedPredicate compound = new EvaluatedPredicate(
+        final SimpleEvaluation compound = new SimpleEvaluation(
             compoundExpressionName, Result.FAILED,
             SimpleRationale.empty(),
             Arrays.asList(passingExpression, failingExpression, skippedExpression)

@@ -1,7 +1,7 @@
 package io.github.libzeal.zeal.assertion;
 
 import io.github.libzeal.zeal.assertion.error.PostconditionFailedException;
-import io.github.libzeal.zeal.expression.lang.UnaryExpression;
+import io.github.libzeal.zeal.expression.lang.unary.UnaryExpression;
 import io.github.libzeal.zeal.expression.lang.evaluation.Evaluation;
 import io.github.libzeal.zeal.expression.lang.evaluation.format.SimpleEvaluationFormatter;
 import io.github.libzeal.zeal.expression.lang.evaluation.Result;

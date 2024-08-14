@@ -1,6 +1,6 @@
 package io.github.libzeal.zeal.expression.lang.evaluation.format;
 
-import io.github.libzeal.zeal.expression.lang.evaluation.Rationale;
+import io.github.libzeal.zeal.expression.lang.rationale.Rationale;
 import io.github.libzeal.zeal.expression.lang.evaluation.Evaluation;
 import io.github.libzeal.zeal.expression.lang.evaluation.Result;
 
@@ -39,7 +39,7 @@ public class SimpleEvaluationFormatter implements EvaluationFormatter {
             .append("] ")
             .append(eval.name());
 
-        if (eval.children().isEmpty() && eval.result().equals(Result.FAILED)) {
+        if (eval.children().isEmpty() && eval.result().isFailed()) {
             builder.append("\n")
                 .append(format(eval.rationale(), nestedLevel + 1));
         }
