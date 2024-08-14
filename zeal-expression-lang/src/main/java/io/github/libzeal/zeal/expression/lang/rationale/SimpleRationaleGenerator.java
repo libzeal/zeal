@@ -16,7 +16,7 @@ public class SimpleRationaleGenerator<T> implements RationaleGenerator<T> {
 
     private final ValueSupplier<T> expected;
     private final ValueSupplier<T> actual;
-    private final ValueSupplier<T> hint;
+    private final HintSupplier<T> hint;
 
     /**
      * Creates a new generator.
@@ -31,7 +31,7 @@ public class SimpleRationaleGenerator<T> implements RationaleGenerator<T> {
      * @throws NullPointerException
      *     The supplied expected and actual value suppliers are {@code null}.
      */
-    public SimpleRationaleGenerator(final ValueSupplier<T> expected, final ValueSupplier<T> actual, final ValueSupplier<T> hint) {
+    public SimpleRationaleGenerator(final ValueSupplier<T> expected, final ValueSupplier<T> actual, final HintSupplier<T> hint) {
         this.expected = requireNonNull(expected);
         this.actual = requireNonNull(actual);
         this.hint = hint;
@@ -57,7 +57,7 @@ public class SimpleRationaleGenerator<T> implements RationaleGenerator<T> {
 
         final String generatedExpected = expected.compute(subject, passed);
         final String generatedActual = actual.compute(subject, passed);
-        final String generatedHint = hint == null ? null : hint.compute(subject, passed);
+        final Hint generatedHint = hint == null ? null : hint.compute(subject, passed);
 
         return new SimpleRationale(generatedExpected, generatedActual, generatedHint);
     }

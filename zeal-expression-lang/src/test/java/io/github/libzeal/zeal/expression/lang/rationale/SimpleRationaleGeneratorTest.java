@@ -9,7 +9,7 @@ class SimpleRationaleGeneratorTest {
 
     private static final String ACTUAL = "foo";
     private static final String EXPECTED = "bar";
-    private static final String HINT = "baz";
+    private static final Hint HINT = new Hint("baz", "not[baz]");
 
     @Test
     void givenNullExpected_whenConstruct_thenExceptionThrown() {

@@ -276,7 +276,7 @@ class StringUnaryExpressionTest extends ObjectUnaryExpressionTest<String, String
                 .expectedName("includes[a]")
                 .expectedExpected("includes[a]")
                 .expectedActual("includes[a]")
-                .expectedHint("'a' found at index 0")
+                .expectedHint(StringUnaryExpression.needleInHaystackHint("ab", 'a'))
                 .addTest()
             .newTest((expression, value) -> expression.includes('a'))
                 .value("b")
@@ -284,7 +284,7 @@ class StringUnaryExpressionTest extends ObjectUnaryExpressionTest<String, String
                 .expectedName("includes[a]")
                 .expectedExpected("includes[a]")
                 .expectedActual("excludes[a]")
-                .expectedHint("String does not include 'a'")
+                .expectedHint(StringUnaryExpression.needleInHaystackHint("b", 'a'))
                 .addTest()
             .newTest((expression, value) -> expression.includes("a"))
                 .value("ab")
@@ -292,7 +292,7 @@ class StringUnaryExpressionTest extends ObjectUnaryExpressionTest<String, String
                 .expectedName("includes[a]")
                 .expectedExpected("includes[a]")
                 .expectedActual("includes[a]")
-                .expectedHint("\"a\" found at index 0")
+                .expectedHint(StringUnaryExpression.needleInHaystackHint("ab", "a"))
                 .addTest()
             .newTest((expression, value) -> expression.includes("a"))
                 .value("b")
@@ -300,7 +300,7 @@ class StringUnaryExpressionTest extends ObjectUnaryExpressionTest<String, String
                 .expectedName("includes[a]")
                 .expectedExpected("includes[a]")
                 .expectedActual("excludes[a]")
-                .expectedHint("String does not include \"a\"")
+                .expectedHint(StringUnaryExpression.needleInHaystackHint("b", "a"))
                 .addTest();
     }
 
@@ -311,7 +311,7 @@ class StringUnaryExpressionTest extends ObjectUnaryExpressionTest<String, String
                 .expectedName("excludes[a]")
                 .expectedExpected("excludes[a]")
                 .expectedActual("includes[a]")
-                .expectedHint("'a' found at index 0")
+                .expectedHint(StringUnaryExpression.needleInHaystackHint("ab", 'a'))
                 .addTest()
             .newTest((expression, value) -> expression.excludes('a'))
                 .value("b")
@@ -319,7 +319,7 @@ class StringUnaryExpressionTest extends ObjectUnaryExpressionTest<String, String
                 .expectedName("excludes[a]")
                 .expectedExpected("excludes[a]")
                 .expectedActual("excludes[a]")
-                .expectedHint("String does not include 'a'")
+                .expectedHint(StringUnaryExpression.needleInHaystackHint("b", 'a'))
                 .addTest()
             .newTest((expression, value) -> expression.excludes("a"))
                 .value("ab")
@@ -327,7 +327,7 @@ class StringUnaryExpressionTest extends ObjectUnaryExpressionTest<String, String
                 .expectedName("excludes[a]")
                 .expectedExpected("excludes[a]")
                 .expectedActual("includes[a]")
-                .expectedHint("\"a\" found at index 0")
+                .expectedHint(StringUnaryExpression.needleInHaystackHint("ab", "a"))
                 .addTest()
             .newTest((expression, value) -> expression.excludes("a"))
                 .value("b")
@@ -335,7 +335,7 @@ class StringUnaryExpressionTest extends ObjectUnaryExpressionTest<String, String
                 .expectedName("excludes[a]")
                 .expectedExpected("excludes[a]")
                 .expectedActual("excludes[a]")
-                .expectedHint("String does not include \"a\"")
+                .expectedHint(StringUnaryExpression.needleInHaystackHint("b", "a"))
                 .addTest();
     }
 

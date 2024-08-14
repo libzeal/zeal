@@ -2,6 +2,7 @@ package io.github.libzeal.zeal.expression.lang.unary;
 
 import io.github.libzeal.zeal.expression.lang.evaluation.Evaluation;
 import io.github.libzeal.zeal.expression.lang.evaluation.Result;
+import io.github.libzeal.zeal.expression.lang.rationale.Hint;
 import io.github.libzeal.zeal.expression.lang.rationale.Rationale;
 import io.github.libzeal.zeal.expression.lang.rationale.RationaleGenerator;
 import io.github.libzeal.zeal.expression.lang.rationale.SimpleRationale;
@@ -17,7 +18,7 @@ class TerminalUnaryExpressionTest {
 
     private static final String EXPECTED = "foo";
     private static final String ACTUAL = "bar";
-    private static final String HINT = "baz";
+    private static final Hint HINT = Hint.symmetrical("baz");
 
     @Test
     void givenNullName_whenOf_thenExceptionThrown() {

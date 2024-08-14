@@ -2,6 +2,7 @@ package io.github.libzeal.zeal.expression.types.core.unary;
 
 import io.github.libzeal.zeal.expression.lang.evaluation.Evaluation;
 import io.github.libzeal.zeal.expression.lang.evaluation.Result;
+import io.github.libzeal.zeal.expression.lang.rationale.Hint;
 import io.github.libzeal.zeal.expression.lang.util.Formatter;
 import io.github.libzeal.zeal.expression.types.core.unary.test.EvaluatedExpressionAssertion;
 import io.github.libzeal.zeal.expression.types.core.unary.test.ExpressionTestCaseBuilder;
@@ -105,7 +106,7 @@ public abstract class ObjectUnaryExpressionTest<T, E extends ObjectUnaryExpressi
         Function<T, String> expectedName,
         BiFunction<E, T, String> expectedExpectedValue,
         BiFunction<E, T, String> expectedActualValue,
-        BiFunction<E, T, String> expectedHint
+        BiFunction<E, T, Hint> expectedHint
     ) {
 
         E expression = expression(value);

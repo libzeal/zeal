@@ -1,9 +1,7 @@
 package io.github.libzeal.zeal.expression.types.core.unary;
 
 import io.github.libzeal.zeal.expression.lang.Expression;
-import io.github.libzeal.zeal.expression.lang.rationale.RationaleGenerator;
-import io.github.libzeal.zeal.expression.lang.rationale.SimpleRationaleGenerator;
-import io.github.libzeal.zeal.expression.lang.rationale.ValueSupplier;
+import io.github.libzeal.zeal.expression.lang.rationale.*;
 import io.github.libzeal.zeal.expression.lang.unary.TerminalUnaryExpression;
 import io.github.libzeal.zeal.expression.lang.unary.UnaryExpression;
 import io.github.libzeal.zeal.expression.lang.util.Formatter;
@@ -27,7 +25,7 @@ public class UnaryExpressionBuilder<T, E extends ObjectUnaryExpression<T, E>> {
     private ValueSupplier<T> actual = (s, passed) -> {
         return Formatter.stringify(s);
     };
-    private ValueSupplier<T> hint = null;
+    private HintSupplier<T> hint = null;
 
     public static <T, E extends ObjectUnaryExpression<T, E>> UnaryExpressionBuilder<T, E> notNullable(final BuildableExpression<T, E> parent, final T subject,
                                                                                                       final Predicate<T> test) {
@@ -142,7 +140,7 @@ public class UnaryExpressionBuilder<T, E extends ObjectUnaryExpression<T, E>> {
      *
      * @return This builder (fluent interface).
      */
-    public UnaryExpressionBuilder<T, E> hint(final ValueSupplier<T> hint) {
+    public UnaryExpressionBuilder<T, E> hint(final HintSupplier<T> hint) {
         this.hint = hint;
         return this;
     }
@@ -155,7 +153,7 @@ public class UnaryExpressionBuilder<T, E extends ObjectUnaryExpression<T, E>> {
      *
      * @return This builder (fluent interface).
      */
-    public UnaryExpressionBuilder<T, E> hint(final String hint) {
+    public UnaryExpressionBuilder<T, E> hint(final Hint hint) {
         return hint((s, passed) -> hint);
     }
 

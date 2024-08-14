@@ -41,5 +41,5 @@ public interface Rationale {
      *
      * @return An {@link Optional} populated with the hint if a hint is available; an empty {@link Optional} otherwise.
      */
-    Optional<String> hint();
+    Optional<Hint> hint();
 }

@@ -3,6 +3,7 @@ package io.github.libzeal.zeal.expression.lang;
 import io.github.libzeal.zeal.expression.lang.evaluation.Evaluation;
 import io.github.libzeal.zeal.expression.lang.evaluation.Result;
 import io.github.libzeal.zeal.expression.lang.evaluation.SimpleEvaluation;
+import io.github.libzeal.zeal.expression.lang.rationale.Hint;
 import io.github.libzeal.zeal.expression.lang.rationale.Rationale;
 import io.github.libzeal.zeal.expression.lang.rationale.SimpleRationale;
 
@@ -12,9 +13,15 @@ import static java.util.Objects.requireNonNull;
 public class NegatedExpression implements Expression {
 
     private final Expression wrapped;
+    private final String name;
+
+    public NegatedExpression(final Expression wrapped, final String name) {
+        this.wrapped = requireNonNull(wrapped);
+        this.name = requireNonNull(name);
+    }
 
     public NegatedExpression(final Expression wrapped) {
-        this.wrapped = requireNonNull(wrapped);
+        this(wrapped, not(wrapped.name()));
     }
 
     @Override
@@ -38,7 +45,7 @@ public class NegatedExpression implements Expression {
         final Rationale rationale = evaluation.rationale();
 
         return new SimpleEvaluation(
-            not(evaluation.name()),
+            name,
             negate(evaluation.result()),
             negate(rationale));
     }
@@ -57,8 +64,8 @@ public class NegatedExpression implements Expression {
 
     private static Rationale negate(final Rationale rationale) {
 
-        final String negatedHint = rationale.hint()
-            .map(NegatedExpression::not)
+        final Hint negatedHint = rationale.hint()
+            .map(Hint::negate)
             .orElse(null);
 
         return new SimpleRationale(

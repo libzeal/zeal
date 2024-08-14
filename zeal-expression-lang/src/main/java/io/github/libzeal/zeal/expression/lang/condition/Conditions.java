@@ -24,12 +24,24 @@ public class Conditions {
         return new ExactlyCondition<>(desired);
     }
 
+    public static <T> Condition<T> exactly(final T desired, final String name) {
+        return new ExactlyCondition<>(desired, name);
+    }
+
     public static <T> Condition<T> equalTo(final T desired) {
         return new EqualToCondition<>(desired);
     }
 
+    public static <T> Condition<T> equalTo(final T desired, final String name) {
+        return new EqualToCondition<>(desired, name);
+    }
+
     public static <T> Condition<T> not(final Condition<T> condition) {
         return subject -> new NegatedExpression(condition.create(subject));
+    }
+
+    public static <T> Condition<T> not(final Condition<T> condition, final String name) {
+        return subject -> new NegatedExpression(condition.create(subject), name);
     }
 
     @SafeVarargs
@@ -52,7 +64,7 @@ public class Conditions {
         };
     }
 
-    private static Expression disjunctiveCollector(final List<Expression> expressions) {
+    static Expression disjunctiveCollector(final List<Expression> expressions) {
         return new DisjunctiveExpression("Any (OR)", expressions);
     }
 
@@ -74,7 +86,7 @@ public class Conditions {
         );
     }
 
-    private static Expression conjunctiveCollector(final List<Expression> expressions) {
+    static Expression conjunctiveCollector(final List<Expression> expressions) {
         return new ConjunctiveExpression("All (AND)", expressions);
     }
 

@@ -2,6 +2,7 @@ package io.github.libzeal.zeal.expression.types.core.unary.test;
 
 import io.github.libzeal.zeal.expression.lang.evaluation.Evaluation;
 import io.github.libzeal.zeal.expression.lang.evaluation.Result;
+import io.github.libzeal.zeal.expression.lang.rationale.Hint;
 import org.junit.jupiter.api.Assertions;
 
 public class EvaluatedExpressionAssertion<T> {
@@ -40,7 +41,7 @@ public class EvaluatedExpressionAssertion<T> {
         assertActualIs("Passed: " + passed + ", Failed: " + failed + ", Skipped: " + skipped);
     }
 
-    public void assertHintIs(final String hint) {
+    public void assertHintIs(final Hint hint) {
         Assertions.assertEquals(hint, eval.rationale().hint().orElse(null));
     }
 }
