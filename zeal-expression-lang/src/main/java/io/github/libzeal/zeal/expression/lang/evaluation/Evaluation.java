@@ -1,6 +1,7 @@
 package io.github.libzeal.zeal.expression.lang.evaluation;
 
 import io.github.libzeal.zeal.expression.lang.Expression;
+import io.github.libzeal.zeal.expression.lang.condition.Traversable;
 import io.github.libzeal.zeal.expression.lang.rationale.Rationale;
 
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.List;
  * @author Justin Albano
  * @since 0.2.0
  */
-public interface Evaluation {
+public interface Evaluation extends Traversable {
 
     /**
      * Obtains the state of the evaluation (i.e., pass or fail).

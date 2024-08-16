@@ -28,4 +28,17 @@ public class TerminalTrueEvaluation implements TrueEvaluation {
     public Rationale rationale() {
         return rationale;
     }
+
+    @Override
+    public void traverseDepthFirst(final Traverser traverser) {
+        traverseDepthFirst(traverser, TraversalContext.create());
+    }
+
+    @Override
+    public void traverseDepthFirst(final Traverser traverser, final TraversalContext context) {
+
+        if (traverser != null) {
+            traverser.on(this, context);
+        }
+    }
 }

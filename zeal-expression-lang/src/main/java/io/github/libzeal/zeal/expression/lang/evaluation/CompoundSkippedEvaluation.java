@@ -4,10 +4,8 @@ import io.github.libzeal.zeal.expression.lang.Expression;
 import io.github.libzeal.zeal.expression.lang.rationale.Rationale;
 import io.github.libzeal.zeal.expression.lang.rationale.SimpleRationale;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
 
@@ -45,5 +43,23 @@ public class CompoundSkippedEvaluation implements SkippedEvaluation {
     @Override
     public Rationale rationale() {
         return SimpleRationale.skipped();
+    }
+
+    @Override
+    public void traverseDepthFirst(final Traverser traverser) {
+
+        if (traverser != null) {
+            traverseDepthFirst(traverser, TraversalContext.create());
+        }
+    }
+
+    @Override
+    public void traverseDepthFirst(final Traverser traverser, final TraversalContext context) {
+
+        traverser.on(this, context);
+
+        for (Evaluation child : children) {
+            child.traverseDepthFirst(traverser);
+        }
     }
 }

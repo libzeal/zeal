@@ -54,4 +54,22 @@ public class CompoundFalseEvaluation implements FalseEvaluation {
             return rootCause;
         }
     }
+
+    @Override
+    public void traverseDepthFirst(final Traverser traverser) {
+
+        if (traverser != null) {
+            traverseDepthFirst(traverser, TraversalContext.create());
+        }
+    }
+
+    @Override
+    public void traverseDepthFirst(final Traverser traverser, final TraversalContext context) {
+
+        traverser.on(this, context);
+
+        for (Evaluation child : children) {
+            child.traverseDepthFirst(traverser);
+        }
+    }
 }

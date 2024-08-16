@@ -1,20 +1,5 @@
 package io.github.libzeal.zeal.expression.lang.evaluation.format;
 
-import io.github.libzeal.zeal.expression.lang.evaluation.Evaluation;
-import io.github.libzeal.zeal.expression.lang.evaluation.Result;
-import io.github.libzeal.zeal.expression.lang.evaluation.SimpleEvaluation;
-import io.github.libzeal.zeal.expression.lang.rationale.Rationale;
-import io.github.libzeal.zeal.expression.lang.rationale.SimpleRationale;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import java.util.Arrays;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-
 class SimpleEvaluationFormatterTest {
 
 //    private SimpleEvaluationFormatter formatter;

@@ -2,9 +2,7 @@ package io.github.libzeal.zeal.expression.lang;
 
 import io.github.libzeal.zeal.expression.lang.evaluation.Evaluation;
 import io.github.libzeal.zeal.expression.lang.evaluation.Result;
-import io.github.libzeal.zeal.expression.lang.evaluation.SimpleEvaluation;
 import io.github.libzeal.zeal.expression.lang.evaluation.TerminalSkippedEvaluation;
-import io.github.libzeal.zeal.expression.lang.rationale.SimpleRationale;
 import io.github.libzeal.zeal.expression.lang.unary.UnaryExpression;
 
 import static org.mockito.Mockito.doReturn;
