@@ -1,8 +1,6 @@
 package io.github.libzeal.zeal.expression.lang;
 
-import io.github.libzeal.zeal.expression.lang.evaluation.Evaluation;
-import io.github.libzeal.zeal.expression.lang.evaluation.Result;
-import io.github.libzeal.zeal.expression.lang.evaluation.SimpleEvaluation;
+import io.github.libzeal.zeal.expression.lang.evaluation.*;
 import io.github.libzeal.zeal.expression.lang.rationale.Rationale;
 import io.github.libzeal.zeal.expression.lang.rationale.SimpleRationale;
 
@@ -30,7 +28,12 @@ public class NegatedExpression implements Expression {
         final List<Evaluation> children = new ArrayList<>(1);
         children.add(wrappedEvaluation);
 
-        return new SimpleEvaluation(name(), result, rationale, children);
+        if (result.isFalse()) {
+            return new CompoundFalseEvaluation(name(), rationale, children);
+        }
+        else {
+            return new CompoundTrueEvaluation(name(), rationale, children);
+        }
     }
 
     private static Result result(final Evaluation wrappedEvaluation) {
@@ -69,11 +72,11 @@ public class NegatedExpression implements Expression {
     }
 
     @Override
-    public Evaluation skip() {
+    public SkippedEvaluation skip() {
 
         final List<Evaluation> children = skipWrapped();
 
-        return SimpleEvaluation.skipped(name(), SimpleRationale.skipped(), children);
+        return new CompoundSkippedEvaluation(name(), children);
     }
 
     private List<Evaluation> skipWrapped() {

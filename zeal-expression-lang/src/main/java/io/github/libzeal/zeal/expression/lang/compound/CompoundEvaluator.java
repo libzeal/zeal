@@ -1,8 +1,8 @@
 package io.github.libzeal.zeal.expression.lang.compound;
 
 import io.github.libzeal.zeal.expression.lang.Expression;
-import io.github.libzeal.zeal.expression.lang.evaluation.Evaluation;
-import io.github.libzeal.zeal.expression.lang.evaluation.Result;
+import io.github.libzeal.zeal.expression.lang.evaluation.*;
+import io.github.libzeal.zeal.expression.lang.rationale.Rationale;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,74 +12,97 @@ import static java.util.Objects.requireNonNull;
 
 class CompoundEvaluator {
 
-    private final Predicate<Tally> skipPredicate;
+    private final Predicate<Tally> passCondition;
+    private final Predicate<Tally> failCondition;
+    private final RationaleBuilder rationaleBuilder;
 
-    private CompoundEvaluator(final Predicate<Tally> skipPredicate) {
-        this.skipPredicate = requireNonNull(skipPredicate);
+    public CompoundEvaluator(final Predicate<Tally> passCondition, final Predicate<Tally> failCondition,
+                             final RationaleBuilder rationaleBuilder) {
+        this.passCondition = requireNonNull(passCondition);
+        this.failCondition = requireNonNull(failCondition);
+        this.rationaleBuilder = requireNonNull(rationaleBuilder);
     }
 
-    public static CompoundEvaluator skipAfter(final Predicate<Tally> predicate) {
-        return new CompoundEvaluator(predicate);
-    }
-
-    public CompoundEvaluation evaluate(final List<Expression> expressions) {
+    public Evaluation evaluate(final String name, final List<Expression> expressions) {
 
         final int total = expressions.size();
         final List<Evaluation> evaluated = new ArrayList<>(total);
-        final Tally tally = new Tally();
+        final Tally tally = new Tally(total);
+        State state = State.UNKNOWN;
+        RootCause rootCause = null;
 
         for (Expression expression : expressions) {
 
-            if (skipPredicate.test(tally)) {
+            if (!state.equals(State.UNKNOWN)) {
                 evaluated.add(expression.skip());
             }
             else {
                 final Evaluation evaluation = expression.evaluate();
                 final Result result = evaluation.result();
 
-                switch (result) {
-                    case TRUE:
-                        tally.incrementPassed();
-                        break;
-                    case FALSE:
-                        tally.incrementFailed();
-                        break;
-                    case SKIPPED:
-                        tally.incrementSkipped();
-                        break;
+                tally.tally(result);
+
+                if (failCondition.test(tally)) {
+                    state = State.FAILED;
+                    rootCause = new RootCause(evaluation);
+                }
+                else if (passCondition.test(tally)) {
+                    state = State.PASSED;
                 }
 
                 evaluated.add(evaluation);
             }
         }
 
-        return new CompoundEvaluation(tally, evaluated);
+        final Rationale rationale = rationaleBuilder.build(tally);
+
+        if (tally.total() == 0 || state.equals(State.PASSED)) {
+            return new CompoundTrueEvaluation(name, rationale, evaluated);
+        }
+        else if (tally.skipped() == tally.total()) {
+            return new CompoundSkippedEvaluation(name, evaluated);
+        }
+        else {
+            if (rootCause != null) {
+                return new CompoundFalseEvaluation(name, rationale, rootCause, evaluated);
+            }
+            else {
+                return CompoundFalseEvaluation.selfRootCause(name, rationale, evaluated);
+            }
+        }
     }
 
-    public static final class CompoundEvaluation {
-
-        private final Tally tally;
-        private final List<Evaluation> evaluations;
-
-        public CompoundEvaluation(final Tally tally, final List<Evaluation> evaluations) {
-            this.tally = requireNonNull(tally);
-            this.evaluations = requireNonNull(evaluations);
-        }
-
-        public Tally tally() {
-            return tally;
-        }
-
-        public List<Evaluation> evaluations() {
-            return evaluations;
-        }
+    private enum State {
+        PASSED,
+        FAILED,
+        UNKNOWN;
     }
 
     public static final class Tally {
 
+        private final int total;
         private int passed;
         private int failed;
         private int skipped;
+
+        public Tally(final int total) {
+            this.total = total;
+        }
+
+        public void tally(final Result result) {
+
+            switch (result) {
+                case TRUE:
+                    incrementPassed();
+                    break;
+                case FALSE:
+                    incrementFailed();
+                    break;
+                case SKIPPED:
+                    incrementSkipped();
+                    break;
+            }
+        }
 
         public void incrementPassed() {
             passed++;
@@ -106,15 +129,23 @@ class CompoundEvaluator {
         }
 
         public int total() {
-            return passed + failed + skipped;
+            return total;
         }
 
-        public boolean atLeastOnePassed() {
+        public boolean anyPassed() {
             return passed > 0;
         }
 
-        public boolean atLeastOneFailed() {
+        public boolean anyFailed() {
             return failed > 0;
+        }
+
+        public boolean allFailed() {
+            return failed == total;
+        }
+
+        public boolean allPassed() {
+            return passed == total;
         }
     }
 }

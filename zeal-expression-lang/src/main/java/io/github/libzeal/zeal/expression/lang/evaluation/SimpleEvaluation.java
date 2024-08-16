@@ -55,9 +55,4 @@ public class SimpleEvaluation implements Evaluation {
     public Rationale rationale() {
         return rationale;
     }
-
-    @Override
-    public List<Evaluation> children() {
-        return children;
-    }
 }

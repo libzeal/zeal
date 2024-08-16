@@ -1,8 +1,6 @@
 package io.github.libzeal.zeal.expression.lang.unary;
 
-import io.github.libzeal.zeal.expression.lang.evaluation.Evaluation;
-import io.github.libzeal.zeal.expression.lang.evaluation.Result;
-import io.github.libzeal.zeal.expression.lang.evaluation.SimpleEvaluation;
+import io.github.libzeal.zeal.expression.lang.evaluation.*;
 import io.github.libzeal.zeal.expression.lang.rationale.Rationale;
 import io.github.libzeal.zeal.expression.lang.rationale.RationaleGenerator;
 
@@ -81,6 +79,7 @@ public class TerminalUnaryExpression<T> implements UnaryExpression<T> {
      * @throws NullPointerException
      *     Any of the supplied arguments are {@code null}.
      */
+    // TODO Remove
     public static <S> TerminalUnaryExpression<S> ofNullable(final String name, final S subject,
                                                             final Predicate<S> predicate,
                                                             final RationaleGenerator<S> rationaleGenerator) {
@@ -104,10 +103,19 @@ public class TerminalUnaryExpression<T> implements UnaryExpression<T> {
     public Evaluation evaluate() {
 
         final boolean passed = predicate.test(subject);
-        final Result result = passed ? TRUE : FALSE;
-        final Rationale generate = rationaleGenerator.generate(subject, passed);
+        final Rationale rationale = rationaleGenerator.generate(subject, passed);
 
-        return new SimpleEvaluation(name, result, generate);
+        if (passed) {
+            return new TerminalTrueEvaluation(name, rationale);
+        }
+        else {
+            return new TerminalFalseEvaluation(name, rationale);
+        }
+    }
+
+    @Override
+    public SkippedEvaluation skip() {
+        return new TerminalSkippedEvaluation(name);
     }
 
     @Override

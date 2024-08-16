@@ -1,7 +1,6 @@
 package io.github.libzeal.zeal.expression.lang.compound;
 
 import io.github.libzeal.zeal.expression.lang.Expression;
-import io.github.libzeal.zeal.expression.lang.ExpressionAssertions;
 import io.github.libzeal.zeal.expression.lang.Expressions;
 import io.github.libzeal.zeal.expression.lang.evaluation.Evaluation;
 import io.github.libzeal.zeal.expression.lang.evaluation.Result;
@@ -87,7 +86,6 @@ class ConjunctiveExpressionTest {
         assertEquals(Result.TRUE, evaluation.result());
         assertEquals(name, evaluation.name());
         assertNotNull(evaluation.rationale());
-        assertTrue(evaluation.children().isEmpty());
     }
 
     @Test
@@ -102,7 +100,6 @@ class ConjunctiveExpressionTest {
         assertEquals(Result.TRUE, evaluation.result());
         assertEquals(name, evaluation.name());
         assertNotNull(evaluation.rationale());
-        assertEquals(1, evaluation.children().size());
     }
 
     @Test
@@ -117,7 +114,6 @@ class ConjunctiveExpressionTest {
         assertEquals(Result.FALSE, evaluation.result());
         assertEquals(name, evaluation.name());
         assertNotNull(evaluation.rationale());
-        assertEquals(1, evaluation.children().size());
     }
 
     @Test
@@ -132,7 +128,6 @@ class ConjunctiveExpressionTest {
         assertEquals(Result.SKIPPED, evaluation.result());
         assertEquals(name, evaluation.name());
         assertNotNull(evaluation.rationale());
-        assertEquals(1, evaluation.children().size());
     }
 
     @Test
@@ -149,7 +144,6 @@ class ConjunctiveExpressionTest {
         assertEquals(Result.FALSE, evaluation.result());
         assertEquals(name, evaluation.name());
         assertNotNull(evaluation.rationale());
-        assertEquals(2, evaluation.children().size());
         assertIsSkipped(passingSubExpression);
     }
 
@@ -177,7 +171,6 @@ class ConjunctiveExpressionTest {
         assertEquals(Result.FALSE, evaluation.result());
         assertEquals(name, evaluation.name());
         assertNotNull(evaluation.rationale());
-        assertEquals(2, evaluation.children().size());
         assertIsNotSkipped(failingSubExpression);
     }
     
@@ -189,7 +182,6 @@ class ConjunctiveExpressionTest {
         assertEquals(expression.name(), skippedEvaluation.name());
         assertEquals(Result.SKIPPED, skippedEvaluation.result());
         assertEquals(SimpleRationale.skipped(), skippedEvaluation.rationale());
-        assertTrue(skippedEvaluation.children().isEmpty());
     }
 
     @Test
@@ -205,8 +197,6 @@ class ConjunctiveExpressionTest {
         assertEquals(expression.name(), skippedEvaluation.name());
         assertEquals(Result.SKIPPED, skippedEvaluation.result());
         assertEquals(SimpleRationale.skipped(), skippedEvaluation.rationale());
-        assertEquals(1, skippedEvaluation.children().size());
-        ExpressionAssertions.assertHasChildWithName(skippedEvaluation, subExpressionName);
     }
 
     @Test
@@ -225,8 +215,5 @@ class ConjunctiveExpressionTest {
         assertEquals(expression.name(), skippedEvaluation.name());
         assertEquals(Result.SKIPPED, skippedEvaluation.result());
         assertEquals(SimpleRationale.skipped(), skippedEvaluation.rationale());
-        assertEquals(2, skippedEvaluation.children().size());
-        ExpressionAssertions.assertHasChildWithName(skippedEvaluation, subExpressionName1);
-        ExpressionAssertions.assertHasChildWithName(skippedEvaluation, subExpressionName2);
     }
 }

@@ -1,17 +1,14 @@
 package io.github.libzeal.zeal.expression.lang.compound;
 
 import io.github.libzeal.zeal.expression.lang.Expression;
-import io.github.libzeal.zeal.expression.lang.compound.CompoundEvaluator.CompoundEvaluation;
 import io.github.libzeal.zeal.expression.lang.compound.CompoundEvaluator.Tally;
+import io.github.libzeal.zeal.expression.lang.evaluation.CompoundSkippedEvaluation;
 import io.github.libzeal.zeal.expression.lang.evaluation.Evaluation;
-import io.github.libzeal.zeal.expression.lang.evaluation.Result;
-import io.github.libzeal.zeal.expression.lang.evaluation.SimpleEvaluation;
-import io.github.libzeal.zeal.expression.lang.rationale.Rationale;
+import io.github.libzeal.zeal.expression.lang.evaluation.SkippedEvaluation;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static io.github.libzeal.zeal.expression.lang.evaluation.Result.*;
 import static java.util.Objects.requireNonNull;
 
 public class NonDisjunctiveExpression implements CompoundExpression {
@@ -57,36 +54,19 @@ public class NonDisjunctiveExpression implements CompoundExpression {
     }
 
     @Override
-    public Evaluation skip() {
-        return new SkippedCompoundEvaluation(name, children);
+    public SkippedEvaluation skip() {
+        return CompoundSkippedEvaluation.from(name, children);
     }
 
     @Override
     public Evaluation evaluate() {
 
-        final CompoundEvaluator evaluator = CompoundEvaluator.skipAfter(Tally::atLeastOnePassed);
-        final CompoundEvaluation result = evaluator.evaluate(children);
+        final CompoundRationaleBuilder builder = CompoundRationaleBuilder.withExpected("No child passes");
 
-        final Result compountResult = computeResult(result.tally());
-        final Rationale rationale =
-            CompoundRationaleBuilder.withExpected("No child passes").build(result.tally());
-
-        return new SimpleEvaluation(name, compountResult, rationale, result.evaluations());
-    }
-
-    private Result computeResult(final Tally tally) {
-
-        if (tally.total() == 0) {
-            return TRUE;
-        }
-        else if (tally.passed() > 0) {
-            return FALSE;
-        }
-        else if (tally.failed() > 0 && tally.failed() == tally.total()) {
-            return TRUE;
-        }
-        else {
-            return SKIPPED;
-        }
+        return new CompoundEvaluator(
+            Tally::allFailed,
+            Tally::anyPassed,
+            builder
+        ).evaluate(name, children);
     }
 }

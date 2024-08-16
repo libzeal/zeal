@@ -5,7 +5,7 @@ import io.github.libzeal.zeal.expression.lang.rationale.SimpleRationale;
 
 import static java.util.Objects.requireNonNull;
 
-class CompoundRationaleBuilder {
+class CompoundRationaleBuilder implements RationaleBuilder {
 
     private final String expected;
 
@@ -17,6 +17,7 @@ class CompoundRationaleBuilder {
         return new CompoundRationaleBuilder(expected);
     }
 
+    @Override
     public Rationale build(final CompoundEvaluator.Tally tally) {
 
         final String actual =

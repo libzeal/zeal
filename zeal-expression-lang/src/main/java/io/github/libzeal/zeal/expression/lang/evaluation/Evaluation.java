@@ -35,11 +35,4 @@ public interface Evaluation {
      * @return The rationale for the evaluation.
      */
     Rationale rationale();
-
-    /**
-     * Obtains the children of this evaluation.
-     *
-     * @return The children of this evaluation.
-     */
-    List<Evaluation> children();
 }

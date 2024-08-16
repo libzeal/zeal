@@ -1,17 +1,14 @@
 package io.github.libzeal.zeal.expression.lang.compound;
 
 import io.github.libzeal.zeal.expression.lang.Expression;
-import io.github.libzeal.zeal.expression.lang.compound.CompoundEvaluator.CompoundEvaluation;
 import io.github.libzeal.zeal.expression.lang.compound.CompoundEvaluator.Tally;
+import io.github.libzeal.zeal.expression.lang.evaluation.CompoundSkippedEvaluation;
 import io.github.libzeal.zeal.expression.lang.evaluation.Evaluation;
-import io.github.libzeal.zeal.expression.lang.evaluation.Result;
-import io.github.libzeal.zeal.expression.lang.evaluation.SimpleEvaluation;
-import io.github.libzeal.zeal.expression.lang.rationale.Rationale;
+import io.github.libzeal.zeal.expression.lang.evaluation.SkippedEvaluation;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static io.github.libzeal.zeal.expression.lang.evaluation.Result.*;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -82,36 +79,19 @@ public class DisjunctiveExpression implements CompoundExpression {
     }
 
     @Override
-    public Evaluation skip() {
-        return new SkippedCompoundEvaluation(name, children);
+    public SkippedEvaluation skip() {
+        return CompoundSkippedEvaluation.from(name, children);
     }
 
     @Override
     public Evaluation evaluate() {
 
-        final CompoundEvaluator evaluator = CompoundEvaluator.skipAfter(Tally::atLeastOnePassed);
-        final CompoundEvaluation result = evaluator.evaluate(children);
+        final CompoundRationaleBuilder builder = CompoundRationaleBuilder.withExpected("At least one child must pass");
 
-        final Result compountResult = computeResult(result.tally());
-        final Rationale rationale =
-            CompoundRationaleBuilder.withExpected("At least one child must pass").build(result.tally());
-
-        return new SimpleEvaluation(name, compountResult, rationale, result.evaluations());
-    }
-
-    private Result computeResult(final Tally tally) {
-
-        if (tally.total() == 0) {
-            return TRUE;
-        }
-        else if (tally.passed() > 0) {
-            return TRUE;
-        }
-        else if (tally.failed() > 0 && tally.failed() == tally.total()) {
-            return FALSE;
-        }
-        else {
-            return SKIPPED;
-        }
+        return new CompoundEvaluator(
+            Tally::anyPassed,
+            Tally::allFailed,
+            builder
+        ).evaluate(name, children);
     }
 }
