@@ -12,8 +12,8 @@ class ResultTest {
 
         Result result = Result.TRUE;
 
-        assertTrue(result.isPassed());
-        assertFalse(result.isFailed());
+        assertTrue(result.isTrue());
+        assertFalse(result.isFalse());
         assertFalse(result.isSkipped());
     }
 
@@ -22,8 +22,8 @@ class ResultTest {
 
         Result result = Result.FALSE;
 
-        assertFalse(result.isPassed());
-        assertTrue(result.isFailed());
+        assertFalse(result.isTrue());
+        assertTrue(result.isFalse());
         assertFalse(result.isSkipped());
     }
 
@@ -32,8 +32,8 @@ class ResultTest {
 
         Result result = Result.SKIPPED;
 
-        assertFalse(result.isPassed());
-        assertFalse(result.isFailed());
+        assertFalse(result.isTrue());
+        assertFalse(result.isFalse());
         assertTrue(result.isSkipped());
     }
 }

@@ -39,7 +39,7 @@ public class SimpleEvaluationFormatter implements EvaluationFormatter {
             .append("] ")
             .append(eval.name());
 
-        if (eval.children().isEmpty() && eval.result().isFailed()) {
+        if (eval.children().isEmpty() && eval.result().isFalse()) {
             builder.append("\n")
                 .append(format(eval.rationale(), nestedLevel + 1));
         }

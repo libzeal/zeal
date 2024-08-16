@@ -2,8 +2,8 @@ package io.github.libzeal.zeal.expression.lang.compound;
 
 import io.github.libzeal.zeal.expression.lang.Expression;
 import io.github.libzeal.zeal.expression.lang.evaluation.Evaluation;
-import io.github.libzeal.zeal.expression.lang.rationale.Rationale;
 import io.github.libzeal.zeal.expression.lang.evaluation.Result;
+import io.github.libzeal.zeal.expression.lang.rationale.Rationale;
 import io.github.libzeal.zeal.expression.lang.rationale.SimpleRationale;
 
 import java.util.ArrayList;
@@ -63,10 +63,5 @@ class SkippedCompoundEvaluation implements Evaluation {
         }
 
         return evaluatedChildren;
-    }
-
-    @Override
-    public Evaluation withName(final String name) {
-        return new SkippedCompoundEvaluation(name, children);
     }
 }

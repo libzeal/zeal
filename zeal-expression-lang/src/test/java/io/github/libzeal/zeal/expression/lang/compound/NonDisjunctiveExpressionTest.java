@@ -11,6 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -53,6 +54,24 @@ class NonDisjunctiveExpressionTest {
             NullPointerException.class,
             () -> new NonDisjunctiveExpression(null)
         );
+    }
+
+    @Test
+    void givenNullChildren_whenWithDefaultName_thenExceptionThrown() {
+        assertThrows(
+            NullPointerException.class,
+            () -> NonDisjunctiveExpression.withDefaultName(null)
+        );
+    }
+
+    @Test
+    void whenWithDefaultName_thenCorrectNameThrown() {
+
+        final List<Expression> children = new ArrayList<>();
+
+        final Expression expression = NonDisjunctiveExpression.withDefaultName(children);
+
+        assertEquals(NonDisjunctiveExpression.DEFAULT_NAME, expression.name());
     }
 
     @Test

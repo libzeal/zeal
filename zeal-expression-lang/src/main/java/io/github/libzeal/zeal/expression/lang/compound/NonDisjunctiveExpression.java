@@ -16,6 +16,7 @@ import static java.util.Objects.requireNonNull;
 
 public class NonDisjunctiveExpression implements CompoundExpression {
 
+    static final String DEFAULT_NAME = "None (NOR)";
     private final String name;
     private final List<Expression> children;
 
@@ -33,7 +34,7 @@ public class NonDisjunctiveExpression implements CompoundExpression {
      * @return A non-disjunctive expression with a default name.
      */
     public static NonDisjunctiveExpression withDefaultName(final List<Expression> children) {
-        return new NonDisjunctiveExpression("None (NOR)", children);
+        return new NonDisjunctiveExpression(DEFAULT_NAME, children);
     }
 
     public NonDisjunctiveExpression(String name) {

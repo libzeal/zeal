@@ -21,6 +21,7 @@ import static java.util.Objects.requireNonNull;
  */
 public class ConjunctiveExpression implements CompoundExpression {
 
+    static final String DEFAULT_NAME = "All (AND)";
     private final String name;
     private final List<Expression> children;
 
@@ -49,7 +50,7 @@ public class ConjunctiveExpression implements CompoundExpression {
      * @return A conjunctive expression with a default name.
      */
     public static ConjunctiveExpression withDefaultName(final List<Expression> children) {
-        return new ConjunctiveExpression("All (AND)", children);
+        return new ConjunctiveExpression(DEFAULT_NAME, children);
     }
 
     /**

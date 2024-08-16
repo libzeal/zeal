@@ -11,6 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -31,7 +32,7 @@ class ConjunctiveExpressionTest {
     @Test
     void givenNullName_whenConstruct_thenExceptionThrown() {
 
-        final ArrayList<Expression> list = new ArrayList<>();
+        final List<Expression> list = new ArrayList<>();
 
         assertThrows(
             NullPointerException.class,
@@ -53,6 +54,24 @@ class ConjunctiveExpressionTest {
             NullPointerException.class,
             () -> new ConjunctiveExpression(null)
         );
+    }
+
+    @Test
+    void givenNullChildren_whenWithDefaultName_thenExceptionThrown() {
+        assertThrows(
+            NullPointerException.class,
+            () -> ConjunctiveExpression.withDefaultName(null)
+        );
+    }
+
+    @Test
+    void whenWithDefaultName_thenCorrectNameThrown() {
+
+        final List<Expression> children = new ArrayList<>();
+
+        final Expression expression = ConjunctiveExpression.withDefaultName(children);
+
+        assertEquals(ConjunctiveExpression.DEFAULT_NAME, expression.name());
     }
 
     @Test

@@ -15,6 +15,7 @@ import static java.util.Objects.requireNonNull;
 
 public class NonConjunctiveExpression implements CompoundExpression {
 
+    static final String DEFAULT_NAME = "Not all (NAND)";
     private final String name;
     private final List<Expression> children;
 
@@ -32,7 +33,7 @@ public class NonConjunctiveExpression implements CompoundExpression {
      * @return A non-conjunctive expression with a default name.
      */
     public static NonConjunctiveExpression withDefaultName(final List<Expression> children) {
-        return new NonConjunctiveExpression("Not all (NAND)", children);
+        return new NonConjunctiveExpression(DEFAULT_NAME, children);
     }
 
     public NonConjunctiveExpression(String name) {

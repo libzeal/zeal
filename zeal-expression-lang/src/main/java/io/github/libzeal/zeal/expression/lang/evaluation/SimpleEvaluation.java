@@ -60,9 +60,4 @@ public class SimpleEvaluation implements Evaluation {
     public List<Evaluation> children() {
         return children;
     }
-
-    @Override
-    public Evaluation withName(final String name) {
-        return new SimpleEvaluation(name, result(), rationale(), children());
-    }
 }

@@ -88,7 +88,7 @@ final class AssertionExpressionEvaluator<N extends Throwable, F extends Throwabl
 
         final T subject = expression.subject();
 
-        if (result.isFailed()) {
+        if (result.isFalse()) {
 
             String formattedMessage = formatMessage(formatter, message, evaluation);
 

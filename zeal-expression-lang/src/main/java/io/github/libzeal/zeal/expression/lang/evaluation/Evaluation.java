@@ -42,14 +42,4 @@ public interface Evaluation {
      * @return The children of this evaluation.
      */
     List<Evaluation> children();
-
-    /**
-     * Creates the same evaluation with a new name.
-     *
-     * @param name
-     *     The desired name.
-     *
-     * @return A new evaluation identical to this evaluation but with the supplied name.
-     */
-    Evaluation withName(String name);
 }

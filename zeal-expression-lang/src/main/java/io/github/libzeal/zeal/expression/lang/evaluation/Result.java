@@ -20,11 +20,11 @@ public enum Result {
      */
     SKIPPED;
 
-    public boolean isPassed() {
+    public boolean isTrue() {
         return equals(TRUE);
     }
 
-    public boolean isFailed() {
+    public boolean isFalse() {
         return equals(FALSE);
     }
 

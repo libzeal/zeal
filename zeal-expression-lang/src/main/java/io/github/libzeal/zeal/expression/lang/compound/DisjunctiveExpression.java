@@ -22,6 +22,7 @@ import static java.util.Objects.requireNonNull;
  */
 public class DisjunctiveExpression implements CompoundExpression {
 
+    static final String DEFAULT_NAME = "Any (OR)";
     private final String name;
     private final List<Expression> children;
 
@@ -50,7 +51,7 @@ public class DisjunctiveExpression implements CompoundExpression {
      * @return A disjunctive expression with a default name.
      */
     public static DisjunctiveExpression withDefaultName(final List<Expression> children) {
-        return new DisjunctiveExpression("Any (OR)", children);
+        return new DisjunctiveExpression(DEFAULT_NAME, children);
     }
 
     /**
