@@ -1,10 +1,9 @@
 package io.github.libzeal.zeal.expression.types.core.unary;
 
-import io.github.libzeal.zeal.expression.lang.ConjunctiveExpression;
+import io.github.libzeal.zeal.expression.lang.compound.ConjunctiveExpression;
 import io.github.libzeal.zeal.expression.lang.Expression;
 import io.github.libzeal.zeal.expression.lang.condition.Condition;
 import io.github.libzeal.zeal.expression.lang.evaluation.Evaluation;
-import io.github.libzeal.zeal.expression.lang.rationale.Hint;
 import io.github.libzeal.zeal.expression.lang.rationale.ValueSupplier;
 import io.github.libzeal.zeal.expression.lang.unary.UnaryExpression;
 
@@ -47,18 +46,14 @@ public class ObjectUnaryExpression<T, E extends ObjectUnaryExpression<T, E>> imp
     private static final String PREDICATE_SATISFIED = "Predicate satisfied";
     private static final String PREDICATE_UNSATISFIED = "Predicate unsatisfied";
     private static final String ALWAYS_FAIL_CANNOT_COMPARE_TO_NULL_TYPE = "Always fail: cannot compare to (null) type";
-    private static final Hint EVALUATION_WILL_ALWAYS_FAIL_WHEN_COMPARED_TO_A_NULL_TYPE = new Hint(
-        "Evaluation will always fail when compared to a (null) type",
-    "Evaluation will always succeed when compared to a (null) type"
-    );
-    static final Hint CANNOT_COMPARE_USING_NULL_COMPARATOR = new Hint(
-        "Evaluation will always fail when using (null) comparator",
-        "Evaluation will always succeed when using (null) comparator"
-    );
+    private static final String EVALUATION_WILL_ALWAYS_FAIL_WHEN_COMPARED_TO_A_NULL_TYPE =
+        "Evaluation will always fail when compared to a (null) type";
+    static final String CANNOT_COMPARE_USING_NULL_COMPARATOR =
+        "Evaluation will always fail when using (null) comparator";
 
     private final T subject;
     private final ConjunctiveExpression children;
-    private final UnaryExpressionBuilder.BuildableExpression<T, E> buildable;
+    private final UnaryExpressionBuilder.BuildableExpression<E> buildable;
 
     /**
      * Creates an object expression with the supplied subject. This constructor uses a default name for the expression.
@@ -84,8 +79,8 @@ public class ObjectUnaryExpression<T, E extends ObjectUnaryExpression<T, E>> imp
         this.buildable = buildable();
     }
 
-    private UnaryExpressionBuilder.BuildableExpression<T, E> buildable() {
-        return new UnaryExpressionBuilder.BuildableExpression<T, E>() {
+    private UnaryExpressionBuilder.BuildableExpression<E> buildable() {
+        return new UnaryExpressionBuilder.BuildableExpression<E>() {
 
             @Override
             public E prepend(final Expression child) {
@@ -156,6 +151,18 @@ public class ObjectUnaryExpression<T, E extends ObjectUnaryExpression<T, E>> imp
     }
 
     /**
+     * Adds a predicate to the expression that checks if the subject is {@code null}.
+     *
+     * @return This expression (fluent interface).
+     */
+    public E isNull() {
+        return newNullableExpression(Objects::isNull)
+            .name("isNull")
+            .expected("(null)")
+            .append();
+    }
+
+    /**
      * Adds a predicate to the expression that checks if the subject is not {@code null}.
      *
      * @return This expression (fluent interface).
@@ -187,18 +194,6 @@ public class ObjectUnaryExpression<T, E extends ObjectUnaryExpression<T, E>> imp
     }
 
     /**
-     * Adds a predicate to the expression that checks if the subject is {@code null}.
-     *
-     * @return This expression (fluent interface).
-     */
-    public E isNull() {
-        return newNullableExpression(Objects::isNull)
-            .name("isNull")
-            .expected("(null)")
-            .append();
-    }
-
-    /**
      * Adds a predicate to the expression that checks if the subject exactly matches the supplied type.
      * <p/>
      * Note: If the subject is a subtype of the supplied type, this check will fail.
@@ -220,18 +215,11 @@ public class ObjectUnaryExpression<T, E extends ObjectUnaryExpression<T, E>> imp
         else {
             builder.name("isType[" + type + "]")
                 .expected(type.toString())
-                .hint(isTypeHint(type));
+                .hint("Subject should be exactly of type " + type);
         }
 
         return builder.actual((s, passed) -> s.getClass().toString())
             .append();
-    }
-
-    private static Hint isTypeHint(final Class<?> type) {
-        return new Hint(
-            "Subject should be exactly of type " + type,
-            "Subject should be any type other than " + type
-        );
     }
 
     /**
@@ -254,7 +242,7 @@ public class ObjectUnaryExpression<T, E extends ObjectUnaryExpression<T, E>> imp
         else {
             builder.name("isNotType[" + type + "]")
                 .expected("not[" + type + "]")
-                .hint(isTypeHint(type).negate());
+                .hint("Subject should be any type other than " + type);
         }
 
         return builder.actual((s, passed) -> s.getClass().toString())
@@ -288,18 +276,11 @@ public class ObjectUnaryExpression<T, E extends ObjectUnaryExpression<T, E>> imp
         else {
             builder.name("isInstanceOf[" + type + "]")
                 .expected("instanceof[" + type + "]")
-                .hint(instanceOfHint(type));
+                .hint("Subject should be exactly of type " + type + " or a subtype of type " + type);
         }
 
         return builder.actual((s, passed) -> s.getClass().toString())
             .append();
-    }
-
-    private static Hint instanceOfHint(final Class<?> type) {
-        return new Hint(
-            "Subject should be exactly of type " + type + " or a subtype of type " + type,
-            "Subject should be any type other than " + type + " and not a subtype of type " + type
-        );
     }
 
     /**
@@ -330,7 +311,7 @@ public class ObjectUnaryExpression<T, E extends ObjectUnaryExpression<T, E>> imp
         else {
             builder.name("isNotInstanceOf[" + type + "]")
                 .expected("not[instanceof[" + type + "]]")
-                .hint(instanceOfHint(type).negate());
+                .hint("Subject should be any type other than " + type + " and not a subtype of type " + type);
         }
 
         return builder.actual((s, passed) -> s.getClass().toString())
@@ -358,10 +339,8 @@ public class ObjectUnaryExpression<T, E extends ObjectUnaryExpression<T, E>> imp
     }
 
     public E is(final Condition<T> condition) {
-
-        final Expression createdExpression = condition.create(subject);
-
-        return append(createdExpression);
+        // TODO: Ensure condition is not null
+        return append(condition.create(subject));
     }
 
     /**
@@ -381,7 +360,11 @@ public class ObjectUnaryExpression<T, E extends ObjectUnaryExpression<T, E>> imp
      *                                 </code></pre>
      */
     public E isNot(final Object other) {
-        return append(not(exactly(other), "isNot[" + stringify(other) + "]").create(subject));
+        return newNullableExpression(s -> s != other)
+            .name("isNot[" + stringify(other) + "]")
+            .expected("not[" + stringify(other) + "]")
+            .hint("Subject should not be identical to " + other + " (using !=)")
+            .append();
     }
 
     /**
@@ -402,8 +385,7 @@ public class ObjectUnaryExpression<T, E extends ObjectUnaryExpression<T, E>> imp
      * @see Objects#equals(Object, Object)
      */
     public E isEqualTo(final Object other) {
-        return append(equalTo(other, "isEqualTo[" + stringify(other) + "]")
-            .create(subject));
+        return append(equalTo(other).create(subject));
     }
 
     /**
@@ -458,8 +440,11 @@ public class ObjectUnaryExpression<T, E extends ObjectUnaryExpression<T, E>> imp
      * @see Objects#equals(Object, Object)
      */
     public E isNotEqualTo(final Object other) {
-        return append(not(equalTo(other), "isNotEqualTo[" + stringify(other) + "]")
-            .create(subject));
+        return newNullableExpression(s -> !Objects.equals(s, other))
+            .name("isNotEqualTo[" + stringify(other) + "]")
+            .expected("not[" + stringify(other) + "]")
+            .hint("Subject should be equal to " + other + " (using !subject.equals(" + other + "))")
+            .append();
     }
 
     /**
@@ -565,15 +550,8 @@ public class ObjectUnaryExpression<T, E extends ObjectUnaryExpression<T, E>> imp
         return newExpression(s -> s.toString().equals(expected))
             .name("toString().equals(" + expected + ")")
             .expected(expected)
-            .hint(toStringHint(expected))
+            .hint("Subject's toString() value should equal " + expected + " (using subject.toString().equals(" + expected + "))")
             .append();
-    }
-
-    private static Hint toStringHint(final String expected) {
-        return new Hint(
-            "Subject's toString() value should equal " + expected + " (using subject.toString().equals(" + expected + "))",
-            "Subject's toString() value should not equal " + expected + " (using !subject.toString().equals(" + expected + "))"
-        );
     }
 
     /**
@@ -595,7 +573,7 @@ public class ObjectUnaryExpression<T, E extends ObjectUnaryExpression<T, E>> imp
         return newExpression(s -> !s.toString().equals(expected))
             .name("not[toString().equals(" + expected + ")]")
             .expected("not[" + expected + "]")
-            .hint(toStringHint(expected).negate())
+            .hint("Subject's toString() value should not equal " + expected + " (using !subject.toString().equals(" + expected + "))")
             .append();
     }
 

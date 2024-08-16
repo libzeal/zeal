@@ -3,8 +3,8 @@ package io.github.libzeal.zeal.expression.types.core.unary.boxed;
 import io.github.libzeal.zeal.expression.types.core.unary.ObjectUnaryExpressionTest;
 import io.github.libzeal.zeal.expression.types.core.unary.test.ExpressionTestCaseBuilder;
 
-import static io.github.libzeal.zeal.expression.lang.evaluation.Result.FAILED;
-import static io.github.libzeal.zeal.expression.lang.evaluation.Result.PASSED;
+import static io.github.libzeal.zeal.expression.lang.evaluation.Result.FALSE;
+import static io.github.libzeal.zeal.expression.lang.evaluation.Result.TRUE;
 
 public class BoxedBooleanUnaryExpressionTest extends ObjectUnaryExpressionTest<Boolean, BoxedBooleanUnaryExpression> {
 
@@ -31,15 +31,15 @@ public class BoxedBooleanUnaryExpressionTest extends ObjectUnaryExpressionTest<B
 
     private void isTrueTestCases(final ExpressionTestCaseBuilder<Boolean, BoxedBooleanUnaryExpression> builder) {
         builder.newTest((expression, value) -> expression.isTrue())
-                .value(true)
-                .expectedState(PASSED)
+                .subject(true)
+                .expectedState(TRUE)
                 .expectedName("isTrue")
                 .expectedExpected("true")
                 .expectedActual("true")
                 .addTest()
             .newTest((expression, value) -> expression.isTrue())
-                .value(false)
-                .expectedState(FAILED)
+                .subject(false)
+                .expectedState(FALSE)
                 .expectedName("isTrue")
                 .expectedExpected("true")
                 .expectedActual("false")
@@ -48,15 +48,15 @@ public class BoxedBooleanUnaryExpressionTest extends ObjectUnaryExpressionTest<B
 
     private void isFalseTestCases(final ExpressionTestCaseBuilder<Boolean, BoxedBooleanUnaryExpression> builder) {
         builder.newTest((expression, value) -> expression.isFalse())
-                .value(true)
-                .expectedState(FAILED)
+                .subject(true)
+                .expectedState(FALSE)
                 .expectedName("isFalse")
                 .expectedExpected("false")
                 .expectedActual("true")
                 .addTest()
             .newTest((expression, value) -> expression.isFalse())
-                .value(false)
-                .expectedState(PASSED)
+                .subject(false)
+                .expectedState(TRUE)
                 .expectedName("isFalse")
                 .expectedExpected("false")
                 .expectedActual("false")

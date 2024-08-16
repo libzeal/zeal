@@ -2,7 +2,6 @@ package io.github.libzeal.zeal.expression.types.core.unary.test;
 
 import io.github.libzeal.zeal.expression.lang.evaluation.Evaluation;
 import io.github.libzeal.zeal.expression.lang.evaluation.Result;
-import io.github.libzeal.zeal.expression.lang.rationale.Hint;
 import org.junit.jupiter.api.Assertions;
 
 public class EvaluatedExpressionAssertion<T> {
@@ -14,15 +13,11 @@ public class EvaluatedExpressionAssertion<T> {
     }
 
     public void assertStateIs(Result expected) {
-        Assertions.assertEquals(expected, eval.result(), "State is incorrect");
+        Assertions.assertEquals(expected, eval.result(), "Result is incorrect");
     }
 
     public void assertNameIs(String name) {
         Assertions.assertEquals(name, eval.name(), "Name is incorrect");
-    }
-
-    public void assertNameMatches(String regex) {
-        Assertions.assertTrue(eval.name().matches(regex), "Name is incorrect: Expected: " + regex + ", actual: " + eval.name());
     }
 
     public void assertExpectedIs(String expected) {
@@ -41,7 +36,7 @@ public class EvaluatedExpressionAssertion<T> {
         assertActualIs("Passed: " + passed + ", Failed: " + failed + ", Skipped: " + skipped);
     }
 
-    public void assertHintIs(final Hint hint) {
+    public void assertHintIs(final String hint) {
         Assertions.assertEquals(hint, eval.rationale().hint().orElse(null));
     }
 }

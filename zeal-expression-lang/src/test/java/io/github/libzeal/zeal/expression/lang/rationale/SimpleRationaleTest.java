@@ -45,7 +45,7 @@ class SimpleRationaleTest {
 
         final String expected = "foo";
         final String actual = "bar";
-        final Hint hint = Hint.symmetrical("baz");
+        final String hint = "baz";
 
         Rationale rationale = new SimpleRationale(expected, actual, hint);
 
@@ -60,7 +60,7 @@ class SimpleRationaleTest {
 
         final String expected = "foo";
         final String actual = "bar";
-        final Hint hint = Hint.symmetrical("baz");
+        final String hint = "baz";
 
         Rationale a = new SimpleRationale(expected, actual, hint);
         Rationale b = new SimpleRationale(expected, actual, hint);
@@ -73,7 +73,7 @@ class SimpleRationaleTest {
 
         final String expected = "foo";
         final String actual = "bar";
-        final Hint hint = Hint.symmetrical("baz");
+        final String hint = "baz";
 
         Rationale a = new SimpleRationale(expected, actual, hint);
 
@@ -85,7 +85,7 @@ class SimpleRationaleTest {
 
         final String expected = "foo";
         final String actual = "bar";
-        final Hint hint = Hint.symmetrical("baz");
+        final String hint = "baz";
 
         Rationale a = new SimpleRationale(expected, actual, hint);
 
@@ -98,7 +98,7 @@ class SimpleRationaleTest {
         final String expected1 = "foo1";
         final String expected2 = "foo2";
         final String actual = "bar";
-        final Hint hint = Hint.symmetrical("baz");
+        final String hint = "baz";
 
         Rationale a = new SimpleRationale(expected1, actual, hint);
         Rationale b = new SimpleRationale(expected2, actual, hint);
@@ -112,7 +112,7 @@ class SimpleRationaleTest {
         final String expected = "foo";
         final String actual1 = "bar1";
         final String actual2 = "bar2";
-        final Hint hint = Hint.symmetrical("baz");
+        final String hint = "baz";
 
         Rationale a = new SimpleRationale(expected, actual1, hint);
         Rationale b = new SimpleRationale(expected, actual2, hint);
@@ -125,8 +125,8 @@ class SimpleRationaleTest {
 
         final String expected = "foo";
         final String actual = "bar";
-        final Hint hint1 = Hint.symmetrical("baz1");
-        final Hint hint2 = Hint.symmetrical("baz2");
+        final String hint1 = "baz1";
+        final String hint2 = "baz2";
 
         Rationale a = new SimpleRationale(expected, actual, hint1);
         Rationale b = new SimpleRationale(expected, actual, hint2);
@@ -139,7 +139,7 @@ class SimpleRationaleTest {
 
         final String expected = "foo";
         final String actual = "bar";
-        final Hint hint = Hint.symmetrical("baz");
+        final String hint = "baz";
 
         Rationale a = new SimpleRationale(expected, actual, hint);
         Rationale b = new SimpleRationale(expected, actual, hint);
@@ -152,7 +152,7 @@ class SimpleRationaleTest {
 
         final String expected = "foo";
         final String actual = "bar";
-        final Hint hint = Hint.symmetrical("baz");
+        final String hint = "baz";
 
         Rationale a = new SimpleRationale(expected, actual, hint);
 
@@ -165,7 +165,7 @@ class SimpleRationaleTest {
         final String expected1 = "foo1";
         final String expected2 = "foo2";
         final String actual = "bar";
-        final Hint hint = Hint.symmetrical("baz");
+        final String hint = "baz";
 
         Rationale a = new SimpleRationale(expected1, actual, hint);
         Rationale b = new SimpleRationale(expected2, actual, hint);
@@ -179,7 +179,7 @@ class SimpleRationaleTest {
         final String expected = "foo";
         final String actual1 = "bar1";
         final String actual2 = "bar2";
-        final Hint hint = Hint.symmetrical("baz");
+        final String hint = "baz";
 
         Rationale a = new SimpleRationale(expected, actual1, hint);
         Rationale b = new SimpleRationale(expected, actual2, hint);
@@ -192,8 +192,8 @@ class SimpleRationaleTest {
 
         final String expected = "foo";
         final String actual = "bar";
-        final Hint hint1 = Hint.symmetrical("baz1");
-        final Hint hint2 = Hint.symmetrical("baz2");
+        final String hint1 = "baz1";
+        final String hint2 = "baz2";
 
         Rationale a = new SimpleRationale(expected, actual, hint1);
         Rationale b = new SimpleRationale(expected, actual, hint2);

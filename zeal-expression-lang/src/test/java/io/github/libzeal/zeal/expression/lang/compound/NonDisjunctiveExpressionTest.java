@@ -1,5 +1,8 @@
-package io.github.libzeal.zeal.expression.lang;
+package io.github.libzeal.zeal.expression.lang.compound;
 
+import io.github.libzeal.zeal.expression.lang.Expression;
+import io.github.libzeal.zeal.expression.lang.ExpressionAssertions;
+import io.github.libzeal.zeal.expression.lang.Expressions;
 import io.github.libzeal.zeal.expression.lang.evaluation.Evaluation;
 import io.github.libzeal.zeal.expression.lang.evaluation.Result;
 import io.github.libzeal.zeal.expression.lang.rationale.SimpleRationale;
@@ -12,17 +15,17 @@ import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-class ConjunctiveExpressionTest {
+class NonDisjunctiveExpressionTest {
 
     private String name;
-    private ConjunctiveExpression expression;
+    private NonDisjunctiveExpression expression;
 
     @BeforeEach
     void setUp() {
 
         name = "foo";
 
-        expression = new ConjunctiveExpression(name, new ArrayList<>());
+        expression = new NonDisjunctiveExpression(name, new ArrayList<>());
     }
 
     @Test
@@ -32,15 +35,15 @@ class ConjunctiveExpressionTest {
 
         assertThrows(
             NullPointerException.class,
-            () -> new ConjunctiveExpression(null, list)
+            () -> new NonDisjunctiveExpression(null, list)
         );
     }
 
     @Test
-    void givenNullExpressionList_whenConstruct_thenExceptionThrown() {
+    void givenNullPredicateList_whenConstruct_thenExceptionThrown() {
         assertThrows(
             NullPointerException.class,
-            () -> new ConjunctiveExpression(name, null)
+            () -> new NonDisjunctiveExpression(name, null)
         );
     }
 
@@ -48,7 +51,7 @@ class ConjunctiveExpressionTest {
     void givenNullName_whenConstructWithNameOnly_thenExceptionThrown() {
         assertThrows(
             NullPointerException.class,
-            () -> new ConjunctiveExpression(null)
+            () -> new NonDisjunctiveExpression(null)
         );
     }
 
@@ -58,52 +61,52 @@ class ConjunctiveExpressionTest {
     }
 
     @Test
-    void givenNoSubExpression_whenEvaluate_thenEvaluationIsCorrect() {
+    void givenNoSubPredicate_whenEvaluate_thenEvaluationIsCorrect() {
 
         Evaluation evaluation = expression.evaluate();
 
-        assertEquals(Result.PASSED, evaluation.result());
+        assertEquals(Result.TRUE, evaluation.result());
         assertEquals(name, evaluation.name());
         assertNotNull(evaluation.rationale());
         assertTrue(evaluation.children().isEmpty());
     }
 
     @Test
-    void givenOnePassingCriterionAppended_whenEvaluate_thenEvaluationIsCorrect() {
+    void givenOnePassingExpressionAppended_whenEvaluate_thenEvaluationIsCorrect() {
 
-        UnaryExpression<Object> subExpression = Expressions.unaryExpression(Result.PASSED);
+        UnaryExpression<Object> subPredicate = Expressions.unaryExpression(Result.TRUE);
 
-        expression.append(subExpression);
+        expression.append(subPredicate);
 
         Evaluation evaluation = expression.evaluate();
 
-        assertEquals(Result.PASSED, evaluation.result());
+        assertEquals(Result.FALSE, evaluation.result());
         assertEquals(name, evaluation.name());
         assertNotNull(evaluation.rationale());
         assertEquals(1, evaluation.children().size());
     }
 
     @Test
-    void givenOneFailingCriterionAppended_whenEvaluate_thenEvaluationIsCorrect() {
+    void givenOneFailingExpressionAppended_whenEvaluate_thenEvaluationIsCorrect() {
 
-        UnaryExpression<Object> subExpression = Expressions.unaryExpression(Result.FAILED);
+        UnaryExpression<Object> subPredicate = Expressions.unaryExpression(Result.FALSE);
 
-        expression.append(subExpression);
+        expression.append(subPredicate);
 
         Evaluation evaluation = expression.evaluate();
 
-        assertEquals(Result.FAILED, evaluation.result());
+        assertEquals(Result.TRUE, evaluation.result());
         assertEquals(name, evaluation.name());
         assertNotNull(evaluation.rationale());
         assertEquals(1, evaluation.children().size());
     }
 
     @Test
-    void givenOneSkippedCriterionAppended_whenEvaluate_thenEvaluationIsCorrect() {
+    void givenOneSkippedExpressionAppended_whenEvaluate_thenEvaluationIsCorrect() {
 
-        UnaryExpression<Object> subExpression = Expressions.unaryExpression(Result.SKIPPED);
+        UnaryExpression<Object> subPredicate = Expressions.unaryExpression(Result.SKIPPED);
 
-        expression.append(subExpression);
+        expression.append(subPredicate);
 
         Evaluation evaluation = expression.evaluate();
 
@@ -114,21 +117,21 @@ class ConjunctiveExpressionTest {
     }
 
     @Test
-    void givenOneFailingExpressionPrependedBeforePassingExpression_whenEvaluate_thenEvaluationIsCorrect() {
+    void givenOneFailingPredicatePrependedBeforePassingPredicate_whenEvaluate_thenEvaluationIsCorrect() {
 
-        UnaryExpression<Object> passingSubExpression = Expressions.unaryExpression(Result.PASSED);
-        UnaryExpression<Object> failingSubExpression = Expressions.unaryExpression(Result.FAILED);
+        UnaryExpression<Object> passingSubPredicate = Expressions.unaryExpression(Result.TRUE);
+        UnaryExpression<Object> failingSubPredicate = Expressions.unaryExpression(Result.FALSE);
 
-        expression.append(passingSubExpression);
-        expression.prepend(failingSubExpression);
+        expression.append(passingSubPredicate);
+        expression.prepend(failingSubPredicate);
 
         Evaluation evaluation = expression.evaluate();
 
-        assertEquals(Result.FAILED, evaluation.result());
+        assertEquals(Result.FALSE, evaluation.result());
         assertEquals(name, evaluation.name());
         assertNotNull(evaluation.rationale());
         assertEquals(2, evaluation.children().size());
-        assertIsSkipped(passingSubExpression);
+        assertIsNotSkipped(failingSubPredicate);
     }
 
     private static void assertIsSkipped(UnaryExpression<Object> expression) {
@@ -142,26 +145,26 @@ class ConjunctiveExpressionTest {
     }
 
     @Test
-    void givenOnePassingExpressionPrependedBeforeFailingExpression_whenEvaluate_thenEvaluationIsCorrect() {
+    void givenOnePassingPredicatePrependedBeforeFailingPredicate_whenEvaluate_thenEvaluationIsCorrect() {
 
-        UnaryExpression<Object> passingSubExpression = Expressions.unaryExpression(Result.PASSED);
-        UnaryExpression<Object> failingSubExpression = Expressions.unaryExpression(Result.FAILED);
+        UnaryExpression<Object> passingSubPredicate = Expressions.unaryExpression(Result.TRUE);
+        UnaryExpression<Object> failingSubPredicate = Expressions.unaryExpression(Result.FALSE);
 
-        expression.append(failingSubExpression);
-        expression.prepend(passingSubExpression);
+        expression.append(failingSubPredicate);
+        expression.prepend(passingSubPredicate);
 
         Evaluation evaluation = expression.evaluate();
 
-        assertEquals(Result.FAILED, evaluation.result());
+        assertEquals(Result.FALSE, evaluation.result());
         assertEquals(name, evaluation.name());
         assertNotNull(evaluation.rationale());
         assertEquals(2, evaluation.children().size());
-        assertIsNotSkipped(failingSubExpression);
+        assertIsSkipped(failingSubPredicate);
     }
-    
+
     @Test
     void givenNoChildren_whenSkip_thenEvaluationIsCorrect() {
-        
+
         Evaluation skippedEvaluation = expression.skip();
 
         assertEquals(expression.name(), skippedEvaluation.name());
@@ -173,10 +176,10 @@ class ConjunctiveExpressionTest {
     @Test
     void givenOneChild_whenSkip_thenEvaluationIsCorrect() {
 
-        final String subExpressionName = "expression 1";
-        UnaryExpression<Object> subExpression = Expressions.unaryExpression(subExpressionName, Result.PASSED);
+        final String subPredicateName = "expression 1";
+        UnaryExpression<Object> subPredicate = Expressions.unaryExpression(subPredicateName, Result.TRUE);
 
-        expression.append(subExpression);
+        expression.append(subPredicate);
 
         Evaluation skippedEvaluation = expression.skip();
 
@@ -184,19 +187,19 @@ class ConjunctiveExpressionTest {
         assertEquals(Result.SKIPPED, skippedEvaluation.result());
         assertEquals(SimpleRationale.skipped(), skippedEvaluation.rationale());
         assertEquals(1, skippedEvaluation.children().size());
-        ExpressionAssertions.assertHasChildWithName(skippedEvaluation, subExpressionName);
+        ExpressionAssertions.assertHasChildWithName(skippedEvaluation, subPredicateName);
     }
 
     @Test
     void givenTwoChildren_whenSkip_thenEvaluationIsCorrect() {
 
-        final String subExpressionName1 = "expression 1";
-        final String subExpressionName2 = "expression 2";
-        UnaryExpression<Object> subExpression1 = Expressions.unaryExpression(subExpressionName1, Result.PASSED);
-        UnaryExpression<Object> subExpression2 = Expressions.unaryExpression(subExpressionName2, Result.PASSED);
+        final String subPredicateName1 = "expression 1";
+        final String subPredicateName2 = "expression 2";
+        UnaryExpression<Object> subPredicate1 = Expressions.unaryExpression(subPredicateName1, Result.FALSE);
+        UnaryExpression<Object> subPredicate2 = Expressions.unaryExpression(subPredicateName2, Result.FALSE);
 
-        expression.append(subExpression1);
-        expression.append(subExpression2);
+        expression.append(subPredicate1);
+        expression.append(subPredicate2);
 
         Evaluation skippedEvaluation = expression.skip();
 
@@ -204,7 +207,7 @@ class ConjunctiveExpressionTest {
         assertEquals(Result.SKIPPED, skippedEvaluation.result());
         assertEquals(SimpleRationale.skipped(), skippedEvaluation.rationale());
         assertEquals(2, skippedEvaluation.children().size());
-        ExpressionAssertions.assertHasChildWithName(skippedEvaluation, subExpressionName1);
-        ExpressionAssertions.assertHasChildWithName(skippedEvaluation, subExpressionName2);
+        ExpressionAssertions.assertHasChildWithName(skippedEvaluation, subPredicateName1);
+        ExpressionAssertions.assertHasChildWithName(skippedEvaluation, subPredicateName2);
     }
 }

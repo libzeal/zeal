@@ -1,7 +1,6 @@
 package io.github.libzeal.zeal.expression.lang.condition;
 
 import io.github.libzeal.zeal.expression.lang.Expression;
-import io.github.libzeal.zeal.expression.lang.rationale.Hint;
 import io.github.libzeal.zeal.expression.lang.rationale.RationaleGenerator;
 import io.github.libzeal.zeal.expression.lang.rationale.SimpleRationaleGenerator;
 import io.github.libzeal.zeal.expression.lang.unary.TerminalUnaryExpression;
@@ -32,10 +31,7 @@ class EqualToCondition<T> implements Condition<T> {
         final RationaleGenerator<T> generator = new SimpleRationaleGenerator<>(
             (s, passed) -> stringify(desired),
             (s, passed) -> stringify(s),
-            (s, passed) -> new Hint(
-                "Subject should be equal to " + desired + " (using subject.equals(" + desired + "))",
-                "Subject should not be equal to " + desired + " (using !subject.equals(" + desired + "))"
-            )
+            (s, passed) -> "Subject should be equal to " + desired + " (using subject.equals(" + desired + "))"
         );
 
         return TerminalUnaryExpression.ofNullable(

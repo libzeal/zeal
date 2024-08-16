@@ -97,14 +97,14 @@ class AssertionExpressionEvaluatorTest {
                 Arguments.of(
                     new ExceptionTestCaseData(
                         "Failed evaluation and null subject",
-                        expression(Result.FAILED, null),
+                        expression(Result.FALSE, null),
                         TestRuntimeException.class
                     )
                 ),
                 Arguments.of(
                     new ExceptionTestCaseData(
                         "Failed evaluation and non-null subject",
-                        expression(Result.FAILED, new Object()),
+                        expression(Result.FALSE, new Object()),
                         TestRuntimeException.class
                     )
                 )

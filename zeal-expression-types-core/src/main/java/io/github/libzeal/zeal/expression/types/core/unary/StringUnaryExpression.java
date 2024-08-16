@@ -1,6 +1,5 @@
 package io.github.libzeal.zeal.expression.types.core.unary;
 
-import io.github.libzeal.zeal.expression.lang.rationale.Hint;
 import io.github.libzeal.zeal.expression.lang.rationale.ValueSupplier;
 
 /**
@@ -197,17 +196,15 @@ public class StringUnaryExpression extends ObjectUnaryExpression<String, StringU
         return "excludes[" + c + "]";
     }
 
-    static Hint needleInHaystackHint(String s, char c) {
+    static String needleInHaystackHint(String s, char c) {
 
         final int index = s.indexOf(c);
-        final String found = "'" + c + "' found at index " + index;
-        final String notFound = "String does not include '" + c + "'";
 
         if (index != -1) {
-            return new Hint(found, notFound);
+            return "'" + c + "' found at index " + index;
         }
         else {
-            return new Hint(notFound, found);
+            return "String does not include '" + c + "'";
         }
     }
 
@@ -236,17 +233,15 @@ public class StringUnaryExpression extends ObjectUnaryExpression<String, StringU
         return "excludes[" + c + "]";
     }
 
-    static Hint needleInHaystackHint(String s, CharSequence sequence) {
+    static String needleInHaystackHint(String s, CharSequence sequence) {
 
         final int index = s.indexOf(sequence.toString());
-        final String found = "\"" + sequence + "\" found at index " + index;
-        final String notFound = "String does not include \"" + sequence + "\"";
 
         if (index != -1) {
-            return new Hint(found, notFound);
+            return "\"" + sequence + "\" found at index " + index;
         }
         else {
-            return new Hint(notFound, found);
+            return "String does not include \"" + sequence + "\"";
         }
     }
 

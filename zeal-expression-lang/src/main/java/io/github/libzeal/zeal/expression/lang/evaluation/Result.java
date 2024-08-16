@@ -8,12 +8,12 @@ public enum Result {
     /**
      * An evaluation that passed.
      */
-    PASSED,
+    TRUE,
 
     /**
      * An evaluation that failed.
      */
-    FAILED,
+    FALSE,
 
     /**
      * An evaluation that was skipped (never evaluated).
@@ -21,11 +21,11 @@ public enum Result {
     SKIPPED;
 
     public boolean isPassed() {
-        return equals(PASSED);
+        return equals(TRUE);
     }
 
     public boolean isFailed() {
-        return equals(FAILED);
+        return equals(FALSE);
     }
 
     public boolean isSkipped() {

@@ -113,8 +113,8 @@ public class AssertionTestCases {
         @Override
         public Stream<? extends Arguments> provideArguments(final ExtensionContext extensionContext) throws Exception {
             return Stream.of(
-                Arguments.of( new SubjectReturnedDataSet("Passing with null subject", Result.PASSED, null)),
-                Arguments.of(new SubjectReturnedDataSet("Passing with non-null subject", Result.PASSED, new Object())),
+                Arguments.of( new SubjectReturnedDataSet("Passing with null subject", Result.TRUE, null)),
+                Arguments.of(new SubjectReturnedDataSet("Passing with non-null subject", Result.TRUE, new Object())),
                 Arguments.of(new SubjectReturnedDataSet("Skipped with null subject", Result.SKIPPED, null)),
                 Arguments.of(new SubjectReturnedDataSet("Skipped with non-null subject", Result.SKIPPED, new Object()))
             );

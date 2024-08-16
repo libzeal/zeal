@@ -10,7 +10,7 @@ class ResultTest {
     @Test
     void givenPassed_whenCallIsMethods_thenValuesCorrect() {
 
-        Result result = Result.PASSED;
+        Result result = Result.TRUE;
 
         assertTrue(result.isPassed());
         assertFalse(result.isFailed());
@@ -20,7 +20,7 @@ class ResultTest {
     @Test
     void givenFailed_whenCallIsMethods_thenValuesCorrect() {
 
-        Result result = Result.FAILED;
+        Result result = Result.FALSE;
 
         assertFalse(result.isPassed());
         assertTrue(result.isFailed());

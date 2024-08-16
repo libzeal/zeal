@@ -106,14 +106,14 @@ class ConfirmationTest {
                 Arguments.of(
                     new ExceptionTestCaseData(
                         "Failed evaluation and null subject",
-                        expression(Result.FAILED, null),
+                        expression(Result.FALSE, null),
                         AssertionFailedError.class
                     )
                 ),
                 Arguments.of(
                     new ExceptionTestCaseData(
                         "Failed evaluation and non-null subject",
-                        expression(Result.FAILED, new Object()),
+                        expression(Result.FALSE, new Object()),
                         AssertionFailedError.class
                     )
                 )

@@ -16,23 +16,21 @@ import java.util.function.Predicate;
  */
 public class UnaryExpressionBuilder<T, E extends ObjectUnaryExpression<T, E>> {
 
-    private final BuildableExpression<T, E> parent;
+    private final BuildableExpression<E> parent;
     private final T subject;
     private final boolean nullable;
     private final Predicate<T> test;
     private String name = "<unnamed>";
     private ValueSupplier<T> expected = (s, passed) -> "<not set>";
-    private ValueSupplier<T> actual = (s, passed) -> {
-        return Formatter.stringify(s);
-    };
-    private HintSupplier<T> hint = null;
+    private ValueSupplier<T> actual = (s, passed) -> Formatter.stringify(s);
+    private ValueSupplier<T> hint = null;
 
-    public static <T, E extends ObjectUnaryExpression<T, E>> UnaryExpressionBuilder<T, E> notNullable(final BuildableExpression<T, E> parent, final T subject,
+    public static <T, E extends ObjectUnaryExpression<T, E>> UnaryExpressionBuilder<T, E> notNullable(final BuildableExpression<E> parent, final T subject,
                                                                                                       final Predicate<T> test) {
         return new UnaryExpressionBuilder<>(parent, subject, false, test);
     }
 
-    public static <T, E extends ObjectUnaryExpression<T, E>> UnaryExpressionBuilder<T, E> nullable(final BuildableExpression<T, E> parent, final T subject,
+    public static <T, E extends ObjectUnaryExpression<T, E>> UnaryExpressionBuilder<T, E> nullable(final BuildableExpression<E> parent, final T subject,
                                                                                                    final Predicate<T> test) {
         return new UnaryExpressionBuilder<>(parent, subject, true, test);
     }
@@ -49,7 +47,7 @@ public class UnaryExpressionBuilder<T, E extends ObjectUnaryExpression<T, E>> {
      * @param test
      *     The predicate (test) to evaluate.
      */
-    private UnaryExpressionBuilder(final BuildableExpression<T, E> parent, final T subject, final boolean nullable,
+    private UnaryExpressionBuilder(final BuildableExpression<E> parent, final T subject, final boolean nullable,
                                    final Predicate<T> test) {
         this.parent = parent;
         this.subject = subject;
@@ -140,7 +138,7 @@ public class UnaryExpressionBuilder<T, E extends ObjectUnaryExpression<T, E>> {
      *
      * @return This builder (fluent interface).
      */
-    public UnaryExpressionBuilder<T, E> hint(final HintSupplier<T> hint) {
+    public UnaryExpressionBuilder<T, E> hint(final ValueSupplier<T> hint) {
         this.hint = hint;
         return this;
     }
@@ -153,7 +151,7 @@ public class UnaryExpressionBuilder<T, E extends ObjectUnaryExpression<T, E>> {
      *
      * @return This builder (fluent interface).
      */
-    public UnaryExpressionBuilder<T, E> hint(final Hint hint) {
+    public UnaryExpressionBuilder<T, E> hint(final String hint) {
         return hint((s, passed) -> hint);
     }
 
@@ -173,18 +171,23 @@ public class UnaryExpressionBuilder<T, E extends ObjectUnaryExpression<T, E>> {
     private UnaryExpression<T> build() {
 
         final RationaleGenerator<T> rationaleGenerator = new SimpleRationaleGenerator<>(expected, actual, hint);
+        final Predicate<T> predicate = predicate();
+
+        return TerminalUnaryExpression.of(name, subject, predicate, rationaleGenerator);
+    }
+
+    private Predicate<T> predicate() {
 
         if (nullable) {
-            return TerminalUnaryExpression.ofNullable(name, subject, test, rationaleGenerator);
+            return test;
         }
         else {
-            return TerminalUnaryExpression.of(name, subject, test, rationaleGenerator);
+            return s -> s != null && test.test(s);
         }
     }
 
-    public interface BuildableExpression<T, E> {
+    public interface BuildableExpression<E> {
         E prepend(Expression predicate);
-
         E append(Expression predicate);
     }
 }

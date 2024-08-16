@@ -15,7 +15,7 @@ import java.util.Optional;
  */
 public class SimpleEvaluationFormatter implements EvaluationFormatter {
 
-    static final String INDENT = "       ";
+    static final String INDENT = "    ";
 
     @Override
     public String format(Evaluation eval) {
@@ -66,12 +66,12 @@ public class SimpleEvaluationFormatter implements EvaluationFormatter {
     private static String format(Result state) {
 
         switch (state) {
-            case PASSED:
-                return " OK ";
-            case FAILED:
-                return "FAIL";
+            case TRUE:
+                return "T";
+            case FALSE:
+                return "F";
             default:
-                return "    ";
+                return " ";
         }
     }
 
@@ -115,10 +115,10 @@ public class SimpleEvaluationFormatter implements EvaluationFormatter {
 
         private static Optional<RootCause> find(Evaluation eval) {
 
-            if (eval.result().equals(Result.PASSED)) {
+            if (eval.result().equals(Result.TRUE)) {
                 return Optional.empty();
             }
-            else if (eval.result().equals(Result.FAILED) && eval.children().isEmpty()) {
+            else if (eval.result().equals(Result.FALSE) && eval.children().isEmpty()) {
                 return Optional.of(
                     new RootCause(
                         eval.name(),

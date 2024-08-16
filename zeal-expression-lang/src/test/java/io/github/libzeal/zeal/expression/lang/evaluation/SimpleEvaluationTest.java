@@ -16,7 +16,7 @@ class SimpleEvaluationTest {
     @BeforeEach
     void setUp() {
 
-        result = Result.PASSED;
+        result = Result.TRUE;
         name = "foo";
         rationale = SimpleRationale.empty();
     }
@@ -25,7 +25,7 @@ class SimpleEvaluationTest {
     void givenNullName_whenConstruct_thenExceptionThrown() {
         assertThrows(
             NullPointerException.class,
-            () -> new SimpleEvaluation(null, Result.PASSED, rationale)
+            () -> new SimpleEvaluation(null, Result.TRUE, rationale)
         );
     }
 
@@ -41,7 +41,7 @@ class SimpleEvaluationTest {
     void givenNullRationale_whenConstruct_thenExceptionThrown() {
         assertThrows(
             NullPointerException.class,
-            () -> new SimpleEvaluation("foo", Result.PASSED, null)
+            () -> new SimpleEvaluation("foo", Result.TRUE, null)
         );
     }
 

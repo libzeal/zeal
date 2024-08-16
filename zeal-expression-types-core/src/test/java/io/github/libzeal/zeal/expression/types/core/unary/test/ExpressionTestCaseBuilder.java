@@ -1,7 +1,6 @@
 package io.github.libzeal.zeal.expression.types.core.unary.test;
 
 import io.github.libzeal.zeal.expression.lang.evaluation.Result;
-import io.github.libzeal.zeal.expression.lang.rationale.Hint;
 import io.github.libzeal.zeal.expression.types.core.unary.ObjectUnaryExpression;
 import org.junit.jupiter.params.provider.Arguments;
 
@@ -45,7 +44,7 @@ public class ExpressionTestCaseBuilder<T, E extends ObjectUnaryExpression<T, E>>
         private Function<T, String> name;
         private BiFunction<?, ?, String> expectedValue;
         private BiFunction<?, ?, String> actualValue;
-        private BiFunction<?, ?, Hint> hint;
+        private BiFunction<?, ?, String> hint;
 
         public ArgumentBuilder(ExpressionTestCaseBuilder<T, E> testCaseBuilder, BiFunction<E, T, E> modifier) {
             this.testCaseBuilder = testCaseBuilder;
@@ -57,7 +56,7 @@ public class ExpressionTestCaseBuilder<T, E extends ObjectUnaryExpression<T, E>>
             return this;
         }
 
-        public ArgumentBuilder<T, E> value(T value) {
+        public ArgumentBuilder<T, E> subject(T value) {
             this.value = value;
             return this;
         }
@@ -94,11 +93,11 @@ public class ExpressionTestCaseBuilder<T, E extends ObjectUnaryExpression<T, E>>
             return this;
         }
 
-        public ArgumentBuilder<T, E> expectedHint(Hint value) {
+        public ArgumentBuilder<T, E> expectedHint(String value) {
             return expectedHint((e, v) -> value);
         }
 
-        public ArgumentBuilder<T, E> expectedHint(BiFunction<T, ?, Hint> hint) {
+        public ArgumentBuilder<T, E> expectedHint(BiFunction<T, ?, String> hint) {
             this.hint = hint;
             return this;
         }

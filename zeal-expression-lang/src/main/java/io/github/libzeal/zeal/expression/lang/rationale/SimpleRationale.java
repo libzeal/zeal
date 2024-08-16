@@ -17,7 +17,7 @@ public class SimpleRationale implements Rationale {
     private static final SimpleRationale SKIPPED = new SimpleRationale(SKIPPED_VALUE, SKIPPED_VALUE);
     private final String expected;
     private final String actual;
-    private final Hint hint;
+    private final String hint;
 
     /**
      * Creates an empty rationale, where the expected value, actual value, and hint are all blank strings.
@@ -59,7 +59,7 @@ public class SimpleRationale implements Rationale {
      * @param hint
      *     A hint as to how the expected and actual values should match.
      */
-    public SimpleRationale(String expected, String actual, Hint hint) {
+    public SimpleRationale(String expected, String actual, String hint) {
         this.expected = expected;
         this.actual = actual;
         this.hint = hint;
@@ -76,7 +76,7 @@ public class SimpleRationale implements Rationale {
     }
 
     @Override
-    public Optional<Hint> hint() {
+    public Optional<String> hint() {
         return Optional.ofNullable(hint);
     }
 

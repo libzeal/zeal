@@ -2,7 +2,6 @@ package io.github.libzeal.zeal.expression.lang.unary;
 
 import io.github.libzeal.zeal.expression.lang.evaluation.Evaluation;
 import io.github.libzeal.zeal.expression.lang.evaluation.Result;
-import io.github.libzeal.zeal.expression.lang.rationale.Hint;
 import io.github.libzeal.zeal.expression.lang.rationale.Rationale;
 import io.github.libzeal.zeal.expression.lang.rationale.RationaleGenerator;
 import io.github.libzeal.zeal.expression.lang.rationale.SimpleRationale;
@@ -18,7 +17,7 @@ class TerminalUnaryExpressionTest {
 
     private static final String EXPECTED = "foo";
     private static final String ACTUAL = "bar";
-    private static final Hint HINT = Hint.symmetrical("baz");
+    private static final String HINT = "baz";
 
     @Test
     void givenNullName_whenOf_thenExceptionThrown() {
@@ -71,83 +70,6 @@ class TerminalUnaryExpressionTest {
             NullPointerException.class,
             () -> TerminalUnaryExpression.of("someName", subject, s -> true, null)
         );
-    }
-
-    @Test
-    void givenNonNullableExpression_whenName_thenNameIsCorrect() {
-
-        final String name = "someName";
-        final TerminalUnaryExpression<Object> expression = TerminalUnaryExpression.of(name, new Object(),
-            s -> true, generator());
-
-        assertEquals(name, expression.name());
-    }
-
-    @Test
-    void givenNonNullableExpression_whenSubject_thenSubjectIsCorrect() {
-
-        final Object subject = new Object();
-        final TerminalUnaryExpression<Object> expression = TerminalUnaryExpression.of("someName", subject,
-            s -> true, generator());
-
-        assertEquals(subject, expression.subject());
-    }
-
-    @Test
-    void givenTrueNonNullableExpression_whenEvaluate_thenEvaluationIsCorrect() {
-
-        final Object subject = new Object();
-        final TerminalUnaryExpression<Object> expression = TerminalUnaryExpression.of(
-            "someName",
-            subject,
-            s -> true,
-            generator()
-        );
-
-        final Evaluation evaluation = expression.evaluate();
-
-        assertEquals(Result.PASSED, evaluation.result());
-        assertRationaleIsCorrect(evaluation.rationale());
-    }
-
-    private static void assertRationaleIsCorrect(final Rationale rationale) {
-        assertEquals(EXPECTED, rationale.expected());
-        assertEquals(ACTUAL, rationale.actual());
-        assertTrue(rationale.hint().isPresent());
-        assertEquals(HINT, rationale.hint().get());
-    }
-
-    @Test
-    void givenFalseNonNullableExpression_whenEvaluate_thenEvaluationIsCorrect() {
-
-        final Object subject = new Object();
-        final TerminalUnaryExpression<Object> expression = TerminalUnaryExpression.of(
-            "someName",
-            subject,
-            s -> false,
-            generator()
-        );
-
-        final Evaluation evaluation = expression.evaluate();
-
-        assertEquals(Result.FAILED, evaluation.result());
-        assertRationaleIsCorrect(evaluation.rationale());
-    }
-
-    @Test
-    void givenNullSubjectNonNullableExpression_whenEvaluate_thenEvaluationIsCorrect() {
-
-        final TerminalUnaryExpression<Object> expression = TerminalUnaryExpression.of(
-            "someName",
-            null,
-            s -> true,
-            generator()
-        );
-
-        final Evaluation evaluation = expression.evaluate();
-
-        assertEquals(Result.FAILED, evaluation.result());
-        assertRationaleIsCorrect(evaluation.rationale());
     }
 
     @Test
@@ -225,8 +147,15 @@ class TerminalUnaryExpressionTest {
 
         final Evaluation evaluation = expression.evaluate();
 
-        assertEquals(Result.PASSED, evaluation.result());
+        assertEquals(Result.TRUE, evaluation.result());
         assertRationaleIsCorrect(evaluation.rationale());
+    }
+
+    private static void assertRationaleIsCorrect(final Rationale rationale) {
+        assertEquals(EXPECTED, rationale.expected());
+        assertEquals(ACTUAL, rationale.actual());
+        assertTrue(rationale.hint().isPresent());
+        assertEquals(HINT, rationale.hint().get());
     }
 
     @Test
@@ -242,7 +171,7 @@ class TerminalUnaryExpressionTest {
 
         final Evaluation evaluation = expression.evaluate();
 
-        assertEquals(Result.FAILED, evaluation.result());
+        assertEquals(Result.FALSE, evaluation.result());
         assertRationaleIsCorrect(evaluation.rationale());
     }
 
@@ -258,7 +187,7 @@ class TerminalUnaryExpressionTest {
 
         final Evaluation evaluation = expression.evaluate();
 
-        assertEquals(Result.PASSED, evaluation.result());
+        assertEquals(Result.TRUE, evaluation.result());
         assertRationaleIsCorrect(evaluation.rationale());
     }
 }

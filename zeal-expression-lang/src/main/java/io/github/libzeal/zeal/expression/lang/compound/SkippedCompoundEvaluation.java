@@ -1,5 +1,6 @@
-package io.github.libzeal.zeal.expression.lang;
+package io.github.libzeal.zeal.expression.lang.compound;
 
+import io.github.libzeal.zeal.expression.lang.Expression;
 import io.github.libzeal.zeal.expression.lang.evaluation.Evaluation;
 import io.github.libzeal.zeal.expression.lang.rationale.Rationale;
 import io.github.libzeal.zeal.expression.lang.evaluation.Result;

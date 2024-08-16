@@ -3,7 +3,6 @@ package io.github.libzeal.zeal.expression.lang.evaluation.format;
 import io.github.libzeal.zeal.expression.lang.evaluation.Evaluation;
 import io.github.libzeal.zeal.expression.lang.evaluation.Result;
 import io.github.libzeal.zeal.expression.lang.evaluation.SimpleEvaluation;
-import io.github.libzeal.zeal.expression.lang.rationale.Hint;
 import io.github.libzeal.zeal.expression.lang.rationale.Rationale;
 import io.github.libzeal.zeal.expression.lang.rationale.SimpleRationale;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,7 +35,7 @@ class SimpleEvaluationFormatterTest {
     @Test
     void givenPassingSingleEvaluation_whenFormat_thenCorrectStringReturned() {
 
-        final Result result = Result.PASSED;
+        final Result result = Result.TRUE;
         final String name = "foo";
         final Evaluation expression = expression(result, name);
 
@@ -58,7 +57,7 @@ class SimpleEvaluationFormatterTest {
 
     private static String expectedPassingOutput(final String name, final int indent) {
         return indent(indent) +
-            "[ OK ] " +
+            "[T] " +
             name;
     }
 
@@ -88,16 +87,16 @@ class SimpleEvaluationFormatterTest {
 
     private static String expectedSkippedOutput(final String name, final int indent) {
         return indent(indent) +
-            "[    ] " +
+            "[ ] " +
             name;
     }
 
     @Test
     void givenFailingSingleEvaluation_whenFormat_thenCorrectStringReturned() {
 
-        final Result result = Result.FAILED;
+        final Result result = Result.FALSE;
         final String name = "foo";
-        final Rationale rationale = new SimpleRationale("expected", "actual", Hint.symmetrical("hint"));
+        final Rationale rationale = new SimpleRationale("expected", "actual", "hint");
         final Evaluation expression = expression(result, name, rationale);
 
         assertEquals(
@@ -151,7 +150,7 @@ class SimpleEvaluationFormatterTest {
 
     private static String expectedFailingOutput(String name, Rationale rationale, int indent) {
         return indent(indent) +
-            "[FAIL] " +
+            "[F] " +
             name +
             "\n" +
             format(rationale, indent + 1);
@@ -160,7 +159,7 @@ class SimpleEvaluationFormatterTest {
     @Test
     void givenFailingSingleEvaluationWithNullRationale_whenFormat_thenCorrectStringReturned() {
 
-        final Result result = Result.FAILED;
+        final Result result = Result.FALSE;
         final String name = "foo";
         final Evaluation expression = expression(result, name, null);
 
@@ -176,25 +175,25 @@ class SimpleEvaluationFormatterTest {
 
         final String compoundExpressionName = "Compound Name";
 
-        final Result passingResult = Result.PASSED;
+        final Result passingResult = Result.TRUE;
         final String passingName = "foo1";
-        final Rationale passingRationale = new SimpleRationale("expected1", "actual1", Hint.symmetrical("hint1"));
+        final Rationale passingRationale = new SimpleRationale("expected1", "actual1","hint1");
         final Evaluation passingExpression = expression(passingResult, passingName, passingRationale);
 
-        final Result failingResult = Result.FAILED;
+        final Result failingResult = Result.FALSE;
         final String failingName = "foo2";
-        final Rationale failingRationale = new SimpleRationale("expected2", "actual2", Hint.symmetrical("hint2"));
+        final Rationale failingRationale = new SimpleRationale("expected2", "actual2", "hint2");
         final Evaluation failingExpression = expression(failingResult, failingName, failingRationale);
 
         final SimpleEvaluation compound = new SimpleEvaluation(
-            compoundExpressionName, Result.FAILED,
+            compoundExpressionName, Result.FALSE,
             SimpleRationale.empty(),
             Arrays.asList(passingExpression, failingExpression)
         );
 
         assertEquals(
             expectedRootCauseOutput(failingName, failingRationale) + "\n" +
-                "[FAIL] " + compoundExpressionName + "\n" +
+                "[F] " + compoundExpressionName + "\n" +
                 expectedPassingOutput(passingName, 1) + "\n" +
                 expectedFailingOutput(failingName, failingRationale, 1),
             formatter.format(compound)
@@ -206,14 +205,14 @@ class SimpleEvaluationFormatterTest {
 
         final String compoundExpressionName = "Compound Name";
 
-        final Result passingResult = Result.PASSED;
+        final Result passingResult = Result.TRUE;
         final String passingName = "foo1";
-        final Rationale passingRationale = new SimpleRationale("expected1", "actual1", Hint.symmetrical("hint1"));
+        final Rationale passingRationale = new SimpleRationale("expected1", "actual1", "hint1");
         final Evaluation passingExpression = expression(passingResult, passingName, passingRationale);
 
-        final Result failingResult = Result.FAILED;
+        final Result failingResult = Result.FALSE;
         final String failingName = "foo2";
-        final Rationale failingRationale = new SimpleRationale("expected2", "actual2", Hint.symmetrical("hint2"));
+        final Rationale failingRationale = new SimpleRationale("expected2", "actual2", "hint2");
         final Evaluation failingExpression = expression(failingResult, failingName, failingRationale);
 
         final Result skippedResult = Result.SKIPPED;
@@ -222,14 +221,14 @@ class SimpleEvaluationFormatterTest {
         final Evaluation skippedExpression = expression(skippedResult, skippedName, skippedRationale);
 
         final SimpleEvaluation compound = new SimpleEvaluation(
-            compoundExpressionName, Result.FAILED,
+            compoundExpressionName, Result.FALSE,
             SimpleRationale.empty(),
             Arrays.asList(passingExpression, failingExpression, skippedExpression)
         );
 
         assertEquals(
             expectedRootCauseOutput(failingName, failingRationale) + "\n" +
-                "[FAIL] " + compoundExpressionName + "\n" +
+                "[F] " + compoundExpressionName + "\n" +
                 expectedPassingOutput(passingName, 1) + "\n" +
                 expectedFailingOutput(failingName, failingRationale, 1) + "\n" +
                 expectedSkippedOutput(skippedName,1),

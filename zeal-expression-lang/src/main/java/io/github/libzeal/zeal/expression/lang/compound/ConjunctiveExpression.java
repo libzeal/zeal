@@ -1,10 +1,12 @@
-package io.github.libzeal.zeal.expression.lang;
+package io.github.libzeal.zeal.expression.lang.compound;
 
+import io.github.libzeal.zeal.expression.lang.Expression;
+import io.github.libzeal.zeal.expression.lang.compound.CompoundEvaluator.CompoundEvaluation;
+import io.github.libzeal.zeal.expression.lang.compound.CompoundEvaluator.Tally;
 import io.github.libzeal.zeal.expression.lang.evaluation.Evaluation;
 import io.github.libzeal.zeal.expression.lang.evaluation.Result;
 import io.github.libzeal.zeal.expression.lang.evaluation.SimpleEvaluation;
 import io.github.libzeal.zeal.expression.lang.rationale.Rationale;
-import io.github.libzeal.zeal.expression.lang.rationale.SimpleRationale;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +30,7 @@ public class ConjunctiveExpression implements CompoundExpression {
      * @param name
      *     The name of the expression.
      * @param children
-     *     The expressions used initialize the compound expression.
+     *     The expressions used to initialize the compound expression.
      *
      * @throws NullPointerException
      *     Any of the supplied arguments are {@code null}.
@@ -36,6 +38,18 @@ public class ConjunctiveExpression implements CompoundExpression {
     public ConjunctiveExpression(String name, List<Expression> children) {
         this.name = requireNonNull(name);
         this.children = requireNonNull(children);
+    }
+
+    /**
+     * Creates a new conjunctive expression using a default name.
+     *
+     * @param children
+     *     The expressions used to initialize the compound expression.
+     *
+     * @return A conjunctive expression with a default name.
+     */
+    public static ConjunctiveExpression withDefaultName(final List<Expression> children) {
+        return new ConjunctiveExpression("All (AND)", children);
     }
 
     /**
@@ -73,65 +87,29 @@ public class ConjunctiveExpression implements CompoundExpression {
     @Override
     public Evaluation evaluate() {
 
-        final int total = children.size();
-        final List<Evaluation> evaluated = new ArrayList<>(total);
-        int passed = 0;
-        int failed = 0;
-        int skipped = 0;
+        final CompoundEvaluator evaluator = CompoundEvaluator.skipAfter(Tally::atLeastOneFailed);
+        final CompoundEvaluation result = evaluator.evaluate(children);
 
-        for (Expression expression : children) {
+        final Result compountResult = computeResult(result.tally());
+        final Rationale rationale =
+            CompoundRationaleBuilder.withExpected("All children must pass").build(result.tally());
 
-            if (failed > 0) {
-                evaluated.add(expression.skip());
-            }
-            else {
-                final Evaluation evaluation = expression.evaluate();
-                final Result result = evaluation.result();
-
-                switch (result) {
-                    case PASSED:
-                        passed++;
-                        break;
-                    case FAILED:
-                        failed++;
-                        break;
-                    case SKIPPED:
-                        skipped++;
-                        break;
-                }
-
-                evaluated.add(evaluation);
-            }
-        }
-
-        final Result compountResult = computeResult(passed, failed, total);
-        final Rationale rationale = computeRationale(passed, failed, skipped);
-
-        return new SimpleEvaluation(name, compountResult, rationale, evaluated);
+        return new SimpleEvaluation(name, compountResult, rationale, result.evaluations());
     }
 
-    private Result computeResult(final int passed, final int failed, final int total) {
+    private Result computeResult(final Tally tally) {
 
-        if (total == 0) {
-            return Result.PASSED;
+        if (tally.total() == 0) {
+            return Result.TRUE;
         }
-        else if (failed > 0) {
-            return Result.FAILED;
+        else if (tally.failed() > 0) {
+            return Result.FALSE;
         }
-        else if (passed == total) {
-            return Result.PASSED;
+        else if (tally.passed() == tally.total()) {
+            return Result.TRUE;
         }
         else {
             return Result.SKIPPED;
         }
-    }
-
-    private Rationale computeRationale(final int passed, final int failed, final int skipped) {
-
-        final String expected = "All children must pass";
-        final String actual =
-            "Passed: " + passed + ", Failed: " + failed + ", Skipped: " + skipped;
-
-        return new SimpleRationale(expected, actual);
     }
 }

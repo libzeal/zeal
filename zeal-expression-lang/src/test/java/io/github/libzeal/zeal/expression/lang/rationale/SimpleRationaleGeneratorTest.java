@@ -1,6 +1,5 @@
 package io.github.libzeal.zeal.expression.lang.rationale;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -9,7 +8,7 @@ class SimpleRationaleGeneratorTest {
 
     private static final String ACTUAL = "foo";
     private static final String EXPECTED = "bar";
-    private static final Hint HINT = new Hint("baz", "not[baz]");
+    private static final String HINT = "baz";
 
     @Test
     void givenNullExpected_whenConstruct_thenExceptionThrown() {

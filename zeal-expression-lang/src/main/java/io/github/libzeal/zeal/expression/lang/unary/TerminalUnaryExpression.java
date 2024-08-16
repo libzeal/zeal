@@ -1,13 +1,15 @@
 package io.github.libzeal.zeal.expression.lang.unary;
 
 import io.github.libzeal.zeal.expression.lang.evaluation.Evaluation;
+import io.github.libzeal.zeal.expression.lang.evaluation.Result;
 import io.github.libzeal.zeal.expression.lang.evaluation.SimpleEvaluation;
+import io.github.libzeal.zeal.expression.lang.rationale.Rationale;
 import io.github.libzeal.zeal.expression.lang.rationale.RationaleGenerator;
 
 import java.util.function.Predicate;
 
-import static io.github.libzeal.zeal.expression.lang.evaluation.Result.FAILED;
-import static io.github.libzeal.zeal.expression.lang.evaluation.Result.PASSED;
+import static io.github.libzeal.zeal.expression.lang.evaluation.Result.FALSE;
+import static io.github.libzeal.zeal.expression.lang.evaluation.Result.TRUE;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -54,7 +56,7 @@ public class TerminalUnaryExpression<T> implements UnaryExpression<T> {
         return new TerminalUnaryExpression<>(
             name,
             subject,
-            s -> s != null && predicate.test(s),
+            predicate,
             rationaleGenerator
         );
     }
@@ -102,12 +104,10 @@ public class TerminalUnaryExpression<T> implements UnaryExpression<T> {
     public Evaluation evaluate() {
 
         final boolean passed = predicate.test(subject);
+        final Result result = passed ? TRUE : FALSE;
+        final Rationale generate = rationaleGenerator.generate(subject, passed);
 
-        return new SimpleEvaluation(
-            name,
-            passed ? PASSED : FAILED,
-            rationaleGenerator.generate(subject, passed)
-        );
+        return new SimpleEvaluation(name, result, generate);
     }
 
     @Override

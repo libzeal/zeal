@@ -40,7 +40,7 @@ class SimpleConditionTest {
         final Object subject = new Object();
         final Condition<Object> condition = new SimpleCondition<>("foo", s -> true);
 
-        assertEquals(Result.PASSED, condition.create(subject).evaluate().result());
+        assertEquals(Result.TRUE, condition.create(subject).evaluate().result());
     }
 
     @Test
@@ -49,6 +49,6 @@ class SimpleConditionTest {
         final Object subject = new Object();
         final Condition<Object> condition = new SimpleCondition<>("foo", s -> false);
 
-        assertEquals(Result.FAILED, condition.create(subject).evaluate().result());
+        assertEquals(Result.FALSE, condition.create(subject).evaluate().result());
     }
 }

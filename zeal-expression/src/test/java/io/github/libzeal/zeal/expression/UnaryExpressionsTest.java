@@ -43,7 +43,7 @@ class UnaryExpressionsTest {
     @Test
     void givenValidValue_whenValueEnum_thenExpressionReturned() {
 
-        Expression expression = UnaryExpressions.value(Result.PASSED);
+        Expression expression = UnaryExpressions.value(Result.TRUE);
 
         assertNotNull(expression);
     }

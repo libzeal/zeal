@@ -1,5 +1,8 @@
-package io.github.libzeal.zeal.expression.lang;
+package io.github.libzeal.zeal.expression.lang.compound;
 
+import io.github.libzeal.zeal.expression.lang.Expression;
+import io.github.libzeal.zeal.expression.lang.ExpressionAssertions;
+import io.github.libzeal.zeal.expression.lang.Expressions;
 import io.github.libzeal.zeal.expression.lang.evaluation.Evaluation;
 import io.github.libzeal.zeal.expression.lang.evaluation.Result;
 import io.github.libzeal.zeal.expression.lang.rationale.SimpleRationale;
@@ -15,14 +18,14 @@ import static org.mockito.Mockito.*;
 class DisjunctiveExpressionTest {
 
     private String name;
-    private DisjunctiveExpression predicate;
+    private DisjunctiveExpression expression;
 
     @BeforeEach
     void setUp() {
 
         name = "foo";
 
-        predicate = new DisjunctiveExpression(name, new ArrayList<>());
+        expression = new DisjunctiveExpression(name, new ArrayList<>());
     }
 
     @Test
@@ -54,58 +57,58 @@ class DisjunctiveExpressionTest {
 
     @Test
     void givenValidName_whenName_thenNameIsCorrect() {
-        assertEquals(name, predicate.name());
+        assertEquals(name, expression.name());
     }
 
     @Test
     void givenNoSubPredicate_whenEvaluate_thenEvaluationIsCorrect() {
 
-        Evaluation evaluation = predicate.evaluate();
+        Evaluation evaluation = expression.evaluate();
 
-        assertEquals(Result.PASSED, evaluation.result());
+        assertEquals(Result.TRUE, evaluation.result());
         assertEquals(name, evaluation.name());
         assertNotNull(evaluation.rationale());
         assertTrue(evaluation.children().isEmpty());
     }
 
     @Test
-    void givenOnePassingCriterionAppended_whenEvaluate_thenEvaluationIsCorrect() {
+    void givenOnePassingExpressionAppended_whenEvaluate_thenEvaluationIsCorrect() {
 
-        UnaryExpression<Object> subPredicate = Expressions.unaryExpression(Result.PASSED);
+        UnaryExpression<Object> subPredicate = Expressions.unaryExpression(Result.TRUE);
 
-        predicate.append(subPredicate);
+        expression.append(subPredicate);
 
-        Evaluation evaluation = predicate.evaluate();
+        Evaluation evaluation = expression.evaluate();
 
-        assertEquals(Result.PASSED, evaluation.result());
+        assertEquals(Result.TRUE, evaluation.result());
         assertEquals(name, evaluation.name());
         assertNotNull(evaluation.rationale());
         assertEquals(1, evaluation.children().size());
     }
 
     @Test
-    void givenOneFailingCriterionAppended_whenEvaluate_thenEvaluationIsCorrect() {
+    void givenOneFailingExpressionAppended_whenEvaluate_thenEvaluationIsCorrect() {
 
-        UnaryExpression<Object> subPredicate = Expressions.unaryExpression(Result.FAILED);
+        UnaryExpression<Object> subPredicate = Expressions.unaryExpression(Result.FALSE);
 
-        predicate.append(subPredicate);
+        expression.append(subPredicate);
 
-        Evaluation evaluation = predicate.evaluate();
+        Evaluation evaluation = expression.evaluate();
 
-        assertEquals(Result.FAILED, evaluation.result());
+        assertEquals(Result.FALSE, evaluation.result());
         assertEquals(name, evaluation.name());
         assertNotNull(evaluation.rationale());
         assertEquals(1, evaluation.children().size());
     }
 
     @Test
-    void givenOneSkippedCriterionAppended_whenEvaluate_thenEvaluationIsCorrect() {
+    void givenOneSkippedExpressionAppended_whenEvaluate_thenEvaluationIsCorrect() {
 
         UnaryExpression<Object> subPredicate = Expressions.unaryExpression(Result.SKIPPED);
 
-        predicate.append(subPredicate);
+        expression.append(subPredicate);
 
-        Evaluation evaluation = predicate.evaluate();
+        Evaluation evaluation = expression.evaluate();
 
         assertEquals(Result.SKIPPED, evaluation.result());
         assertEquals(name, evaluation.name());
@@ -116,43 +119,43 @@ class DisjunctiveExpressionTest {
     @Test
     void givenOneFailingPredicatePrependedBeforePassingPredicate_whenEvaluate_thenEvaluationIsCorrect() {
 
-        UnaryExpression<Object> passingSubPredicate = Expressions.unaryExpression(Result.PASSED);
-        UnaryExpression<Object> failingSubPredicate = Expressions.unaryExpression(Result.FAILED);
+        UnaryExpression<Object> passingSubPredicate = Expressions.unaryExpression(Result.TRUE);
+        UnaryExpression<Object> failingSubPredicate = Expressions.unaryExpression(Result.FALSE);
 
-        predicate.append(passingSubPredicate);
-        predicate.prepend(failingSubPredicate);
+        expression.append(passingSubPredicate);
+        expression.prepend(failingSubPredicate);
 
-        Evaluation evaluation = predicate.evaluate();
+        Evaluation evaluation = expression.evaluate();
 
-        assertEquals(Result.PASSED, evaluation.result());
+        assertEquals(Result.TRUE, evaluation.result());
         assertEquals(name, evaluation.name());
         assertNotNull(evaluation.rationale());
         assertEquals(2, evaluation.children().size());
         assertIsNotSkipped(failingSubPredicate);
     }
 
-    private static void assertIsSkipped(UnaryExpression<Object> predicate) {
-        verify(predicate, times(1)).skip();
-        verify(predicate, never()).evaluate();
+    private static void assertIsSkipped(UnaryExpression<Object> expression) {
+        verify(expression, times(1)).skip();
+        verify(expression, never()).evaluate();
     }
 
-    private static void assertIsNotSkipped(UnaryExpression<Object> predicate) {
-        verify(predicate, never()).skip();
-        verify(predicate, times(1)).evaluate();
+    private static void assertIsNotSkipped(UnaryExpression<Object> expression) {
+        verify(expression, never()).skip();
+        verify(expression, times(1)).evaluate();
     }
 
     @Test
     void givenOnePassingPredicatePrependedBeforeFailingPredicate_whenEvaluate_thenEvaluationIsCorrect() {
 
-        UnaryExpression<Object> passingSubPredicate = Expressions.unaryExpression(Result.PASSED);
-        UnaryExpression<Object> failingSubPredicate = Expressions.unaryExpression(Result.FAILED);
+        UnaryExpression<Object> passingSubPredicate = Expressions.unaryExpression(Result.TRUE);
+        UnaryExpression<Object> failingSubPredicate = Expressions.unaryExpression(Result.FALSE);
 
-        predicate.append(failingSubPredicate);
-        predicate.prepend(passingSubPredicate);
+        expression.append(failingSubPredicate);
+        expression.prepend(passingSubPredicate);
 
-        Evaluation evaluation = predicate.evaluate();
+        Evaluation evaluation = expression.evaluate();
 
-        assertEquals(Result.PASSED, evaluation.result());
+        assertEquals(Result.TRUE, evaluation.result());
         assertEquals(name, evaluation.name());
         assertNotNull(evaluation.rationale());
         assertEquals(2, evaluation.children().size());
@@ -162,9 +165,9 @@ class DisjunctiveExpressionTest {
     @Test
     void givenNoChildren_whenSkip_thenEvaluationIsCorrect() {
 
-        Evaluation skippedEvaluation = predicate.skip();
+        Evaluation skippedEvaluation = expression.skip();
 
-        assertEquals(predicate.name(), skippedEvaluation.name());
+        assertEquals(expression.name(), skippedEvaluation.name());
         assertEquals(Result.SKIPPED, skippedEvaluation.result());
         assertEquals(SimpleRationale.skipped(), skippedEvaluation.rationale());
         assertTrue(skippedEvaluation.children().isEmpty());
@@ -173,14 +176,14 @@ class DisjunctiveExpressionTest {
     @Test
     void givenOneChild_whenSkip_thenEvaluationIsCorrect() {
 
-        final String subPredicateName = "predicate 1";
-        UnaryExpression<Object> subPredicate = Expressions.unaryExpression(subPredicateName, Result.PASSED);
+        final String subPredicateName = "expression 1";
+        UnaryExpression<Object> subPredicate = Expressions.unaryExpression(subPredicateName, Result.TRUE);
 
-        predicate.append(subPredicate);
+        expression.append(subPredicate);
 
-        Evaluation skippedEvaluation = predicate.skip();
+        Evaluation skippedEvaluation = expression.skip();
 
-        assertEquals(predicate.name(), skippedEvaluation.name());
+        assertEquals(expression.name(), skippedEvaluation.name());
         assertEquals(Result.SKIPPED, skippedEvaluation.result());
         assertEquals(SimpleRationale.skipped(), skippedEvaluation.rationale());
         assertEquals(1, skippedEvaluation.children().size());
@@ -190,17 +193,17 @@ class DisjunctiveExpressionTest {
     @Test
     void givenTwoChildren_whenSkip_thenEvaluationIsCorrect() {
 
-        final String subPredicateName1 = "predicate 1";
-        final String subPredicateName2 = "predicate 2";
-        UnaryExpression<Object> subPredicate1 = Expressions.unaryExpression(subPredicateName1, Result.FAILED);
-        UnaryExpression<Object> subPredicate2 = Expressions.unaryExpression(subPredicateName2, Result.FAILED);
+        final String subPredicateName1 = "expression 1";
+        final String subPredicateName2 = "expression 2";
+        UnaryExpression<Object> subPredicate1 = Expressions.unaryExpression(subPredicateName1, Result.FALSE);
+        UnaryExpression<Object> subPredicate2 = Expressions.unaryExpression(subPredicateName2, Result.FALSE);
 
-        predicate.append(subPredicate1);
-        predicate.append(subPredicate2);
+        expression.append(subPredicate1);
+        expression.append(subPredicate2);
 
-        Evaluation skippedEvaluation = predicate.skip();
+        Evaluation skippedEvaluation = expression.skip();
 
-        assertEquals(predicate.name(), skippedEvaluation.name());
+        assertEquals(expression.name(), skippedEvaluation.name());
         assertEquals(Result.SKIPPED, skippedEvaluation.result());
         assertEquals(SimpleRationale.skipped(), skippedEvaluation.rationale());
         assertEquals(2, skippedEvaluation.children().size());
