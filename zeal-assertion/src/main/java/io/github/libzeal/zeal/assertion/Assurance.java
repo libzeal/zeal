@@ -4,7 +4,6 @@ import io.github.libzeal.zeal.assertion.error.PostconditionFailedException;
 import io.github.libzeal.zeal.expression.lang.evaluation.Evaluation;
 import io.github.libzeal.zeal.expression.lang.evaluation.Result;
 import io.github.libzeal.zeal.expression.lang.evaluation.format.Formatters;
-import io.github.libzeal.zeal.expression.lang.evaluation.format.RootCauseFirstFormatter;
 import io.github.libzeal.zeal.expression.lang.unary.UnaryExpression;
 
 /**

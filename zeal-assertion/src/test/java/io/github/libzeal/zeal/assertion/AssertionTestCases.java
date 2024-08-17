@@ -1,9 +1,9 @@
 package io.github.libzeal.zeal.assertion;
 
-import io.github.libzeal.zeal.expression.lang.unary.UnaryExpression;
 import io.github.libzeal.zeal.expression.lang.evaluation.Evaluation;
 import io.github.libzeal.zeal.expression.lang.evaluation.Result;
-import io.github.libzeal.zeal.expression.lang.evaluation.format.EvaluationFormatter;
+import io.github.libzeal.zeal.expression.lang.evaluation.format.Formatter;
+import io.github.libzeal.zeal.expression.lang.unary.UnaryExpression;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
@@ -19,9 +19,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class AssertionTestCases {
 
-    private final EvaluationFormatter formatter;
+    private final Formatter formatter;
 
-    public AssertionTestCases(final EvaluationFormatter formatter) {
+    public AssertionTestCases(final Formatter formatter) {
         this.formatter = formatter;
     }
 
