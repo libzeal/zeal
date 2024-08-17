@@ -1,23 +1,12 @@
 package io.github.libzeal.zeal.expression.lang.evaluation.format;
 
-import io.github.libzeal.zeal.expression.lang.evaluation.Evaluation;
+import io.github.libzeal.zeal.expression.lang.evaluation.*;
+import io.github.libzeal.zeal.expression.lang.rationale.Rationale;
 
-/**
- * A formatter that consumes an evaluation and provides a string-based illustration of the evaluation.
- *
- * @author Justin Albano
- * @since 0.2.0
- */
-@FunctionalInterface
+
 public interface EvaluationFormatter {
 
-    /**
-     * Formats the supplied evaluation.
-     *
-     * @param evaluation
-     *     The evaluation to format.
-     *
-     * @return The formatted evaluation.
-     */
-    String format(Evaluation evaluation);
+    String format(Rationale rationale, FormatterContext context);
+    String format(RootCause rootCause, FormatterContext context);
+    String format(Evaluation evaluation, FormatterContext context);
 }

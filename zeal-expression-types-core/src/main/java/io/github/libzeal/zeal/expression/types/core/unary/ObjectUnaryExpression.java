@@ -1,9 +1,11 @@
 package io.github.libzeal.zeal.expression.types.core.unary;
 
-import io.github.libzeal.zeal.expression.lang.compound.ConjunctiveExpression;
 import io.github.libzeal.zeal.expression.lang.Expression;
+import io.github.libzeal.zeal.expression.lang.compound.ConjunctiveExpression;
 import io.github.libzeal.zeal.expression.lang.condition.Condition;
 import io.github.libzeal.zeal.expression.lang.evaluation.Evaluation;
+import io.github.libzeal.zeal.expression.lang.evaluation.RootCause;
+import io.github.libzeal.zeal.expression.lang.evaluation.TerminalEvaluation;
 import io.github.libzeal.zeal.expression.lang.rationale.ValueSupplier;
 import io.github.libzeal.zeal.expression.lang.unary.UnaryExpression;
 
@@ -11,7 +13,8 @@ import java.util.Comparator;
 import java.util.Objects;
 import java.util.function.Predicate;
 
-import static io.github.libzeal.zeal.expression.lang.condition.Conditions.*;
+import static io.github.libzeal.zeal.expression.lang.condition.Conditions.equalTo;
+import static io.github.libzeal.zeal.expression.lang.condition.Conditions.exactly;
 import static io.github.libzeal.zeal.expression.lang.util.Formatter.stringify;
 import static java.util.Objects.requireNonNull;
 
@@ -51,6 +54,7 @@ public class ObjectUnaryExpression<T, E extends ObjectUnaryExpression<T, E>> imp
     static final String CANNOT_COMPARE_USING_NULL_COMPARATOR =
         "Evaluation will always fail when using (null) comparator";
 
+    private final String name;
     private final T subject;
     private final ConjunctiveExpression children;
     private final UnaryExpressionBuilder.BuildableExpression<E> buildable;
@@ -74,6 +78,7 @@ public class ObjectUnaryExpression<T, E extends ObjectUnaryExpression<T, E>> imp
      *     The name of the expression.
      */
     protected ObjectUnaryExpression(T subject, String name) {
+        this.name = requireNonNull(name);
         this.subject = subject;
         this.children = new ConjunctiveExpression(name);
         this.buildable = buildable();
@@ -107,6 +112,11 @@ public class ObjectUnaryExpression<T, E extends ObjectUnaryExpression<T, E>> imp
     }
 
     @Override
+    public final String name() {
+        return name;
+    }
+
+    @Override
     public final T subject() {
         return subject;
     }
@@ -114,6 +124,11 @@ public class ObjectUnaryExpression<T, E extends ObjectUnaryExpression<T, E>> imp
     @Override
     public final Evaluation evaluate() {
         return children.evaluate();
+    }
+
+    @Override
+    public final Evaluation skip(final RootCause rootCause) {
+        return TerminalEvaluation.ofSkipped(name(), rootCause);
     }
 
     /**

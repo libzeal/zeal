@@ -2,6 +2,7 @@ package io.github.libzeal.zeal.assertion;
 
 import io.github.libzeal.zeal.assertion.error.PostconditionFailedException;
 import io.github.libzeal.zeal.assertion.error.PreconditionFailedException;
+import io.github.libzeal.zeal.expression.lang.evaluation.format.Formatters;
 import io.github.libzeal.zeal.expression.lang.unary.UnaryExpression;
 import io.github.libzeal.zeal.expression.lang.evaluation.Evaluation;
 import io.github.libzeal.zeal.expression.lang.evaluation.Result;
@@ -14,7 +15,7 @@ public class Requirement {
 
     public Requirement() {
         this.evaluator = new AssertionExpressionEvaluator<>(
-            new SimpleEvaluationFormatter(),
+            Formatters.defaultFormatter(),
             NullPointerException::new,
             PreconditionFailedException::new
         );

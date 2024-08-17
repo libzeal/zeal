@@ -4,6 +4,7 @@ import io.github.libzeal.zeal.expression.lang.Expression;
 import io.github.libzeal.zeal.expression.lang.Expressions;
 import io.github.libzeal.zeal.expression.lang.evaluation.Evaluation;
 import io.github.libzeal.zeal.expression.lang.evaluation.Result;
+import io.github.libzeal.zeal.expression.lang.evaluation.RootCause;
 import io.github.libzeal.zeal.expression.lang.rationale.SimpleRationale;
 import io.github.libzeal.zeal.expression.lang.unary.UnaryExpression;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,6 +15,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
 
 class ConjunctiveExpressionTest {
 
@@ -148,12 +150,12 @@ class ConjunctiveExpressionTest {
     }
 
     private static void assertIsSkipped(UnaryExpression<Object> expression) {
-        verify(expression, times(1)).skip();
+        verify(expression, times(1)).skip(any(RootCause.class));
         verify(expression, never()).evaluate();
     }
 
     private static void assertIsNotSkipped(UnaryExpression<Object> expression) {
-        verify(expression, never()).skip();
+        verify(expression, never()).skip(any(RootCause.class));
         verify(expression, times(1)).evaluate();
     }
 
@@ -177,11 +179,15 @@ class ConjunctiveExpressionTest {
     @Test
     void givenNoChildren_whenSkip_thenEvaluationIsCorrect() {
         
-        Evaluation skippedEvaluation = expression.skip();
+        Evaluation skippedEvaluation = expression.skip(rootCause());
 
         assertEquals(expression.name(), skippedEvaluation.name());
         assertEquals(Result.SKIPPED, skippedEvaluation.result());
         assertEquals(SimpleRationale.skipped(), skippedEvaluation.rationale());
+    }
+
+    private static RootCause rootCause() {
+        return mock(RootCause.class);
     }
 
     @Test
@@ -192,7 +198,7 @@ class ConjunctiveExpressionTest {
 
         expression.append(subExpression);
 
-        Evaluation skippedEvaluation = expression.skip();
+        Evaluation skippedEvaluation = expression.skip(rootCause());
 
         assertEquals(expression.name(), skippedEvaluation.name());
         assertEquals(Result.SKIPPED, skippedEvaluation.result());
@@ -210,7 +216,7 @@ class ConjunctiveExpressionTest {
         expression.append(subExpression1);
         expression.append(subExpression2);
 
-        Evaluation skippedEvaluation = expression.skip();
+        Evaluation skippedEvaluation = expression.skip(rootCause());
 
         assertEquals(expression.name(), skippedEvaluation.name());
         assertEquals(Result.SKIPPED, skippedEvaluation.result());

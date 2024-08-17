@@ -24,15 +24,16 @@ public class NegatedExpression implements Expression {
         final Result result = result(wrappedEvaluation);
         final String actualValue = actualValue(wrappedEvaluation);
         final Rationale rationale = new SimpleRationale("Wrapped: false", actualValue);
+        final RootCause rootCause = wrappedEvaluation.rootCause();
 
         final List<Evaluation> children = new ArrayList<>(1);
         children.add(wrappedEvaluation);
 
         if (result.isFalse()) {
-            return new CompoundFalseEvaluation(name(), rationale, children);
+            return CompoundEvaluation.ofFalse(name(), rationale, rootCause, children);
         }
         else {
-            return new CompoundTrueEvaluation(name(), rationale, children);
+            return CompoundEvaluation.ofTrue(name(), rationale, rootCause, children);
         }
     }
 
@@ -72,18 +73,18 @@ public class NegatedExpression implements Expression {
     }
 
     @Override
-    public SkippedEvaluation skip() {
+    public Evaluation skip(final RootCause rootCause) {
 
-        final List<Evaluation> children = skipWrapped();
+        final List<Evaluation> children = skipWrapped(rootCause);
 
-        return new CompoundSkippedEvaluation(name(), children);
+        return CompoundEvaluation.ofSkipped(name(), rootCause, children);
     }
 
-    private List<Evaluation> skipWrapped() {
+    private List<Evaluation> skipWrapped(final RootCause rootCause) {
 
         final List<Evaluation> children = new ArrayList<>(1);
 
-        children.add(wrapped.skip());
+        children.add(wrapped.skip(rootCause));
 
         return children;
     }

@@ -1,9 +1,9 @@
 package io.github.libzeal.zeal.assertion;
 
-import io.github.libzeal.zeal.expression.lang.unary.UnaryExpression;
 import io.github.libzeal.zeal.expression.lang.evaluation.Evaluation;
 import io.github.libzeal.zeal.expression.lang.evaluation.Result;
-import io.github.libzeal.zeal.expression.lang.evaluation.format.EvaluationFormatter;
+import io.github.libzeal.zeal.expression.lang.evaluation.format.Formatter;
+import io.github.libzeal.zeal.expression.lang.unary.UnaryExpression;
 
 import static java.util.Objects.requireNonNull;
 
@@ -23,7 +23,7 @@ final class AssertionExpressionEvaluator<N extends Throwable, F extends Throwabl
         String NULL_RESULT = "Cannot process evaluation with null result";
     }
 
-    private final EvaluationFormatter formatter;
+    private final Formatter formatter;
     private final ExceptionSupplier<N> onNullExceptionFunc;
     private final ExceptionSupplier<F> onFailExceptionFunc;
 
@@ -42,7 +42,7 @@ final class AssertionExpressionEvaluator<N extends Throwable, F extends Throwabl
      * @throws NullPointerException
      *     Any of the supplied arguments are {@code null}.
      */
-    AssertionExpressionEvaluator(final EvaluationFormatter formatter, final ExceptionSupplier<N> onNullExceptionFunc,
+    AssertionExpressionEvaluator(final Formatter formatter, final ExceptionSupplier<N> onNullExceptionFunc,
                                  final ExceptionSupplier<F> onFailExceptionFunc) {
         this.formatter = requireNonNull(formatter);
         this.onNullExceptionFunc = requireNonNull(onNullExceptionFunc);
@@ -104,12 +104,12 @@ final class AssertionExpressionEvaluator<N extends Throwable, F extends Throwabl
         }
     }
 
-    static String formatMessage(final EvaluationFormatter formatter, final String message,
+    static String formatMessage(final Formatter formatter, final String message,
                                 final Evaluation evaluation) {
 
         final String formattedSuppliedMessage = message == null ? "" : message;
 
-        return formattedSuppliedMessage + "\n\n" + formatter.format(evaluation) + "\n\nStack trace:";
+        return formattedSuppliedMessage + "\n\n" + formatter.format(evaluation) + "\nStack trace:";
     }
 
     /**

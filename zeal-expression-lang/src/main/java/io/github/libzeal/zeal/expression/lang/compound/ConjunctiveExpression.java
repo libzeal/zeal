@@ -2,12 +2,11 @@ package io.github.libzeal.zeal.expression.lang.compound;
 
 import io.github.libzeal.zeal.expression.lang.Expression;
 import io.github.libzeal.zeal.expression.lang.compound.CompoundEvaluator.Tally;
-import io.github.libzeal.zeal.expression.lang.evaluation.CompoundSkippedEvaluation;
-import io.github.libzeal.zeal.expression.lang.evaluation.Evaluation;
-import io.github.libzeal.zeal.expression.lang.evaluation.SkippedEvaluation;
+import io.github.libzeal.zeal.expression.lang.evaluation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 
@@ -79,8 +78,13 @@ public class ConjunctiveExpression implements CompoundExpression {
     }
 
     @Override
-    public SkippedEvaluation skip() {
-        return CompoundSkippedEvaluation.from(name, children);
+    public Evaluation skip(final RootCause rootCause) {
+
+        List<Evaluation> evaluations = children.stream()
+            .map(child -> child.skip(rootCause))
+            .collect(Collectors.toList());
+
+        return CompoundEvaluation.ofSkipped(name, rootCause, evaluations);
     }
 
     @Override

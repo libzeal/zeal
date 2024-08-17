@@ -1,7 +1,7 @@
 package io.github.libzeal.zeal.expression.lang;
 
 import io.github.libzeal.zeal.expression.lang.evaluation.Evaluation;
-import io.github.libzeal.zeal.expression.lang.evaluation.SkippedEvaluation;
+import io.github.libzeal.zeal.expression.lang.evaluation.RootCause;
 
 /**
  * An expression that can be evaluated.
@@ -34,5 +34,5 @@ public interface Expression {
      *
      * @since 0.2.1
      */
-    SkippedEvaluation skip();
+    Evaluation skip(RootCause rootCause);
 }

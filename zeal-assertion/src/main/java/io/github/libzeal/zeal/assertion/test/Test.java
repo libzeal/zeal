@@ -9,6 +9,7 @@ public class Test {
 
     public static void main(String[] args) {
 
-        require(not(value("foo").is(noneOf("bar", "baz"))));
+        require(not(value("foo").isNotNull().is(noneOf("foo", "baz"))));
+        require(value("foo").isNotNull().is(noneOf("foo", "baz")));
     }
 }

@@ -6,8 +6,6 @@ import io.github.libzeal.zeal.expression.lang.rationale.RationaleGenerator;
 
 import java.util.function.Predicate;
 
-import static io.github.libzeal.zeal.expression.lang.evaluation.Result.FALSE;
-import static io.github.libzeal.zeal.expression.lang.evaluation.Result.TRUE;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -106,16 +104,16 @@ public class TerminalUnaryExpression<T> implements UnaryExpression<T> {
         final Rationale rationale = rationaleGenerator.generate(subject, passed);
 
         if (passed) {
-            return new TerminalTrueEvaluation(name, rationale);
+            return TerminalEvaluation.ofTrue(name, rationale);
         }
         else {
-            return new TerminalFalseEvaluation(name, rationale);
+            return TerminalEvaluation.ofFalse(name, rationale);
         }
     }
 
     @Override
-    public SkippedEvaluation skip() {
-        return new TerminalSkippedEvaluation(name);
+    public Evaluation skip(final RootCause rootCause) {
+        return TerminalEvaluation.ofSkipped(name, rootCause);
     }
 
     @Override

@@ -36,4 +36,6 @@ public interface Evaluation extends Traversable {
      * @return The rationale for the evaluation.
      */
     Rationale rationale();
+
+    RootCause rootCause();
 }

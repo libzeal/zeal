@@ -1,6 +1,7 @@
 package io.github.libzeal.zeal.assertion;
 
 import io.github.libzeal.zeal.assertion.error.AssertionFailedError;
+import io.github.libzeal.zeal.expression.lang.evaluation.format.Formatters;
 import io.github.libzeal.zeal.expression.lang.unary.UnaryExpression;
 import io.github.libzeal.zeal.expression.lang.evaluation.Evaluation;
 import io.github.libzeal.zeal.expression.lang.evaluation.Result;
@@ -19,7 +20,7 @@ public class Confirmation {
 
     public Confirmation() {
         this.evaluator = new AssertionExpressionEvaluator<>(
-            new SimpleEvaluationFormatter(),
+            Formatters.defaultFormatter(),
             AssertionFailedError::new,
             AssertionFailedError::new
         );

@@ -1,10 +1,11 @@
 package io.github.libzeal.zeal.assertion;
 
 import io.github.libzeal.zeal.assertion.error.PostconditionFailedException;
-import io.github.libzeal.zeal.expression.lang.unary.UnaryExpression;
 import io.github.libzeal.zeal.expression.lang.evaluation.Evaluation;
-import io.github.libzeal.zeal.expression.lang.evaluation.format.SimpleEvaluationFormatter;
 import io.github.libzeal.zeal.expression.lang.evaluation.Result;
+import io.github.libzeal.zeal.expression.lang.evaluation.format.Formatters;
+import io.github.libzeal.zeal.expression.lang.evaluation.format.RootCauseFirstFormatter;
+import io.github.libzeal.zeal.expression.lang.unary.UnaryExpression;
 
 /**
  * Responsible for evaluating postconditions.
@@ -19,7 +20,7 @@ public class Assurance {
 
     private Assurance() {
         this.evaluator = new AssertionExpressionEvaluator<>(
-            new SimpleEvaluationFormatter(),
+            Formatters.defaultFormatter(),
             PostconditionFailedException::new,
             PostconditionFailedException::new
         );
