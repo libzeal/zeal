@@ -2,7 +2,7 @@ package io.github.libzeal.zeal.expression.lang.unary;
 
 import io.github.libzeal.zeal.expression.lang.NegatedExpression;
 import io.github.libzeal.zeal.expression.lang.evaluation.Evaluation;
-import io.github.libzeal.zeal.expression.lang.evaluation.RootCause;
+import io.github.libzeal.zeal.expression.lang.evaluation.Cause;
 
 import static java.util.Objects.requireNonNull;
 
@@ -27,8 +27,8 @@ public class NegatedUnaryExpression<T> implements UnaryExpression<T> {
     }
 
     @Override
-    public Evaluation skip(final RootCause rootCause) {
-        return negated.skip(rootCause);
+    public Evaluation skip(final Cause cause) {
+        return negated.skip(cause);
     }
 
     @Override

@@ -112,8 +112,8 @@ public class TerminalUnaryExpression<T> implements UnaryExpression<T> {
     }
 
     @Override
-    public Evaluation skip(final RootCause rootCause) {
-        return TerminalEvaluation.ofSkipped(name, rootCause);
+    public Evaluation skip(final Cause cause) {
+        return TerminalEvaluation.ofSkipped(name, cause);
     }
 
     @Override

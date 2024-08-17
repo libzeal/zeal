@@ -4,7 +4,7 @@ import io.github.libzeal.zeal.expression.lang.Expression;
 import io.github.libzeal.zeal.expression.lang.compound.CompoundEvaluator.Tally;
 import io.github.libzeal.zeal.expression.lang.evaluation.CompoundEvaluation;
 import io.github.libzeal.zeal.expression.lang.evaluation.Evaluation;
-import io.github.libzeal.zeal.expression.lang.evaluation.RootCause;
+import io.github.libzeal.zeal.expression.lang.evaluation.Cause;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,13 +55,13 @@ public class NonDisjunctiveExpression implements CompoundExpression {
     }
 
     @Override
-    public Evaluation skip(final RootCause rootCause) {
+    public Evaluation skip(final Cause cause) {
 
         List<Evaluation> evaluations = children.stream()
-            .map(child -> child.skip(rootCause))
+            .map(child -> child.skip(cause))
             .collect(Collectors.toList());
 
-        return CompoundEvaluation.ofSkipped(name, rootCause, evaluations);
+        return CompoundEvaluation.ofSkipped(name, cause, evaluations);
     }
 
     @Override

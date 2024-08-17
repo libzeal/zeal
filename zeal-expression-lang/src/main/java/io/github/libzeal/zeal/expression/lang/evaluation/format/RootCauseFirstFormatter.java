@@ -6,27 +6,22 @@ import static java.util.Objects.requireNonNull;
 
 public class RootCauseFirstFormatter implements Formatter {
 
-    private final EvaluationFormatter evaluationFormatter;
+    private final EvaluationFormatter formatter;
 
-    public RootCauseFirstFormatter(final EvaluationFormatter evaluationFormatter) {
-        this.evaluationFormatter = requireNonNull(evaluationFormatter);
+    public RootCauseFirstFormatter(final EvaluationFormatter formatter) {
+        this.formatter = requireNonNull(formatter);
     }
 
     @Override
     public String format(final Evaluation evaluation) {
 
-        final FormatterContext context = new FormatterContext(0);
+        final Cause cause = evaluation.rootCause();
+        final FormatterContext context = new FormatterContext(cause, 0);
         final StringBuilder builder = new StringBuilder();
-        final Traverser traverser = new RootCauseFirstTraverser(evaluation, builder, evaluationFormatter);
+        final Traverser traverser = new RootCauseFirstTraverser(evaluation, builder, formatter);
 
-        final RootCause rootCause = evaluation.rootCause();
-        final Evaluation rootCauseEvaluation = rootCause.evaluation();
-
-        builder.append("Root cause: ")
-            .append(evaluationFormatter.format(rootCauseEvaluation, context))
-            .append("\n")
-            .append(evaluationFormatter.format(rootCauseEvaluation.rationale(), context))
-            .append("\n\n");
+        builder.append(formatter.format(cause, context))
+                .append("Evaluation:\n");
 
         evaluation.traverseDepthFirst(traverser);
 
@@ -49,23 +44,15 @@ public class RootCauseFirstFormatter implements Formatter {
         @Override
         public void on(final Evaluation evaluation, final TraversalContext context) {
 
-            final FormatterContext formatterContext = new FormatterContext(context.depth());
-            final String formattedText = formattedText(evaluation, formatterContext);
+            final FormatterContext formatterContext = createContext(context);
+            final String formattedText = evaluationFormatter.format(evaluation, formatterContext);
 
             builder.append(formattedText)
                 .append("\n");
         }
 
-        private String formattedText(final Evaluation evaluation, final FormatterContext formatterContext) {
-
-            final RootCause rootCause = rootEvaluation.rootCause();
-
-            if (rootCause.is(evaluation)) {
-                return evaluationFormatter.format(rootCause, formatterContext);
-            }
-            else {
-                return evaluationFormatter.format(evaluation, formatterContext);
-            }
+        private FormatterContext createContext(final TraversalContext context) {
+            return new FormatterContext(rootEvaluation.rootCause(), context.depth());
         }
 
     }

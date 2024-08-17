@@ -1,6 +1,7 @@
 package io.github.libzeal.zeal.expression.types.core.unary;
 
 import io.github.libzeal.zeal.expression.lang.evaluation.Evaluation;
+import io.github.libzeal.zeal.expression.lang.evaluation.FlatteningTraverser;
 import io.github.libzeal.zeal.expression.lang.evaluation.Result;
 import io.github.libzeal.zeal.expression.lang.util.Formatter;
 import io.github.libzeal.zeal.expression.types.core.unary.test.EvaluatedExpressionAssertion;
@@ -63,10 +64,9 @@ public abstract class ObjectUnaryExpressionTest<T, E extends ObjectUnaryExpressi
     @Test
     final void givenNoEvaluations_whenConstruct_thenCorrectEvaluation() {
 
-        T value = exampleValue1();
-
-        E expression = expression(value);
-        EvaluatedExpressionAssertion<?> assertion = new EvaluatedExpressionAssertion<>(expression.evaluate());
+        final T value = exampleValue1();
+        final E expression = expression(value);
+        final EvaluatedExpressionAssertion<?> assertion = new EvaluatedExpressionAssertion<>(expression.evaluate());
 
         assertEquals(value, expression.subject());
         assertion.assertStateIs(TRUE);
@@ -77,13 +77,17 @@ public abstract class ObjectUnaryExpressionTest<T, E extends ObjectUnaryExpressi
     @Test
     final void givenNotNullFollowsAnotherEvaluation_whenEvaluate_thenNotNullPreemptsOtherEvaluation() {
 
-        E expression = expression(null);
+        final E expression = expression(null);
 
         expression.isNull().isNotNull();
 
-        Evaluation eval = expression.evaluate();
-        Evaluation first = eval.children().get(0);
-        Evaluation second = eval.children().get(1);
+        final Evaluation eval = expression.evaluate();
+
+        final FlatteningTraverser traverser = new FlatteningTraverser();
+        eval.traverseDepthFirst(traverser);
+
+        final Evaluation first = traverser.children().get(0);
+        final Evaluation second = traverser.children().get(1);
 
         EvaluatedExpressionAssertion<?> firstAssertion = new EvaluatedExpressionAssertion<>(first);
         EvaluatedExpressionAssertion<?> secondAssertion = new EvaluatedExpressionAssertion<>(second);
@@ -108,16 +112,19 @@ public abstract class ObjectUnaryExpressionTest<T, E extends ObjectUnaryExpressi
         BiFunction<E, T, String> expectedHint
     ) {
 
-        E expression = expression(value);
-
-        E returnedExpression = modifier.apply(expression, value);
+        final E expression = expression(value);
+        final E returnedExpression = modifier.apply(expression, value);
 
         assertNotNull(returnedExpression);
         assertEquals(expression.getClass(), returnedExpression.getClass());
 
-        Evaluation eval = expression.evaluate();
-        Evaluation first = eval.children().get(0);
-        EvaluatedExpressionAssertion<?> firstEvaluation = new EvaluatedExpressionAssertion<>(first);
+        final Evaluation eval = expression.evaluate();
+
+        final FlatteningTraverser traverser = new FlatteningTraverser();
+        eval.traverseDepthFirst(traverser);
+
+        final Evaluation first = traverser.children().get(0);
+        final EvaluatedExpressionAssertion<?> firstEvaluation = new EvaluatedExpressionAssertion<>(first);
 
         assertNotNull(first);
         firstEvaluation.assertStateIs(expectedState);

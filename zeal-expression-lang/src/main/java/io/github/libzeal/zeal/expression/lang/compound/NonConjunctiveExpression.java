@@ -53,13 +53,13 @@ public class NonConjunctiveExpression implements CompoundExpression {
     }
 
     @Override
-    public Evaluation skip(final RootCause rootCause) {
+    public Evaluation skip(final Cause cause) {
 
         List<Evaluation> evaluations = children.stream()
-            .map(child -> child.skip(rootCause))
+            .map(child -> child.skip(cause))
             .collect(Collectors.toList());
 
-        return CompoundEvaluation.ofSkipped(name, rootCause, evaluations);
+        return CompoundEvaluation.ofSkipped(name, cause, evaluations);
     }
 
     @Override

@@ -2,7 +2,7 @@ package io.github.libzeal.zeal.expression.lang;
 
 import io.github.libzeal.zeal.expression.lang.evaluation.Evaluation;
 import io.github.libzeal.zeal.expression.lang.evaluation.Result;
-import io.github.libzeal.zeal.expression.lang.evaluation.RootCause;
+import io.github.libzeal.zeal.expression.lang.evaluation.Cause;
 import io.github.libzeal.zeal.expression.lang.evaluation.TerminalEvaluation;
 import io.github.libzeal.zeal.expression.lang.unary.UnaryExpression;
 
@@ -29,10 +29,10 @@ public class Expressions {
         doReturn(name).when(expression).name();
 
         doAnswer(i -> {
-            RootCause rootCause = i.getArgument(0, RootCause.class);
-            return TerminalEvaluation.ofSkipped(name, rootCause);
+            Cause cause = i.getArgument(0, Cause.class);
+            return TerminalEvaluation.ofSkipped(name, cause);
         })
-            .when(expression).skip(any(RootCause.class));
+            .when(expression).skip(any(Cause.class));
 
         return expression;
     }

@@ -7,6 +7,6 @@ import io.github.libzeal.zeal.expression.lang.rationale.Rationale;
 public interface EvaluationFormatter {
 
     String format(Rationale rationale, FormatterContext context);
-    String format(RootCause rootCause, FormatterContext context);
+    String format(Cause cause, FormatterContext context);
     String format(Evaluation evaluation, FormatterContext context);
 }

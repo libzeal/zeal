@@ -12,31 +12,31 @@ public class CompoundEvaluation implements Evaluation {
     private final Result result;
     private final String name;
     private final Rationale rationale;
-    private final RootCause rootCause;
+    private final Cause cause;
     private final List<Evaluation> children;
 
     public CompoundEvaluation(final Result result, final String name, final Rationale rationale,
-                              final RootCause rootCause, final List<Evaluation> children) {
+                              final Cause cause, final List<Evaluation> children) {
         this.result = requireNonNull(result);
         this.name = requireNonNull(name);
         this.rationale = requireNonNull(rationale);
-        this.rootCause = rootCause;
+        this.cause = cause;
         this.children = requireNonNull(children);
     }
 
     public static CompoundEvaluation ofTrue(final String name, final Rationale rationale,
-                                            final RootCause rootCause, final List<Evaluation> children) {
-        return new CompoundEvaluation(Result.TRUE, name, rationale, rootCause, children);
+                                            final Cause cause, final List<Evaluation> children) {
+        return new CompoundEvaluation(Result.TRUE, name, rationale, cause, children);
     }
 
     public static CompoundEvaluation ofFalse(final String name, final Rationale rationale,
-                                             final RootCause rootCause, final List<Evaluation> children) {
-        return new CompoundEvaluation(Result.FALSE, name, rationale, rootCause, children);
+                                             final Cause cause, final List<Evaluation> children) {
+        return new CompoundEvaluation(Result.FALSE, name, rationale, cause, children);
     }
 
-    public static CompoundEvaluation ofSkipped(final String name, final RootCause rootCause,
+    public static CompoundEvaluation ofSkipped(final String name, final Cause cause,
                                                final List<Evaluation> children) {
-        return new CompoundEvaluation(Result.SKIPPED, name, SimpleRationale.skipped(), rootCause, children);
+        return new CompoundEvaluation(Result.SKIPPED, name, SimpleRationale.skipped(), cause, children);
     }
 
     @Override
@@ -55,13 +55,13 @@ public class CompoundEvaluation implements Evaluation {
     }
 
     @Override
-    public RootCause rootCause() {
+    public Cause rootCause() {
 
-        if (rootCause == null) {
-            return new RootCause(this);
+        if (cause == null) {
+            return new Cause(this);
         }
         else {
-            return rootCause;
+            return cause;
         }
     }
 

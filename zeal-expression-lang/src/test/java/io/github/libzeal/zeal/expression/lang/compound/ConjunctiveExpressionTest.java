@@ -4,7 +4,7 @@ import io.github.libzeal.zeal.expression.lang.Expression;
 import io.github.libzeal.zeal.expression.lang.Expressions;
 import io.github.libzeal.zeal.expression.lang.evaluation.Evaluation;
 import io.github.libzeal.zeal.expression.lang.evaluation.Result;
-import io.github.libzeal.zeal.expression.lang.evaluation.RootCause;
+import io.github.libzeal.zeal.expression.lang.evaluation.Cause;
 import io.github.libzeal.zeal.expression.lang.rationale.SimpleRationale;
 import io.github.libzeal.zeal.expression.lang.unary.UnaryExpression;
 import org.junit.jupiter.api.BeforeEach;
@@ -150,12 +150,12 @@ class ConjunctiveExpressionTest {
     }
 
     private static void assertIsSkipped(UnaryExpression<Object> expression) {
-        verify(expression, times(1)).skip(any(RootCause.class));
+        verify(expression, times(1)).skip(any(Cause.class));
         verify(expression, never()).evaluate();
     }
 
     private static void assertIsNotSkipped(UnaryExpression<Object> expression) {
-        verify(expression, never()).skip(any(RootCause.class));
+        verify(expression, never()).skip(any(Cause.class));
         verify(expression, times(1)).evaluate();
     }
 
@@ -186,8 +186,8 @@ class ConjunctiveExpressionTest {
         assertEquals(SimpleRationale.skipped(), skippedEvaluation.rationale());
     }
 
-    private static RootCause rootCause() {
-        return mock(RootCause.class);
+    private static Cause rootCause() {
+        return mock(Cause.class);
     }
 
     @Test

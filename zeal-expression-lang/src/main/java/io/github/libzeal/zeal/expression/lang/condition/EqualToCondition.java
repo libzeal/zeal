@@ -31,7 +31,7 @@ class EqualToCondition<T> implements Condition<T> {
         final RationaleGenerator<T> generator = new SimpleRationaleGenerator<>(
             (s, passed) -> stringify(desired),
             (s, passed) -> stringify(s),
-            (s, passed) -> "Subject should be equal to " + desired + " (using subject.equals(" + desired + "))"
+            (s, passed) -> "Actual should be equal to " + desired + " (using subject.equals(" + desired + "))"
         );
 
         return TerminalUnaryExpression.ofNullable(

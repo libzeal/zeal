@@ -4,8 +4,6 @@ import io.github.libzeal.zeal.expression.lang.Expression;
 import io.github.libzeal.zeal.expression.lang.condition.Traversable;
 import io.github.libzeal.zeal.expression.lang.rationale.Rationale;
 
-import java.util.List;
-
 /**
  * An {@link Expression} that has been evaluated. An evaluated expression contains a state, the name of the evaluation
  * that was performed, and a rationale that describes how the state was reached (the rationale used to reach the
@@ -37,5 +35,5 @@ public interface Evaluation extends Traversable {
      */
     Rationale rationale();
 
-    RootCause rootCause();
+    Cause rootCause();
 }

@@ -10,14 +10,14 @@ public class TerminalEvaluation implements Evaluation {
     private final Result result;
     private final String name;
     private final Rationale rationale;
-    private final RootCause rootCause;
+    private final Cause cause;
 
     private TerminalEvaluation(final Result result, final String name, final Rationale rationale,
-                               final RootCause rootCause) {
+                               final Cause cause) {
         this.result = requireNonNull(result);
         this.name = requireNonNull(name);
         this.rationale = requireNonNull(rationale);
-        this.rootCause = rootCause;
+        this.cause = cause;
     }
 
     public static TerminalEvaluation ofTrue(final String name, final Rationale rationale) {
@@ -28,8 +28,8 @@ public class TerminalEvaluation implements Evaluation {
         return new TerminalEvaluation(Result.FALSE, name, rationale, null);
     }
 
-    public static TerminalEvaluation ofSkipped(final String name, final RootCause rootCause) {
-        return new TerminalEvaluation(Result.SKIPPED, name, SimpleRationale.skipped(), rootCause);
+    public static TerminalEvaluation ofSkipped(final String name, final Cause cause) {
+        return new TerminalEvaluation(Result.SKIPPED, name, SimpleRationale.skipped(), cause);
     }
 
     @Override
@@ -48,13 +48,13 @@ public class TerminalEvaluation implements Evaluation {
     }
 
     @Override
-    public RootCause rootCause() {
+    public Cause rootCause() {
 
-        if (rootCause == null) {
-            return new RootCause(this);
+        if (cause == null) {
+            return new Cause(this);
         }
         else {
-            return rootCause;
+            return cause;
         }
     }
 

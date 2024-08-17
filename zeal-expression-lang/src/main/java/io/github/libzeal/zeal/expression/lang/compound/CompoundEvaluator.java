@@ -56,43 +56,43 @@ class CompoundEvaluator {
             evaluated.add(evaluation);
         }
 
-        final RootCause rootCause = findRootCause(decider);
+        final Cause cause = findRootCause(decider);
         final Rationale rationale = rationaleBuilder.build(tally);
 
         if (tally.total() == 0 || state.equals(State.PASSED)) {
-            return CompoundEvaluation.ofTrue(name, rationale, rootCause, evaluated);
+            return CompoundEvaluation.ofTrue(name, rationale, cause, evaluated);
         }
         else if (tally.skipped() == tally.total()) {
-            return CompoundEvaluation.ofSkipped(name, rootCause, evaluated);
+            return CompoundEvaluation.ofSkipped(name, cause, evaluated);
         }
         else {
-            return CompoundEvaluation.ofFalse(name, rationale, rootCause, evaluated);
+            return CompoundEvaluation.ofFalse(name, rationale, cause, evaluated);
         }
     }
 
     private static Evaluation evaluate(final Expression expression, final State state, final Evaluation decider) {
 
         if (!state.equals(State.UNKNOWN)) {
-            return expression.skip(new RootCause(decider));
+            return expression.skip(new Cause(decider));
         }
         else {
             return expression.evaluate();
         }
     }
 
-    private static RootCause findRootCause(final Evaluation decider) {
+    private static Cause findRootCause(final Evaluation decider) {
 
         if (decider == null) {
             return null;
         }
         else {
-            final RootCause rootCause = decider.rootCause();
+            final Cause cause = decider.rootCause();
 
-            if (rootCause == null) {
-                return new RootCause(decider);
+            if (cause == null) {
+                return new Cause(decider);
             }
             else {
-                return rootCause;
+                return cause;
             }
         }
     }

@@ -28,7 +28,7 @@ class ExactlyCondition<T> implements Condition<T> {
         final RationaleGenerator<T> generator = new SimpleRationaleGenerator<>(
             (s, passed) -> stringify(desired),
             (s, passed) -> stringify(s),
-            (s, passed) -> "Subject should be identical to " + desired + " (using ==)"
+            (s, passed) -> "Actual should be identical to " + desired + " (using ==)"
         );
 
         return TerminalUnaryExpression.ofNullable(

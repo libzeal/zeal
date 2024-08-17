@@ -4,11 +4,11 @@ import java.util.Objects;
 
 import static java.util.Objects.requireNonNull;
 
-public class RootCause {
+public class Cause {
 
     private final Evaluation evaluation;
 
-    public RootCause(final Evaluation evaluation) {
+    public Cause(final Evaluation evaluation) {
         this.evaluation = requireNonNull(evaluation);
     }
 
