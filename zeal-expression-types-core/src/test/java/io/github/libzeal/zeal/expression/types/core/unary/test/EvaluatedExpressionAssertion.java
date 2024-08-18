@@ -1,7 +1,7 @@
 package io.github.libzeal.zeal.expression.types.core.unary.test;
 
-import io.github.libzeal.zeal.expression.lang.evaluation.Evaluation;
-import io.github.libzeal.zeal.expression.lang.evaluation.Result;
+import io.github.libzeal.zeal.logic.evaluation.Evaluation;
+import io.github.libzeal.zeal.logic.evaluation.Result;
 import org.junit.jupiter.api.Assertions;
 
 public class EvaluatedExpressionAssertion<T> {

@@ -1,21 +1,21 @@
 package io.github.libzeal.zeal.expression.types.core.unary;
 
-import io.github.libzeal.zeal.expression.lang.Expression;
-import io.github.libzeal.zeal.expression.lang.compound.ConjunctiveExpression;
-import io.github.libzeal.zeal.expression.lang.condition.Condition;
-import io.github.libzeal.zeal.expression.lang.evaluation.Evaluation;
-import io.github.libzeal.zeal.expression.lang.evaluation.Cause;
-import io.github.libzeal.zeal.expression.lang.evaluation.TerminalEvaluation;
-import io.github.libzeal.zeal.expression.lang.rationale.ValueSupplier;
-import io.github.libzeal.zeal.expression.lang.unary.UnaryExpression;
+import io.github.libzeal.zeal.logic.Expression;
+import io.github.libzeal.zeal.logic.compound.ConjunctiveExpression;
+import io.github.libzeal.zeal.logic.condition.Condition;
+import io.github.libzeal.zeal.logic.evaluation.Evaluation;
+import io.github.libzeal.zeal.logic.evaluation.Cause;
+import io.github.libzeal.zeal.logic.evaluation.TerminalEvaluation;
+import io.github.libzeal.zeal.logic.rationale.ValueSupplier;
+import io.github.libzeal.zeal.logic.unary.UnaryExpression;
 
 import java.util.Comparator;
 import java.util.Objects;
 import java.util.function.Predicate;
 
-import static io.github.libzeal.zeal.expression.lang.condition.Conditions.equalTo;
-import static io.github.libzeal.zeal.expression.lang.condition.Conditions.exactly;
-import static io.github.libzeal.zeal.expression.lang.util.Formatter.stringify;
+import static io.github.libzeal.zeal.logic.condition.Conditions.equalTo;
+import static io.github.libzeal.zeal.logic.condition.Conditions.exactly;
+import static io.github.libzeal.zeal.logic.util.Formatter.stringify;
 import static java.util.Objects.requireNonNull;
 
 /**

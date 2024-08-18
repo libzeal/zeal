@@ -1,10 +1,12 @@
 package io.github.libzeal.zeal.expression.types.core.unary;
 
-import io.github.libzeal.zeal.expression.lang.Expression;
-import io.github.libzeal.zeal.expression.lang.rationale.*;
-import io.github.libzeal.zeal.expression.lang.unary.TerminalUnaryExpression;
-import io.github.libzeal.zeal.expression.lang.unary.UnaryExpression;
-import io.github.libzeal.zeal.expression.lang.util.Formatter;
+import io.github.libzeal.zeal.logic.Expression;
+import io.github.libzeal.zeal.logic.rationale.RationaleGenerator;
+import io.github.libzeal.zeal.logic.rationale.SimpleRationaleGenerator;
+import io.github.libzeal.zeal.logic.rationale.ValueSupplier;
+import io.github.libzeal.zeal.logic.unary.TerminalUnaryExpression;
+import io.github.libzeal.zeal.logic.unary.UnaryExpression;
+import io.github.libzeal.zeal.logic.util.Formatter;
 
 import java.util.function.Predicate;
 

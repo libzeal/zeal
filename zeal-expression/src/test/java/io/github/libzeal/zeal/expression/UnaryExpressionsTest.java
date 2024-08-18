@@ -1,7 +1,7 @@
 package io.github.libzeal.zeal.expression;
 
-import io.github.libzeal.zeal.expression.lang.Expression;
-import io.github.libzeal.zeal.expression.lang.evaluation.Result;
+import io.github.libzeal.zeal.logic.Expression;
+import io.github.libzeal.zeal.logic.evaluation.Result;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;

@@ -2,8 +2,8 @@ package io.github.libzeal.zeal.expression.types.core.unary;
 
 import io.github.libzeal.zeal.expression.types.core.unary.test.ExpressionTestCaseBuilder;
 
-import static io.github.libzeal.zeal.expression.lang.evaluation.Result.FALSE;
-import static io.github.libzeal.zeal.expression.lang.evaluation.Result.TRUE;
+import static io.github.libzeal.zeal.logic.evaluation.Result.FALSE;
+import static io.github.libzeal.zeal.logic.evaluation.Result.TRUE;
 
 @SuppressWarnings("java:S2187")
 abstract class EnumUnaryExpressionTest<T extends Enum<T>> extends ObjectUnaryExpressionTest<T, GeneralEnumUnaryExpression<T>> {

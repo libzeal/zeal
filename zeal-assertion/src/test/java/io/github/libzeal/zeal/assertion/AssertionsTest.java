@@ -1,6 +1,6 @@
 package io.github.libzeal.zeal.assertion;
 
-import io.github.libzeal.zeal.expression.lang.evaluation.format.Formatters;
+import io.github.libzeal.zeal.logic.evaluation.format.Formatters;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ArgumentsSource;

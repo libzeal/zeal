@@ -1,8 +1,8 @@
 package io.github.libzeal.zeal.assertion;
 
 import io.github.libzeal.zeal.assertion.error.PostconditionFailedException;
-import io.github.libzeal.zeal.expression.lang.evaluation.Result;
-import io.github.libzeal.zeal.expression.lang.evaluation.format.Formatters;
+import io.github.libzeal.zeal.logic.evaluation.Result;
+import io.github.libzeal.zeal.logic.evaluation.format.Formatters;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;

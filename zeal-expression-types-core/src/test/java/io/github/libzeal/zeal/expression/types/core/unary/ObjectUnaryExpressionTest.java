@@ -1,11 +1,11 @@
 package io.github.libzeal.zeal.expression.types.core.unary;
 
-import io.github.libzeal.zeal.expression.lang.evaluation.Evaluation;
-import io.github.libzeal.zeal.expression.lang.evaluation.FlatteningTraverser;
-import io.github.libzeal.zeal.expression.lang.evaluation.Result;
-import io.github.libzeal.zeal.expression.lang.util.Formatter;
 import io.github.libzeal.zeal.expression.types.core.unary.test.EvaluatedExpressionAssertion;
 import io.github.libzeal.zeal.expression.types.core.unary.test.ExpressionTestCaseBuilder;
+import io.github.libzeal.zeal.logic.evaluation.Evaluation;
+import io.github.libzeal.zeal.logic.evaluation.FlatteningTraverser;
+import io.github.libzeal.zeal.logic.evaluation.Result;
+import io.github.libzeal.zeal.logic.util.Formatter;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -17,8 +17,8 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import static io.github.libzeal.zeal.expression.lang.evaluation.Result.*;
 import static io.github.libzeal.zeal.expression.types.core.unary.ObjectUnaryExpression.CANNOT_COMPARE_USING_NULL_COMPARATOR;
+import static io.github.libzeal.zeal.logic.evaluation.Result.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 

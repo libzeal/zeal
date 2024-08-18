@@ -1,6 +1,6 @@
 package io.github.libzeal.zeal.expression.types.core.unary.boxed;
 
-import io.github.libzeal.zeal.expression.lang.util.Formatter;
+import io.github.libzeal.zeal.logic.util.Formatter;
 import io.github.libzeal.zeal.expression.types.core.unary.ObjectUnaryExpression;
 import io.github.libzeal.zeal.expression.types.core.unary.UnaryExpressionBuilder;
 

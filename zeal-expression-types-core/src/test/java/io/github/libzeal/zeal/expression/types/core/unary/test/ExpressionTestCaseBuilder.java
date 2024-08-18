@@ -1,6 +1,6 @@
 package io.github.libzeal.zeal.expression.types.core.unary.test;
 
-import io.github.libzeal.zeal.expression.lang.evaluation.Result;
+import io.github.libzeal.zeal.logic.evaluation.Result;
 import io.github.libzeal.zeal.expression.types.core.unary.ObjectUnaryExpression;
 import org.junit.jupiter.params.provider.Arguments;
 

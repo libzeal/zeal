@@ -3,8 +3,8 @@ package io.github.libzeal.zeal.expression.types.core.unary.boxed;
 import io.github.libzeal.zeal.expression.types.core.unary.ObjectUnaryExpressionTest;
 import io.github.libzeal.zeal.expression.types.core.unary.test.ExpressionTestCaseBuilder;
 
-import static io.github.libzeal.zeal.expression.lang.evaluation.Result.FALSE;
-import static io.github.libzeal.zeal.expression.lang.evaluation.Result.TRUE;
+import static io.github.libzeal.zeal.logic.evaluation.Result.FALSE;
+import static io.github.libzeal.zeal.logic.evaluation.Result.TRUE;
 
 public class BoxedBooleanUnaryExpressionTest extends ObjectUnaryExpressionTest<Boolean, BoxedBooleanUnaryExpression> {
 

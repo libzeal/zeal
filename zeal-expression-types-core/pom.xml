@@ -20,7 +20,7 @@
     <dependencies>
         <dependency>
             <groupId>io.github.libzeal</groupId>
-            <artifactId>zeal-expression-lang</artifactId>
+            <artifactId>zeal-logic</artifactId>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -47,10 +47,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Export-Package>
-                            io.github.libzeal.zeal.expression.types.core.unary,
-                            io.github.libzeal.zeal.expression.types.core.unary.boxed
-                        </Export-Package>
+                        <Export-Package>*</Export-Package>
                     </instructions>
                 </configuration>
             </plugin>

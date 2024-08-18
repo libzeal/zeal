@@ -1,9 +1,9 @@
 package io.github.libzeal.zeal.assertion;
 
-import io.github.libzeal.zeal.expression.lang.evaluation.Evaluation;
-import io.github.libzeal.zeal.expression.lang.evaluation.Result;
-import io.github.libzeal.zeal.expression.lang.evaluation.format.Formatter;
-import io.github.libzeal.zeal.expression.lang.unary.UnaryExpression;
+import io.github.libzeal.zeal.logic.evaluation.Evaluation;
+import io.github.libzeal.zeal.logic.evaluation.Result;
+import io.github.libzeal.zeal.logic.evaluation.format.Formatter;
+import io.github.libzeal.zeal.logic.unary.UnaryExpression;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;

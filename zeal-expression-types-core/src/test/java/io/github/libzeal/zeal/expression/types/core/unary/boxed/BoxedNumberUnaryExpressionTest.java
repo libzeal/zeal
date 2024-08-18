@@ -1,11 +1,11 @@
 package io.github.libzeal.zeal.expression.types.core.unary.boxed;
 
-import io.github.libzeal.zeal.expression.lang.util.Formatter;
+import io.github.libzeal.zeal.logic.util.Formatter;
 import io.github.libzeal.zeal.expression.types.core.unary.test.ExpressionTestCaseBuilder;
 import io.github.libzeal.zeal.expression.types.core.unary.ObjectUnaryExpressionTest;
 
-import static io.github.libzeal.zeal.expression.lang.evaluation.Result.FALSE;
-import static io.github.libzeal.zeal.expression.lang.evaluation.Result.TRUE;
+import static io.github.libzeal.zeal.logic.evaluation.Result.FALSE;
+import static io.github.libzeal.zeal.logic.evaluation.Result.TRUE;
 
 public abstract class BoxedNumberUnaryExpressionTest<T extends Number, E extends BoxedNumberUnaryExpression<T, E>>
     extends ObjectUnaryExpressionTest<T, E> {

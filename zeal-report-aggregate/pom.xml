@@ -28,7 +28,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>zeal-expression-lang</artifactId>
+            <artifactId>zeal-logic</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
