@@ -65,7 +65,6 @@
     <modules>
         <module>zeal-assertion</module>
         <module>zeal-assertion-examples</module>
-        <module>zeal-expression</module>
         <module>zeal-logic</module>
         <module>zeal-types-core</module>
         <module>zeal-report-aggregate</module>

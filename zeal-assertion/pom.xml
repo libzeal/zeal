@@ -19,10 +19,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>zeal-expression</artifactId>
-        </dependency>
-        <dependency>
             <groupId>io.github.libzeal</groupId>
             <artifactId>zeal-logic</artifactId>
         </dependency>

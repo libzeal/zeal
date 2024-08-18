@@ -24,10 +24,6 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>zeal-expression</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
             <artifactId>zeal-logic</artifactId>
         </dependency>
         <dependency>
