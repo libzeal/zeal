@@ -32,7 +32,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>zeal-expression-types-core</artifactId>
+            <artifactId>zeal-types-core</artifactId>
         </dependency>
     </dependencies>
     <build>
