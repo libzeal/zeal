@@ -6,6 +6,7 @@ import io.github.libzeal.zeal.logic.evaluation.CompoundEvaluation;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.evaluation.Result;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
+import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,69 +14,63 @@ import java.util.function.Predicate;
 
 import static java.util.Objects.requireNonNull;
 
+/**
+ * A common evaluator used to evaluated {@link CompoundExpression}.
+ *
+ * @author Justin Albano
+ * @since 0.2.1
+ */
 class CompoundEvaluator {
 
+    private final String name;
     private final Predicate<Tally> passCondition;
     private final Predicate<Tally> failCondition;
-    private final RationaleBuilder rationaleBuilder;
+    private final CompoundRationaleBuilder rationaleBuilder;
 
-    public CompoundEvaluator(final Predicate<Tally> passCondition, final Predicate<Tally> failCondition,
-                             final RationaleBuilder rationaleBuilder) {
+    public CompoundEvaluator(final String name, final Predicate<Tally> passCondition, final Predicate<Tally> failCondition,
+                             final CompoundRationaleBuilder rationaleBuilder) {
+        this.name = requireNonNull(name);
         this.passCondition = requireNonNull(passCondition);
         this.failCondition = requireNonNull(failCondition);
         this.rationaleBuilder = requireNonNull(rationaleBuilder);
     }
 
-    public Evaluation evaluate(final String name, final List<Expression> expressions) {
+    public Evaluation evaluate(final List<Expression> expressions) {
 
         final int total = expressions.size();
         final List<Evaluation> evaluated = new ArrayList<>(total);
         final Tally tally = new Tally(total);
-        State state = State.UNKNOWN;
         Evaluation decider = null;
 
         for (Expression expression : expressions) {
 
-            final Evaluation evaluation = evaluate(expression, state, decider);
+            final Evaluation evaluation = evaluate(expression, tally, decider);
 
             tally.tally(evaluation.result());
 
-            if (state.equals(State.UNKNOWN)) {
-
-                if (failCondition.test(tally)) {
-                    state = State.FAILED;
-                    decider = evaluation;
-                }
-                else if (passCondition.test(tally)) {
-
-                    state = State.PASSED;
-
-                    if (tally.tallySoFar() != tally.total()) {
-                        decider = evaluation;
-                    }
-                }
+            if (passes(tally) || fails(tally)) {
+                decider = evaluation;
             }
 
             evaluated.add(evaluation);
         }
 
         final Cause cause = findRootCause(decider);
-        final Rationale rationale = rationaleBuilder.build(tally);
 
-        if (tally.total() == 0 || state.equals(State.PASSED)) {
-            return CompoundEvaluation.ofTrue(name, rationale, cause, evaluated);
-        }
-        else if (tally.skipped() == tally.total()) {
-            return CompoundEvaluation.ofSkipped(name, cause, evaluated);
-        }
-        else {
-            return CompoundEvaluation.ofFalse(name, rationale, cause, evaluated);
-        }
+        return compoundEvaluation(tally, cause, evaluated);
     }
 
-    private static Evaluation evaluate(final Expression expression, final State state, final Evaluation decider) {
+    private boolean fails(final Tally tally) {
+        return failCondition.test(tally);
+    }
 
-        if (!state.equals(State.UNKNOWN)) {
+    private boolean passes(final Tally tally) {
+        return passCondition.test(tally) && tally.tallySoFar() != tally.total();
+    }
+
+    private Evaluation evaluate(final Expression expression, final Tally tally, final Evaluation decider) {
+
+        if (passCondition.test(tally) || fails(tally)) {
             return expression.skip(new Cause(decider));
         }
         else {
@@ -100,10 +95,19 @@ class CompoundEvaluator {
         }
     }
 
-    private enum State {
-        PASSED,
-        FAILED,
-        UNKNOWN;
+    private CompoundEvaluation compoundEvaluation(final Tally tally, final Cause cause, final List<Evaluation> evaluated) {
+
+        final Rationale rationale = rationaleBuilder.build(tally);
+
+        if (tally.total() == 0 || passCondition.test(tally)) {
+            return CompoundEvaluation.ofTrue(name, rationale, cause, evaluated);
+        }
+        else if (tally.skipped() == tally.total()) {
+            return CompoundEvaluation.ofSkipped(name, cause, evaluated);
+        }
+        else {
+            return CompoundEvaluation.ofFalse(name, rationale, cause, evaluated);
+        }
     }
 
     public static final class Tally {
@@ -178,6 +182,50 @@ class CompoundEvaluator {
 
         public boolean allPassed() {
             return passed == total;
+        }
+    }
+
+    static class CompoundRationaleBuilder {
+
+        private static final String PASSED_PREFIX = "Passed: ";
+        private static final String FAILED_PREFIX = "Failed: ";
+        private static final String SKIPPED_PREFIX = "Skipped: ";
+        private static final String SEPARATOR = ", ";
+        private final String expected;
+
+        private CompoundRationaleBuilder(final String expected) {
+            this.expected = requireNonNull(expected);
+        }
+
+        public static CompoundRationaleBuilder withExpectedFailed(final int failed) {
+            return new CompoundRationaleBuilder(formatFailed(failed));
+        }
+
+        static String formatFailed(final int failed) {
+            return FAILED_PREFIX + failed;
+        }
+
+        public static CompoundRationaleBuilder withExpectedPassed(final int passed) {
+            return new CompoundRationaleBuilder(formatPassed(passed));
+        }
+
+        static String formatPassed(final int passed) {
+            return PASSED_PREFIX + passed;
+        }
+
+        public Rationale build(final CompoundEvaluator.Tally tally) {
+
+            final String actual = format(tally.passed, tally.failed(), tally.skipped());
+
+            return new SimpleRationale(expected, actual);
+        }
+
+        static String format(final int passed, final int failed, final int skipped) {
+            return PASSED_PREFIX + passed +
+                SEPARATOR +
+                FAILED_PREFIX + failed +
+                SEPARATOR +
+                SKIPPED_PREFIX + skipped;
         }
     }
 }

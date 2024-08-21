@@ -4,14 +4,22 @@ import io.github.libzeal.zeal.logic.Expression;
 import io.github.libzeal.zeal.logic.compound.ConjunctiveExpression;
 import io.github.libzeal.zeal.logic.compound.DisjunctiveExpression;
 import io.github.libzeal.zeal.logic.compound.NonDisjunctiveExpression;
+import io.github.libzeal.zeal.logic.rationale.RationaleGenerator;
+import io.github.libzeal.zeal.logic.rationale.SimpleRationaleGenerator;
+import io.github.libzeal.zeal.logic.unary.TerminalUnaryExpression;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+import static io.github.libzeal.zeal.logic.util.Formatter.stringify;
+
 public class Conditions {
+
+    static final String UNNAMED = "unnamed";
 
     private Conditions() {
     }
@@ -21,15 +29,39 @@ public class Conditions {
     }
 
     public static <T> Condition<T> of(final Predicate<T> predicate) {
-        return new SimpleCondition<>("unnamed", predicate);
+        return new SimpleCondition<>(UNNAMED, predicate);
     }
 
     public static <T> Condition<T> exactly(final T desired) {
-        return new ExactlyCondition<>(desired);
+
+        final RationaleGenerator<T> generator = new SimpleRationaleGenerator<>(
+            (s, passed) -> stringify(desired),
+            (s, passed) -> stringify(s),
+            (s, passed) -> "Actual should be identical to " + desired + " (using ==)"
+        );
+
+        return subject -> TerminalUnaryExpression.ofNullable(
+            "is[" + stringify(desired) + "]",
+            subject,
+            o -> o == desired,
+            generator
+        );
     }
 
     public static <T> Condition<T> equalTo(final T desired) {
-        return new EqualToCondition<>(desired);
+
+        final RationaleGenerator<T> generator = new SimpleRationaleGenerator<>(
+            (s, passed) -> stringify(desired),
+            (s, passed) -> stringify(s),
+            (s, passed) -> "Actual should be equal to " + desired + " (using subject.equals(" + desired + "))"
+        );
+
+        return subject -> TerminalUnaryExpression.ofNullable(
+            "isEqualTo[" + stringify(desired) + "]",
+            subject,
+            o -> Objects.equals(o, desired),
+            generator
+        );
     }
 
     @SafeVarargs

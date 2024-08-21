@@ -6,6 +6,8 @@ import io.github.libzeal.zeal.logic.evaluation.Cause;
 import io.github.libzeal.zeal.logic.evaluation.TerminalEvaluation;
 import io.github.libzeal.zeal.logic.unary.UnaryExpression;
 
+import java.util.function.Function;
+
 import static org.mockito.Mockito.*;
 
 public class Expressions {
@@ -16,13 +18,23 @@ public class Expressions {
         return unaryExpression("test predicate", expectedResult);
     }
 
-    @SuppressWarnings("unchecked")
     public static UnaryExpression<Object> unaryExpression(final String name, final Result expectedResult) {
+        return unaryExpressionWithRootCause(name, expectedResult, Cause::new);
+    }
+
+    public static UnaryExpression<Object> unaryExpressionWithRootCause(final Result expectedResult, final Function<Evaluation, Cause> rootCauseSupplier) {
+        return unaryExpressionWithRootCause("test predicate", expectedResult, rootCauseSupplier);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static UnaryExpression<Object> unaryExpressionWithRootCause(final String name, final Result expectedResult,
+                                                                  final Function<Evaluation, Cause> rootCauseSupplier) {
 
         final Evaluation evaluation = mock(Evaluation.class);
 
         doReturn(expectedResult).when(evaluation).result();
         doReturn(name).when(evaluation).name();
+        doReturn(rootCauseSupplier.apply(evaluation)).when(evaluation).rootCause();
 
         final UnaryExpression<Object> expression = mock(UnaryExpression.class);
         doReturn(evaluation).when(expression).evaluate();

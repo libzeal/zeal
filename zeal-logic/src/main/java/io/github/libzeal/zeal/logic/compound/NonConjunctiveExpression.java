@@ -1,6 +1,7 @@
 package io.github.libzeal.zeal.logic.compound;
 
 import io.github.libzeal.zeal.logic.Expression;
+import io.github.libzeal.zeal.logic.compound.CompoundEvaluator.CompoundRationaleBuilder;
 import io.github.libzeal.zeal.logic.compound.CompoundEvaluator.Tally;
 import io.github.libzeal.zeal.logic.evaluation.Cause;
 import io.github.libzeal.zeal.logic.evaluation.CompoundEvaluation;
@@ -68,12 +69,14 @@ public class NonConjunctiveExpression implements CompoundExpression {
     @Override
     public Evaluation evaluate() {
 
-        final CompoundRationaleBuilder builder = CompoundRationaleBuilder.withExpected("At least one child must fail");
+        final int expectedFailed = children.isEmpty() ? 0 : 1;
+        final CompoundRationaleBuilder builder = CompoundRationaleBuilder.withExpectedFailed(expectedFailed);
 
         return new CompoundEvaluator(
+            name,
             Tally::anyFailed,
             Tally::allPassed,
             builder
-        ).evaluate(name, children);
+        ).evaluate(children);
     }
 }

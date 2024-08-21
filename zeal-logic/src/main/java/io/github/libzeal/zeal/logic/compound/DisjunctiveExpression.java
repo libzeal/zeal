@@ -1,6 +1,7 @@
 package io.github.libzeal.zeal.logic.compound;
 
 import io.github.libzeal.zeal.logic.Expression;
+import io.github.libzeal.zeal.logic.compound.CompoundEvaluator.CompoundRationaleBuilder;
 import io.github.libzeal.zeal.logic.compound.CompoundEvaluator.Tally;
 import io.github.libzeal.zeal.logic.evaluation.Cause;
 import io.github.libzeal.zeal.logic.evaluation.CompoundEvaluation;
@@ -93,12 +94,14 @@ public class DisjunctiveExpression implements CompoundExpression {
     @Override
     public Evaluation evaluate() {
 
-        final CompoundRationaleBuilder builder = CompoundRationaleBuilder.withExpected("At least one child must pass");
+        final int expectedPassed = children.isEmpty() ? 0 : 1;
+        final CompoundRationaleBuilder builder = CompoundRationaleBuilder.withExpectedPassed(expectedPassed);
 
         return new CompoundEvaluator(
+            name,
             Tally::anyPassed,
             Tally::allFailed,
             builder
-        ).evaluate(name, children);
+        ).evaluate(children);
     }
 }
