@@ -12,7 +12,7 @@ import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
  */
 class Tautology implements Expression {
 
-    private static final String NAME = "Tautology";
+    static final String NAME = "Tautology";
     private static final Evaluation EVALUATION = new TautologicalEvaluation();
 
     @Override

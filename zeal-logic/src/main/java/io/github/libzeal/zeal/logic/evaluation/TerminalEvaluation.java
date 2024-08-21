@@ -3,6 +3,8 @@ package io.github.libzeal.zeal.logic.evaluation;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
 import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
 
+import java.util.Objects;
+
 import static java.util.Objects.requireNonNull;
 
 public class TerminalEvaluation implements Evaluation {
@@ -69,5 +71,18 @@ public class TerminalEvaluation implements Evaluation {
         if (traverser != null) {
             traverser.on(this, context);
         }
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (!(o instanceof TerminalEvaluation)) return false;
+        final TerminalEvaluation that = (TerminalEvaluation) o;
+        return result == that.result && Objects.equals(name, that.name) && Objects.equals(rationale, that.rationale) && Objects.equals(cause, that.cause);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(result, name, rationale, cause);
     }
 }

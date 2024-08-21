@@ -1,7 +1,7 @@
 package io.github.libzeal.zeal.logic.compound;
 
 import io.github.libzeal.zeal.logic.Expression;
-import io.github.libzeal.zeal.logic.Expressions;
+import io.github.libzeal.zeal.logic.test.Expressions;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.evaluation.Result;
 import io.github.libzeal.zeal.logic.evaluation.Cause;
@@ -11,8 +11,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import static io.github.libzeal.zeal.logic.test.Arguments.listWithSingleNull;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.mock;
@@ -33,11 +35,11 @@ class ConjunctiveExpressionTest {
     @Test
     void givenNullName_whenConstruct_thenExceptionThrown() {
 
-        final List<Expression> list = new ArrayList<>();
+        final ArrayList<Expression> children = new ArrayList<>();
 
         assertThrows(
             NullPointerException.class,
-            () -> new ConjunctiveExpression(null, list)
+            () -> new ConjunctiveExpression(null, children)
         );
     }
 
@@ -62,6 +64,28 @@ class ConjunctiveExpressionTest {
         assertThrows(
             NullPointerException.class,
             () -> ConjunctiveExpression.withDefaultName(null)
+        );
+    }
+
+    @Test
+    void givenNullChildEntry_whenConstruct_thenExceptionThrown() {
+
+        final List<Expression> children = listWithSingleNull();
+
+        assertThrows(
+            NullPointerException.class,
+            () -> new ConjunctiveExpression("foo", children)
+        );
+    }
+
+    @Test
+    void givenNullChildEntry_whenWithDefaultName_thenExceptionThrown() {
+
+        final List<Expression> children = listWithSingleNull();
+
+        assertThrows(
+            NullPointerException.class,
+            () -> ConjunctiveExpression.withDefaultName(children)
         );
     }
 

@@ -1,4 +1,4 @@
-package io.github.libzeal.zeal.logic;
+package io.github.libzeal.zeal.logic.test;
 
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.evaluation.Result;

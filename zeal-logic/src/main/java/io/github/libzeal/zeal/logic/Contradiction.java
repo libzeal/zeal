@@ -12,7 +12,7 @@ import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
  */
 class Contradiction implements Expression {
 
-    private static final String NAME = "Contradiction";
+    static final String NAME = "Contradiction";
     private static final Evaluation EVALUATION = new ContradictoryEvaluation();
 
     @Override
@@ -32,11 +32,11 @@ class Contradiction implements Expression {
 
     private static final class ContradictoryEvaluation implements Evaluation {
 
-        public static final String FALSE = "false";
+        private static final String FALSE = "false";
 
         @Override
         public Result result() {
-            return Result.TRUE;
+            return Result.FALSE;
         }
 
         @Override

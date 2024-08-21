@@ -1,11 +1,11 @@
 package io.github.libzeal.zeal.logic.compound;
 
 import io.github.libzeal.zeal.logic.Expression;
-import io.github.libzeal.zeal.logic.Expressions;
+import io.github.libzeal.zeal.logic.evaluation.Cause;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.evaluation.Result;
-import io.github.libzeal.zeal.logic.evaluation.Cause;
 import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
+import io.github.libzeal.zeal.logic.test.Expressions;
 import io.github.libzeal.zeal.logic.unary.UnaryExpression;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 
+import static io.github.libzeal.zeal.logic.test.Arguments.listWithSingleNull;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -61,6 +62,28 @@ class NonDisjunctiveExpressionTest {
         assertThrows(
             NullPointerException.class,
             () -> NonDisjunctiveExpression.withDefaultName(null)
+        );
+    }
+
+    @Test
+    void givenNullChildEntry_whenConstruct_thenExceptionThrown() {
+
+        final List<Expression> children = listWithSingleNull();
+
+        assertThrows(
+            NullPointerException.class,
+            () -> new NonDisjunctiveExpression("foo", children)
+        );
+    }
+
+    @Test
+    void givenNullChildEntry_whenWithDefaultName_thenExceptionThrown() {
+
+        final List<Expression> children = listWithSingleNull();
+
+        assertThrows(
+            NullPointerException.class,
+            () -> NonDisjunctiveExpression.withDefaultName(children)
         );
     }
 

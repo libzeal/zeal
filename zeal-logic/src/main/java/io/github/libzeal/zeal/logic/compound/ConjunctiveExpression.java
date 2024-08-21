@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static io.github.libzeal.zeal.logic.util.ArgumentValidator.requireDoesNotContainNulls;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -37,7 +38,7 @@ public class ConjunctiveExpression implements CompoundExpression {
      */
     public ConjunctiveExpression(String name, List<Expression> children) {
         this.name = requireNonNull(name);
-        this.children = requireNonNull(children);
+        this.children = requireDoesNotContainNulls(children);
     }
 
     /**

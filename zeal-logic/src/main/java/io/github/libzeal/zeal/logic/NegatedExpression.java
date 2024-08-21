@@ -13,13 +13,20 @@ import java.util.List;
 import static java.util.Objects.requireNonNull;
 
 /**
- * An expression negates a wrapped expression.
+ * An expression negates a wrapped expression (a logical <em>not</em>).
+ * <p/>
+ * This expression evaluates to true if and only if the wrapped expression is false; otherwise (the wrapped expression
+ * is true or skipped), the expression evaluates to false.
  *
  * @author Justin Albano
  * @since 0.2.1
  */
 public class NegatedExpression implements Expression {
 
+    static final String NAME = "Not (NOT)";
+    static final String VALUE_WRAPPED_TRUE = "Wrapped: true";
+    static final String VALUE_WRAPPED_FALSE = "Wrapped: false";
+    static final String VALUE_WRAPPED_SKIPPED = "Wrapped: skipped";
     private final Expression wrapped;
 
     /**
@@ -41,13 +48,13 @@ public class NegatedExpression implements Expression {
         final Evaluation wrappedEvaluation = wrapped.evaluate();
         final Result result = result(wrappedEvaluation);
         final String actualValue = actualValue(wrappedEvaluation);
-        final Rationale rationale = new SimpleRationale("Wrapped: false", actualValue);
+        final Rationale rationale = new SimpleRationale(VALUE_WRAPPED_FALSE, actualValue);
         final Cause cause = wrappedEvaluation.rootCause();
 
         final List<Evaluation> children = new ArrayList<>(1);
         children.add(wrappedEvaluation);
 
-        if (result.isFalse()) {
+        if (result.isFalse() || result.isSkipped()) {
             return CompoundEvaluation.ofFalse(name(), rationale, cause, children);
         }
         else {
@@ -75,19 +82,19 @@ public class NegatedExpression implements Expression {
         final Result result = wrappedEvaluation.result();
 
         if (result.isTrue()) {
-            return "Wrapped: true";
+            return VALUE_WRAPPED_TRUE;
         }
         else if (result.isFalse()) {
-            return "Wrapped: false";
+            return VALUE_WRAPPED_FALSE;
         }
         else {
-            return "Wrapped: skipped";
+            return VALUE_WRAPPED_SKIPPED;
         }
     }
 
     @Override
     public String name() {
-        return "Not (NOT)";
+        return NAME;
     }
 
     @Override
