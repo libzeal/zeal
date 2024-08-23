@@ -6,11 +6,29 @@ import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 
 import static java.util.Objects.requireNonNull;
 
+/**
+ * An expression that negates a wrapped {@link UnaryExpression} (a logical <em>not</em>).
+ *
+ * @param <T>
+ *     The type of the subject.
+ *
+ * @author Justin Albano
+ * @since 0.2.1
+ */
 public class NegatedUnaryExpression<T> implements UnaryExpression<T> {
 
     private final UnaryExpression<T> wrapped;
     private final NegatedExpression negated;
 
+    /**
+     * Creates a negated expression.
+     *
+     * @param wrapped
+     *     The expression to negate.
+     *
+     * @throws NullPointerException
+     *     The supplied wrapped expression is {@code null}.
+     */
     public NegatedUnaryExpression(final UnaryExpression<T> wrapped) {
         this.wrapped = requireNonNull(wrapped);
         this.negated = new NegatedExpression(wrapped);

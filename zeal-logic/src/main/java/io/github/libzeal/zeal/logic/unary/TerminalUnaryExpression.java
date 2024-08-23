@@ -26,8 +26,7 @@ public class TerminalUnaryExpression<T> implements UnaryExpression<T> {
     private final RationaleGenerator<T> rationaleGenerator;
 
     /**
-     * Creates an expression where the predicate fails if the supplied subject is {@code null} (a non-nullable
-     * predicate).
+     * Creates a new unary expression.
      *
      * @param name
      *     The name of the expression.
@@ -44,45 +43,13 @@ public class TerminalUnaryExpression<T> implements UnaryExpression<T> {
      * @return A unary expression without children.
      *
      * @throws NullPointerException
-     *     Any of the supplied arguments are {@code null}.
+     *     Any of the supplied arguments, other than the subject, are {@code null}.
      */
     public static <S> TerminalUnaryExpression<S> of(final String name, final S subject, final Predicate<S> predicate,
                                                     final RationaleGenerator<S> rationaleGenerator) {
 
         requireNonNull(predicate, "Predicate cannot be null");
 
-        return new TerminalUnaryExpression<>(
-            name,
-            subject,
-            predicate,
-            rationaleGenerator
-        );
-    }
-
-    /**
-     * Creates an expression where the predicate can accept {@code null} values (a nullable predicate).
-     *
-     * @param name
-     *     The name of the expression.
-     * @param subject
-     *     The subject of the expression.
-     * @param predicate
-     *     The predicate for the expression. This predicate accepts a {@code null} subject (a nullable predicate). Note
-     *     that the predicate itself cannot be {@code null}.
-     * @param rationaleGenerator
-     *     A generator used to create a rationale for the expression when it is evaluated.
-     * @param <S>
-     *     The type of the subject.
-     *
-     * @return A unary expression without children.
-     *
-     * @throws NullPointerException
-     *     Any of the supplied arguments are {@code null}.
-     */
-    // TODO Remove
-    public static <S> TerminalUnaryExpression<S> ofNullable(final String name, final S subject,
-                                                            final Predicate<S> predicate,
-                                                            final RationaleGenerator<S> rationaleGenerator) {
         return new TerminalUnaryExpression<>(name, subject, predicate, rationaleGenerator);
     }
 

@@ -13,7 +13,7 @@ import java.util.List;
 import static java.util.Objects.requireNonNull;
 
 /**
- * An expression negates a wrapped expression (a logical <em>not</em>).
+ * An expression that negates a wrapped expression (a logical <em>not</em>).
  * <p/>
  * This expression evaluates to true if and only if the wrapped expression is false; otherwise (the wrapped expression
  * is true or skipped), the expression evaluates to false.
@@ -23,10 +23,10 @@ import static java.util.Objects.requireNonNull;
  */
 public class NegatedExpression implements Expression {
 
-    static final String NAME = "Not (NOT)";
-    static final String VALUE_WRAPPED_TRUE = "Wrapped: true";
-    static final String VALUE_WRAPPED_FALSE = "Wrapped: false";
-    static final String VALUE_WRAPPED_SKIPPED = "Wrapped: skipped";
+    public static final String DEFAULT_NAME = "Not (NOT)";
+    public static final String VALUE_WRAPPED_TRUE = "Wrapped: true";
+    public static final String VALUE_WRAPPED_FALSE = "Wrapped: false";
+    public static final String VALUE_WRAPPED_SKIPPED = "Wrapped: skipped";
     private final Expression wrapped;
 
     /**
@@ -94,7 +94,7 @@ public class NegatedExpression implements Expression {
 
     @Override
     public String name() {
-        return NAME;
+        return DEFAULT_NAME;
     }
 
     @Override

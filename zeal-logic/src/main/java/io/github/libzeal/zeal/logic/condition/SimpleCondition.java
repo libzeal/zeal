@@ -47,11 +47,6 @@ class SimpleCondition<T> implements Condition<T> {
             (s, passed) -> passed ? "satisfied" : "unsatisfied"
         );
 
-        return TerminalUnaryExpression.ofNullable(
-            name,
-            subject,
-            predicate,
-            generator
-        );
+        return TerminalUnaryExpression.of(name, subject, predicate, generator);
     }
 }

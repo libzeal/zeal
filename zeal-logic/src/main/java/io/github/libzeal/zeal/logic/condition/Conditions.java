@@ -40,7 +40,7 @@ public class Conditions {
             (s, passed) -> "Actual should be identical to " + desired + " (using ==)"
         );
 
-        return subject -> TerminalUnaryExpression.ofNullable(
+        return subject -> TerminalUnaryExpression.of(
             "is[" + stringify(desired) + "]",
             subject,
             o -> o == desired,
@@ -56,7 +56,7 @@ public class Conditions {
             (s, passed) -> "Actual should be equal to " + desired + " (using subject.equals(" + desired + "))"
         );
 
-        return subject -> TerminalUnaryExpression.ofNullable(
+        return subject -> TerminalUnaryExpression.of(
             "isEqualTo[" + stringify(desired) + "]",
             subject,
             o -> Objects.equals(o, desired),

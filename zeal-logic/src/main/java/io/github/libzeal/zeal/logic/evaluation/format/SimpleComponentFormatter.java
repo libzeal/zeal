@@ -5,7 +5,13 @@ import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.evaluation.Result;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
 
-public class SimpleEvaluationFormatter implements EvaluationFormatter {
+/**
+ * A component formatter that creates a simple, text-based formatted string for each of the evaluation components.
+ *
+ * @author Justin Albano
+ * @since 0.2.1
+ */
+public class SimpleComponentFormatter implements ComponentFormatter {
 
     static final int INDENT_WIDTH = 4;
     static final int RATIONALE_INDENT_WIDTH = 2;
@@ -13,11 +19,11 @@ public class SimpleEvaluationFormatter implements EvaluationFormatter {
     static final int DEFAULT_RATIONALE_KEY_WIDTH = 8;
 
     @Override
-    public String format(final Rationale rationale, final FormatterContext context) {
+    public String format(final Rationale rationale, final ComponentContext context) {
         return formatRationale(rationale, context, DEFAULT_RATIONALE_KEY_WIDTH);
     }
 
-    private static String formatRationale(final Rationale rationale, final FormatterContext context, final int keyWidth) {
+    private static String formatRationale(final Rationale rationale, final ComponentContext context, final int keyWidth) {
 
         final StringBuilder builder = new StringBuilder();
 
@@ -40,7 +46,7 @@ public class SimpleEvaluationFormatter implements EvaluationFormatter {
         return line(key, value, RATIONALE_INDENT_WIDTH, keyWidth);
     }
 
-    private static String indent(final FormatterContext context) {
+    private static String indent(final ComponentContext context) {
         return indent(context.depth(), INDENT_WIDTH);
     }
 
@@ -64,7 +70,7 @@ public class SimpleEvaluationFormatter implements EvaluationFormatter {
     }
 
     @Override
-    public String format(Cause cause, FormatterContext context) {
+    public String format(Cause cause, ComponentContext context) {
 
         final StringBuilder builder = new StringBuilder();
         final Evaluation evaluation = cause.evaluation();
@@ -95,7 +101,7 @@ public class SimpleEvaluationFormatter implements EvaluationFormatter {
     }
 
     @Override
-    public String format(final Evaluation evaluation, final FormatterContext context) {
+    public String format(final Evaluation evaluation, final ComponentContext context) {
 
         final StringBuilder builder = new StringBuilder();
 

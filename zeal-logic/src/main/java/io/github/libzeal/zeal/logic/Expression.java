@@ -46,7 +46,7 @@ public interface Expression {
     /**
      * An expression that is always false (a contradiction).
      *
-     * @sine 0.2.1
+     * @since 0.2.1
      */
     Expression FALSE = new Contradiction();
 }

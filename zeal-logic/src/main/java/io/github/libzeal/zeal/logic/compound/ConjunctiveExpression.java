@@ -22,7 +22,7 @@ import static java.util.Objects.requireNonNull;
  */
 public class ConjunctiveExpression implements CompoundExpression {
 
-    static final String DEFAULT_NAME = "All (AND)";
+    public static final String DEFAULT_NAME = "All (AND)";
     private final String name;
     private final List<Expression> children;
 

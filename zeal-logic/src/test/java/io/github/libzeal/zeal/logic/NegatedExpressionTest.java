@@ -4,13 +4,11 @@ import io.github.libzeal.zeal.logic.evaluation.Cause;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.evaluation.Result;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
-import io.github.libzeal.zeal.logic.unary.TerminalUnaryExpression;
 import org.junit.jupiter.api.Test;
 
 import static io.github.libzeal.zeal.logic.NegatedExpression.*;
 import static io.github.libzeal.zeal.logic.test.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
@@ -33,7 +31,7 @@ class NegatedExpressionTest {
         final Rationale rationale = evaluation.rationale();
 
         assertEquals(Result.FALSE, evaluation.result());
-        assertEquals(NegatedExpression.NAME, evaluation.name());
+        assertEquals(NegatedExpression.DEFAULT_NAME, evaluation.name());
         assertRationaleEquals(rationale, VALUE_WRAPPED_FALSE, VALUE_WRAPPED_TRUE);
         assertEquals(trueExpression.evaluate(), evaluation.rootCause().evaluation());
         assertDepthFirstTraversalIsTerminal(evaluation);
@@ -48,7 +46,7 @@ class NegatedExpressionTest {
         final Rationale rationale = evaluation.rationale();
 
         assertEquals(Result.TRUE, evaluation.result());
-        assertEquals(NegatedExpression.NAME, evaluation.name());
+        assertEquals(NegatedExpression.DEFAULT_NAME, evaluation.name());
         assertRationaleEquals(rationale, VALUE_WRAPPED_FALSE, VALUE_WRAPPED_FALSE);
         assertEquals(falseExpression.evaluate(), evaluation.rootCause().evaluation());
         assertDepthFirstTraversalIsTerminal(evaluation);
@@ -59,12 +57,11 @@ class NegatedExpressionTest {
 
         final Cause cause = mock(Cause.class);
 
-        final Expression trueExpression = Expression.TRUE;
-        final NegatedExpression expression = new NegatedExpression(trueExpression);
+        final NegatedExpression expression = new NegatedExpression(Expression.TRUE);
         final Evaluation skippedEvaluation = expression.skip(cause);
         final Rationale rationale = skippedEvaluation.rationale();
 
-        assertEquals(NegatedExpression.NAME, skippedEvaluation.name());
+        assertEquals(NegatedExpression.DEFAULT_NAME, skippedEvaluation.name());
         assertEquals(cause, skippedEvaluation.rootCause());
         assertRationaleIsSkipped(rationale);
     }
@@ -74,12 +71,11 @@ class NegatedExpressionTest {
 
         final Cause cause = mock(Cause.class);
 
-        final Expression falseExpression = Expression.FALSE;
-        final NegatedExpression expression = new NegatedExpression(falseExpression);
+        final NegatedExpression expression = new NegatedExpression(Expression.FALSE);
         final Evaluation skippedEvaluation = expression.skip(cause);
         final Rationale rationale = skippedEvaluation.rationale();
 
-        assertEquals(NegatedExpression.NAME, skippedEvaluation.name());
+        assertEquals(NegatedExpression.DEFAULT_NAME, skippedEvaluation.name());
         assertEquals(cause, skippedEvaluation.rootCause());
         assertRationaleIsSkipped(rationale);
     }
@@ -93,7 +89,7 @@ class NegatedExpressionTest {
         final Rationale rationale = evaluation.rationale();
 
         assertEquals(Result.FALSE, evaluation.result());
-        assertEquals(NegatedExpression.NAME, evaluation.name());
+        assertEquals(NegatedExpression.DEFAULT_NAME, evaluation.name());
         assertRationaleEquals(rationale, VALUE_WRAPPED_FALSE, VALUE_WRAPPED_SKIPPED);
         assertNull(evaluation.rootCause().evaluation());
         assertDepthFirstTraversalIsTerminal(evaluation);
@@ -119,7 +115,7 @@ class NegatedExpressionTest {
         final Evaluation skippedEvaluation = expression.skip(cause);
         final Rationale rationale = skippedEvaluation.rationale();
 
-        assertEquals(NegatedExpression.NAME, skippedEvaluation.name());
+        assertEquals(NegatedExpression.DEFAULT_NAME, skippedEvaluation.name());
         assertEquals(cause, skippedEvaluation.rootCause());
         assertRationaleIsSkipped(rationale);
     }

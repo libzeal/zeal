@@ -1,7 +1,9 @@
 package io.github.libzeal.zeal.logic.unary;
 
+import io.github.libzeal.zeal.logic.evaluation.Cause;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.evaluation.Result;
+import io.github.libzeal.zeal.logic.evaluation.TerminalEvaluation;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
 import io.github.libzeal.zeal.logic.rationale.RationaleGenerator;
 import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
@@ -73,52 +75,10 @@ class TerminalUnaryExpressionTest {
     }
 
     @Test
-    void givenNullName_whenOfNullable_thenExceptionThrown() {
-
-        final Object subject = new Object();
-        final RationaleGenerator<Object> generator = generator();
-
-        assertThrows(
-            NullPointerException.class,
-            () -> TerminalUnaryExpression.ofNullable(null, subject, s -> true, generator)
-        );
-    }
-
-    @Test
-    void givenNullSubject_whenOfNullable_thenExceptionNotThrown() {
-        assertDoesNotThrow(
-            () -> TerminalUnaryExpression.ofNullable("someName", null, s -> true, generator())
-        );
-    }
-
-    @Test
-    void givenNullPredicate_whenOfNullable_thenExceptionThrown() {
-
-        final Object subject = new Object();
-        final RationaleGenerator<Object> generator = generator();
-
-        assertThrows(
-            NullPointerException.class,
-            () -> TerminalUnaryExpression.ofNullable("someName", subject, null, generator)
-        );
-    }
-
-    @Test
-    void givenNullGenerator_whenOfNullable_thenExceptionThrown() {
-
-        final Object subject = new Object();
-
-        assertThrows(
-            NullPointerException.class,
-            () -> TerminalUnaryExpression.ofNullable("someName", subject, s -> true, null)
-        );
-    }
-
-    @Test
     void givenNullableExpression_whenName_thenNameIsCorrect() {
 
         final String name = "someName";
-        final TerminalUnaryExpression<Object> expression = TerminalUnaryExpression.ofNullable(name, new Object(),
+        final TerminalUnaryExpression<Object> expression = TerminalUnaryExpression.of(name, new Object(),
             s -> true, generator());
 
         assertEquals(name, expression.name());
@@ -128,7 +88,7 @@ class TerminalUnaryExpressionTest {
     void givenNullableExpression_whenSubject_thenSubjectIsCorrect() {
 
         final Object subject = new Object();
-        final TerminalUnaryExpression<Object> expression = TerminalUnaryExpression.ofNullable("someName", subject,
+        final TerminalUnaryExpression<Object> expression = TerminalUnaryExpression.of("someName", subject,
             s -> true, generator());
 
         assertEquals(subject, expression.subject());
@@ -138,7 +98,7 @@ class TerminalUnaryExpressionTest {
     void givenTrueNullableExpression_whenEvaluate_thenEvaluationIsCorrect() {
 
         final Object subject = new Object();
-        final TerminalUnaryExpression<Object> expression = TerminalUnaryExpression.ofNullable(
+        final TerminalUnaryExpression<Object> expression = TerminalUnaryExpression.of(
             "someName",
             subject,
             s -> true,
@@ -162,7 +122,7 @@ class TerminalUnaryExpressionTest {
     void givenFalseNullableExpression_whenEvaluate_thenEvaluationIsCorrect() {
 
         final Object subject = new Object();
-        final TerminalUnaryExpression<Object> expression = TerminalUnaryExpression.ofNullable(
+        final TerminalUnaryExpression<Object> expression = TerminalUnaryExpression.of(
             "someName",
             subject,
             s -> false,
@@ -178,7 +138,7 @@ class TerminalUnaryExpressionTest {
     @Test
     void givenNullSubjectNullableExpression_whenEvaluate_thenEvaluationIsCorrect() {
 
-        final TerminalUnaryExpression<Object> expression = TerminalUnaryExpression.ofNullable(
+        final TerminalUnaryExpression<Object> expression = TerminalUnaryExpression.of(
             "someName",
             null,
             s -> true,
@@ -189,5 +149,40 @@ class TerminalUnaryExpressionTest {
 
         assertEquals(Result.TRUE, evaluation.result());
         assertRationaleIsCorrect(evaluation.rationale());
+    }
+
+    @Test
+    void givenNullCause_whenSkip_thenCorrectEvaluationReturned() {
+
+        final TerminalUnaryExpression<Object> expression = TerminalUnaryExpression.of(
+            "someName",
+            new Object(),
+            s -> true,
+            generator()
+        );
+
+        final Evaluation skippedEvaluation = expression.skip(null);
+
+        assertEquals(expression.name(), skippedEvaluation.name());
+        assertEquals(SimpleRationale.skipped(), skippedEvaluation.rationale());
+        assertEquals(skippedEvaluation, skippedEvaluation.rootCause().evaluation());
+    }
+
+    @Test
+    void givenValidCause_whenSkip_thenCorrectEvaluationReturned() {
+
+        final Evaluation rootCauseEvaluation = TerminalEvaluation.ofTrue("foo", SimpleRationale.empty());
+        final TerminalUnaryExpression<Object> expression = TerminalUnaryExpression.of(
+            "someName",
+            new Object(),
+            s -> true,
+            generator()
+        );
+
+        final Evaluation skippedEvaluation = expression.skip(new Cause(rootCauseEvaluation));
+
+        assertEquals(expression.name(), skippedEvaluation.name());
+        assertEquals(SimpleRationale.skipped(), skippedEvaluation.rationale());
+        assertEquals(rootCauseEvaluation, skippedEvaluation.rootCause().evaluation());
     }
 }
