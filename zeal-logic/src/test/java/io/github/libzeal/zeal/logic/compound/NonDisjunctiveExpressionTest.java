@@ -1,7 +1,7 @@
 package io.github.libzeal.zeal.logic.compound;
 
 import io.github.libzeal.zeal.logic.Expression;
-import io.github.libzeal.zeal.logic.evaluation.Cause;
+import io.github.libzeal.zeal.logic.evaluation.cause.Cause;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.evaluation.Result;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
@@ -274,6 +274,6 @@ class NonDisjunctiveExpressionTest {
 
         final Evaluation evaluation = expression.evaluate();
 
-        assertEquals(subExpression.name(), evaluation.rootCause().evaluation().name());
+        assertEquals(subExpression.name(), evaluation.cause().evaluation().name());
     }
 }

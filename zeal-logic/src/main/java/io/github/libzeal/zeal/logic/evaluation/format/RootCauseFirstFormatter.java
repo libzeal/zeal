@@ -1,6 +1,6 @@
 package io.github.libzeal.zeal.logic.evaluation.format;
 
-import io.github.libzeal.zeal.logic.evaluation.Cause;
+import io.github.libzeal.zeal.logic.evaluation.cause.Cause;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.evaluation.TraversalContext;
 import io.github.libzeal.zeal.logic.evaluation.Traverser;
@@ -33,12 +33,12 @@ public class RootCauseFirstFormatter implements Formatter {
     @Override
     public String format(final Evaluation evaluation) {
 
-        final Cause cause = evaluation.rootCause();
-        final ComponentContext context = new ComponentContext(cause, 0);
+        final Cause cause = evaluation.cause().rootCause();
+        final ComponentContext context = new ComponentContext(evaluation.cause(), 0);
         final StringBuilder builder = new StringBuilder();
         final Traverser traverser = new RootCauseFirstTraverser(evaluation, builder, formatter);
 
-        builder.append(formatter.format(cause, context))
+        builder.append(formatter.format(cause, evaluation.cause().rootCauseChain(), context))
             .append("Evaluation:\n");
 
         evaluation.traverseDepthFirst(traverser);
@@ -70,7 +70,7 @@ public class RootCauseFirstFormatter implements Formatter {
         }
 
         private ComponentContext createContext(final TraversalContext context) {
-            return new ComponentContext(rootEvaluation.rootCause(), context.depth());
+            return new ComponentContext(rootEvaluation.cause(), context.depth());
         }
 
     }

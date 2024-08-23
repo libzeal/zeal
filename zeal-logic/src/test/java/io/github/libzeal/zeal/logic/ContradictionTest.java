@@ -1,6 +1,6 @@
 package io.github.libzeal.zeal.logic;
 
-import io.github.libzeal.zeal.logic.evaluation.Cause;
+import io.github.libzeal.zeal.logic.evaluation.cause.Cause;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.evaluation.Result;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
@@ -35,7 +35,7 @@ class ContradictionTest {
         assertEquals(Result.FALSE, evaluation.result());
         assertEquals(Contradiction.NAME, evaluation.name());
         assertRationaleEquals(rationale, FALSE, FALSE);
-        assertEquals(evaluation, evaluation.rootCause().evaluation());
+        assertEquals(evaluation, evaluation.cause().evaluation());
         assertDepthFirstTraversalIsTerminal(evaluation);
     }
 
@@ -48,7 +48,7 @@ class ContradictionTest {
         final Rationale rationale = skippedEvaluation.rationale();
 
         assertEquals(Contradiction.NAME, skippedEvaluation.name());
-        assertEquals(cause, skippedEvaluation.rootCause());
+        assertEquals(cause, skippedEvaluation.cause());
         assertRationaleIsSkipped(rationale);
     }
 }

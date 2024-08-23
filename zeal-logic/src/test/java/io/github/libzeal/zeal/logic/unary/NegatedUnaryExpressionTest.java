@@ -2,7 +2,7 @@ package io.github.libzeal.zeal.logic.unary;
 
 import io.github.libzeal.zeal.logic.Expression;
 import io.github.libzeal.zeal.logic.NegatedExpression;
-import io.github.libzeal.zeal.logic.evaluation.Cause;
+import io.github.libzeal.zeal.logic.evaluation.cause.Cause;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.evaluation.Result;
 import io.github.libzeal.zeal.logic.evaluation.TerminalEvaluation;
@@ -63,7 +63,7 @@ class NegatedUnaryExpressionTest {
         assertEquals(Result.FALSE, evaluation.result());
         assertEquals(NegatedExpression.DEFAULT_NAME, evaluation.name());
         assertRationaleEquals(rationale, VALUE_WRAPPED_FALSE, VALUE_WRAPPED_TRUE);
-        assertEquals(trueExpression.evaluate(), evaluation.rootCause().evaluation());
+        assertEquals(trueExpression.evaluate(), evaluation.cause().evaluation());
         assertDepthFirstTraversalIsTerminal(evaluation);
     }
 
@@ -96,7 +96,7 @@ class NegatedUnaryExpressionTest {
         assertEquals(Result.TRUE, evaluation.result());
         assertEquals(NegatedExpression.DEFAULT_NAME, evaluation.name());
         assertRationaleEquals(rationale, VALUE_WRAPPED_FALSE, VALUE_WRAPPED_FALSE);
-        assertEquals(falseExpression.evaluate(), evaluation.rootCause().evaluation());
+        assertEquals(falseExpression.evaluate(), evaluation.cause().evaluation());
         assertDepthFirstTraversalIsTerminal(evaluation);
     }
 
@@ -114,7 +114,7 @@ class NegatedUnaryExpressionTest {
         final Rationale rationale = skippedEvaluation.rationale();
 
         assertEquals(NegatedExpression.DEFAULT_NAME, skippedEvaluation.name());
-        assertEquals(cause, skippedEvaluation.rootCause());
+        assertEquals(cause, skippedEvaluation.cause());
         assertRationaleIsSkipped(rationale);
     }
 
@@ -128,7 +128,7 @@ class NegatedUnaryExpressionTest {
         final Rationale rationale = skippedEvaluation.rationale();
 
         assertEquals(NegatedExpression.DEFAULT_NAME, skippedEvaluation.name());
-        assertEquals(cause, skippedEvaluation.rootCause());
+        assertEquals(cause, skippedEvaluation.cause());
         assertRationaleIsSkipped(rationale);
     }
 
@@ -143,7 +143,7 @@ class NegatedUnaryExpressionTest {
         assertEquals(Result.FALSE, skippedEvaluation.result());
         assertEquals(NegatedExpression.DEFAULT_NAME, skippedEvaluation.name());
         assertRationaleEquals(rationale, VALUE_WRAPPED_FALSE, VALUE_WRAPPED_SKIPPED);
-        assertNull(skippedEvaluation.rootCause().evaluation());
+        assertNull(skippedEvaluation.cause().evaluation());
         assertDepthFirstTraversalIsTerminal(skippedEvaluation);
     }
 
@@ -169,7 +169,7 @@ class NegatedUnaryExpressionTest {
         final Rationale rationale = skippedEvaluation.rationale();
 
         assertEquals(NegatedExpression.DEFAULT_NAME, skippedEvaluation.name());
-        assertEquals(cause, skippedEvaluation.rootCause());
+        assertEquals(cause, skippedEvaluation.cause());
         assertRationaleIsSkipped(rationale);
     }
 }

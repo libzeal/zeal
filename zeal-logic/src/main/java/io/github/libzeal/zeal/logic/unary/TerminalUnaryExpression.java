@@ -1,8 +1,9 @@
 package io.github.libzeal.zeal.logic.unary;
 
-import io.github.libzeal.zeal.logic.evaluation.Cause;
+import io.github.libzeal.zeal.logic.evaluation.cause.Cause;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.evaluation.TerminalEvaluation;
+import io.github.libzeal.zeal.logic.evaluation.cause.CauseGenerator;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
 import io.github.libzeal.zeal.logic.rationale.RationaleGenerator;
 
@@ -82,7 +83,7 @@ public class TerminalUnaryExpression<T> implements UnaryExpression<T> {
 
     @Override
     public Evaluation skip(final Cause cause) {
-        return TerminalEvaluation.ofSkipped(name, cause);
+        return TerminalEvaluation.ofSkipped(name, CauseGenerator.withUnderlyingCause(cause));
     }
 
     @Override

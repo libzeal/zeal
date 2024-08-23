@@ -4,8 +4,9 @@ import io.github.libzeal.zeal.logic.Expression;
 import io.github.libzeal.zeal.logic.compound.ConjunctiveExpression;
 import io.github.libzeal.zeal.logic.condition.Condition;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
-import io.github.libzeal.zeal.logic.evaluation.Cause;
+import io.github.libzeal.zeal.logic.evaluation.cause.Cause;
 import io.github.libzeal.zeal.logic.evaluation.TerminalEvaluation;
+import io.github.libzeal.zeal.logic.evaluation.cause.CauseGenerator;
 import io.github.libzeal.zeal.logic.rationale.ValueSupplier;
 import io.github.libzeal.zeal.logic.unary.UnaryExpression;
 
@@ -128,7 +129,7 @@ public class ObjectUnaryExpression<T, E extends ObjectUnaryExpression<T, E>> imp
 
     @Override
     public final Evaluation skip(final Cause cause) {
-        return TerminalEvaluation.ofSkipped(name(), cause);
+        return TerminalEvaluation.ofSkipped(name(), CauseGenerator.withUnderlyingCause(cause));
     }
 
     /**

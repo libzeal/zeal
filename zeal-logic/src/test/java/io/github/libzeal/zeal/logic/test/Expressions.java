@@ -2,7 +2,7 @@ package io.github.libzeal.zeal.logic.test;
 
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.evaluation.Result;
-import io.github.libzeal.zeal.logic.evaluation.Cause;
+import io.github.libzeal.zeal.logic.evaluation.cause.Cause;
 import io.github.libzeal.zeal.logic.evaluation.TerminalEvaluation;
 import io.github.libzeal.zeal.logic.unary.UnaryExpression;
 
@@ -34,7 +34,7 @@ public class Expressions {
 
         doReturn(expectedResult).when(evaluation).result();
         doReturn(name).when(evaluation).name();
-        doReturn(rootCauseSupplier.apply(evaluation)).when(evaluation).rootCause();
+        doReturn(rootCauseSupplier.apply(evaluation)).when(evaluation).cause();
 
         final UnaryExpression<Object> expression = mock(UnaryExpression.class);
         doReturn(evaluation).when(expression).evaluate();

@@ -1,6 +1,8 @@
 package io.github.libzeal.zeal.logic;
 
 import io.github.libzeal.zeal.logic.evaluation.*;
+import io.github.libzeal.zeal.logic.evaluation.cause.Cause;
+import io.github.libzeal.zeal.logic.evaluation.cause.CauseGenerator;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
 import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
 
@@ -27,7 +29,7 @@ class Tautology implements Expression {
 
     @Override
     public Evaluation skip(final Cause cause) {
-        return TerminalEvaluation.ofSkipped(name(), cause);
+        return TerminalEvaluation.ofSkipped(name(), CauseGenerator.withUnderlyingCause(cause));
     }
 
     private static final class TautologicalEvaluation implements Evaluation {
@@ -50,7 +52,7 @@ class Tautology implements Expression {
         }
 
         @Override
-        public Cause rootCause() {
+        public Cause cause() {
             return new Cause(this);
         }
 

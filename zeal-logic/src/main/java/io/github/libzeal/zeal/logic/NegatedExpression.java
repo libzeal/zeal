@@ -1,9 +1,10 @@
 package io.github.libzeal.zeal.logic;
 
-import io.github.libzeal.zeal.logic.evaluation.Cause;
+import io.github.libzeal.zeal.logic.evaluation.cause.Cause;
 import io.github.libzeal.zeal.logic.evaluation.CompoundEvaluation;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.evaluation.Result;
+import io.github.libzeal.zeal.logic.evaluation.cause.CauseGenerator;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
 import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
 
@@ -49,16 +50,16 @@ public class NegatedExpression implements Expression {
         final Result result = result(wrappedEvaluation);
         final String actualValue = actualValue(wrappedEvaluation);
         final Rationale rationale = new SimpleRationale(VALUE_WRAPPED_FALSE, actualValue);
-        final Cause cause = wrappedEvaluation.rootCause();
+        final Cause cause = wrappedEvaluation.cause();
 
         final List<Evaluation> children = new ArrayList<>(1);
         children.add(wrappedEvaluation);
 
         if (result.isFalse() || result.isSkipped()) {
-            return CompoundEvaluation.ofFalse(name(), rationale, cause, children);
+            return CompoundEvaluation.ofFalse(name(), rationale, CauseGenerator.withUnderlyingCause(cause), children);
         }
         else {
-            return CompoundEvaluation.ofTrue(name(), rationale, cause, children);
+            return CompoundEvaluation.ofTrue(name(), rationale, CauseGenerator.withUnderlyingCause(cause), children);
         }
     }
 
@@ -102,7 +103,7 @@ public class NegatedExpression implements Expression {
 
         final List<Evaluation> children = skipWrapped(cause);
 
-        return CompoundEvaluation.ofSkipped(name(), cause, children);
+        return CompoundEvaluation.ofSkipped(name(), CauseGenerator.withUnderlyingCause(cause), children);
     }
 
     private List<Evaluation> skipWrapped(final Cause cause) {

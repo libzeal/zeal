@@ -1,6 +1,6 @@
 package io.github.libzeal.zeal.logic.unary;
 
-import io.github.libzeal.zeal.logic.evaluation.Cause;
+import io.github.libzeal.zeal.logic.evaluation.cause.Cause;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.evaluation.Result;
 import io.github.libzeal.zeal.logic.evaluation.TerminalEvaluation;
@@ -165,7 +165,7 @@ class TerminalUnaryExpressionTest {
 
         assertEquals(expression.name(), skippedEvaluation.name());
         assertEquals(SimpleRationale.skipped(), skippedEvaluation.rationale());
-        assertEquals(skippedEvaluation, skippedEvaluation.rootCause().evaluation());
+        assertEquals(skippedEvaluation, skippedEvaluation.cause().evaluation());
     }
 
     @Test
@@ -183,6 +183,6 @@ class TerminalUnaryExpressionTest {
 
         assertEquals(expression.name(), skippedEvaluation.name());
         assertEquals(SimpleRationale.skipped(), skippedEvaluation.rationale());
-        assertEquals(rootCauseEvaluation, skippedEvaluation.rootCause().evaluation());
+        assertEquals(rootCauseEvaluation, skippedEvaluation.cause().evaluation());
     }
 }

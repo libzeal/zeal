@@ -1,6 +1,6 @@
 package io.github.libzeal.zeal.assertion.test;
 
-import io.github.libzeal.zeal.logic.evaluation.Cause;
+import io.github.libzeal.zeal.logic.evaluation.cause.Cause;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.evaluation.Result;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
@@ -49,7 +49,7 @@ public class Expressions {
         doReturn(Optional.of("baz")).when(rationale).hint();
 
         doReturn(rationale).when(evaluation).rationale();
-        doReturn(new Cause(evaluation)).when(evaluation).rootCause();
+        doReturn(new Cause(evaluation)).when(evaluation).cause();
 
         doReturn(evaluation).when(expression).evaluate();
         doReturn(result).when(evaluation).result();

@@ -1,6 +1,6 @@
 package io.github.libzeal.zeal.logic;
 
-import io.github.libzeal.zeal.logic.evaluation.Cause;
+import io.github.libzeal.zeal.logic.evaluation.cause.Cause;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.evaluation.Result;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
@@ -35,7 +35,7 @@ class TautologyTest {
         assertEquals(Result.TRUE, evaluation.result());
         assertEquals(Tautology.NAME, evaluation.name());
         assertRationaleEquals(rationale, TRUE, TRUE);
-        assertEquals(evaluation, evaluation.rootCause().evaluation());
+        assertEquals(evaluation, evaluation.cause().evaluation());
         assertDepthFirstTraversalIsTerminal(evaluation);
     }
 
@@ -48,7 +48,7 @@ class TautologyTest {
         final Rationale rationale = skippedEvaluation.rationale();
 
         assertEquals(Tautology.NAME, skippedEvaluation.name());
-        assertEquals(cause, skippedEvaluation.rootCause());
+        assertEquals(cause, skippedEvaluation.cause());
         assertRationaleIsSkipped(rationale);
     }
 }

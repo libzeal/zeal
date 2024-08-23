@@ -1,6 +1,6 @@
 package io.github.libzeal.zeal.logic.evaluation.format;
 
-import io.github.libzeal.zeal.logic.evaluation.Cause;
+import io.github.libzeal.zeal.logic.evaluation.cause.Cause;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 
 import java.util.Objects;
@@ -16,22 +16,22 @@ import static java.util.Objects.requireNonNull;
  */
 public class ComponentContext {
 
-    private final Cause rootCause;
+    private final Cause cause;
     private final int depth;
 
     /**
      * Creates a next context.
      *
-     * @param rootCause
-     *     The root cause of the evaluation tree.
+     * @param cause
+     *     The cause of the evaluation.
      * @param depth
      *     The current depth within the evaluation tree.
      *
      * @throws NullPointerException
      *     The supplied root cause is {@code null}.
      */
-    public ComponentContext(final Cause rootCause, final int depth) {
-        this.rootCause = requireNonNull(rootCause);
+    public ComponentContext(final Cause cause, final int depth) {
+        this.cause = requireNonNull(cause);
         this.depth = depth;
     }
 
@@ -49,7 +49,7 @@ public class ComponentContext {
             return false;
         }
 
-        return Objects.equals(rootCause.evaluation(), evaluation);
+        return Objects.equals(cause.rootCause().evaluation(), evaluation);
     }
 
     /**

@@ -3,9 +3,10 @@ package io.github.libzeal.zeal.logic.compound;
 import io.github.libzeal.zeal.logic.Expression;
 import io.github.libzeal.zeal.logic.compound.CompoundEvaluator.CompoundRationaleBuilder;
 import io.github.libzeal.zeal.logic.compound.CompoundEvaluator.Tally;
-import io.github.libzeal.zeal.logic.evaluation.Cause;
+import io.github.libzeal.zeal.logic.evaluation.cause.Cause;
 import io.github.libzeal.zeal.logic.evaluation.CompoundEvaluation;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
+import io.github.libzeal.zeal.logic.evaluation.cause.CauseGenerator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,7 +89,7 @@ public class DisjunctiveExpression implements CompoundExpression {
             .map(child -> child.skip(cause))
             .collect(Collectors.toList());
 
-        return CompoundEvaluation.ofSkipped(name, cause, evaluations);
+        return CompoundEvaluation.ofSkipped(name, CauseGenerator.withUnderlyingCause(cause), evaluations);
     }
 
     @Override

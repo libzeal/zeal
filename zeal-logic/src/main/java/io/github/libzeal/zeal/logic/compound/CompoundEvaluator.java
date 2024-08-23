@@ -1,10 +1,11 @@
 package io.github.libzeal.zeal.logic.compound;
 
 import io.github.libzeal.zeal.logic.Expression;
-import io.github.libzeal.zeal.logic.evaluation.Cause;
+import io.github.libzeal.zeal.logic.evaluation.cause.Cause;
 import io.github.libzeal.zeal.logic.evaluation.CompoundEvaluation;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.evaluation.Result;
+import io.github.libzeal.zeal.logic.evaluation.cause.CauseGenerator;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
 import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
 
@@ -55,7 +56,7 @@ class CompoundEvaluator {
             evaluated.add(evaluation);
         }
 
-        final Cause cause = findRootCause(decider);
+        final CauseGenerator cause = findCause(decider);
 
         return compoundEvaluation(tally, cause, evaluated);
     }
@@ -78,35 +79,28 @@ class CompoundEvaluator {
         }
     }
 
-    private static Cause findRootCause(final Evaluation decider) {
+    private static CauseGenerator findCause(final Evaluation decider) {
 
         if (decider == null) {
-            return null;
+            return CauseGenerator.self();
         }
         else {
-            final Cause cause = decider.rootCause();
-
-            if (cause == null) {
-                return new Cause(decider);
-            }
-            else {
-                return cause;
-            }
+            return CauseGenerator.withUnderlyingCause(decider.cause());
         }
     }
 
-    private CompoundEvaluation compoundEvaluation(final Tally tally, final Cause cause, final List<Evaluation> evaluated) {
+    private CompoundEvaluation compoundEvaluation(final Tally tally, final CauseGenerator causeGenerator, final List<Evaluation> evaluated) {
 
         final Rationale rationale = rationaleBuilder.build(tally);
 
         if (tally.total() == 0 || passCondition.test(tally)) {
-            return CompoundEvaluation.ofTrue(name, rationale, cause, evaluated);
+            return CompoundEvaluation.ofTrue(name, rationale, causeGenerator, evaluated);
         }
         else if (tally.skipped() == tally.total()) {
-            return CompoundEvaluation.ofSkipped(name, cause, evaluated);
+            return CompoundEvaluation.ofSkipped(name, causeGenerator, evaluated);
         }
         else {
-            return CompoundEvaluation.ofFalse(name, rationale, cause, evaluated);
+            return CompoundEvaluation.ofFalse(name, rationale, causeGenerator, evaluated);
         }
     }
 

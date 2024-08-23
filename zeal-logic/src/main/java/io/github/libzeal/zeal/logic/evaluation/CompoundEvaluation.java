@@ -1,5 +1,7 @@
 package io.github.libzeal.zeal.logic.evaluation;
 
+import io.github.libzeal.zeal.logic.evaluation.cause.Cause;
+import io.github.libzeal.zeal.logic.evaluation.cause.CauseGenerator;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
 import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
 
@@ -12,31 +14,31 @@ public class CompoundEvaluation implements Evaluation {
     private final Result result;
     private final String name;
     private final Rationale rationale;
-    private final Cause cause;
+    private final CauseGenerator causeGenerator;
     private final List<Evaluation> children;
 
     public CompoundEvaluation(final Result result, final String name, final Rationale rationale,
-                              final Cause cause, final List<Evaluation> children) {
+                              final CauseGenerator causeGenerator, final List<Evaluation> children) {
         this.result = requireNonNull(result);
         this.name = requireNonNull(name);
         this.rationale = requireNonNull(rationale);
-        this.cause = cause;
+        this.causeGenerator = requireNonNull(causeGenerator);
         this.children = requireNonNull(children);
     }
 
     public static CompoundEvaluation ofTrue(final String name, final Rationale rationale,
-                                            final Cause cause, final List<Evaluation> children) {
-        return new CompoundEvaluation(Result.TRUE, name, rationale, cause, children);
+                                            final CauseGenerator causeGenerator, final List<Evaluation> children) {
+        return new CompoundEvaluation(Result.TRUE, name, rationale, causeGenerator, children);
     }
 
     public static CompoundEvaluation ofFalse(final String name, final Rationale rationale,
-                                             final Cause cause, final List<Evaluation> children) {
-        return new CompoundEvaluation(Result.FALSE, name, rationale, cause, children);
+                                             final CauseGenerator causeGenerator, final List<Evaluation> children) {
+        return new CompoundEvaluation(Result.FALSE, name, rationale, causeGenerator, children);
     }
 
-    public static CompoundEvaluation ofSkipped(final String name, final Cause cause,
+    public static CompoundEvaluation ofSkipped(final String name, final CauseGenerator causeGenerator,
                                                final List<Evaluation> children) {
-        return new CompoundEvaluation(Result.SKIPPED, name, SimpleRationale.skipped(), cause, children);
+        return new CompoundEvaluation(Result.SKIPPED, name, SimpleRationale.skipped(), causeGenerator, children);
     }
 
     @Override
@@ -55,14 +57,8 @@ public class CompoundEvaluation implements Evaluation {
     }
 
     @Override
-    public Cause rootCause() {
-
-        if (cause == null) {
-            return new Cause(this);
-        }
-        else {
-            return cause;
-        }
+    public Cause cause() {
+        return causeGenerator.generate(this);
     }
 
     @Override

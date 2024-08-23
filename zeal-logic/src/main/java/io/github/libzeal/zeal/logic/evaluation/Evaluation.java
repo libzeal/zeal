@@ -1,6 +1,7 @@
 package io.github.libzeal.zeal.logic.evaluation;
 
 import io.github.libzeal.zeal.logic.Expression;
+import io.github.libzeal.zeal.logic.evaluation.cause.Cause;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
 
 /**
@@ -34,7 +35,7 @@ public interface Evaluation {
      */
     Rationale rationale();
 
-    Cause rootCause();
+    Cause cause();
 
     void traverseDepthFirst(Traverser traverser);
 

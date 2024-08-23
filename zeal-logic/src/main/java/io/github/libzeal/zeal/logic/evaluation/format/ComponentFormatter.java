@@ -1,7 +1,8 @@
 package io.github.libzeal.zeal.logic.evaluation.format;
 
-import io.github.libzeal.zeal.logic.evaluation.Cause;
+import io.github.libzeal.zeal.logic.evaluation.cause.Cause;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
+import io.github.libzeal.zeal.logic.evaluation.cause.RootCauseChain;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
 
 /**
@@ -30,12 +31,14 @@ public interface ComponentFormatter {
      *
      * @param cause
      *     The cause to format.
+     * @param chain
+     *     The root cause chain to format.
      * @param context
      *     The context to use when formatting the supplied cause.
      *
      * @return The formatted cause.
      */
-    String format(Cause cause, ComponentContext context);
+    String format(Cause cause, RootCauseChain chain, ComponentContext context);
 
     /**
      * Formats the supplied evaluation.

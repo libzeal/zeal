@@ -1,9 +1,13 @@
 package io.github.libzeal.zeal.logic.evaluation.format;
 
-import io.github.libzeal.zeal.logic.evaluation.Cause;
+import io.github.libzeal.zeal.logic.evaluation.cause.Cause;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.evaluation.Result;
+import io.github.libzeal.zeal.logic.evaluation.cause.RootCauseChain;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * A component formatter that creates a simple, text-based formatted string for each of the evaluation components.
@@ -70,15 +74,25 @@ public class SimpleComponentFormatter implements ComponentFormatter {
     }
 
     @Override
-    public String format(Cause cause, ComponentContext context) {
+    public String format(final Cause cause, final RootCauseChain chain, final ComponentContext context) {
 
         final StringBuilder builder = new StringBuilder();
         final Evaluation evaluation = cause.evaluation();
+        final List<String> rootCauseChainElements = chain.stream()
+            .map(Cause::toString)
+            .collect(Collectors.toList());
 
         builder.append("Root cause:\n")
             .append(rootCauseLine("Expression", evaluation.name()))
             .append("\n")
-            .append(formatRationale(evaluation.rationale(), context, ROOT_CAUSE_RATIONALE_KEY_WIDTH));
+            .append(formatRationale(evaluation.rationale(), context, ROOT_CAUSE_RATIONALE_KEY_WIDTH))
+            .append("\n")
+            .append(
+                rootCauseLine(
+                    "Chain",
+                    String.join(" --> ", rootCauseChainElements)
+                )
+            );
 
         if (evaluation.result().isTrue()) {
             builder.append("\n")

@@ -1,5 +1,7 @@
 package io.github.libzeal.zeal.logic.evaluation;
 
+import io.github.libzeal.zeal.logic.evaluation.cause.Cause;
+import io.github.libzeal.zeal.logic.evaluation.cause.CauseGenerator;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
 import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
 
@@ -12,26 +14,26 @@ public class TerminalEvaluation implements Evaluation {
     private final Result result;
     private final String name;
     private final Rationale rationale;
-    private final Cause cause;
+    private final CauseGenerator causeGenerator;
 
     private TerminalEvaluation(final Result result, final String name, final Rationale rationale,
-                               final Cause cause) {
+                               final CauseGenerator causeGenerator) {
         this.result = requireNonNull(result);
         this.name = requireNonNull(name);
         this.rationale = requireNonNull(rationale);
-        this.cause = cause;
+        this.causeGenerator = requireNonNull(causeGenerator);
     }
 
     public static TerminalEvaluation ofTrue(final String name, final Rationale rationale) {
-        return new TerminalEvaluation(Result.TRUE, name, rationale, null);
+        return new TerminalEvaluation(Result.TRUE, name, rationale, CauseGenerator.self());
     }
 
     public static TerminalEvaluation ofFalse(final String name, final Rationale rationale) {
-        return new TerminalEvaluation(Result.FALSE, name, rationale, null);
+        return new TerminalEvaluation(Result.FALSE, name, rationale, CauseGenerator.self());
     }
 
-    public static TerminalEvaluation ofSkipped(final String name, final Cause cause) {
-        return new TerminalEvaluation(Result.SKIPPED, name, SimpleRationale.skipped(), cause);
+    public static TerminalEvaluation ofSkipped(final String name, final CauseGenerator causeGenerator) {
+        return new TerminalEvaluation(Result.SKIPPED, name, SimpleRationale.skipped(), causeGenerator);
     }
 
     @Override
@@ -50,14 +52,8 @@ public class TerminalEvaluation implements Evaluation {
     }
 
     @Override
-    public Cause rootCause() {
-
-        if (cause == null) {
-            return new Cause(this);
-        }
-        else {
-            return cause;
-        }
+    public Cause cause() {
+        return causeGenerator.generate(this);
     }
 
     @Override
@@ -78,11 +74,11 @@ public class TerminalEvaluation implements Evaluation {
         if (this == o) return true;
         if (!(o instanceof TerminalEvaluation)) return false;
         final TerminalEvaluation that = (TerminalEvaluation) o;
-        return result == that.result && Objects.equals(name, that.name) && Objects.equals(rationale, that.rationale) && Objects.equals(cause, that.cause);
+        return result == that.result && Objects.equals(name, that.name) && Objects.equals(rationale, that.rationale) && Objects.equals(causeGenerator, that.causeGenerator);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(result, name, rationale, cause);
+        return Objects.hash(result, name, rationale, causeGenerator);
     }
 }
