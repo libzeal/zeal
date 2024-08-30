@@ -13,7 +13,7 @@ import static java.util.Objects.requireNonNull;
  * @author Justin Albano
  * @since 0.2.1
  */
-public class RootCauseFirstFormatter implements Formatter {
+public class DefaultFormatter implements Formatter {
 
     private final ComponentFormatter formatter;
 
@@ -26,7 +26,7 @@ public class RootCauseFirstFormatter implements Formatter {
      * @throws NullPointerException
      *     The supplied formatter is {@code null}.
      */
-    public RootCauseFirstFormatter(final ComponentFormatter formatter) {
+    public DefaultFormatter(final ComponentFormatter formatter) {
         this.formatter = requireNonNull(formatter);
     }
 
@@ -37,9 +37,10 @@ public class RootCauseFirstFormatter implements Formatter {
         final Cause rootCause = cause.rootCause();
         final ComponentContext context = new ComponentContext(cause, 0);
         final StringBuilder builder = new StringBuilder();
-        final Traverser traverser = new RootCauseFirstTraverser(evaluation, builder, formatter);
+        final Traverser traverser = new FormattingTraverser(evaluation, builder, formatter);
 
-        builder.append(formatter.formatRootCause(rootCause, cause.rootCauseChain(), context))
+        builder.append("Root cause:\n")
+            .append(formatter.formatRootCause(rootCause, cause.rootCauseChain(), context))
             .append("Evaluation:\n");
 
         evaluation.traverseDepthFirst(traverser);
@@ -47,15 +48,15 @@ public class RootCauseFirstFormatter implements Formatter {
         return builder.toString();
     }
 
-    private static final class RootCauseFirstTraverser implements Traverser {
+    private static final class FormattingTraverser implements Traverser {
 
-        private final Evaluation rootEvaluation;
+        private final Evaluation evaluation;
         private final StringBuilder builder;
         private final ComponentFormatter componentFormatter;
 
-        public RootCauseFirstTraverser(final Evaluation rootEvaluation, final StringBuilder builder,
-                                       final ComponentFormatter componentFormatter) {
-            this.rootEvaluation = requireNonNull(rootEvaluation);
+        public FormattingTraverser(final Evaluation evaluation, final StringBuilder builder,
+                                   final ComponentFormatter componentFormatter) {
+            this.evaluation = requireNonNull(evaluation);
             this.builder = requireNonNull(builder);
             this.componentFormatter = requireNonNull(componentFormatter);
         }
@@ -71,8 +72,7 @@ public class RootCauseFirstFormatter implements Formatter {
         }
 
         private ComponentContext createContext(final TraversalContext context) {
-            return new ComponentContext(rootEvaluation.cause(), context.depth());
+            return new ComponentContext(evaluation.cause(), context.depth());
         }
-
     }
 }

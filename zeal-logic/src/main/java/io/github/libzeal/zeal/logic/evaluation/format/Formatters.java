@@ -20,6 +20,6 @@ public final class Formatters {
 
         final ComponentFormatter componentFormatter = new SimpleComponentFormatter();
 
-        return new RootCauseFirstFormatter(componentFormatter);
+        return new DefaultFormatter(componentFormatter);
     }
 }

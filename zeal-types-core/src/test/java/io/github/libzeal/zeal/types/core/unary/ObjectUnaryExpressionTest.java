@@ -1,11 +1,11 @@
 package io.github.libzeal.zeal.types.core.unary;
 
-import io.github.libzeal.zeal.types.core.unary.test.EvaluatedExpressionAssertion;
-import io.github.libzeal.zeal.types.core.unary.test.ExpressionTestCaseBuilder;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.evaluation.FlatteningTraverser;
 import io.github.libzeal.zeal.logic.evaluation.Result;
 import io.github.libzeal.zeal.logic.util.Formatter;
+import io.github.libzeal.zeal.types.core.unary.test.EvaluatedExpressionAssertion;
+import io.github.libzeal.zeal.types.core.unary.test.ExpressionTestCaseBuilder;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -17,8 +17,8 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import static io.github.libzeal.zeal.types.core.unary.ObjectUnaryExpression.CANNOT_COMPARE_USING_NULL_COMPARATOR;
 import static io.github.libzeal.zeal.logic.evaluation.Result.*;
+import static io.github.libzeal.zeal.types.core.unary.ObjectUnaryExpression.CANNOT_COMPARE_USING_NULL_COMPARATOR;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -66,11 +66,12 @@ public abstract class ObjectUnaryExpressionTest<T, E extends ObjectUnaryExpressi
 
         final T value = exampleValue1();
         final E expression = expression(value);
-        final EvaluatedExpressionAssertion<?> assertion = new EvaluatedExpressionAssertion<>(expression.evaluate());
+        final Evaluation evaluation = expression.evaluate();
+        final EvaluatedExpressionAssertion<?> assertion = new EvaluatedExpressionAssertion<>(evaluation);
 
         assertEquals(value, expression.subject());
         assertion.assertStateIs(TRUE);
-        assertion.assertCompoundExpectedValue();
+        assertion.assertCompoundExpectedValue("Passed: 0");
         assertion.assertCompoundActualValueIs(0, 0, 0);
     }
 

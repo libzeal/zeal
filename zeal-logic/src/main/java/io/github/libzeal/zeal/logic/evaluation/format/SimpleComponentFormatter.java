@@ -79,8 +79,7 @@ public class SimpleComponentFormatter implements ComponentFormatter {
         final StringBuilder builder = new StringBuilder();
         final Evaluation evaluation = cause.evaluation();
 
-        builder.append("Root cause:\n")
-            .append(rootCauseLine("Expression", evaluation.name()))
+        builder.append(rootCauseLine("Expression", evaluation.name()))
             .append("\n")
             .append(formatRationale(evaluation.rationale(), context, ROOT_CAUSE_RATIONALE_KEY_WIDTH))
             .append("\n")

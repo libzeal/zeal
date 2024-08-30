@@ -24,15 +24,15 @@ public class EvaluatedExpressionAssertion<T> {
         Assertions.assertEquals(expected, eval.rationale().expected(), "Expected value is incorrect");
     }
 
-    public void assertCompoundExpectedValue() {
-        assertExpectedIs("All children must pass");
+    public void assertCompoundExpectedValue(final String expected) {
+        assertExpectedIs(expected);
     }
 
     public void assertActualIs(String actual) {
         Assertions.assertEquals(actual, eval.rationale().actual(), "Actual value is incorrect");
     }
 
-    public void assertCompoundActualValueIs(int passed, int failed, int skipped) {
+    public void assertCompoundActualValueIs(final int passed, final int failed, final int skipped) {
         assertActualIs("Passed: " + passed + ", Failed: " + failed + ", Skipped: " + skipped);
     }
 
