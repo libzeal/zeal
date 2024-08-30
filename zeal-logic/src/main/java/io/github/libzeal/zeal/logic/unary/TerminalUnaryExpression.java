@@ -6,7 +6,9 @@ import io.github.libzeal.zeal.logic.evaluation.TerminalEvaluation;
 import io.github.libzeal.zeal.logic.evaluation.cause.CauseGenerator;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
 import io.github.libzeal.zeal.logic.rationale.RationaleGenerator;
+import io.github.libzeal.zeal.logic.util.StopWatch;
 
+import java.time.Duration;
 import java.util.function.Predicate;
 
 import static java.util.Objects.requireNonNull;
@@ -34,8 +36,8 @@ public class TerminalUnaryExpression<T> implements UnaryExpression<T> {
      * @param subject
      *     The subject of the expression.
      * @param predicate
-     *     The predicate for the expression. This predicate fails if the supplied subject is {@null} (a non-nullable
-     *     predicate).
+     *     The predicate for the expression. This predicate fails if the supplied subject is {@code null} (a
+     *     non-nullable predicate).
      * @param rationaleGenerator
      *     A generator used to create a rationale for the expression when it is evaluated.
      * @param <S>
@@ -70,14 +72,16 @@ public class TerminalUnaryExpression<T> implements UnaryExpression<T> {
     @Override
     public Evaluation evaluate() {
 
+        final StopWatch stopWatch = StopWatch.started();
         final boolean passed = predicate.test(subject);
         final Rationale rationale = rationaleGenerator.generate(subject, passed);
+        final Duration elapsedTime = stopWatch.stop();
 
         if (passed) {
-            return TerminalEvaluation.ofTrue(name, rationale);
+            return TerminalEvaluation.ofTrue(name, rationale, elapsedTime);
         }
         else {
-            return TerminalEvaluation.ofFalse(name, rationale);
+            return TerminalEvaluation.ofFalse(name, rationale, elapsedTime);
         }
     }
 

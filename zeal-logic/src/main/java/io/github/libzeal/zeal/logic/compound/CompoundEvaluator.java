@@ -8,7 +8,9 @@ import io.github.libzeal.zeal.logic.evaluation.Result;
 import io.github.libzeal.zeal.logic.evaluation.cause.CauseGenerator;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
 import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
+import io.github.libzeal.zeal.logic.util.StopWatch;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
@@ -38,6 +40,7 @@ class CompoundEvaluator {
 
     public Evaluation evaluate(final List<Expression> expressions) {
 
+        final StopWatch stopWatch = StopWatch.started();
         final int total = expressions.size();
         final List<Evaluation> evaluated = new ArrayList<>(total);
         final Tally tally = new Tally(total);
@@ -57,8 +60,9 @@ class CompoundEvaluator {
         }
 
         final CauseGenerator cause = findCause(decider);
+        final Duration elapsedTime = stopWatch.stop();
 
-        return compoundEvaluation(tally, cause, evaluated);
+        return compoundEvaluation(tally, cause, evaluated, elapsedTime);
     }
 
     private boolean fails(final Tally tally) {
@@ -89,18 +93,19 @@ class CompoundEvaluator {
         }
     }
 
-    private CompoundEvaluation compoundEvaluation(final Tally tally, final CauseGenerator causeGenerator, final List<Evaluation> evaluated) {
+    private CompoundEvaluation compoundEvaluation(final Tally tally, final CauseGenerator causeGenerator,
+                                                  final List<Evaluation> evaluated, final Duration elapsedTime) {
 
         final Rationale rationale = rationaleBuilder.build(tally);
 
         if (tally.total() == 0 || passCondition.test(tally)) {
-            return CompoundEvaluation.ofTrue(name, rationale, causeGenerator, evaluated);
+            return CompoundEvaluation.ofTrue(name, rationale, elapsedTime, causeGenerator, evaluated);
         }
         else if (tally.skipped() == tally.total()) {
-            return CompoundEvaluation.ofSkipped(name, causeGenerator, evaluated);
+            return CompoundEvaluation.ofSkipped(name, elapsedTime, causeGenerator, evaluated);
         }
         else {
-            return CompoundEvaluation.ofFalse(name, rationale, causeGenerator, evaluated);
+            return CompoundEvaluation.ofFalse(name, rationale, elapsedTime, causeGenerator, evaluated);
         }
     }
 

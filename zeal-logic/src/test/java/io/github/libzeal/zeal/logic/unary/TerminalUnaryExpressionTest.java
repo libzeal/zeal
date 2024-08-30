@@ -9,6 +9,8 @@ import io.github.libzeal.zeal.logic.rationale.RationaleGenerator;
 import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
 import org.junit.jupiter.api.Test;
 
+import java.time.Duration;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
@@ -171,7 +173,7 @@ class TerminalUnaryExpressionTest {
     @Test
     void givenValidCause_whenSkip_thenCorrectEvaluationReturned() {
 
-        final Evaluation rootCauseEvaluation = TerminalEvaluation.ofTrue("foo", SimpleRationale.empty());
+        final Evaluation rootCauseEvaluation = TerminalEvaluation.ofTrue("foo", SimpleRationale.empty(), Duration.ZERO);
         final TerminalUnaryExpression<Object> expression = TerminalUnaryExpression.of(
             "someName",
             new Object(),

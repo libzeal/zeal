@@ -7,7 +7,9 @@ import io.github.libzeal.zeal.logic.evaluation.Result;
 import io.github.libzeal.zeal.logic.evaluation.cause.CauseGenerator;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
 import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
+import io.github.libzeal.zeal.logic.util.StopWatch;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,6 +48,7 @@ public class NegatedExpression implements Expression {
     @Override
     public Evaluation evaluate() {
 
+        final StopWatch stopWatch = StopWatch.started();
         final Evaluation wrappedEvaluation = wrapped.evaluate();
         final Result result = result(wrappedEvaluation);
         final String actualValue = actualValue(wrappedEvaluation);
@@ -55,11 +58,14 @@ public class NegatedExpression implements Expression {
         final List<Evaluation> children = new ArrayList<>(1);
         children.add(wrappedEvaluation);
 
+        final Duration elapsedTime = stopWatch.stop();
+
         if (result.isFalse() || result.isSkipped()) {
-            return CompoundEvaluation.ofFalse(name(), rationale, CauseGenerator.withUnderlyingCause(cause), children);
+            return CompoundEvaluation.ofFalse(name(), rationale, elapsedTime, CauseGenerator.withUnderlyingCause(cause),
+                children);
         }
         else {
-            return CompoundEvaluation.ofTrue(name(), rationale, CauseGenerator.withUnderlyingCause(cause), children);
+            return CompoundEvaluation.ofTrue(name(), rationale, elapsedTime, CauseGenerator.withUnderlyingCause(cause), children);
         }
     }
 
@@ -101,9 +107,11 @@ public class NegatedExpression implements Expression {
     @Override
     public Evaluation skip(final Cause cause) {
 
+        final StopWatch stopWatch = StopWatch.started();
         final List<Evaluation> children = skipWrapped(cause);
+        final Duration elapsedTime = stopWatch.stop();
 
-        return CompoundEvaluation.ofSkipped(name(), CauseGenerator.withUnderlyingCause(cause), children);
+        return CompoundEvaluation.ofSkipped(name(), elapsedTime, CauseGenerator.withUnderlyingCause(cause), children);
     }
 
     private List<Evaluation> skipWrapped(final Cause cause) {

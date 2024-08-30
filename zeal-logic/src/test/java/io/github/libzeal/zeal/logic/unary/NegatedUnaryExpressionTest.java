@@ -11,6 +11,8 @@ import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.Duration;
+
 import static io.github.libzeal.zeal.logic.NegatedExpression.*;
 import static io.github.libzeal.zeal.logic.test.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -29,7 +31,7 @@ class NegatedUnaryExpressionTest {
 
         doReturn("foo").when(wrapped).name();
         doReturn(new Object()).when(wrapped).subject();
-        doReturn(TerminalEvaluation.ofTrue("foo", SimpleRationale.empty())).when(wrapped).evaluate();
+        doReturn(TerminalEvaluation.ofTrue("foo", SimpleRationale.empty(), Duration.ZERO)).when(wrapped).evaluate();
 
         expression = new NegatedUnaryExpression<>(wrapped);
     }

@@ -4,6 +4,8 @@ import io.github.libzeal.zeal.logic.Expression;
 import io.github.libzeal.zeal.logic.evaluation.cause.Cause;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
 
+import java.time.Duration;
+
 /**
  * An {@link Expression} that has been evaluated. An evaluated expression contains a state, the name of the evaluation
  * that was performed, and a rationale that describes how the state was reached (the rationale used to reach the
@@ -34,6 +36,15 @@ public interface Evaluation {
      * @return The rationale for the evaluation.
      */
     Rationale rationale();
+
+    /**
+     * Obtains the elapsed time the evaluation (how long the evaluation took to complete).
+     *
+     * @return The elapsed time of the evaluation.
+     *
+     * @since 0.2.1
+     */
+    Duration elapsedTime();
 
     /**
      * Obtains the cause of the evaluation.

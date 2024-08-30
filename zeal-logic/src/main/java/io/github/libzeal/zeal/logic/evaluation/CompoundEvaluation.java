@@ -4,7 +4,9 @@ import io.github.libzeal.zeal.logic.evaluation.cause.Cause;
 import io.github.libzeal.zeal.logic.evaluation.cause.CauseGenerator;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
 import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
+import io.github.libzeal.zeal.logic.util.StopWatch;
 
+import java.time.Duration;
 import java.util.List;
 
 import static java.util.Objects.requireNonNull;
@@ -20,31 +22,40 @@ public class CompoundEvaluation implements Evaluation {
     private final Result result;
     private final String name;
     private final Rationale rationale;
+    private final Duration elapsedTime;
     private final CauseGenerator causeGenerator;
     private final List<Evaluation> children;
 
     private CompoundEvaluation(final Result result, final String name, final Rationale rationale,
-                              final CauseGenerator causeGenerator, final List<Evaluation> children) {
+                               final Duration elapsedTime, final CauseGenerator causeGenerator,
+                               final List<Evaluation> children) {
         this.result = requireNonNull(result);
         this.name = requireNonNull(name);
         this.rationale = requireNonNull(rationale);
+        this.elapsedTime = requireNonNull(elapsedTime);
         this.causeGenerator = requireNonNull(causeGenerator);
         this.children = requireNonNull(children);
     }
 
-    public static CompoundEvaluation ofTrue(final String name, final Rationale rationale,
+    public static CompoundEvaluation ofTrue(final String name, final Rationale rationale, final Duration elapsedTime,
                                             final CauseGenerator causeGenerator, final List<Evaluation> children) {
-        return new CompoundEvaluation(Result.TRUE, name, rationale, causeGenerator, children);
+        return new CompoundEvaluation(Result.TRUE, name, rationale, elapsedTime, causeGenerator, children);
     }
 
-    public static CompoundEvaluation ofFalse(final String name, final Rationale rationale,
+    public static CompoundEvaluation ofFalse(final String name, final Rationale rationale, final Duration elapsedTime,
                                              final CauseGenerator causeGenerator, final List<Evaluation> children) {
-        return new CompoundEvaluation(Result.FALSE, name, rationale, causeGenerator, children);
+        return new CompoundEvaluation(Result.FALSE, name, rationale, elapsedTime, causeGenerator, children);
     }
 
-    public static CompoundEvaluation ofSkipped(final String name, final CauseGenerator causeGenerator,
+    public static CompoundEvaluation ofSkipped(final String name, final Duration elapsedTime, final CauseGenerator causeGenerator,
                                                final List<Evaluation> children) {
-        return new CompoundEvaluation(Result.SKIPPED, name, SimpleRationale.skipped(), causeGenerator, children);
+
+        final StopWatch stopWatch = StopWatch.started();
+        final SimpleRationale rationale = SimpleRationale.skipped();
+        final Duration totalElapsedTime = elapsedTime.plus(stopWatch.stop());
+
+        return new CompoundEvaluation(Result.SKIPPED, name, rationale, totalElapsedTime, causeGenerator,
+            children);
     }
 
     @Override
@@ -60,6 +71,11 @@ public class CompoundEvaluation implements Evaluation {
     @Override
     public Rationale rationale() {
         return rationale;
+    }
+
+    @Override
+    public Duration elapsedTime() {
+        return elapsedTime;
     }
 
     @Override

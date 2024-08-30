@@ -6,6 +6,8 @@ import io.github.libzeal.zeal.logic.evaluation.cause.CauseGenerator;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
 import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
 
+import java.time.Duration;
+
 /**
  * An expression that is always false.
  *
@@ -49,6 +51,11 @@ class Contradiction implements Expression {
         @Override
         public Rationale rationale() {
             return new SimpleRationale(FALSE, FALSE);
+        }
+
+        @Override
+        public Duration elapsedTime() {
+            return Duration.ZERO;
         }
 
         @Override

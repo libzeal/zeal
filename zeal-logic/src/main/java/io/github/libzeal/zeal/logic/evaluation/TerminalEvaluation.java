@@ -4,7 +4,9 @@ import io.github.libzeal.zeal.logic.evaluation.cause.Cause;
 import io.github.libzeal.zeal.logic.evaluation.cause.CauseGenerator;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
 import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
+import io.github.libzeal.zeal.logic.util.StopWatch;
 
+import java.time.Duration;
 import java.util.Objects;
 
 import static java.util.Objects.requireNonNull;
@@ -20,13 +22,15 @@ public class TerminalEvaluation implements Evaluation {
     private final Result result;
     private final String name;
     private final Rationale rationale;
+    private final Duration elapsedTime;
     private final CauseGenerator causeGenerator;
 
     private TerminalEvaluation(final Result result, final String name, final Rationale rationale,
-                               final CauseGenerator causeGenerator) {
+                               final Duration elapsedTime, final CauseGenerator causeGenerator) {
         this.result = requireNonNull(result);
         this.name = requireNonNull(name);
         this.rationale = requireNonNull(rationale);
+        this.elapsedTime = requireNonNull(elapsedTime);
         this.causeGenerator = requireNonNull(causeGenerator);
     }
 
@@ -40,8 +44,8 @@ public class TerminalEvaluation implements Evaluation {
      *
      * @return The true evaluation.
      */
-    public static TerminalEvaluation ofTrue(final String name, final Rationale rationale) {
-        return new TerminalEvaluation(Result.TRUE, name, rationale, CauseGenerator.self());
+    public static TerminalEvaluation ofTrue(final String name, final Rationale rationale, final Duration elapsedTime) {
+        return new TerminalEvaluation(Result.TRUE, name, rationale, elapsedTime, CauseGenerator.self());
     }
 
     /**
@@ -54,8 +58,8 @@ public class TerminalEvaluation implements Evaluation {
      *
      * @return The false evaluation.
      */
-    public static TerminalEvaluation ofFalse(final String name, final Rationale rationale) {
-        return new TerminalEvaluation(Result.FALSE, name, rationale, CauseGenerator.self());
+    public static TerminalEvaluation ofFalse(final String name, final Rationale rationale, final Duration elapsedTime) {
+        return new TerminalEvaluation(Result.FALSE, name, rationale, elapsedTime, CauseGenerator.self());
     }
 
     /**
@@ -69,7 +73,12 @@ public class TerminalEvaluation implements Evaluation {
      * @return The skipped evaluation.
      */
     public static TerminalEvaluation ofSkipped(final String name, final CauseGenerator causeGenerator) {
-        return new TerminalEvaluation(Result.SKIPPED, name, SimpleRationale.skipped(), causeGenerator);
+
+        final StopWatch stopWatch = StopWatch.started();
+        final SimpleRationale rationale = SimpleRationale.skipped();
+        final Duration elapsedTime = stopWatch.stop();
+
+        return new TerminalEvaluation(Result.SKIPPED, name, rationale, elapsedTime, causeGenerator);
     }
 
     @Override
@@ -85,6 +94,11 @@ public class TerminalEvaluation implements Evaluation {
     @Override
     public Rationale rationale() {
         return rationale;
+    }
+
+    @Override
+    public Duration elapsedTime() {
+        return elapsedTime;
     }
 
     @Override

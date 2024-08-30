@@ -6,6 +6,8 @@ import io.github.libzeal.zeal.logic.rationale.Rationale;
 import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
 import org.junit.jupiter.api.Test;
 
+import java.time.Duration;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -16,7 +18,7 @@ class TerminalEvaluationTest {
     void givenNullName_whenOfTrue_thenExceptionThrown() {
         assertThrows(
             NullPointerException.class,
-            () -> TerminalEvaluation.ofTrue(null, mock(Rationale.class))
+            () -> TerminalEvaluation.ofTrue(null, mock(Rationale.class), Duration.ZERO)
         );
     }
 
@@ -24,7 +26,15 @@ class TerminalEvaluationTest {
     void givenNullRationale_whenOfTrue_thenExceptionThrown() {
         assertThrows(
             NullPointerException.class,
-            () -> TerminalEvaluation.ofTrue("foo", null)
+            () -> TerminalEvaluation.ofTrue("foo", null, Duration.ZERO)
+        );
+    }
+
+    @Test
+    void givenNullElapsedTime_whenOfTrue_thenExceptionThrown() {
+        assertThrows(
+            NullPointerException.class,
+            () -> TerminalEvaluation.ofTrue("foo", mock(Rationale.class), null)
         );
     }
 
@@ -32,7 +42,7 @@ class TerminalEvaluationTest {
     void givenNullName_whenOfFalse_thenExceptionThrown() {
         assertThrows(
             NullPointerException.class,
-            () -> TerminalEvaluation.ofFalse(null, mock(Rationale.class))
+            () -> TerminalEvaluation.ofFalse(null, mock(Rationale.class), Duration.ZERO)
         );
     }
 
@@ -40,7 +50,15 @@ class TerminalEvaluationTest {
     void givenNullRationale_whenOfFalse_thenExceptionThrown() {
         assertThrows(
             NullPointerException.class,
-            () -> TerminalEvaluation.ofFalse("foo", null)
+            () -> TerminalEvaluation.ofFalse("foo", null, Duration.ZERO)
+        );
+    }
+
+    @Test
+    void givenNullElapsedTime_whenOfFalse_thenExceptionThrown() {
+        assertThrows(
+            NullPointerException.class,
+            () -> TerminalEvaluation.ofFalse("foo", mock(Rationale.class), null)
         );
     }
 
@@ -65,13 +83,15 @@ class TerminalEvaluationTest {
 
         final String name = "foo";
         final Rationale rationale = mock(Rationale.class);
+        final long elapsedTimeMs = 7;
 
-        final TerminalEvaluation evaluation = TerminalEvaluation.ofTrue(name, rationale);
+        final TerminalEvaluation evaluation = TerminalEvaluation.ofTrue(name, rationale, Duration.ofMillis(elapsedTimeMs));
 
         assertEquals(Result.TRUE, evaluation.result());
         assertEquals(name, evaluation.name());
         assertEquals(rationale, evaluation.rationale());
         assertEquals(evaluation, evaluation.cause().rootCause().evaluation());
+        assertEquals(Duration.ofMillis(elapsedTimeMs), evaluation.elapsedTime());
     }
 
     @Test
@@ -79,13 +99,15 @@ class TerminalEvaluationTest {
 
         final String name = "foo";
         final Rationale rationale = mock(Rationale.class);
+        final long elapsedTimeMs = 7;
 
-        final TerminalEvaluation evaluation = TerminalEvaluation.ofFalse(name, rationale);
+        final TerminalEvaluation evaluation = TerminalEvaluation.ofFalse(name, rationale, Duration.ofMillis(elapsedTimeMs));
 
         assertEquals(Result.FALSE, evaluation.result());
         assertEquals(name, evaluation.name());
         assertEquals(rationale, evaluation.rationale());
         assertEquals(evaluation, evaluation.cause().rootCause().evaluation());
+        assertEquals(Duration.ofMillis(elapsedTimeMs), evaluation.elapsedTime());
     }
 
     @Test
@@ -101,6 +123,7 @@ class TerminalEvaluationTest {
         assertEquals(name, evaluation.name());
         assertEquals(SimpleRationale.skipped(), evaluation.rationale());
         assertEquals(cause, evaluation.cause());
+        assertTrue(evaluation.elapsedTime().toNanos() >= 0);
     }
 
     private static CauseGenerator generator(final Cause cause) {
@@ -117,7 +140,7 @@ class TerminalEvaluationTest {
 
         final Rationale rationale = mock(Rationale.class);
 
-        final TerminalEvaluation evaluation = TerminalEvaluation.ofTrue("foo", rationale);
+        final TerminalEvaluation evaluation = TerminalEvaluation.ofTrue("foo", rationale, Duration.ofMillis(7));
 
         assertDoesNotThrow(
             () -> evaluation.traverseDepthFirst(null)
@@ -130,7 +153,7 @@ class TerminalEvaluationTest {
         final Traverser traverser = mock(Traverser.class);
         final Rationale rationale = mock(Rationale.class);
 
-        final TerminalEvaluation evaluation = TerminalEvaluation.ofTrue("foo", rationale);
+        final TerminalEvaluation evaluation = TerminalEvaluation.ofTrue("foo", rationale, Duration.ofMillis(7));
 
         evaluation.traverseDepthFirst(traverser);
 
@@ -143,8 +166,8 @@ class TerminalEvaluationTest {
         final String name = "foo";
         final Rationale rationale = mock(Rationale.class);
 
-        final TerminalEvaluation evaluation1 = TerminalEvaluation.ofTrue(name, rationale);
-        final TerminalEvaluation evaluation2 = TerminalEvaluation.ofTrue(name, rationale);
+        final TerminalEvaluation evaluation1 = TerminalEvaluation.ofTrue(name, rationale, Duration.ofMillis(7));
+        final TerminalEvaluation evaluation2 = TerminalEvaluation.ofTrue(name, rationale, Duration.ofMillis(7));
 
         assertNotEquals(evaluation1, evaluation2);
     }
@@ -155,8 +178,8 @@ class TerminalEvaluationTest {
         final String name = "foo";
         final Rationale rationale = mock(Rationale.class);
 
-        final TerminalEvaluation evaluation1 = TerminalEvaluation.ofFalse(name, rationale);
-        final TerminalEvaluation evaluation2 = TerminalEvaluation.ofFalse(name, rationale);
+        final TerminalEvaluation evaluation1 = TerminalEvaluation.ofFalse(name, rationale, Duration.ofMillis(7));
+        final TerminalEvaluation evaluation2 = TerminalEvaluation.ofFalse(name, rationale, Duration.ofMillis(7));
 
         assertNotEquals(evaluation1, evaluation2);
     }
@@ -211,7 +234,7 @@ class TerminalEvaluationTest {
         final Cause cause = mock(Cause.class);
         final CauseGenerator generator = generator(cause);
 
-        final TerminalEvaluation evaluation1 = TerminalEvaluation.ofTrue(name, mock(Rationale.class));
+        final TerminalEvaluation evaluation1 = TerminalEvaluation.ofTrue(name, mock(Rationale.class), Duration.ofMillis(7));
         final TerminalEvaluation evaluation2 = TerminalEvaluation.ofSkipped(name, generator);
 
         assertNotEquals(evaluation1, evaluation2);
@@ -222,7 +245,7 @@ class TerminalEvaluationTest {
 
         final String name = "foo";
 
-        final TerminalEvaluation evaluation1 = TerminalEvaluation.ofTrue(name, mock(Rationale.class));
+        final TerminalEvaluation evaluation1 = TerminalEvaluation.ofTrue(name, mock(Rationale.class), Duration.ofMillis(7));
 
         assertNotEquals(evaluation1, new Object());
     }
@@ -234,7 +257,7 @@ class TerminalEvaluationTest {
         final Cause cause = mock(Cause.class);
         final CauseGenerator generator = generator(cause);
 
-        final TerminalEvaluation evaluation1 = TerminalEvaluation.ofTrue(name, mock(Rationale.class));
+        final TerminalEvaluation evaluation1 = TerminalEvaluation.ofTrue(name, mock(Rationale.class), Duration.ofMillis(7));
         final TerminalEvaluation evaluation2 = TerminalEvaluation.ofSkipped(name, generator);
 
         assertNotEquals(evaluation1.hashCode(), evaluation2.hashCode());
@@ -245,8 +268,8 @@ class TerminalEvaluationTest {
 
         final Rationale rationale = mock(Rationale.class);
 
-        final TerminalEvaluation evaluation1 = TerminalEvaluation.ofTrue("foo", rationale);
-        final TerminalEvaluation evaluation2 = TerminalEvaluation.ofTrue("bar", rationale);
+        final TerminalEvaluation evaluation1 = TerminalEvaluation.ofTrue("foo", rationale, Duration.ofMillis(7));
+        final TerminalEvaluation evaluation2 = TerminalEvaluation.ofTrue("bar", rationale, Duration.ofMillis(7));
 
         assertNotEquals(evaluation1.hashCode(), evaluation2.hashCode());
     }
@@ -256,8 +279,8 @@ class TerminalEvaluationTest {
 
         final String name = "foo";
 
-        final TerminalEvaluation evaluation1 = TerminalEvaluation.ofTrue(name, mock(Rationale.class));
-        final TerminalEvaluation evaluation2 = TerminalEvaluation.ofTrue(name, mock(Rationale.class));
+        final TerminalEvaluation evaluation1 = TerminalEvaluation.ofTrue(name, mock(Rationale.class), Duration.ofMillis(7));
+        final TerminalEvaluation evaluation2 = TerminalEvaluation.ofTrue(name, mock(Rationale.class), Duration.ofMillis(7));
 
         assertNotEquals(evaluation1.hashCode(), evaluation2.hashCode());
     }
