@@ -5,13 +5,13 @@ import io.github.libzeal.zeal.logic.evaluation.cause.Cause;
 import io.github.libzeal.zeal.logic.evaluation.cause.RootCauseChain;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
 
-public class SimpleCauseFormatter implements ComponentFormatter<Cause> {
+public class SimpleRootCauseFormatter implements ComponentFormatter<Cause> {
 
     static final int KEY_WIDTH = 10;
     private final int indentation;
     private final ComponentFormatter<Rationale> rationaleFormatter;
 
-    public SimpleCauseFormatter(final int indentation) {
+    public SimpleRootCauseFormatter(final int indentation) {
         this.indentation = indentation;
         this.rationaleFormatter = new SimpleRationaleFormatter(indentation, KEY_WIDTH);
     }
@@ -20,7 +20,7 @@ public class SimpleCauseFormatter implements ComponentFormatter<Cause> {
     public String format(final Cause cause, final SimpleFormatterContext context) {
 
         final StringBuilder builder = new StringBuilder();
-        final RootCauseChain chain = cause.rootCauseChain(); // TODO Change to upstream and downstream chains
+        final RootCauseChain chain = cause.rootCauseChain();
         final Cause rootCause = cause.rootCause();
         final Evaluation rootCauseEvaluation = rootCause.evaluation();
 

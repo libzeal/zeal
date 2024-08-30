@@ -23,7 +23,7 @@ public class SimpleFormatter implements Formatter {
         final ComponentFormatter<Duration> durationFormatter = new SimpleDurationFormatter();
 
         this.evaluationFormatter = new SimpleEvaluationFormatter(INDENTATION, resultFormatter, durationFormatter);
-        this.causeFormatter = new SimpleCauseFormatter(INDENTATION);
+        this.causeFormatter = new SimpleRootCauseFormatter(INDENTATION);
     }
 
     @Override
