@@ -9,6 +9,12 @@ import java.util.Objects;
 
 import static java.util.Objects.requireNonNull;
 
+/**
+ * An evaluation that results from a terminal expression.
+ *
+ * @author Justin Albano
+ * @since 0.2.1
+ */
 public class TerminalEvaluation implements Evaluation {
 
     private final Result result;
@@ -24,14 +30,44 @@ public class TerminalEvaluation implements Evaluation {
         this.causeGenerator = requireNonNull(causeGenerator);
     }
 
+    /**
+     * Creates a true evaluation.
+     *
+     * @param name
+     *     The name of the evaluation.
+     * @param rationale
+     *     The rationale for the evaluation.
+     *
+     * @return The true evaluation.
+     */
     public static TerminalEvaluation ofTrue(final String name, final Rationale rationale) {
         return new TerminalEvaluation(Result.TRUE, name, rationale, CauseGenerator.self());
     }
 
+    /**
+     * Creates a false evaluation.
+     *
+     * @param name
+     *     The name of the evaluation.
+     * @param rationale
+     *     The rationale for the evaluation.
+     *
+     * @return The false evaluation.
+     */
     public static TerminalEvaluation ofFalse(final String name, final Rationale rationale) {
         return new TerminalEvaluation(Result.FALSE, name, rationale, CauseGenerator.self());
     }
 
+    /**
+     * Creates a skipped evaluation.
+     *
+     * @param name
+     *     The name of the evaluation.
+     * @param causeGenerator
+     *     The generator for the cause for the evaluation.
+     *
+     * @return The skipped evaluation.
+     */
     public static TerminalEvaluation ofSkipped(final String name, final CauseGenerator causeGenerator) {
         return new TerminalEvaluation(Result.SKIPPED, name, SimpleRationale.skipped(), causeGenerator);
     }
@@ -71,14 +107,20 @@ public class TerminalEvaluation implements Evaluation {
 
     @Override
     public boolean equals(final Object o) {
+
         if (this == o) return true;
         if (!(o instanceof TerminalEvaluation)) return false;
+
         final TerminalEvaluation that = (TerminalEvaluation) o;
-        return result == that.result && Objects.equals(name, that.name) && Objects.equals(rationale, that.rationale) && Objects.equals(causeGenerator, that.causeGenerator);
+
+        return result == that.result &&
+            Objects.equals(name, that.name) &&
+            Objects.equals(rationale, that.rationale) &&
+            Objects.equals(cause(), that.cause());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(result, name, rationale, causeGenerator);
+        return Objects.hash(result, name, rationale, cause());
     }
 }

@@ -48,7 +48,7 @@ class TautologyTest {
         final Rationale rationale = skippedEvaluation.rationale();
 
         assertEquals(Tautology.NAME, skippedEvaluation.name());
-        assertEquals(cause, skippedEvaluation.cause());
+        assertEquals(cause, skippedEvaluation.cause().rootCause());
         assertRationaleIsSkipped(rationale);
     }
 }

@@ -15,6 +15,21 @@ import io.github.libzeal.zeal.logic.Expression;
 public interface Condition<T> {
 
     /**
+     * The default name for unnamed conditions.
+     */
+    String DEFAULT_NAME = "unnamed";
+
+    /**
+     * A tautological condition that always results in a true expression.
+     */
+    Condition<Object> TRUE = subject -> Expression.TRUE;
+
+    /**
+     * A contradictory condition that always results in a false expression.
+     */
+    Condition<Object> FALSE = subject -> Expression.FALSE;
+
+    /**
      * Creates an expression based on the supplied subject.
      *
      * @param subject
@@ -23,4 +38,5 @@ public interface Condition<T> {
      * @return An expression based on the supplied subject.
      */
     Expression create(T subject);
+
 }

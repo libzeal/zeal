@@ -159,23 +159,23 @@ class CompoundEvaluator {
         }
 
         public int tallySoFar() {
-            return passed + failed + skipped;
+            return passed() + failed() + skipped();
         }
 
         public boolean anyPassed() {
-            return passed > 0;
+            return passed() > 0;
         }
 
         public boolean anyFailed() {
-            return failed > 0;
+            return failed() > 0;
         }
 
         public boolean allFailed() {
-            return failed == total;
+            return failed() == total();
         }
 
         public boolean allPassed() {
-            return passed == total;
+            return passed() == total();
         }
     }
 

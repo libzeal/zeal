@@ -6,7 +6,7 @@ package io.github.libzeal.zeal.logic.evaluation.format;
  * @author Justin Albano
  * @since 0.2.1
  */
-public class Formatters {
+public final class Formatters {
 
     private Formatters() {
     }

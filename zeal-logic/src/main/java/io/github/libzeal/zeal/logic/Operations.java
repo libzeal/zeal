@@ -15,7 +15,7 @@ import java.util.Arrays;
  * @author Justin Albano
  * @since 0.2.1
  */
-public class Operations {
+public final class Operations {
 
     private Operations() {
     }

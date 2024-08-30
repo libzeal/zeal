@@ -183,6 +183,6 @@ class TerminalUnaryExpressionTest {
 
         assertEquals(expression.name(), skippedEvaluation.name());
         assertEquals(SimpleRationale.skipped(), skippedEvaluation.rationale());
-        assertEquals(rootCauseEvaluation, skippedEvaluation.cause().evaluation());
+        assertEquals(rootCauseEvaluation, skippedEvaluation.cause().rootCause().evaluation());
     }
 }

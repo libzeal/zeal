@@ -35,10 +35,34 @@ public interface Evaluation {
      */
     Rationale rationale();
 
+    /**
+     * Obtains the cause of the evaluation.
+     *
+     * @return The cause of the evaluation.
+     *
+     * @since 0.2.1
+     */
     Cause cause();
 
+    /**
+     * Traverses the evaluation depth-first.
+     *
+     * @param traverser
+     *     The traverser to use to traverse the evaluation.
+     *
+     * @since 0.2.1
+     */
     void traverseDepthFirst(Traverser traverser);
 
-    // TODO: Move this to an internal method
+    /**
+     * Traverses the evaluation depth-first.
+     *
+     * @param traverser
+     *     The traverser to use to traverse the evaluation.
+     * @param context
+     *     The context used to traverse the evaluation.
+     *
+     * @since 0.2.1
+     */
     void traverseDepthFirst(Traverser traverser, TraversalContext context);
 }

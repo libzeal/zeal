@@ -9,6 +9,12 @@ import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
+/**
+ * An evaluation that results from a compound expression.
+ *
+ * @author Justin Albano
+ * @since 0.2.1
+ */
 public class CompoundEvaluation implements Evaluation {
 
     private final Result result;
@@ -17,7 +23,7 @@ public class CompoundEvaluation implements Evaluation {
     private final CauseGenerator causeGenerator;
     private final List<Evaluation> children;
 
-    public CompoundEvaluation(final Result result, final String name, final Rationale rationale,
+    private CompoundEvaluation(final Result result, final String name, final Rationale rationale,
                               final CauseGenerator causeGenerator, final List<Evaluation> children) {
         this.result = requireNonNull(result);
         this.name = requireNonNull(name);

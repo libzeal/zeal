@@ -4,6 +4,7 @@ import io.github.libzeal.zeal.logic.Expression;
 import io.github.libzeal.zeal.logic.evaluation.cause.Cause;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.evaluation.Result;
+import io.github.libzeal.zeal.logic.evaluation.cause.CauseGenerator;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
 import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
 import io.github.libzeal.zeal.logic.test.Expressions;
@@ -264,15 +265,15 @@ class DisjunctiveExpressionTest {
     }
 
     @Test
-    void givenNullRootCause_whenEvaluate_thenRootCauseIsCorrect() {
+    void givenSelfRootCause_whenEvaluate_thenRootCauseIsCorrect() {
 
         final UnaryExpression<Object> subExpression =
-            Expressions.unaryExpressionWithRootCause(Result.FALSE, e -> null);
+            Expressions.unaryExpressionWithRootCause(Result.FALSE, CauseGenerator.self());
 
         expression.append(subExpression);
 
         final Evaluation evaluation = expression.evaluate();
 
-        assertEquals(subExpression.name(), evaluation.cause().evaluation().name());
+        assertEquals(subExpression.name(), evaluation.cause().rootCause().evaluation().name());
     }
 }

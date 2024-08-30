@@ -48,7 +48,7 @@ class ContradictionTest {
         final Rationale rationale = skippedEvaluation.rationale();
 
         assertEquals(Contradiction.NAME, skippedEvaluation.name());
-        assertEquals(cause, skippedEvaluation.cause());
+        assertEquals(cause, skippedEvaluation.cause().rootCause());
         assertRationaleIsSkipped(rationale);
     }
 }
