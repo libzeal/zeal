@@ -11,9 +11,9 @@ import io.github.libzeal.zeal.types.core.unary.boxed.*;
  * @author Justin Albano
  * @since 0.2.0
  */
-public class CoreType {
+public class CoreTypes {
 
-    private CoreType() {
+    private CoreTypes() {
     }
 
     /**Integer

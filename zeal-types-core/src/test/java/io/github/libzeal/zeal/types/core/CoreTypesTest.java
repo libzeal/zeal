@@ -6,12 +6,12 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-class CoreTypeTest {
+class CoreTypesTest {
 
     @Test
     void givenNullValue_whenValueGeneralObject_thenExpressionReturned() {
 
-        Expression expression = CoreType.value((Object) null);
+        Expression expression = CoreTypes.value((Object) null);
 
         assertNotNull(expression);
     }
@@ -19,7 +19,7 @@ class CoreTypeTest {
     @Test
     void givenValidValue_whenValueGeneralObject_thenExpressionReturned() {
 
-        Expression expression = CoreType.value(new Object());
+        Expression expression = CoreTypes.value(new Object());
 
         assertNotNull(expression);
     }
@@ -27,7 +27,7 @@ class CoreTypeTest {
     @Test
     void givenNullValue_whenValueString_thenExpressionReturned() {
 
-        Expression expression = CoreType.value((String) null);
+        Expression expression = CoreTypes.value((String) null);
 
         assertNotNull(expression);
     }
@@ -35,7 +35,7 @@ class CoreTypeTest {
     @Test
     void givenValidValue_whenValueString_thenExpressionReturned() {
 
-        Expression expression = CoreType.value("foo");
+        Expression expression = CoreTypes.value("foo");
 
         assertNotNull(expression);
     }
@@ -43,7 +43,7 @@ class CoreTypeTest {
     @Test
     void givenValidValue_whenValueEnum_thenExpressionReturned() {
 
-        Expression expression = CoreType.value(Result.TRUE);
+        Expression expression = CoreTypes.value(Result.TRUE);
 
         assertNotNull(expression);
     }
@@ -51,7 +51,7 @@ class CoreTypeTest {
     @Test
     void givenValidValue_whenValueBoxedInteger_thenExpressionReturned() {
 
-        Expression expression = CoreType.value(Integer.valueOf(1));
+        Expression expression = CoreTypes.value(Integer.valueOf(1));
 
         assertNotNull(expression);
     }
@@ -59,7 +59,7 @@ class CoreTypeTest {
     @Test
     void givenValidValue_whenValueBoxedLong_thenExpressionReturned() {
 
-        Expression expression = CoreType.value(Long.valueOf(1));
+        Expression expression = CoreTypes.value(Long.valueOf(1));
 
         assertNotNull(expression);
     }
@@ -67,7 +67,7 @@ class CoreTypeTest {
     @Test
     void givenValidValue_whenValueBoxedDouble_thenExpressionReturned() {
 
-        Expression expression = CoreType.value(Double.valueOf(1));
+        Expression expression = CoreTypes.value(Double.valueOf(1));
 
         assertNotNull(expression);
     }
@@ -75,7 +75,7 @@ class CoreTypeTest {
     @Test
     void givenValidValue_whenValueBoxedFloat_thenExpressionReturned() {
 
-        Expression expression = CoreType.value(Float.valueOf(1));
+        Expression expression = CoreTypes.value(Float.valueOf(1));
 
         assertNotNull(expression);
     }
@@ -83,7 +83,7 @@ class CoreTypeTest {
     @Test
     void givenValidValue_whenValueBoxedBoolean_thenExpressionReturned() {
 
-        Expression expression = CoreType.value(Boolean.TRUE);
+        Expression expression = CoreTypes.value(Boolean.TRUE);
 
         assertNotNull(expression);
     }
@@ -91,7 +91,7 @@ class CoreTypeTest {
     @Test
     void givenValidValue_whenValueBoxedByte_thenExpressionReturned() {
 
-        Expression expression = CoreType.value(Byte.valueOf((byte) 0x01));
+        Expression expression = CoreTypes.value(Byte.valueOf((byte) 0x01));
 
         assertNotNull(expression);
     }
@@ -99,7 +99,7 @@ class CoreTypeTest {
     @Test
     void givenValidValue_whenValueBoxedCharacter_thenExpressionReturned() {
 
-        Expression expression = CoreType.value(Character.valueOf('c'));
+        Expression expression = CoreTypes.value(Character.valueOf('c'));
 
         assertNotNull(expression);
     }
