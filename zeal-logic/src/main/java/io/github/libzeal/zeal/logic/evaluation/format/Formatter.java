@@ -16,7 +16,7 @@ public interface Formatter {
      * @param evaluation
      *     The evaluation to format.
      *
-     * @return The formatted evalation.
+     * @return The formatted evaluation.
      */
     String format(Evaluation evaluation);
 }

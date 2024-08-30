@@ -33,12 +33,13 @@ public class RootCauseFirstFormatter implements Formatter {
     @Override
     public String format(final Evaluation evaluation) {
 
-        final Cause cause = evaluation.cause().rootCause();
-        final ComponentContext context = new ComponentContext(evaluation.cause(), 0);
+        final Cause cause = evaluation.cause();
+        final Cause rootCause = cause.rootCause();
+        final ComponentContext context = new ComponentContext(cause, 0);
         final StringBuilder builder = new StringBuilder();
         final Traverser traverser = new RootCauseFirstTraverser(evaluation, builder, formatter);
 
-        builder.append(formatter.format(cause, evaluation.cause().rootCauseChain(), context))
+        builder.append(formatter.formatRootCause(rootCause, cause.rootCauseChain(), context))
             .append("Evaluation:\n");
 
         evaluation.traverseDepthFirst(traverser);
@@ -63,7 +64,7 @@ public class RootCauseFirstFormatter implements Formatter {
         public void on(final Evaluation evaluation, final TraversalContext context) {
 
             final ComponentContext componentContext = createContext(context);
-            final String formattedText = componentFormatter.format(evaluation, componentContext);
+            final String formattedText = componentFormatter.formatEvaluation(evaluation, componentContext);
 
             builder.append(formattedText)
                 .append("\n");

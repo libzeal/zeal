@@ -24,7 +24,7 @@ public interface ComponentFormatter {
      *
      * @return The formatted rationale.
      */
-    String format(Rationale rationale, ComponentContext context);
+    String formatRationale(Rationale rationale, ComponentContext context);
 
     /**
      * Formats the supplied cause.
@@ -38,7 +38,7 @@ public interface ComponentFormatter {
      *
      * @return The formatted cause.
      */
-    String format(Cause cause, RootCauseChain chain, ComponentContext context);
+    String formatRootCause(Cause cause, RootCauseChain chain, ComponentContext context);
 
     /**
      * Formats the supplied evaluation.
@@ -50,5 +50,5 @@ public interface ComponentFormatter {
      *
      * @return The formatted evaluation.
      */
-    String format(Evaluation evaluation, ComponentContext context);
+    String formatEvaluation(Evaluation evaluation, ComponentContext context);
 }

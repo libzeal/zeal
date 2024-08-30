@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Spliterator;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
@@ -94,6 +95,11 @@ public class RootCauseChain implements Iterable<Cause> {
 
     @Override
     public String toString() {
-        return chain.toString();
+
+        final List<String> chainString = chain.stream()
+            .map(Cause::toString)
+            .collect(Collectors.toList());
+
+        return String.join(" -> ", chainString);
     }
 }

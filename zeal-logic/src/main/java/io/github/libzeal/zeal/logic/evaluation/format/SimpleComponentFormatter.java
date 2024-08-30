@@ -23,7 +23,7 @@ public class SimpleComponentFormatter implements ComponentFormatter {
     static final int DEFAULT_RATIONALE_KEY_WIDTH = 8;
 
     @Override
-    public String format(final Rationale rationale, final ComponentContext context) {
+    public String formatRationale(final Rationale rationale, final ComponentContext context) {
         return formatRationale(rationale, context, DEFAULT_RATIONALE_KEY_WIDTH);
     }
 
@@ -74,25 +74,17 @@ public class SimpleComponentFormatter implements ComponentFormatter {
     }
 
     @Override
-    public String format(final Cause cause, final RootCauseChain chain, final ComponentContext context) {
+    public String formatRootCause(final Cause cause, final RootCauseChain chain, final ComponentContext context) {
 
         final StringBuilder builder = new StringBuilder();
         final Evaluation evaluation = cause.evaluation();
-        final List<String> rootCauseChainElements = chain.stream()
-            .map(Cause::toString)
-            .collect(Collectors.toList());
 
         builder.append("Root cause:\n")
             .append(rootCauseLine("Expression", evaluation.name()))
             .append("\n")
             .append(formatRationale(evaluation.rationale(), context, ROOT_CAUSE_RATIONALE_KEY_WIDTH))
             .append("\n")
-            .append(
-                rootCauseLine(
-                    "Chain",
-                    String.join(" --> ", rootCauseChainElements)
-                )
-            );
+            .append(rootCauseLine("Chain", chain.toString()));
 
         if (evaluation.result().isTrue()) {
             builder.append("\n")
@@ -115,7 +107,7 @@ public class SimpleComponentFormatter implements ComponentFormatter {
     }
 
     @Override
-    public String format(final Evaluation evaluation, final ComponentContext context) {
+    public String formatEvaluation(final Evaluation evaluation, final ComponentContext context) {
 
         final StringBuilder builder = new StringBuilder();
 
