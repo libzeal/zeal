@@ -1,7 +1,7 @@
-package io.github.libzeal.zeal.logic.evaluation.format;
+package io.github.libzeal.zeal.logic.evaluation.format.simple;
 
-import io.github.libzeal.zeal.logic.evaluation.cause.Cause;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
+import io.github.libzeal.zeal.logic.evaluation.cause.Cause;
 
 import java.util.Objects;
 
@@ -14,7 +14,7 @@ import static java.util.Objects.requireNonNull;
  * @author Justin Albano
  * @since 0.2.1
  */
-public class ComponentContext {
+public class SimpleFormatterContext {
 
     private final Cause cause;
     private final int depth;
@@ -30,7 +30,7 @@ public class ComponentContext {
      * @throws NullPointerException
      *     The supplied root cause is {@code null}.
      */
-    public ComponentContext(final Cause cause, final int depth) {
+    public SimpleFormatterContext(final Cause cause, final int depth) {
         this.cause = requireNonNull(cause);
         this.depth = depth;
     }

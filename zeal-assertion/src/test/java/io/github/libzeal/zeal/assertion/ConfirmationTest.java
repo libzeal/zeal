@@ -2,7 +2,7 @@ package io.github.libzeal.zeal.assertion;
 
 import io.github.libzeal.zeal.assertion.error.AssertionFailedError;
 import io.github.libzeal.zeal.logic.evaluation.Result;
-import io.github.libzeal.zeal.logic.evaluation.format.Formatters;
+import io.github.libzeal.zeal.logic.evaluation.format.simple.SimpleFormatter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -25,7 +25,7 @@ class ConfirmationTest {
     @BeforeEach
     void setUp() {
         confirmation = Confirmation.create();
-        helper = new AssertionTestCases(Formatters.defaultFormatter());
+        helper = new AssertionTestCases(new SimpleFormatter());
     }
 
     @ParameterizedTest(name = "{0}")

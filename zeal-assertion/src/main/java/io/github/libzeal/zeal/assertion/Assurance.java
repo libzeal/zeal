@@ -3,7 +3,7 @@ package io.github.libzeal.zeal.assertion;
 import io.github.libzeal.zeal.assertion.error.PostconditionFailedException;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.evaluation.Result;
-import io.github.libzeal.zeal.logic.evaluation.format.Formatters;
+import io.github.libzeal.zeal.logic.evaluation.format.simple.SimpleFormatter;
 import io.github.libzeal.zeal.logic.unary.UnaryExpression;
 
 /**
@@ -19,7 +19,7 @@ public class Assurance {
 
     private Assurance() {
         this.evaluator = new AssertionExpressionEvaluator<>(
-            Formatters.defaultFormatter(),
+            new SimpleFormatter(),
             PostconditionFailedException::new,
             PostconditionFailedException::new
         );

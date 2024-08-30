@@ -2,7 +2,7 @@ package io.github.libzeal.zeal.assertion;
 
 import io.github.libzeal.zeal.logic.evaluation.Result;
 import io.github.libzeal.zeal.logic.evaluation.format.Formatter;
-import io.github.libzeal.zeal.logic.evaluation.format.Formatters;
+import io.github.libzeal.zeal.logic.evaluation.format.simple.SimpleFormatter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -25,7 +25,7 @@ class AssertionExpressionEvaluatorTest {
     @BeforeEach
     void setUp() {
 
-        final Formatter formatter = Formatters.defaultFormatter();
+        final Formatter formatter = new SimpleFormatter();
 
         evaluator = new AssertionExpressionEvaluator<>(formatter, TestRuntimeException::new, TestRuntimeException::new);
         helper = new AssertionTestCases(formatter);

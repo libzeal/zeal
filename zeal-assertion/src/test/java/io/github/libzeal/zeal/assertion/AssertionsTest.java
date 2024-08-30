@@ -1,6 +1,6 @@
 package io.github.libzeal.zeal.assertion;
 
-import io.github.libzeal.zeal.logic.evaluation.format.Formatters;
+import io.github.libzeal.zeal.logic.evaluation.format.simple.SimpleFormatter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ArgumentsSource;
@@ -14,7 +14,7 @@ class AssertionsTest {
 
     @BeforeEach
     void setUp() {
-        helper = new AssertionTestCases(Formatters.defaultFormatter());
+        helper = new AssertionTestCases(new SimpleFormatter());
     }
 
     // ------------------------------------------------------------------------
