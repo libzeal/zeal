@@ -20,16 +20,6 @@ public interface Condition<T> {
     String DEFAULT_NAME = "unnamed";
 
     /**
-     * A tautological condition that always results in a true expression.
-     */
-    Condition<Object> TRUE = subject -> Expression.TRUE;
-
-    /**
-     * A contradictory condition that always results in a false expression.
-     */
-    Condition<Object> FALSE = subject -> Expression.FALSE;
-
-    /**
      * Creates an expression based on the supplied subject.
      *
      * @param subject
@@ -39,4 +29,28 @@ public interface Condition<T> {
      */
     Expression create(T subject);
 
+    /**
+     * A type-safe tautological condition that always results in a true expression.
+     *
+     * @param <T>
+     *     The type of the subject.
+     *
+     * @return A tautology.
+     */
+    static <T> Condition<T> tautology() {
+        return subject -> Expression.tautology();
+    }
+
+
+    /**
+     * A type-safe contradictory condition that always results in a false expression.
+     *
+     * @param <T>
+     *     The type of the subject.
+     *
+     * @return A contradiction.
+     */
+    static <T> Condition<T> contradiction() {
+        return subject -> Expression.contradiction();
+    }
 }

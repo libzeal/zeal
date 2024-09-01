@@ -25,7 +25,7 @@ class NegatedExpressionTest {
     @Test
     void givenTrueExpression_whenEvaluate_thenEvaluationIsCorrect() {
 
-        final Expression trueExpression = Expression.TRUE;
+        final Expression trueExpression = Expression.tautology();
         final NegatedExpression expression = new NegatedExpression(trueExpression);
         final Evaluation evaluation = expression.evaluate();
         final Rationale rationale = evaluation.rationale();
@@ -40,7 +40,7 @@ class NegatedExpressionTest {
     @Test
     void givenFalseExpression_whenEvaluate_thenEvaluationIsCorrect() {
 
-        final Expression falseExpression = Expression.FALSE;
+        final Expression falseExpression = Expression.contradiction();
         final NegatedExpression expression = new NegatedExpression(falseExpression);
         final Evaluation evaluation = expression.evaluate();
         final Rationale rationale = evaluation.rationale();
@@ -57,7 +57,7 @@ class NegatedExpressionTest {
 
         final Cause cause = mock(Cause.class);
 
-        final NegatedExpression expression = new NegatedExpression(Expression.TRUE);
+        final NegatedExpression expression = new NegatedExpression(Expression.tautology());
         final Evaluation skippedEvaluation = expression.skip(cause);
         final Rationale rationale = skippedEvaluation.rationale();
 
@@ -71,7 +71,7 @@ class NegatedExpressionTest {
 
         final Cause cause = mock(Cause.class);
 
-        final NegatedExpression expression = new NegatedExpression(Expression.FALSE);
+        final NegatedExpression expression = new NegatedExpression(Expression.contradiction());
         final Evaluation skippedEvaluation = expression.skip(cause);
         final Rationale rationale = skippedEvaluation.rationale();
 
@@ -100,7 +100,7 @@ class NegatedExpressionTest {
         final Cause cause = mock(Cause.class);
         final Expression skippedExpression = mock(Expression.class);
 
-        doReturn(Expression.TRUE.skip(cause)).when(skippedExpression).evaluate();
+        doReturn(Expression.tautology().skip(cause)).when(skippedExpression).evaluate();
 
         return skippedExpression;
     }

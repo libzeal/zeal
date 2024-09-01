@@ -54,7 +54,7 @@ class SimpleFormatterContext {
             return false;
         }
 
-        return Objects.equals(cause.rootCause().evaluation(), evaluation);
+        return cause.rootCause().is(evaluation);
     }
 
     /**

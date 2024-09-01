@@ -70,7 +70,7 @@ class NegatedUnaryExpressionTest {
     }
 
     private static UnaryExpression<Object> trueExpression() {
-        return expression(Expression.TRUE);
+        return expression(Expression.tautology());
     }
 
     @SuppressWarnings("unchecked")
@@ -103,7 +103,7 @@ class NegatedUnaryExpressionTest {
     }
 
     private static UnaryExpression<Object> falseExpression() {
-        return expression(Expression.FALSE);
+        return expression(Expression.contradiction());
     }
 
     @Test
@@ -155,7 +155,7 @@ class NegatedUnaryExpressionTest {
         final Cause cause = mock(Cause.class);
         final UnaryExpression<Object> skippedExpression = mock(UnaryExpression.class);
 
-        doReturn(Expression.TRUE.skip(cause)).when(skippedExpression).evaluate();
+        doReturn(Expression.tautology().skip(cause)).when(skippedExpression).evaluate();
 
         return skippedExpression;
     }

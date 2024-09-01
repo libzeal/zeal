@@ -1,5 +1,6 @@
 package io.github.libzeal.zeal.types.core.unary;
 
+import io.github.libzeal.zeal.logic.condition.Condition;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.evaluation.FlatteningTraverser;
 import io.github.libzeal.zeal.logic.evaluation.Result;
@@ -18,7 +19,9 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static io.github.libzeal.zeal.logic.evaluation.Result.*;
-import static io.github.libzeal.zeal.types.core.unary.ObjectUnaryExpression.CANNOT_COMPARE_USING_NULL_COMPARATOR;
+import static io.github.libzeal.zeal.logic.evaluation.Result.FALSE;
+import static io.github.libzeal.zeal.logic.evaluation.Result.TRUE;
+import static io.github.libzeal.zeal.types.core.unary.ObjectUnaryExpression.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -148,8 +151,9 @@ public abstract class ObjectUnaryExpressionTest<T, E extends ObjectUnaryExpressi
         isNotTypeTestCases(builder);
         isInstanceOfTestCases(builder);
         isNotInstanceOfTestCases(builder);
-        isTestCases(builder);
-        isNotTestCases(builder);
+        isExactlyTestCases(builder);
+        isNotExactlyTestCases(builder);
+        isConditionTestCases(builder);
         isEqualToTestCases(builder);
         isEqualToComparatorTestCases(builder);
         isNotEqualToTestCases(builder);
@@ -322,59 +326,89 @@ public abstract class ObjectUnaryExpressionTest<T, E extends ObjectUnaryExpressi
                 .addTest();
     }
 
-    private void isTestCases(ExpressionTestCaseBuilder<T, E> builder) {
+    private void isExactlyTestCases(ExpressionTestCaseBuilder<T, E> builder) {
 
         final T value1 = exampleValue1();
         final T value2 = exampleValue2();
 
-        builder.newTest((expression, value) -> expression.is(value1))
+        builder.newTest((expression, value) -> expression.isExactly(value1))
                 .subject(value1)
                 .expectedState(TRUE)
-                .expectedName("is[" + value1 + "]")
+                .expectedName("isExactly[" + value1 + "]")
                 .expectedExpected((expression, value) -> value.toString())
                 .expectedActual(value1.toString())
                 .addTest()
-            .newTest((expression, value) -> expression.is(value1))
+            .newTest((expression, value) -> expression.isExactly(value1))
                 .subject(value2)
                 .expectedState(FALSE)
-                .expectedName("is[" + value1 + "]")
+                .expectedName("isExactly[" + value1 + "]")
                 .expectedExpected(value1.toString())
                 .expectedActual((expression, value) -> value.toString())
                 .addTest()
-            .newTest((expression, value) -> expression.is((T) null))
+            .newTest((expression, value) -> expression.isExactly((T) null))
                 .subject(null)
                 .expectedState(TRUE)
-                .expectedName("is[(null)]")
+                .expectedName("isExactly[(null)]")
                 .expectedExpected("(null)")
                 .expectedActual("(null)")
                 .addTest();
     }
 
-    private void isNotTestCases(ExpressionTestCaseBuilder<T, E> builder) {
+    private void isNotExactlyTestCases(ExpressionTestCaseBuilder<T, E> builder) {
 
         final T value1 = exampleValue1();
         final T value2 = exampleValue2();
 
-        builder.newTest((expression, value) -> expression.isNot(value1))
+        builder.newTest((expression, value) -> expression.isNotExactly(value1))
                 .subject(value1)
                 .expectedState(FALSE)
-                .expectedName("isNot[" + value1 + "]")
+                .expectedName("isNotExactly[" + value1 + "]")
                 .expectedExpected("not[" + value1.toString() + "]")
                 .expectedActual((expression, value) -> value.toString())
                 .addTest()
-            .newTest((expression, value) -> expression.isNot(value1))
+            .newTest((expression, value) -> expression.isNotExactly(value1))
                 .subject(value2)
                 .expectedState(TRUE)
-                .expectedName("isNot[" + value1 + "]")
+                .expectedName("isNotExactly[" + value1 + "]")
                 .expectedExpected("not[" + value1 + "]")
                 .expectedActual((expression, value) -> value.toString())
                 .addTest()
-            .newTest((expression, value) -> expression.isNot(null))
+            .newTest((expression, value) -> expression.isNotExactly(null))
                 .subject(null)
                 .expectedState(FALSE)
-                .expectedName("isNot[(null)]")
+                .expectedName("isNotExactly[(null)]")
                 .expectedExpected("not[(null)]")
                 .expectedActual("(null)")
+                .addTest();
+    }
+
+    private void isConditionTestCases(ExpressionTestCaseBuilder<T, E> builder) {
+
+        final T subject = exampleValue1();
+        final Condition<T> trueCondition = Condition.tautology();
+        final Condition<T> falseCondition = Condition.contradiction();
+
+        builder.newTest((expression, value) -> expression.is(null))
+                .subject(subject)
+                .expectedState(FALSE)
+                .expectedName("is[condition: (null)]")
+                .expectedExpected((expression, value) -> ALWAYS_FAIL_CANNOT_CHECK_TO_NULL_CONDITION)
+                .expectedActual(subject.toString())
+                .expectedHint(CANNOT_CHECK_USING_NULL_CONDITION)
+                .addTest()
+            .newTest((expression, value) -> expression.is(trueCondition))
+                .subject(subject)
+                .expectedState(TRUE)
+                .expectedName(trueCondition.create(subject).name())
+                .expectedExpected("true")
+                .expectedActual("true")
+                .addTest()
+            .newTest((expression, value) -> expression.is(falseCondition))
+                .subject(subject)
+                .expectedState(FALSE)
+                .expectedName(falseCondition.create(subject).name())
+                .expectedExpected("false")
+                .expectedActual("false")
                 .addTest();
     }
 

@@ -37,16 +37,24 @@ public interface Expression {
     Evaluation skip(Cause cause);
 
     /**
-     * An expression that is always true (a tautology).
+     * Creates a tautology.
+     *
+     * @return A tautology.
      *
      * @since 0.2.1
      */
-    Expression TRUE = new Tautology();
+    static Expression tautology() {
+        return new Tautology();
+    }
 
     /**
-     * An expression that is always false (a contradiction).
+     * Creates a contradiction.
+     *
+     * @return A contradiction.
      *
      * @since 0.2.1
      */
-    Expression FALSE = new Contradiction();
+    static Expression contradiction() {
+        return new Contradiction();
+    }
 }

@@ -240,7 +240,7 @@ class ConditionsTest {
     @Test
     void givenOneConditionAndMatches_whenAnyOfCondition_thenMatches() {
 
-        final Condition<Object> alwaysTrue = Condition.TRUE;
+        final Condition<Object> alwaysTrue = Condition.tautology();
 
         final Condition<Object> condition = Conditions.anyOf(alwaysTrue);
 
@@ -267,7 +267,7 @@ class ConditionsTest {
     @Test
     void givenOneConditionAndDoesNotMatch_whenAnyOfCondition_thenDoesNotMatch() {
 
-        final Condition<Object> alwaysFalse = Condition.FALSE;
+        final Condition<Object> alwaysFalse = Condition.contradiction();
 
         final Condition<Object> condition = Conditions.anyOf(alwaysFalse);
 
@@ -279,8 +279,8 @@ class ConditionsTest {
     @Test
     void givenTwoConditionsAndFirstMatches_whenAnyOfCondition_thenMatches() {
 
-        final Condition<Object> alwaysTrue = Condition.TRUE;
-        final Condition<Object> alwaysFalse = Condition.FALSE;
+        final Condition<Object> alwaysTrue = Condition.tautology();
+        final Condition<Object> alwaysFalse = Condition.contradiction();
 
         final Condition<Object> condition = Conditions.anyOf(alwaysTrue, alwaysFalse);
 
@@ -292,8 +292,8 @@ class ConditionsTest {
     @Test
     void givenTwoConditionsAndSecondMatches_whenAnyOfCondition_thenMatches() {
 
-        final Condition<Object> alwaysTrue = Condition.TRUE;
-        final Condition<Object> alwaysFalse = Condition.FALSE;
+        final Condition<Object> alwaysTrue = Condition.tautology();
+        final Condition<Object> alwaysFalse = Condition.contradiction();
 
         final Condition<Object> condition = Conditions.anyOf(alwaysFalse, alwaysTrue);
 
@@ -305,8 +305,8 @@ class ConditionsTest {
     @Test
     void givenTwoConditionsAndBothMatch_whenAnyOfCondition_thenMatches() {
 
-        final Condition<Object> alwaysTrue1 = Condition.TRUE;
-        final Condition<Object> alwaysTrue2 = Condition.TRUE;
+        final Condition<Object> alwaysTrue1 = Condition.tautology();
+        final Condition<Object> alwaysTrue2 = Condition.tautology();
 
         final Condition<Object> condition = Conditions.anyOf(alwaysTrue1, alwaysTrue2);
 
@@ -318,8 +318,8 @@ class ConditionsTest {
     @Test
     void givenTwoConditionsAndBothDoNotMatch_whenAnyOfCondition_thenDoesNotMatch() {
 
-        final Condition<Object> alwaysFalse1 = Condition.FALSE;
-        final Condition<Object> alwaysFalse2 = Condition.FALSE;
+        final Condition<Object> alwaysFalse1 = Condition.contradiction();
+        final Condition<Object> alwaysFalse2 = Condition.contradiction();
 
         final Condition<Object> condition = Conditions.anyOf(alwaysFalse1, alwaysFalse2);
 
@@ -519,7 +519,7 @@ class ConditionsTest {
     @Test
     void givenOneConditionAndMatches_whenAllOfCondition_thenMatches() {
 
-        final Condition<Object> alwaysTrue = Condition.TRUE;
+        final Condition<Object> alwaysTrue = Condition.tautology();
 
         final Condition<Object> condition = Conditions.allOf(alwaysTrue);
 
@@ -531,7 +531,7 @@ class ConditionsTest {
     @Test
     void givenOneConditionAndDoesNotMatch_whenAllOfCondition_thenDoesNotMatch() {
 
-        final Condition<Object> alwaysFalse = Condition.FALSE;
+        final Condition<Object> alwaysFalse = Condition.contradiction();
 
         final Condition<Object> condition = Conditions.allOf(alwaysFalse);
 
@@ -543,8 +543,8 @@ class ConditionsTest {
     @Test
     void givenTwoConditionsAndFirstMatches_whenAllOfCondition_thenDoesNotMatch() {
 
-        final Condition<Object> alwaysTrue = Condition.TRUE;
-        final Condition<Object> alwaysFalse = Condition.FALSE;
+        final Condition<Object> alwaysTrue = Condition.tautology();
+        final Condition<Object> alwaysFalse = Condition.contradiction();
 
         final Condition<Object> condition = Conditions.allOf(alwaysTrue, alwaysFalse);
 
@@ -556,8 +556,8 @@ class ConditionsTest {
     @Test
     void givenTwoConditionsAndSecondMatches_whenAllOfCondition_thenDoesNotMatch() {
 
-        final Condition<Object> alwaysTrue = Condition.TRUE;
-        final Condition<Object> alwaysFalse = Condition.FALSE;
+        final Condition<Object> alwaysTrue = Condition.tautology();
+        final Condition<Object> alwaysFalse = Condition.contradiction();
 
         final Condition<Object> condition = Conditions.allOf(alwaysFalse, alwaysTrue);
 
@@ -569,8 +569,8 @@ class ConditionsTest {
     @Test
     void givenTwoConditionsAndBothMatch_whenAllOfCondition_thenMatches() {
 
-        final Condition<Object> alwaysTrue1 = Condition.TRUE;
-        final Condition<Object> alwaysTrue2 = Condition.TRUE;
+        final Condition<Object> alwaysTrue1 = Condition.tautology();
+        final Condition<Object> alwaysTrue2 = Condition.tautology();
 
         final Condition<Object> condition = Conditions.allOf(alwaysTrue1, alwaysTrue2);
 
@@ -582,8 +582,8 @@ class ConditionsTest {
     @Test
     void givenTwoConditionsAndBothDoNotMatch_whenAllOfCondition_thenDoesNotMatch() {
 
-        final Condition<Object> alwaysFalse1 = Condition.FALSE;
-        final Condition<Object> alwaysFalse2 = Condition.FALSE;
+        final Condition<Object> alwaysFalse1 = Condition.contradiction();
+        final Condition<Object> alwaysFalse2 = Condition.contradiction();
 
         final Condition<Object> condition = Conditions.allOf(alwaysFalse1, alwaysFalse2);
 
@@ -783,7 +783,7 @@ class ConditionsTest {
     @Test
     void givenOneConditionAndMatches_whenNoneOfCondition_thenDoesNotMatch() {
 
-        final Condition<Object> alwaysTrue = Condition.TRUE;
+        final Condition<Object> alwaysTrue = Condition.tautology();
 
         final Condition<Object> condition = Conditions.noneOf(alwaysTrue);
 
@@ -795,7 +795,7 @@ class ConditionsTest {
     @Test
     void givenOneConditionAndDoesNotMatch_whenNoneOfCondition_thenMatches() {
 
-        final Condition<Object> alwaysFalse = Condition.FALSE;
+        final Condition<Object> alwaysFalse = Condition.contradiction();
 
         final Condition<Object> condition = Conditions.noneOf(alwaysFalse);
 
@@ -807,8 +807,8 @@ class ConditionsTest {
     @Test
     void givenTwoConditionsAndFirstMatches_whenNoneOfCondition_thenDoesNotMatch() {
 
-        final Condition<Object> alwaysTrue = Condition.TRUE;
-        final Condition<Object> alwaysFalse = Condition.FALSE;
+        final Condition<Object> alwaysTrue = Condition.tautology();
+        final Condition<Object> alwaysFalse = Condition.contradiction();
 
         final Condition<Object> condition = Conditions.noneOf(alwaysTrue, alwaysFalse);
 
@@ -820,8 +820,8 @@ class ConditionsTest {
     @Test
     void givenTwoConditionsAndSecondMatches_whenNoneOfCondition_thenDoesNotMatch() {
 
-        final Condition<Object> alwaysTrue = Condition.TRUE;
-        final Condition<Object> alwaysFalse = Condition.FALSE;
+        final Condition<Object> alwaysTrue = Condition.tautology();
+        final Condition<Object> alwaysFalse = Condition.contradiction();
 
         final Condition<Object> condition = Conditions.noneOf(alwaysFalse, alwaysTrue);
 
@@ -833,8 +833,8 @@ class ConditionsTest {
     @Test
     void givenTwoConditionsAndBothMatch_whenNoneOfCondition_thenDoesNotMatch() {
 
-        final Condition<Object> alwaysTrue1 = Condition.TRUE;
-        final Condition<Object> alwaysTrue2 = Condition.TRUE;
+        final Condition<Object> alwaysTrue1 = Condition.tautology();
+        final Condition<Object> alwaysTrue2 = Condition.tautology();
 
         final Condition<Object> condition = Conditions.noneOf(alwaysTrue1, alwaysTrue2);
 
@@ -846,8 +846,8 @@ class ConditionsTest {
     @Test
     void givenTwoConditionsAndBothDoNotMatch_whenNoneOfCondition_thenMatches() {
 
-        final Condition<Object> alwaysFalse1 = Condition.FALSE;
-        final Condition<Object> alwaysFalse2 = Condition.FALSE;
+        final Condition<Object> alwaysFalse1 = Condition.contradiction();
+        final Condition<Object> alwaysFalse2 = Condition.contradiction();
 
         final Condition<Object> condition = Conditions.noneOf(alwaysFalse1, alwaysFalse2);
 

@@ -49,7 +49,7 @@ final class ObjectConditions {
     }
 
     static <T> String exactlyName(final T desired) {
-        return "is[" + stringify(desired) + "]";
+        return "isExactly[" + stringify(desired) + "]";
     }
 
     static <T> String exactlyHint(final T desired) {

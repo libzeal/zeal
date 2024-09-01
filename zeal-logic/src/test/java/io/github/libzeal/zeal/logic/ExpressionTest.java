@@ -16,14 +16,14 @@ class ExpressionTest {
     private static final String FALSE = "false";
 
     @Test
-    void givenFalseExpression_whenName_thenNameIsCorrect() {
-        assertEquals(Contradiction.NAME, Expression.FALSE.name());
+    void givenContradiction_whenName_thenNameIsCorrect() {
+        assertEquals(Contradiction.NAME, Expression.contradiction().name());
     }
 
     @Test
-    void givenFalseExpression_whenEvaluate_thenEvaluationIsCorrect() {
+    void givenContradiction_whenEvaluate_thenEvaluationIsCorrect() {
 
-        final Expression expression = Expression.FALSE;
+        final Expression expression = Expression.contradiction();
         final Evaluation evaluation = expression.evaluate();
         final Rationale rationale = evaluation.rationale();
 
@@ -35,11 +35,11 @@ class ExpressionTest {
     }
 
     @Test
-    void givenFalseExpression_whenSkip_thenSkippedEvaluationIsCorrect() {
+    void givenContradiction_whenSkip_thenSkippedEvaluationIsCorrect() {
 
         final Cause cause = mock(Cause.class);
 
-        final Expression expression = Expression.FALSE;
+        final Expression expression = Expression.contradiction();
         final Evaluation skippedEvaluation = expression.skip(cause);
         final Rationale rationale = skippedEvaluation.rationale();
 
@@ -49,14 +49,14 @@ class ExpressionTest {
     }
 
     @Test
-    void givenTrueExpression_whenName_thenNameIsCorrect() {
-        assertEquals(Tautology.NAME, Expression.TRUE.name());
+    void givenTautology_whenName_thenNameIsCorrect() {
+        assertEquals(Tautology.NAME, Expression.tautology().name());
     }
 
     @Test
-    void givenTrueExpression_whenEvaluate_thenEvaluationIsCorrect() {
+    void givenTautology_whenEvaluate_thenEvaluationIsCorrect() {
 
-        final Expression expression = Expression.TRUE;
+        final Expression expression = Expression.tautology();
         final Evaluation evaluation = expression.evaluate();
         final Rationale rationale = evaluation.rationale();
 
@@ -68,11 +68,11 @@ class ExpressionTest {
     }
 
     @Test
-    void givenTrueExpression_whenSkip_thenSkippedEvaluationIsCorrect() {
+    void givenTautology_whenSkip_thenSkippedEvaluationIsCorrect() {
 
         final Cause cause = mock(Cause.class);
 
-        final Expression expression = Expression.TRUE;
+        final Expression expression = Expression.tautology();
         final Evaluation skippedEvaluation = expression.skip(cause);
         final Rationale rationale = skippedEvaluation.rationale();
 
