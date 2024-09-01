@@ -1,8 +1,8 @@
 package io.github.libzeal.zeal.assertion;
 
 import io.github.libzeal.zeal.assertion.error.PreconditionFailedException;
-import io.github.libzeal.zeal.expression.lang.evaluation.Result;
-import io.github.libzeal.zeal.expression.lang.evaluation.format.SimpleEvaluationFormatter;
+import io.github.libzeal.zeal.logic.evaluation.Result;
+import io.github.libzeal.zeal.logic.evaluation.format.simple.SimpleFormatter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -25,7 +25,7 @@ class RequirementTest {
     @BeforeEach
     void setUp() {
         requirement = Requirement.create();
-        helper = new AssertionTestCases(new SimpleEvaluationFormatter());
+        helper = new AssertionTestCases(new SimpleFormatter());
     }
 
     @ParameterizedTest(name = "{0}")
@@ -106,14 +106,14 @@ class RequirementTest {
                 Arguments.of(
                     new ExceptionTestCaseData(
                         "Failed evaluation and null subject",
-                        expression(Result.FAILED, null),
+                        expression(Result.FALSE, null),
                         NullPointerException.class
                     )
                 ),
                 Arguments.of(
                     new ExceptionTestCaseData(
                         "Failed evaluation and non-null subject",
-                        expression(Result.FAILED, new Object()),
+                        expression(Result.FALSE, new Object()),
                         PreconditionFailedException.class
                     )
                 )

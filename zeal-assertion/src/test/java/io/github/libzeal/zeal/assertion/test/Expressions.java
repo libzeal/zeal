@@ -1,8 +1,12 @@
 package io.github.libzeal.zeal.assertion.test;
 
-import io.github.libzeal.zeal.expression.lang.UnaryExpression;
-import io.github.libzeal.zeal.expression.lang.evaluation.Evaluation;
-import io.github.libzeal.zeal.expression.lang.evaluation.Result;
+import io.github.libzeal.zeal.logic.evaluation.cause.Cause;
+import io.github.libzeal.zeal.logic.evaluation.Evaluation;
+import io.github.libzeal.zeal.logic.evaluation.Result;
+import io.github.libzeal.zeal.logic.rationale.Rationale;
+import io.github.libzeal.zeal.logic.unary.UnaryExpression;
+
+import java.util.Optional;
 
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -38,6 +42,14 @@ public class Expressions {
 
         final UnaryExpression<Object> expression = expression();
         final Evaluation evaluation = mock(Evaluation.class);
+        final Rationale rationale = mock(Rationale.class);
+
+        doReturn("foo").when(rationale).expected();
+        doReturn("bar").when(rationale).actual();
+        doReturn(Optional.of("baz")).when(rationale).hint();
+
+        doReturn(rationale).when(evaluation).rationale();
+        doReturn(new Cause(evaluation)).when(evaluation).cause();
 
         doReturn(evaluation).when(expression).evaluate();
         doReturn(result).when(evaluation).result();
