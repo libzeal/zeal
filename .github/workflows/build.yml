@@ -10,7 +10,7 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           java-version: "8"
-          distribution: "temurin"
+          distribution: "oracle"
           architecture: x64
       - name: Build
         run: ./scripts/build.sh --batch-mode --no-transfer-progress
