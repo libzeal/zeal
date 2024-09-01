@@ -123,7 +123,7 @@ class TerminalEvaluationTest {
         assertEquals(name, evaluation.name());
         assertEquals(SimpleRationale.skipped(), evaluation.rationale());
         assertEquals(cause, evaluation.cause());
-        assertTrue(evaluation.elapsedTime().toNanos() >= 0);
+        assertEquals(Duration.ZERO, evaluation.elapsedTime());
     }
 
     private static CauseGenerator generator(final Cause cause) {

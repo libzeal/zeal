@@ -125,4 +125,12 @@ class SimpleDurationFormatterTest {
 
         assertEquals("1ns", format(duration));
     }
+
+    @Test
+    void givenZero_whenFormat_thenCorrectFormatIsCorrect() {
+
+        final Duration duration = Duration.ZERO;
+
+        assertEquals("0ns", format(duration));
+    }
 }

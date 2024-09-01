@@ -74,11 +74,9 @@ public class TerminalEvaluation implements Evaluation {
      */
     public static TerminalEvaluation ofSkipped(final String name, final CauseGenerator causeGenerator) {
 
-        final StopWatch stopWatch = StopWatch.started();
         final SimpleRationale rationale = SimpleRationale.skipped();
-        final Duration elapsedTime = stopWatch.stop();
 
-        return new TerminalEvaluation(Result.SKIPPED, name, rationale, elapsedTime, causeGenerator);
+        return new TerminalEvaluation(Result.SKIPPED, name, rationale, Duration.ZERO, causeGenerator);
     }
 
     @Override

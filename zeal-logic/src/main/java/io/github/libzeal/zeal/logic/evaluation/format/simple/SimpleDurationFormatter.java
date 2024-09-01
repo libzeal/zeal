@@ -13,6 +13,10 @@ class SimpleDurationFormatter implements ComponentFormatter<Duration> {
             return "";
         }
 
+        if (elapsedTime.equals(Duration.ZERO)) {
+            return "0ns";
+        }
+
         final StringBuilder builder = new StringBuilder();
         final long hoursPart = elapsedTime.toHours();
         final long minutesPart = elapsedTime.toMinutes() - (hoursPart * 60);
