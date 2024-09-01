@@ -1,9 +1,9 @@
 package io.github.libzeal.zeal.assertion;
 
-import io.github.libzeal.zeal.expression.lang.UnaryExpression;
-import io.github.libzeal.zeal.expression.lang.evaluation.Evaluation;
-import io.github.libzeal.zeal.expression.lang.evaluation.Result;
-import io.github.libzeal.zeal.expression.lang.evaluation.format.EvaluationFormatter;
+import io.github.libzeal.zeal.logic.evaluation.Evaluation;
+import io.github.libzeal.zeal.logic.evaluation.Result;
+import io.github.libzeal.zeal.logic.evaluation.format.Formatter;
+import io.github.libzeal.zeal.logic.unary.UnaryExpression;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
@@ -19,9 +19,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class AssertionTestCases {
 
-    private final EvaluationFormatter formatter;
+    private final Formatter formatter;
 
-    public AssertionTestCases(final EvaluationFormatter formatter) {
+    public AssertionTestCases(final Formatter formatter) {
         this.formatter = formatter;
     }
 
@@ -113,8 +113,8 @@ public class AssertionTestCases {
         @Override
         public Stream<? extends Arguments> provideArguments(final ExtensionContext extensionContext) throws Exception {
             return Stream.of(
-                Arguments.of( new SubjectReturnedDataSet("Passing with null subject", Result.PASSED, null)),
-                Arguments.of(new SubjectReturnedDataSet("Passing with non-null subject", Result.PASSED, new Object())),
+                Arguments.of( new SubjectReturnedDataSet("Passing with null subject", Result.TRUE, null)),
+                Arguments.of(new SubjectReturnedDataSet("Passing with non-null subject", Result.TRUE, new Object())),
                 Arguments.of(new SubjectReturnedDataSet("Skipped with null subject", Result.SKIPPED, null)),
                 Arguments.of(new SubjectReturnedDataSet("Skipped with non-null subject", Result.SKIPPED, new Object()))
             );
