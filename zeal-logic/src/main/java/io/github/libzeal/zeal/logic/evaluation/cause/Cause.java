@@ -18,11 +18,6 @@ public class Cause {
     private final Evaluation evaluation;
     private final Cause underlyingCause;
 
-    /**
-     * Creates a new cause with the
-     * @param evaluation
-     * @param underlyingCause
-     */
     public Cause(final Evaluation evaluation, final Cause underlyingCause) {
         this.evaluation = requireNonNull(evaluation);
         this.underlyingCause = underlyingCause;

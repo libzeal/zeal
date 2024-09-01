@@ -14,7 +14,7 @@ import static java.util.Objects.requireNonNull;
  * @author Justin Albano
  * @since 0.2.1
  */
-public class SimpleFormatterContext {
+class SimpleFormatterContext {
 
     private final Cause cause;
     private final int depth;
@@ -32,6 +32,11 @@ public class SimpleFormatterContext {
      */
     public SimpleFormatterContext(final Cause cause, final int depth) {
         this.cause = requireNonNull(cause);
+
+        if (depth < 0) {
+            throw new IllegalArgumentException("Depth cannot be negative");
+        }
+
         this.depth = depth;
     }
 

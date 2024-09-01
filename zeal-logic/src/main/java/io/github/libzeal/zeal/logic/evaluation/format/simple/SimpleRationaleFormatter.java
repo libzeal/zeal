@@ -2,7 +2,7 @@ package io.github.libzeal.zeal.logic.evaluation.format.simple;
 
 import io.github.libzeal.zeal.logic.rationale.Rationale;
 
-public class SimpleRationaleFormatter implements ComponentFormatter<Rationale> {
+class SimpleRationaleFormatter implements ComponentFormatter<Rationale> {
 
     private final int indentation;
     private final int keyWidth;

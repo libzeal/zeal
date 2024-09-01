@@ -16,6 +16,7 @@ public class SimpleFormatter implements Formatter {
     static final int INDENTATION = 4;
     private final ComponentFormatter<Evaluation> evaluationFormatter;
     private final ComponentFormatter<Cause> causeFormatter;
+    private final ComponentFormatter<Heading> headingFormatter;
 
     public SimpleFormatter() {
 
@@ -24,6 +25,7 @@ public class SimpleFormatter implements Formatter {
 
         this.evaluationFormatter = new SimpleEvaluationFormatter(INDENTATION, resultFormatter, durationFormatter);
         this.causeFormatter = new SimpleRootCauseFormatter(INDENTATION);
+        this.headingFormatter = new SimpleHeadingFormatter(INDENTATION);
     }
 
     @Override
@@ -33,14 +35,14 @@ public class SimpleFormatter implements Formatter {
         final SimpleFormatterContext context = new SimpleFormatterContext(cause, 0);
         final StringBuilder builder = new StringBuilder();
         final Traverser traverser = new FormattingTraverser(evaluation, builder, evaluationFormatter);
+        final Heading heading = new Heading("Evaluation");
 
-        builder.append("Root cause:\n")
-            .append(causeFormatter.format(cause, context))
-            .append("Evaluation:\n");
+        builder.append(causeFormatter.format(cause, context))
+            .append(headingFormatter.format(heading, context));
 
         evaluation.traverseDepthFirst(traverser);
 
-        return builder.toString();
+        return builder.toString().trim();
     }
 
     private static final class FormattingTraverser implements Traverser {

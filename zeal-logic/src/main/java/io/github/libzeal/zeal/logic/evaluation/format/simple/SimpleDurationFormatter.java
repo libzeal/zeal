@@ -2,10 +2,16 @@ package io.github.libzeal.zeal.logic.evaluation.format.simple;
 
 import java.time.Duration;
 
-public class SimpleDurationFormatter implements ComponentFormatter<Duration> {
+import static java.util.Objects.requireNonNull;
+
+class SimpleDurationFormatter implements ComponentFormatter<Duration> {
 
     @Override
     public String format(final Duration elapsedTime, final SimpleFormatterContext context) {
+
+        if (elapsedTime == null) {
+            return "";
+        }
 
         final StringBuilder builder = new StringBuilder();
         final long hoursPart = elapsedTime.toHours();
@@ -13,8 +19,10 @@ public class SimpleDurationFormatter implements ComponentFormatter<Duration> {
         final long secondsPart = (elapsedTime.toMillis() / 1000) - (hoursPart * 3600) - (minutesPart * 60);
         final long millisPart =
             elapsedTime.toMillis() - (hoursPart * 3600_000l) - (minutesPart * 60_000l) - (secondsPart * 1000);
+        final long remainingNanos = elapsedTime.toNanos() - (hoursPart * 3600_000_000_000l) - (minutesPart * 60_000_000_000l) - (secondsPart * 1000_000_000l) - (millisPart * 1000_000l);
+        final long microsPart = remainingNanos / 1000;
         final long nanosPart =
-            elapsedTime.toNanos() - (hoursPart * 3600_000_000_000l) - (minutesPart * 60_000_000_000l) - (secondsPart * 1000_000_000l) - (millisPart * 1000_000l);
+            elapsedTime.toNanos() - (hoursPart * 3600_000_000_000l) - (minutesPart * 60_000_000_000l) - (secondsPart * 1000_000_000l) - (millisPart * 1000_000l) - (microsPart * 1000);
 
         if (hoursPart > 0) {
             builder.append(hoursPart)
@@ -31,24 +39,26 @@ public class SimpleDurationFormatter implements ComponentFormatter<Duration> {
                 .append("s ");
         }
 
-        if (hoursPart == 0 && minutesPart == 0 && secondsPart == 0) {
+        if (hoursPart == 0 && minutesPart == 0) {
 
             if (millisPart > 0) {
                 builder.append(millisPart)
-                    .append("ms");
+                    .append("ms ");
             }
-            else {
-                if (nanosPart > 1000) {
-                    builder.append(nanosPart / 1000)
-                        .append("us");
+
+            if (secondsPart == 0) {
+                if (microsPart > 0) {
+                    builder.append(microsPart)
+                        .append("us ");
                 }
-                else {
+
+                if (nanosPart > 0) {
                     builder.append(nanosPart)
-                        .append("ns");
+                        .append("ns ");
                 }
             }
         }
 
-        return "(" + builder.toString().trim() + ")";
+        return builder.toString().trim();
     }
 }

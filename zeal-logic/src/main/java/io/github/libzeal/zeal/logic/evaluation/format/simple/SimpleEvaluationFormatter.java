@@ -7,7 +7,7 @@ import java.time.Duration;
 
 import static java.util.Objects.requireNonNull;
 
-public class SimpleEvaluationFormatter implements ComponentFormatter<Evaluation> {
+class SimpleEvaluationFormatter implements ComponentFormatter<Evaluation> {
 
     private final int indentation;
     private final ComponentFormatter<Result> resultFormatter;
@@ -29,8 +29,9 @@ public class SimpleEvaluationFormatter implements ComponentFormatter<Evaluation>
             .append(resultFormatter.format(evaluation.result(), context))
             .append(" ")
             .append(evaluation.name())
-            .append(" ")
-            .append(elapsedTimeFormatter.format(evaluation.elapsedTime(), context));
+            .append(" (")
+            .append(elapsedTimeFormatter.format(evaluation.elapsedTime(), context))
+            .append(")");
 
         if (context.isRootCause(evaluation)) {
             builder.append("  <---[ Root Cause ]");
