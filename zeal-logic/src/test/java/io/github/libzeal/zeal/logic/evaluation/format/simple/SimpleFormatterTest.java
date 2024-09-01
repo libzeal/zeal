@@ -63,7 +63,7 @@ class SimpleFormatterTest {
 
         final String result = formatter.format(evaluation);
 
-        assertTrue(result.matches(expected));
+        assertTrue(result.matches(expected), "Was: " + result);
     }
 
     @Test
