@@ -1,0 +1,11 @@
+title: Zeal
+email: albano.justin@gmail.com
+description: The Zeal Java assertion library
+baseurl: ""
+url: ""
+twitter_username: jekyllrb
+github_username:  libzeal/zeal
+
+theme: minima
+plugins:
+  - jekyll-feed
