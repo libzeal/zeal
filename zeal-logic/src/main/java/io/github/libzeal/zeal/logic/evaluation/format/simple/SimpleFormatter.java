@@ -11,6 +11,13 @@ import java.time.Duration;
 
 import static java.util.Objects.requireNonNull;
 
+/**
+ * A simple formatter that provides information about the root cause of a failed evaluation, as well as a tree-based
+ * view of the evaluation.
+ *
+ * @author Justin Albano
+ * @since 0.2.1
+ */
 public class SimpleFormatter implements Formatter {
 
     static final int INDENTATION = 4;
@@ -18,6 +25,9 @@ public class SimpleFormatter implements Formatter {
     private final ComponentFormatter<Cause> causeFormatter;
     private final ComponentFormatter<Heading> headingFormatter;
 
+    /**
+     * Creates a new formatter.
+     */
     public SimpleFormatter() {
 
         final ComponentFormatter<Result> resultFormatter = new SimpleResultFormatter();

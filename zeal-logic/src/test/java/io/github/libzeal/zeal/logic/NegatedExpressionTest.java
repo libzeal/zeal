@@ -32,7 +32,7 @@ class NegatedExpressionTest {
 
         assertEquals(Result.FALSE, evaluation.result());
         assertEquals(NegatedExpression.DEFAULT_NAME, evaluation.name());
-        assertRationaleEquals(rationale, VALUE_WRAPPED_FALSE, VALUE_WRAPPED_TRUE);
+        assertRationaleEquals(rationale, ACTUAL_VALUE_WRAPPED_FALSE, ACTUAL_VALUE_WRAPPED_TRUE);
         assertEquals(trueExpression.evaluate(), evaluation.cause().rootCause().evaluation());
         assertDepthFirstTraversalIsTerminal(evaluation);
     }
@@ -47,7 +47,7 @@ class NegatedExpressionTest {
 
         assertEquals(Result.TRUE, evaluation.result());
         assertEquals(NegatedExpression.DEFAULT_NAME, evaluation.name());
-        assertRationaleEquals(rationale, VALUE_WRAPPED_FALSE, VALUE_WRAPPED_FALSE);
+        assertRationaleEquals(rationale, ACTUAL_VALUE_WRAPPED_FALSE, ACTUAL_VALUE_WRAPPED_FALSE);
         assertEquals(falseExpression.evaluate(), evaluation.cause().rootCause().evaluation());
         assertDepthFirstTraversalIsTerminal(evaluation);
     }
@@ -90,7 +90,7 @@ class NegatedExpressionTest {
 
         assertEquals(Result.FALSE, evaluation.result());
         assertEquals(NegatedExpression.DEFAULT_NAME, evaluation.name());
-        assertRationaleEquals(rationale, VALUE_WRAPPED_FALSE, VALUE_WRAPPED_SKIPPED);
+        assertRationaleEquals(rationale, ACTUAL_VALUE_WRAPPED_FALSE, ACTUAL_VALUE_WRAPPED_SKIPPED);
         assertNull(evaluation.cause().rootCause().evaluation());
         assertDepthFirstTraversalIsTerminal(evaluation);
     }

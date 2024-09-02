@@ -25,7 +25,7 @@ import static java.util.Objects.requireNonNull;
  */
 public class ConjunctiveExpression implements CompoundExpression {
 
-    public static final String DEFAULT_NAME = "All (AND)";
+    static final String DEFAULT_NAME = "All (AND)";
     private final String name;
     private final List<Expression> children;
 
@@ -38,7 +38,7 @@ public class ConjunctiveExpression implements CompoundExpression {
      *     The expressions used to initialize the compound expression.
      *
      * @throws NullPointerException
-     *     Any of the supplied arguments are {@code null}.
+     *     The supplied name is {@code null} or the children contains a {@code null} value.
      */
     public ConjunctiveExpression(String name, List<Expression> children) {
         this.name = requireNonNull(name);
@@ -52,6 +52,9 @@ public class ConjunctiveExpression implements CompoundExpression {
      *     The expressions used to initialize the compound expression.
      *
      * @return A conjunctive expression with a default name.
+     *
+     * @throws NullPointerException
+     *     The supplied name is {@code null} or the children contains a {@code null} value.
      */
     public static ConjunctiveExpression withDefaultName(final List<Expression> children) {
         return new ConjunctiveExpression(DEFAULT_NAME, children);
@@ -63,7 +66,8 @@ public class ConjunctiveExpression implements CompoundExpression {
      * @param name
      *     The name of the expression.
      *
-     * @implNote The default sub-expression list has an initial capacity of 1.
+     * @throws NullPointerException
+     *     The supplied name is {@code null}.
      */
     public ConjunctiveExpression(String name) {
         this(name, new ArrayList<>(1));

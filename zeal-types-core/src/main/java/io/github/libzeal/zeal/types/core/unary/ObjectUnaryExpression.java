@@ -21,12 +21,12 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * The abstract base class for all Object-based (non-primitive) expressions.
- * <p/>
+ * <p>
  * This base class should be extended when creating expressions for any specialized class. For example, if creating a
  * {@code StringExpression} class, the {@code StringExpression} class should extend this class, with {@code T} set to
  * {@link String}. An example of a proper extension of this class (to create a {@code StringExpression} for example)
  * would be:
- * <pre><code>class StringExpression extends ObjectExpression<String, StringExpression></code></pre>
+ * <pre><code>class StringExpression extends ObjectExpression&lt;String, StringExpression&gt;</code></pre>
  *
  * @param <T>
  *     The type of the subject.
@@ -153,8 +153,8 @@ public class ObjectUnaryExpression<T, E extends ObjectUnaryExpression<T, E>> imp
 
     /**
      * Creates a builder for a new evaluation, where the supplied test may receive a {@code null} subject.
-     * <p/>
-     * For example, if the supplied test is {code}(subject, passed) -> subject.toString().equals("hi")</code>, the value
+     * <p>
+     * For example, if the supplied test is <code>subject, passed) -> subject.toString().equals("hi")</code>, the value
      * of {@code o} may be {@code null} and should be handled accordingly.
      *
      * @param test
@@ -183,27 +183,27 @@ public class ObjectUnaryExpression<T, E extends ObjectUnaryExpression<T, E>> imp
 
     /**
      * Adds a predicate to the expression that checks if the subject is not {@code null}.
+     * <p>
+     * Note: This evaluation takes precedent over all other evaluations. For example, if the chain
+     * <code>expression.someFooCheck().isNotNull()</code> were created, the {@code #isNotNull()} evaluation would
+     * be evaluated before the {@code someFooCheck()} evaluation when the expression is evaluated (using the
+     * {@link #evaluate()} method), even though it was second in the chain.
+     * <p>
+     * Note: The precedence of this evaluation is due to the nature of evaluations on objects. Every evaluation, expect
+     * for nullity evaluations (such as "is @{code null}" or "is not {@code null}") or equality checks assume that the
+     * subject of the evaluation is not {@code null}. For example, assume the following chain is called:
+     * <pre><code>expression.toStringIs("foo").isNotNull()</code></pre>
+     * <p>
+     * If the subject of the expression is {@code null}, then the {@code toStringIs("foo")} evaluation will fail, but
+     * not because the {@link Object#toString()} value of the expression is not equal to {@code "foo"}, but because the
+     * subject of the expression is {@code null} (the {@link Object#toString} method could not be called on the subject,
+     * or else a {@link NullPointerException} would be thrown).
+     * <p>
+     * Therefore, if an expression has a {@code #isNotNull()} evaluation, this evaluation is automatically evaluated
+     * first. If the expression does not include {@code #isNotNull()}, then the evaluations are evaluated in the order
+     * in which they are chained on the expression.
      *
      * @return This expression (fluent interface).
-     *
-     * @apiNote This evaluation takes precedent over all other evaluations. For example, if the chain
-     *     <code>expression.someFooCheck().isNotNull()</code> were created, the {@code #isNotNull()} evaluation would
-     *     be evaluated before the {@code someFooCheck()} evaluation when the expression is evaluated (using the
-     *     {@link #evaluate()} method), even though it was second in the chain.
-     * @implSpec The precedence of this evaluation is due to the nature of evaluations on objects. Every evaluation,
-     *     expect for nullity evaluations (such as "is @{code null}" or "is not {@code null}") or equality checks assume
-     *     that the subject of the evaluation is not {@code null}. For example, assume the following chain is called:
-     *
-     *     <pre><code>expression.toStringIs("foo").isNotNull()</code></pre>
-     *     <p>
-     *     If the subject of the expression is {@code null}, then the {@code toStringIs("foo")} evaluation will fail,
-     *     but not because the {@link Object#toString()} value of the expression is not equal to {@code "foo"}, but
-     *     because the subject of the expression is {@code null} (the {@link Object#toString} method could not be called
-     *     on the subject, or else a {@link NullPointerException} would be thrown).
-     *     <p>
-     *     Therefore, if an expression has a {@code #isNotNull()} evaluation, this evaluation is automatically evaluated
-     *     first. If the expression does not include {@code #isNotNull()}, then the evaluations are evaluated in the
-     *     order in which they are chained on the expression.
      */
     public final E isNotNull() {
         return newNullableExpression(Objects::nonNull)
@@ -214,7 +214,7 @@ public class ObjectUnaryExpression<T, E extends ObjectUnaryExpression<T, E>> imp
 
     /**
      * Adds a predicate to the expression that checks if the subject exactly matches the supplied type.
-     * <p/>
+     * <p>
      * Note: If the subject is a subtype of the supplied type, this check will fail.
      *
      * @param type
@@ -270,17 +270,18 @@ public class ObjectUnaryExpression<T, E extends ObjectUnaryExpression<T, E>> imp
 
     /**
      * Adds a predicate to the expression that checks if the subject matches or is a subtype of the supplied type.
+     * <p>
+     * Note: This check is equivalent to the following statement, where {@code type} is the supplied type and
+     * {@code subject} is the subject of the expression:
+     * <pre><code>
+     * type.isAssignableFrom(subject.getClass())
+     * </code></pre>
      *
      * @param type
      *     The type to test the subject against. This evaluation will always fail if the supplied type is {@code null}.
      *
      * @return This expression (fluent interface).
      *
-     * @implNote This check is equivalent to the following statement, where {@code type} is the supplied type and
-     *     {@code subject} is the subject of the expression:
-     *     <pre><code>
-     *                                         type.isAssignableFrom(subject.getClass())
-     *                                     </code></pre>
      * @see Class#isAssignableFrom(Class)
      */
     public E isInstanceOf(final Class<?> type) {
@@ -305,17 +306,18 @@ public class ObjectUnaryExpression<T, E extends ObjectUnaryExpression<T, E>> imp
     /**
      * Adds a predicate to the expression that checks if the subject does not exactly match or is not a subtype of the
      * supplied type.
+     * <p>
+     * Note: This check is equivalent to the following statement, where {@code type} is the supplied type and
+     * {@code subject} is the subject of the expression:
+     * <pre><code>
+     * !type.isAssignableFrom(subject.getClass())
+     * </code></pre>
      *
      * @param type
      *     The type to test the subject against. This evaluation will always fail if the supplied type is {@code null}.
      *
      * @return This expression (fluent interface).
      *
-     * @implNote This check is equivalent to the following statement, where {@code type} is the supplied type and
-     *     {@code subject} is the subject of the expression:
-     *     <pre><code>
-     *                                         !type.isAssignableFrom(subject.getClass())
-     *                                     </code></pre>
      * @see Class#isAssignableFrom(Class)
      */
     public E isNotInstanceOf(final Class<?> type) {
@@ -339,19 +341,19 @@ public class ObjectUnaryExpression<T, E extends ObjectUnaryExpression<T, E>> imp
 
     /**
      * Adds a predicate to the expression that checks if the subject is the same as the supplied object.
-     * <p/>
+     * <p>
      * This evaluation will pass if the subject and supplied object are both {@code null}.
+     * <p>
+     * Note: This check is equivalent to the following statement, where {@code other} is the supplied object and
+     * {@code subject} is the subject of the expression:
+     * <pre><code>
+     * subject == object
+     * </code></pre>
      *
      * @param other
      *     The object to test against.
      *
      * @return This expression (fluent interface).
-     *
-     * @implNote This check is equivalent to the following statement, where {@code other} is the supplied object and
-     *     {@code subject} is the subject of the expression:
-     *     <pre><code>
-     *                                         subject == object
-     *                                     </code></pre>
      */
     public E isExactly(final Object other) {
         return append(exactly(other).create(subject));
@@ -359,19 +361,19 @@ public class ObjectUnaryExpression<T, E extends ObjectUnaryExpression<T, E>> imp
 
     /**
      * Adds a predicate to the expression that checks if the subject is not the same as the supplied object.
-     * <p/>
+     * <p>
      * This evaluation will fail if the subject and supplied object are both {@code null}.
+     * <p>
+     * Note: This check is equivalent to the following statement, where {@code other} is the supplied object and
+     * {@code subject} is the subject of the expression:
+     * <pre><code>
+     * subject != object
+     * </code></pre>
      *
      * @param other
      *     The object to test against.
      *
      * @return This expression (fluent interface).
-     *
-     * @implNote This check is equivalent to the following statement, where {@code other} is the supplied object and
-     *     {@code subject} is the subject of the expression:
-     *     <pre><code>
-     *                                         subject != object
-     *                                     </code></pre>
      */
     public E isNotExactly(final Object other) {
         return newNullableExpression(s -> s != other)
@@ -405,19 +407,20 @@ public class ObjectUnaryExpression<T, E extends ObjectUnaryExpression<T, E>> imp
 
     /**
      * Adds a predicate to the expression that checks if the subject is equal to the supplied object.
-     * <p/>
+     * <p>
      * This evaluation will pass if the subject and supplied object are both {@code null}.
+     * <p>
+     * Note: This check is equivalent to the following statement, where {@code other} is the supplied object and
+     * {@code subject} is the subject of the expression:
+     * <pre><code>
+     * Objects.equals(subject, other);
+     * </code></pre>
      *
      * @param other
      *     The object to test against.
      *
      * @return This expression (fluent interface).
      *
-     * @implNote This check is equivalent to the following statement, where {@code other} is the supplied object and
-     *     {@code subject} is the subject of the expression:
-     *     <pre><code>
-     *                                         Objects.equals(subject, other);
-     *                                     </code></pre>
      * @see Objects#equals(Object, Object)
      */
     public E isEqualTo(final Object other) {
@@ -427,7 +430,7 @@ public class ObjectUnaryExpression<T, E extends ObjectUnaryExpression<T, E>> imp
     /**
      * Adds a predicate to the expression that checks if the subject is equal to the supplied object using the supplied
      * comparator.
-     * <p/>
+     * <p>
      * This evaluation will fail if the supplied comparator is {@code null}. If the comparator is not {@code null}, this
      * evaluation will pass if the subject and supplied object are both {@code null}.
      *
@@ -460,19 +463,20 @@ public class ObjectUnaryExpression<T, E extends ObjectUnaryExpression<T, E>> imp
 
     /**
      * Adds a predicate to the expression that checks if the subject is not equal to the supplied object.
-     * <p/>
+     * <p>
      * This evaluation will fail if the subject and supplied object are both {@code null}.
+     * <p>
+     * Note: This check is equivalent to the following statement, where {@code other} is the supplied object and
+     * {@code subject} is the subject of the expression:
+     * <pre><code>
+     * !Objects.equals(subject, other);
+     * </code></pre>
      *
      * @param other
      *     The object to test against.
      *
      * @return This expression (fluent interface).
      *
-     * @implNote This check is equivalent to the following statement, where {@code other} is the supplied object and
-     *     {@code subject} is the subject of the expression:
-     *     <pre><code>
-     *                                         !Objects.equals(subject, other);
-     *                                     </code></pre>
      * @see Objects#equals(Object, Object)
      */
     public E isNotEqualTo(final Object other) {
@@ -486,7 +490,7 @@ public class ObjectUnaryExpression<T, E extends ObjectUnaryExpression<T, E>> imp
     /**
      * Adds a predicate to the expression that checks if the subject is not equal to the supplied object using the
      * supplied comparator.
-     * <p/>
+     * <p>
      * This evaluation will fail if the supplied comparator is {@code null}. If the comparator is not {@code null}, this
      * evaluation will fail if the subject and supplied object are both {@code null}.
      *
@@ -520,17 +524,17 @@ public class ObjectUnaryExpression<T, E extends ObjectUnaryExpression<T, E>> imp
     /**
      * Adds a predicate to the expression that checks if the hash code of the subject is equal to the supplied hash
      * code.
+     * <p>
+     * Note: This check is equivalent to the following statement, where {@code hashCode} is the supplied hash code and
+     * {@code subject} is the subject of the expression:
+     * <pre><code>
+     * subject.hashCode() == hashCode
+     * </code></pre>
      *
      * @param hashCode
      *     The hash code to test against.
      *
      * @return This expression (fluent interface).
-     *
-     * @implNote This check is equivalent to the following statement, where {@code hashCode} is the supplied hash
-     *     code and {@code subject} is the subject of the expression:
-     *     <pre><code>
-     *                                         subject.hashCode() == hashCode
-     *                                     </code></pre>
      */
     public E hashCodeIs(final int hashCode) {
         return newExpression(s -> s.hashCode() == hashCode)
@@ -547,17 +551,17 @@ public class ObjectUnaryExpression<T, E extends ObjectUnaryExpression<T, E>> imp
     /**
      * Adds a predicate to the expression that checks if the hash code of the subject is not equal to the supplied hash
      * code.
+     * <p>
+     * Note: This check is equivalent to the following statement, where {@code hashCode} is the supplied hash code and
+     * {@code subject} is the subject of the expression:
+     * <pre><code>
+     * subject.hashCode() != hashCode
+     * </code></pre>
      *
      * @param hashCode
      *     The hash code to test against.
      *
      * @return This expression (fluent interface).
-     *
-     * @implNote This check is equivalent to the following statement, where {@code hashCode} is the supplied hash
-     *     code and {@code subject} is the subject of the expression:
-     *     <pre><code>
-     *                                         subject.hashCode() != hashCode
-     *                                     </code></pre>
      */
     public E hashCodeIsNot(final int hashCode) {
         return newExpression(s -> s.hashCode() != hashCode)
@@ -570,17 +574,17 @@ public class ObjectUnaryExpression<T, E extends ObjectUnaryExpression<T, E>> imp
     /**
      * Adds a predicate to the expression that checks if the {@code toString()} value of the subject is equal to the
      * supplied value.
+     * <p>
+     * Note: This check is equivalent to the following statement, where {@code hashCode} is the supplied hash code and
+     * {@code subject} is the subject of the expression:
+     * <pre><code>
+     * subject.toString().equals(expected)
+     * </code></pre>
      *
      * @param expected
      *     The string to test against.
      *
      * @return This expression (fluent interface).
-     *
-     * @implNote This check is equivalent to the following statement, where {@code expected} is the supplied string
-     *     and {@code subject} is the subject of the expression:
-     *     <pre><code>
-     *                                         subject.toString().equals(expected)
-     *                                     </code></pre>
      */
     public E toStringIs(final String expected) {
         return newExpression(s -> s.toString().equals(expected))
@@ -593,17 +597,17 @@ public class ObjectUnaryExpression<T, E extends ObjectUnaryExpression<T, E>> imp
     /**
      * Adds a predicate to the expression that checks if the {@code toString()} value of the subject is not equal to the
      * supplied value.
+     * <p>
+     * Note: This check is equivalent to the following statement, where {@code hashCode} is the supplied hash code and
+     * {@code subject} is the subject of the expression:
+     * <pre><code>
+     * !subject.toString().equals(expected)
+     * </code></pre>
      *
      * @param expected
      *     The string to test against.
      *
      * @return This expression (fluent interface).
-     *
-     * @implNote This check is equivalent to the following statement, where {@code expected} is the supplied string
-     *     and {@code subject} is the subject of the expression:
-     *     <pre><code>
-     *                                         !subject.toString().equals(expected)
-     *                                     </code></pre>
      */
     public E toStringIsNot(final String expected) {
         return newExpression(s -> !s.toString().equals(expected))

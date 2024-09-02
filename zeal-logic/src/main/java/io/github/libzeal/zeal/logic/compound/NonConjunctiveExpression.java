@@ -17,12 +17,29 @@ import java.util.stream.Collectors;
 import static io.github.libzeal.zeal.logic.util.ArgumentValidator.requireDoesNotContainNulls;
 import static java.util.Objects.requireNonNull;
 
+/**
+ * A compound expression where at least one sub-expression must fail for the compound expression to pass.
+ *
+ * @author Justin Albano
+ * @since 0.2.1
+ */
 public class NonConjunctiveExpression implements CompoundExpression {
 
-    public static final String DEFAULT_NAME = "Not all (NAND)";
+    static final String DEFAULT_NAME = "Not all (NAND)";
     private final String name;
     private final List<Expression> children;
 
+    /**
+     * Creates a new non-conjunctive expression.
+     *
+     * @param name
+     *     The name of the expression.
+     * @param children
+     *     The children of the expression.
+     *
+     * @throws NullPointerException
+     *     The supplied name is {@code null} or the children contains a {@code null} value.
+     */
     public NonConjunctiveExpression(String name, List<Expression> children) {
         this.name = requireNonNull(name);
         this.children = requireDoesNotContainNulls(children);
@@ -35,11 +52,23 @@ public class NonConjunctiveExpression implements CompoundExpression {
      *     The expressions used to initialize the compound expression.
      *
      * @return A non-conjunctive expression with a default name.
+     *
+     * @throws NullPointerException
+     *     The supplied name is {@code null} or the children contains a {@code null} value.
      */
     public static NonConjunctiveExpression withDefaultName(final List<Expression> children) {
         return new NonConjunctiveExpression(DEFAULT_NAME, children);
     }
 
+    /**
+     * Creates a new non-conjunctive expression with an empty default sub-expression list.
+     *
+     * @param name
+     *     The name of the expression.
+     *
+     * @throws NullPointerException
+     *     The supplied name is {@code null}.
+     */
     public NonConjunctiveExpression(String name) {
         this(name, new ArrayList<>(1));
     }

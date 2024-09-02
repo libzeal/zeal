@@ -8,6 +8,12 @@ package io.github.libzeal.zeal.types.core.unary.boxed;
  */
 public class BoxedByteUnaryExpression extends BoxedWholeNumberUnaryExpression<Byte, BoxedByteUnaryExpression> {
 
+    /**
+     * Creates a new expression.
+     *
+     * @param subject
+     *     The subject of the expression.
+     */
     public BoxedByteUnaryExpression(final Byte subject) {
         super(subject, "Byte expression");
     }

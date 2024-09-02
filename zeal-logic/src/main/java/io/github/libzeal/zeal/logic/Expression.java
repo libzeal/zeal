@@ -30,6 +30,9 @@ public interface Expression {
     /**
      * Performs a skipped evaluation.
      *
+     * @param cause
+     *     The cause of the skipped evaluation.
+     *
      * @return An evaluation where the execution of the evaluation has been skipped.
      *
      * @since 0.2.1

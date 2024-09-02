@@ -17,7 +17,7 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * An expression that negates a wrapped expression (a logical <em>not</em>).
- * <p/>
+ * <p>
  * This expression evaluates to true if and only if the wrapped expression is false; otherwise (the wrapped expression
  * is true or skipped), the expression evaluates to false.
  *
@@ -26,10 +26,26 @@ import static java.util.Objects.requireNonNull;
  */
 public class NegatedExpression implements Expression {
 
+    /**
+     * The actual value for the rationale if the wrapped expression is true.
+     */
+    public static final String ACTUAL_VALUE_WRAPPED_TRUE = "Wrapped: true";
+
+    /**
+     * The actual value for the rationale if the wrapped expression is false.
+     */
+    public static final String ACTUAL_VALUE_WRAPPED_FALSE = "Wrapped: false";
+
+    /**
+     * The actual value for the rationale if the wrapped expression is skip.
+     */
+    public static final String ACTUAL_VALUE_WRAPPED_SKIPPED = "Wrapped: skipped";
+
+    /**
+     * The default name of a negated expression.
+     */
     public static final String DEFAULT_NAME = "Not (NOT)";
-    public static final String VALUE_WRAPPED_TRUE = "Wrapped: true";
-    public static final String VALUE_WRAPPED_FALSE = "Wrapped: false";
-    public static final String VALUE_WRAPPED_SKIPPED = "Wrapped: skipped";
+
     private final Expression wrapped;
 
     /**
@@ -52,7 +68,7 @@ public class NegatedExpression implements Expression {
         final Evaluation wrappedEvaluation = wrapped.evaluate();
         final Result result = result(wrappedEvaluation);
         final String actualValue = actualValue(wrappedEvaluation);
-        final Rationale rationale = new SimpleRationale(VALUE_WRAPPED_FALSE, actualValue);
+        final Rationale rationale = new SimpleRationale(ACTUAL_VALUE_WRAPPED_FALSE, actualValue);
         final Cause cause = wrappedEvaluation.cause();
 
         final List<Evaluation> children = new ArrayList<>(1);
@@ -89,13 +105,13 @@ public class NegatedExpression implements Expression {
         final Result result = wrappedEvaluation.result();
 
         if (result.isTrue()) {
-            return VALUE_WRAPPED_TRUE;
+            return ACTUAL_VALUE_WRAPPED_TRUE;
         }
         else if (result.isFalse()) {
-            return VALUE_WRAPPED_FALSE;
+            return ACTUAL_VALUE_WRAPPED_FALSE;
         }
         else {
-            return VALUE_WRAPPED_SKIPPED;
+            return ACTUAL_VALUE_WRAPPED_SKIPPED;
         }
     }
 

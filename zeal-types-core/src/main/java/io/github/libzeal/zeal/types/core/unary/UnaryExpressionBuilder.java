@@ -13,12 +13,17 @@ import java.util.function.Predicate;
 /**
  * A builder used to create {@link Expression} objects.
  *
+ * @param <T>
+ *     The type of the subject.
+ * @param <E>
+ *     The type of the expression.
+ *
  * @author Justin Albano
  * @since 0.2.0
  */
 public class UnaryExpressionBuilder<T, E extends ObjectUnaryExpression<T, E>> {
 
-    private final BuildableExpression<E> parent;
+    private final BuildableExpression<E> buildable;
     private final T subject;
     private final boolean nullable;
     private final Predicate<T> test;
@@ -27,20 +32,52 @@ public class UnaryExpressionBuilder<T, E extends ObjectUnaryExpression<T, E>> {
     private ValueSupplier<T> actual = (s, passed) -> Formatter.stringify(s);
     private ValueSupplier<T> hint = null;
 
-    public static <T, E extends ObjectUnaryExpression<T, E>> UnaryExpressionBuilder<T, E> notNullable(final BuildableExpression<E> parent, final T subject,
+    /**
+     * Creates a builder for expressions that can accept a null subject.
+     *
+     * @param buildable
+     *     The buildable expression to prepend or append to.
+     * @param subject
+     *     The subject of the expression.
+     * @param test
+     *     The predicate.
+     * @param <T>
+     *     The type of the subject.
+     * @param <E>
+     *     The type of the expression.
+     *
+     * @return The builder.
+     */
+    public static <T, E extends ObjectUnaryExpression<T, E>> UnaryExpressionBuilder<T, E> notNullable(final BuildableExpression<E> buildable, final T subject,
                                                                                                       final Predicate<T> test) {
-        return new UnaryExpressionBuilder<>(parent, subject, false, test);
+        return new UnaryExpressionBuilder<>(buildable, subject, false, test);
     }
 
-    public static <T, E extends ObjectUnaryExpression<T, E>> UnaryExpressionBuilder<T, E> nullable(final BuildableExpression<E> parent, final T subject,
+    /**
+     * Creates a builder for expressions that cannot accept a null subject.
+     *
+     * @param buildable
+     *     The buildable expression to prepend or append to.
+     * @param subject
+     *     The subject of the expression.
+     * @param test
+     *     The predicate.
+     * @param <T>
+     *     The type of the subject.
+     * @param <E>
+     *     The type of the expression.
+     *
+     * @return The builder.
+     */
+    public static <T, E extends ObjectUnaryExpression<T, E>> UnaryExpressionBuilder<T, E> nullable(final BuildableExpression<E> buildable, final T subject,
                                                                                                    final Predicate<T> test) {
-        return new UnaryExpressionBuilder<>(parent, subject, true, test);
+        return new UnaryExpressionBuilder<>(buildable, subject, true, test);
     }
 
     /**
      * Creates a new builder.
      *
-     * @param parent
+     * @param buildable
      *     The parent of the builder where predicates will be prepended and appended.
      * @param subject
      *     The subject of the expression.
@@ -49,9 +86,9 @@ public class UnaryExpressionBuilder<T, E extends ObjectUnaryExpression<T, E>> {
      * @param test
      *     The predicate (test) to evaluate.
      */
-    private UnaryExpressionBuilder(final BuildableExpression<E> parent, final T subject, final boolean nullable,
+    private UnaryExpressionBuilder(final BuildableExpression<E> buildable, final T subject, final boolean nullable,
                                    final Predicate<T> test) {
-        this.parent = parent;
+        this.buildable = buildable;
         this.subject = subject;
         this.nullable = nullable;
         this.test = test;
@@ -163,11 +200,11 @@ public class UnaryExpressionBuilder<T, E extends ObjectUnaryExpression<T, E>> {
      * @return This builder (fluent interface).
      */
     public E append() {
-        return parent.append(build());
+        return buildable.append(build());
     }
 
     E prepend() {
-        return parent.prepend(build());
+        return buildable.prepend(build());
     }
 
     private UnaryExpression<T> build() {
@@ -188,8 +225,32 @@ public class UnaryExpressionBuilder<T, E extends ObjectUnaryExpression<T, E>> {
         }
     }
 
+    /**
+     * A buildable expression to which sub-expressions can be appended or prepended.
+     *
+     * @param <E>
+     *     The type of the expression.
+     */
     public interface BuildableExpression<E> {
-        E prepend(Expression predicate);
-        E append(Expression predicate);
+
+        /**
+         * Prepends the supplied expression.
+         *
+         * @param expression
+         *     The expression to prepend.
+         *
+         * @return The expression (fluent interface).
+         */
+        E prepend(Expression expression);
+
+        /**
+         * Appends the supplied expression.
+         *
+         * @param expression
+         *     The expression to append.
+         *
+         * @return The expression (fluent interface).
+         */
+        E append(Expression expression);
     }
 }
