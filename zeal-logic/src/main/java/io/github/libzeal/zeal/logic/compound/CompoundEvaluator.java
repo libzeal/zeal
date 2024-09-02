@@ -21,7 +21,7 @@ import static java.util.Objects.requireNonNull;
  * A common evaluator used to evaluated {@link CompoundExpression}.
  *
  * @author Justin Albano
- * @since 0.2.1
+ * @since 0.4.0
  */
 class CompoundEvaluator {
 

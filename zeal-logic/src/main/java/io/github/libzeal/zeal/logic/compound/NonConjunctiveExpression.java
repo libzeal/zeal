@@ -21,7 +21,7 @@ import static java.util.Objects.requireNonNull;
  * A compound expression where at least one sub-expression must fail for the compound expression to pass.
  *
  * @author Justin Albano
- * @since 0.2.1
+ * @since 0.4.0
  */
 public class NonConjunctiveExpression implements CompoundExpression {
 

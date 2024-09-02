@@ -22,7 +22,7 @@ import static java.util.Objects.requireNonNull;
  * is true or skipped), the expression evaluates to false.
  *
  * @author Justin Albano
- * @since 0.2.1
+ * @since 0.4.0
  */
 public class NegatedExpression implements Expression {
 

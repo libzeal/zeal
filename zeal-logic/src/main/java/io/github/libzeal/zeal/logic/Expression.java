@@ -16,7 +16,7 @@ public interface Expression {
      *
      * @return The name of the expression.
      *
-     * @since 0.2.1
+     * @since 0.4.0
      */
     String name();
 
@@ -35,7 +35,7 @@ public interface Expression {
      *
      * @return An evaluation where the execution of the evaluation has been skipped.
      *
-     * @since 0.2.1
+     * @since 0.4.0
      */
     Evaluation skip(Cause cause);
 
@@ -44,7 +44,7 @@ public interface Expression {
      *
      * @return A tautology.
      *
-     * @since 0.2.1
+     * @since 0.4.0
      */
     static Expression tautology() {
         return new Tautology();
@@ -55,7 +55,7 @@ public interface Expression {
      *
      * @return A contradiction.
      *
-     * @since 0.2.1
+     * @since 0.4.0
      */
     static Expression contradiction() {
         return new Contradiction();

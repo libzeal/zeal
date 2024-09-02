@@ -6,7 +6,7 @@ import io.github.libzeal.zeal.logic.Expression;
  * An expression composed of sub-expressions.
  *
  * @author Justin Albano
- * @since 0.2.1
+ * @since 0.4.0
  */
 public interface CompoundExpression extends Expression {
 

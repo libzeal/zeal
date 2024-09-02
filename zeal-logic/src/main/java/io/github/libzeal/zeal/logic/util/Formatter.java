@@ -4,7 +4,7 @@ package io.github.libzeal.zeal.logic.util;
  * A utility class containing methods that format values.
  *
  * @author Justin Albano
- * @since 0.2.1
+ * @since 0.4.0
  */
 public class Formatter {
 

@@ -20,7 +20,7 @@ import static java.util.Objects.requireNonNull;
  *     The type of the subject.
  *
  * @author Justin Albano
- * @since 0.2.1
+ * @since 0.4.0
  */
 public class TerminalUnaryExpression<T> implements UnaryExpression<T> {
 

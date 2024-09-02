@@ -7,7 +7,7 @@ import java.time.Instant;
  * A utility class that tracks time.
  *
  * @author Justin Albano
- * @since 0.2.1
+ * @since 0.4.0
  */
 public class StopWatch {
 

@@ -15,7 +15,7 @@ import static java.util.Objects.requireNonNull;
  * An evaluation that results from a compound expression.
  *
  * @author Justin Albano
- * @since 0.2.1
+ * @since 0.4.0
  */
 public class CompoundEvaluation implements Evaluation {
 

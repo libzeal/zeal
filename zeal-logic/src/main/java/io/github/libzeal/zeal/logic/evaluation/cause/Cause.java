@@ -11,7 +11,7 @@ import static java.util.Objects.requireNonNull;
  * A cause for the failure of an evaluation.
  *
  * @author Justin Albano
- * @since 0.2.1
+ * @since 0.4.0
  */
 public class Cause {
 

@@ -14,7 +14,7 @@ import static java.util.Objects.requireNonNull;
  * A chain of causes. This chain is useful when finding a root cause for an evaluation.
  *
  * @author Justin Albano
- * @since 0.2.1
+ * @since 0.4.0
  */
 public class RootCauseChain implements Iterable<Cause> {
 

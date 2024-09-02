@@ -42,7 +42,7 @@ public interface Evaluation {
      *
      * @return The elapsed time of the evaluation.
      *
-     * @since 0.2.1
+     * @since 0.4.0
      */
     Duration elapsedTime();
 
@@ -51,7 +51,7 @@ public interface Evaluation {
      *
      * @return The cause of the evaluation.
      *
-     * @since 0.2.1
+     * @since 0.4.0
      */
     Cause cause();
 
@@ -61,7 +61,7 @@ public interface Evaluation {
      * @param traverser
      *     The traverser to use to traverse the evaluation.
      *
-     * @since 0.2.1
+     * @since 0.4.0
      */
     void traverseDepthFirst(Traverser traverser);
 
@@ -73,7 +73,7 @@ public interface Evaluation {
      * @param context
      *     The context used to traverse the evaluation.
      *
-     * @since 0.2.1
+     * @since 0.4.0
      */
-    void traverseDepthFirst(Traverser traverser, TraversalContext context);
+    void traverseDepthFirst(final Traverser traverser, final TraversalContext context);
 }

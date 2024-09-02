@@ -4,7 +4,7 @@ package io.github.libzeal.zeal.logic.evaluation;
  * The context used for {@link Traverser} traverses a traversable evaluation.
  *
  * @author Justin Albano
- * @since 0.2.1
+ * @since 0.4.0
  */
 public class TraversalContext {
 

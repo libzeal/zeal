@@ -12,7 +12,7 @@ import java.util.Optional;
  * evaluations.
  *
  * @author Justin Albano
- * @since 0.2.1
+ * @since 0.4.0
  */
 public class FlatteningTraverser implements Traverser {
 

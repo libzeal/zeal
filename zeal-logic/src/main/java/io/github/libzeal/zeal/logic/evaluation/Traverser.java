@@ -4,7 +4,7 @@ package io.github.libzeal.zeal.logic.evaluation;
  * An entity that traverses the evaluation tree.
  *
  * @author Justin Albano
- * @since 0.2.1
+ * @since 0.4.0
  */
 public interface Traverser {
 

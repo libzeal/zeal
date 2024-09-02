@@ -12,7 +12,7 @@ import java.time.Duration;
  * An expression that is always true.
  *
  * @author Justin Albano
- * @since 0.2.1
+ * @since 0.4.0
  */
 class Tautology implements Expression {
 

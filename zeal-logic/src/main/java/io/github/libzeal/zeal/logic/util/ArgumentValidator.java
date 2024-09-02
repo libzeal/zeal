@@ -8,7 +8,7 @@ import static java.util.Objects.requireNonNull;
  * A utility class containing methods that validate arguments.
  *
  * @author Justin Albano
- * @since 0.2.1
+ * @since 0.4.0
  */
 public class ArgumentValidator {
 
