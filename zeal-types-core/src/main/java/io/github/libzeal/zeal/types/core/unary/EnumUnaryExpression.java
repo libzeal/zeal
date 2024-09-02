@@ -2,7 +2,7 @@ package io.github.libzeal.zeal.types.core.unary;
 
 /**
  * The abstract base class for all Enum-based expressions.
- * <p/>
+ * <p>
  * This base class should be extended when creating expressions for any specialized enums.
  *
  * @param <T>

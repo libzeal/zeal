@@ -4,7 +4,6 @@ import io.github.libzeal.zeal.logic.evaluation.cause.Cause;
 import io.github.libzeal.zeal.logic.evaluation.cause.CauseGenerator;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
 import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
-import io.github.libzeal.zeal.logic.util.StopWatch;
 
 import java.time.Duration;
 import java.util.Objects;
@@ -41,6 +40,8 @@ public class TerminalEvaluation implements Evaluation {
      *     The name of the evaluation.
      * @param rationale
      *     The rationale for the evaluation.
+     * @param elapsedTime
+     *     The elapsed time of the evaluation.
      *
      * @return The true evaluation.
      */
@@ -55,6 +56,8 @@ public class TerminalEvaluation implements Evaluation {
      *     The name of the evaluation.
      * @param rationale
      *     The rationale for the evaluation.
+     * @param elapsedTime
+     *     The elapsed time of the evaluation.
      *
      * @return The false evaluation.
      */

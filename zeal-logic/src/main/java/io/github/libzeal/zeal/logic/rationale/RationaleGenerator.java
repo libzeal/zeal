@@ -17,6 +17,8 @@ public interface RationaleGenerator<T> {
      *
      * @param subject
      *     The subject.
+     * @param passed
+     *     A flag denoting if the evaluation passed.
      *
      * @return A rationale based on the supplied subject.
      */

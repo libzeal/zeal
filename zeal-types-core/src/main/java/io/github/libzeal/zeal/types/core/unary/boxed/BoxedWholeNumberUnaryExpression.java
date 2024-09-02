@@ -17,6 +17,14 @@ import io.github.libzeal.zeal.types.core.unary.ObjectUnaryExpression;
 public abstract class BoxedWholeNumberUnaryExpression<T extends Number, E extends ObjectUnaryExpression<T, E>>
     extends BoxedNumberUnaryExpression<T, E> {
 
+    /**
+     * Creates a new expression.
+     *
+     * @param subject
+     *     The subject of the expression.
+     * @param name
+     *     The name of the expression.
+     */
     protected BoxedWholeNumberUnaryExpression(final T subject, final String name) {
         super(subject, name);
     }

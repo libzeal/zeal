@@ -2,9 +2,10 @@ package io.github.libzeal.zeal.types.core.unary.boxed;
 
 /**
  * An expression used to evaluate {@link Short} instances.
+ * <p>
+ * Note: Many of the predicates of this expression require unboxing, resulting in some performance loss.
  *
  * @author Justin Albano
- * @implNote Many of the predicates of this expression require unboxing, resulting in some performance loss.
  * @since 0.2.0
  */
 public class BoxedShortUnaryExpression extends BoxedWholeNumberUnaryExpression<Short, BoxedShortUnaryExpression> {

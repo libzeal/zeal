@@ -41,6 +41,8 @@ public final class Operations {
      *
      * @param expression
      *     The expression to negate.
+     * @param <T>
+     *     The type of the subject.
      *
      * @return The logical negation of the supplied expression.
      *

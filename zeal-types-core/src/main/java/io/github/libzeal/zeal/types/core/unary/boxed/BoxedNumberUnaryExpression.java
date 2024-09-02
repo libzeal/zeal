@@ -71,6 +71,11 @@ public abstract class BoxedNumberUnaryExpression<T extends Number, E extends Obj
     /**
      * Alias for {@link #isLessThan}
      *
+     * @param value
+     *     The value to compare. This predicate will fail if the supplied value is {@code null}.
+     *
+     * @return This expression (fluent interface).
+     *
      * @see #isLessThan
      */
     public E lt(final T value) {
@@ -96,6 +101,11 @@ public abstract class BoxedNumberUnaryExpression<T extends Number, E extends Obj
 
     /**
      * Alias for {@link #isGreaterThan}
+     *
+     * @param value
+     *     The value to compare. This predicate will fail if the supplied value is {@code null}.
+     *
+     * @return This expression (fluent interface).
      *
      * @see #isGreaterThan
      */
@@ -123,6 +133,11 @@ public abstract class BoxedNumberUnaryExpression<T extends Number, E extends Obj
     /**
      * Alias for {@link #isLessThanOrEqualTo}
      *
+     * @param value
+     *     The value to compare. This predicate will fail if the supplied value is {@code null}.
+     *
+     * @return This expression (fluent interface).
+     *
      * @see #isLessThanOrEqualTo
      */
     public E lte(final T value) {
@@ -148,6 +163,11 @@ public abstract class BoxedNumberUnaryExpression<T extends Number, E extends Obj
 
     /**
      * Alias for {@link #isGreaterThanOrEqualTo}
+     *
+     * @param value
+     *     The value to compare. This predicate will fail if the supplied value is {@code null}.
+     *
+     * @return This expression (fluent interface).
      *
      * @see #isGreaterThanOrEqualTo
      */
@@ -251,20 +271,85 @@ public abstract class BoxedNumberUnaryExpression<T extends Number, E extends Obj
             .append();
     }
 
+    /**
+     * Obtains the zero value for the numeric subtype.
+     *
+     * @return The zero value for the numeric subtype.
+     */
     protected abstract T zero();
 
+    /**
+     * Obtains the minimum value for the numeric subtype.
+     *
+     * @return The minimum value for the numeric subtype.
+     */
     protected abstract T min();
 
+    /**
+     * Obtains the maximum value for the numeric subtype.
+     *
+     * @return The maximum value for the numeric subtype.
+     */
     protected abstract T max();
 
+    /**
+     * Checks if the supplied values are equal.
+     *
+     * @param a
+     *     The first value.
+     * @param b
+     *     The second value.
+     *
+     * @return True if the supplied values are equal; false otherwise.
+     */
     protected abstract boolean eq(T a, T b);
 
+    /**
+     * Checks if the first supplied value is less than the second supplied value.
+     *
+     * @param a
+     *     The first value.
+     * @param b
+     *     The second value.
+     *
+     * @return True if the first supplied value is less than the second supplied value; false otherwise.
+     */
     protected abstract boolean lt(T a, T b);
 
+    /**
+     * Checks if the first supplied value is greater than the second supplied value.
+     *
+     * @param a
+     *     The first value.
+     * @param b
+     *     The second value.
+     *
+     * @return True if the first supplied value is greater than the second supplied value; false otherwise.
+     */
     protected abstract boolean gt(T a, T b);
 
-    protected abstract boolean gte(T a, T b);
-
+    /**
+     * Checks if the first supplied value is greater than or equal to the second supplied value.
+     *
+     * @param a
+     *     The first value.
+     * @param b
+     *     The second value.
+     *
+     * @return True if the first supplied value is greater than or equal to the second supplied value; false otherwise.
+     */
     protected abstract boolean lte(T a, T b);
+
+    /**
+     * Checks if the first supplied value is less than or equal to the second supplied value.
+     *
+     * @param a
+     *     The first value.
+     * @param b
+     *     The second value.
+     *
+     * @return True if the first supplied value is less than or equal to the second supplied value; false otherwise.
+     */
+    protected abstract boolean gte(T a, T b);
 
 }

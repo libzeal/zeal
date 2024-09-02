@@ -17,6 +17,7 @@ import static java.util.Objects.requireNonNull;
  * A unary expression that does not contain children.
  *
  * @param <T>
+ *     The type of the subject.
  *
  * @author Justin Albano
  * @since 0.2.1

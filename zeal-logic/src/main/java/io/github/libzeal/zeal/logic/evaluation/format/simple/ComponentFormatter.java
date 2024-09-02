@@ -1,6 +1,22 @@
 package io.github.libzeal.zeal.logic.evaluation.format.simple;
 
-public interface ComponentFormatter<T> {
+/**
+ * A formatted used to format a specific component.
+ *
+ * @param <T>
+ *     The type of the component.
+ */
+interface ComponentFormatter<T> {
 
-    String format(T element, SimpleFormatterContext context);
+    /**
+     * Formats the supplied component.
+     *
+     * @param component
+     *     The component to format.
+     * @param context
+     *     The context to use when formatting the component.
+     *
+     * @return The formatted string for the supplied component.
+     */
+    String format(T component, SimpleFormatterContext context);
 }

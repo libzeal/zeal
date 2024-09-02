@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * A base class designed to be extended by test fixtures used to test custom expressions.
- * <p />
+ * <p>
  * For example:
  * <pre><code>
  * public class StringExpressionCheck extends ObjectExpressionTest<String, StringExpression> {
