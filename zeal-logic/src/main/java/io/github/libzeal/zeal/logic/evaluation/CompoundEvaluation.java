@@ -37,24 +37,77 @@ public class CompoundEvaluation implements Evaluation {
         this.children = requireNonNull(children);
     }
 
+    /**
+     * Creates a true compound evaluation.
+     *
+     * @param name
+     *     The name of the evaluation.
+     * @param rationale
+     *     The ration for the evaluation.
+     * @param elapsedTime
+     *     The elapsed time of the evaluation.
+     * @param causeGenerator
+     *     The cause generator of the evaluation.
+     * @param children
+     *     The children of the evaluation.
+     *
+     * @return A new compound evaluation.
+     *
+     * @throws NullPointerException
+     *     Any of the supplied arguments are {@code null}.
+     */
     public static CompoundEvaluation ofTrue(final String name, final Rationale rationale, final Duration elapsedTime,
                                             final CauseGenerator causeGenerator, final List<Evaluation> children) {
         return new CompoundEvaluation(Result.TRUE, name, rationale, elapsedTime, causeGenerator, children);
     }
 
+    /**
+     * Creates a false compound evaluation.
+     *
+     * @param name
+     *     The name of the evaluation.
+     * @param rationale
+     *     The ration for the evaluation.
+     * @param elapsedTime
+     *     The elapsed time of the evaluation.
+     * @param causeGenerator
+     *     The cause generator of the evaluation.
+     * @param children
+     *     The children of the evaluation.
+     *
+     * @return A new compound evaluation.
+     *
+     * @throws NullPointerException
+     *     Any of the supplied arguments are {@code null}.
+     */
     public static CompoundEvaluation ofFalse(final String name, final Rationale rationale, final Duration elapsedTime,
                                              final CauseGenerator causeGenerator, final List<Evaluation> children) {
         return new CompoundEvaluation(Result.FALSE, name, rationale, elapsedTime, causeGenerator, children);
     }
 
+    /**
+     * Creates a skipped compound evaluation.
+     *
+     * @param name
+     *     The name of the evaluation.
+     * @param elapsedTime
+     *     The elapsed time of the evaluation.
+     * @param causeGenerator
+     *     The cause generator of the evaluation.
+     * @param children
+     *     The children of the evaluation.
+     *
+     * @return A new compound evaluation.
+     *
+     * @throws NullPointerException
+     *     Any of the supplied arguments are {@code null}.
+     */
     public static CompoundEvaluation ofSkipped(final String name, final Duration elapsedTime, final CauseGenerator causeGenerator,
                                                final List<Evaluation> children) {
 
-        final StopWatch stopWatch = StopWatch.started();
         final SimpleRationale rationale = SimpleRationale.skipped();
-        final Duration totalElapsedTime = elapsedTime.plus(stopWatch.stop());
 
-        return new CompoundEvaluation(Result.SKIPPED, name, rationale, totalElapsedTime, causeGenerator,
+        return new CompoundEvaluation(Result.SKIPPED, name, rationale, elapsedTime, causeGenerator,
             children);
     }
 

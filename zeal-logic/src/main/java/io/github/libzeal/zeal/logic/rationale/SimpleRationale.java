@@ -12,7 +12,7 @@ import java.util.Optional;
  */
 public class SimpleRationale implements Rationale {
 
-    public static final String SKIPPED_VALUE = "(skipped)";
+    static final String SKIPPED_VALUE = "(skipped)";
     private static final SimpleRationale EMPTY = new SimpleRationale("", "");
     private static final SimpleRationale SKIPPED = new SimpleRationale(SKIPPED_VALUE, SKIPPED_VALUE);
     private final String expected;

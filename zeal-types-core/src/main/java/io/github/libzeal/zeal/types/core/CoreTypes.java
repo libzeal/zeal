@@ -31,14 +31,14 @@ public class CoreTypes {
     }
 
     /**
-     * Wraps a {@link Enum<T>} as an expression.
+     * Wraps a {@link Enum} as an expression.
      *
      * @param value
-     *     The {@link Enum<T>} to wrap.
+     *     The {@link Enum} to wrap.
      * @param <T>
      *     The type of the enum.
      *
-     * @return An expression that wraps the supplied {@link Enum<T>}.
+     * @return An expression that wraps the supplied {@link Enum}.
      */
     public static <T extends Enum<T>> GeneralEnumUnaryExpression<T> value(final T value) {
         return new GeneralEnumUnaryExpression<>(value);

@@ -25,7 +25,7 @@ import static java.util.Objects.requireNonNull;
  */
 public class DisjunctiveExpression implements CompoundExpression {
 
-    public static final String DEFAULT_NAME = "Any (OR)";
+    static final String DEFAULT_NAME = "Any (OR)";
     private final String name;
     private final List<Expression> children;
 
@@ -38,7 +38,7 @@ public class DisjunctiveExpression implements CompoundExpression {
      *     The expressions used initialize to the compound expression.
      *
      * @throws NullPointerException
-     *     Any of the supplied arguments are {@code null}.
+     *     The supplied name is {@code null} or the children contains a {@code null} value.
      */
     public DisjunctiveExpression(String name, List<Expression> children) {
         this.name = requireNonNull(name);
@@ -52,6 +52,9 @@ public class DisjunctiveExpression implements CompoundExpression {
      *     The expressions used to initialize the compound expression.
      *
      * @return A disjunctive expression with a default name.
+     *
+     * @throws NullPointerException
+     *     The supplied name is {@code null} or the children contains a {@code null} value.
      */
     public static DisjunctiveExpression withDefaultName(final List<Expression> children) {
         return new DisjunctiveExpression(DEFAULT_NAME, children);
@@ -63,7 +66,8 @@ public class DisjunctiveExpression implements CompoundExpression {
      * @param name
      *     The name of the expression.
      *
-     * @implNote The default sub-expression list has an initial capacity of 1.
+     * @throws NullPointerException
+     *     The supplied name is {@code null}.
      */
     public DisjunctiveExpression(String name) {
         this(name, new ArrayList<>(1));

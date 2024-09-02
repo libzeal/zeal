@@ -2,9 +2,10 @@ package io.github.libzeal.zeal.types.core.unary.boxed;
 
 /**
  * An expression used to evaluate {@link Double} instances.
+ * <p>
+ * Note: Many of the predicates of this expression require unboxing, resulting in some performance loss.
  *
  * @author Justin Albano
- * @implNote Many of the predicates of this expression require unboxing, resulting in some performance loss.
  * @since 0.2.0
  */
 public class BoxedDoubleUnaryExpression extends BoxedNumberUnaryExpression<Double, BoxedDoubleUnaryExpression> {
@@ -21,6 +22,9 @@ public class BoxedDoubleUnaryExpression extends BoxedNumberUnaryExpression<Doubl
 
     /**
      * Adds a predicate to the expression that checks if the subject is equal within the supplied delta.
+     * <p>
+     * Note: The formula used to evaluate the predicate is:
+     * <pre><code>abs(subject - value) &lt;= delta</code></pre>
      *
      * @param value
      *     The value to compare to the subject.
@@ -28,10 +32,6 @@ public class BoxedDoubleUnaryExpression extends BoxedNumberUnaryExpression<Doubl
      *     The delta used to compare the expected value to the subject.
      *
      * @return This expression (fluent interface).
-     *
-     * @implSpec The formula used to evaluate the predicate is:
-     *
-     *     <pre><code>abs(subject - value) <= delta</code></pre>
      */
     public BoxedDoubleUnaryExpression isEqualTo(final Double value, final Double delta) {
         return newExpression(d -> Math.abs(d - value) <= delta)

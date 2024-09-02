@@ -6,7 +6,7 @@ import java.util.Optional;
 
 /**
  * A traverser that collects up evaluations in the order in which they were visited.
- * <p/>
+ * <p>
  * This traverser is intended to be supplied to a traversable evaluation exactly once. This traverser assumes that the
  * first evaluation found during traversal is the root (parent) evaluation and all subsequent evaluations are child
  * evaluations.

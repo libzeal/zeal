@@ -20,14 +20,29 @@ public enum Result {
      */
     SKIPPED;
 
+    /**
+     * Checks if the result is true.
+     *
+     * @return True if the result is true; false otherwise.
+     */
     public boolean isTrue() {
         return equals(TRUE);
     }
 
+    /**
+     * Checks if the result is false.
+     *
+     * @return True if the result is false; false otherwise.
+     */
     public boolean isFalse() {
         return equals(FALSE);
     }
 
+    /**
+     * Checks if the result is skip.
+     *
+     * @return True if the result is skip; false otherwise.
+     */
     public boolean isSkipped() {
         return equals(SKIPPED);
     }

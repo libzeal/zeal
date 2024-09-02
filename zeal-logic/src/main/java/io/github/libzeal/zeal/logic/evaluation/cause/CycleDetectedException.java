@@ -1,11 +1,5 @@
 package io.github.libzeal.zeal.logic.evaluation.cause;
 
-<<<<<<< HEAD
-public class CycleDetectedException extends RuntimeException {
-
-    public CycleDetectedException(final Cause cause, final int index) {
-        super("Cycle detected: " + cause + " already exists in chain at index " + index);
-=======
 /**
  * An exception denoting that a cycle in a chain has been detected.
  *
@@ -25,6 +19,5 @@ public class CycleDetectedException extends RuntimeException {
      */
     public CycleDetectedException(final Cause cause, final int existingIndex) {
         super("Cycle detected: " + cause + " already exists in chain at index " + existingIndex);
->>>>>>> c66d1f7 (Added documentation for cause classes (#10).)
     }
 }
