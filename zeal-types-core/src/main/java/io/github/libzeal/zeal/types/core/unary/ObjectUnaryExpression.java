@@ -154,8 +154,8 @@ public class ObjectUnaryExpression<T, E extends ObjectUnaryExpression<T, E>> imp
     /**
      * Creates a builder for a new evaluation, where the supplied test may receive a {@code null} subject.
      * <p>
-     * For example, if the supplied test is <code>subject, passed) -> subject.toString().equals("hi")</code>, the value
-     * of {@code o} may be {@code null} and should be handled accordingly.
+     * For example, if the supplied test is <code>subject, passed) -&gt; subject.toString().equals("hi")</code>, the
+     * value of {@code o} may be {@code null} and should be handled accordingly.
      *
      * @param test
      *     The predicate (test) for the evaluation. The subject supplied to the predicate <em>may be {@code null}</em>.
