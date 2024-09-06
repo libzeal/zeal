@@ -5,6 +5,5 @@ PROJECT_ROOT=$SCRIPT_DIR/..
 
 cd "$PROJECT_ROOT" || exit 1
 
-mvn release:prepare \
-    release:perform \
+mvn deploy \
 	  "$@"
