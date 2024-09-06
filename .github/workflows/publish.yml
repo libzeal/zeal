@@ -26,7 +26,7 @@ jobs:
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
           cache: "maven"
       - name: Publish
-        run: ./scripts/publish.sh -Ppublish --batch-mode --no-transfer-progress
+        run: ./scripts/publish.sh -Ppublish --batch-mode
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
@@ -47,12 +47,17 @@ jobs:
           body: |
             This release can be obtained from Maven Central at https://repo1.maven.org/maven2/io/github/libzeal/zeal-assertion/${{ env.RELEASE_VERSION }}/.
             
-            The `zeal-assertion` dependency can be added using the following: 
+            The `zeal-assertion` and `zeal-types-core` dependency can be added using the following: 
   
             ```
             <dependency>
                 <groupId>io.github.libzeal</groupId>
                 <artifactId>zeal-assertion</artifactId>
+                <version>${{ env.RELEASE_VERSION }}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.libzeal</groupId>
+                <artifactId>zeal-types-core</artifactId>
                 <version>${{ env.RELEASE_VERSION }}</version>
             </dependency>
             ```
