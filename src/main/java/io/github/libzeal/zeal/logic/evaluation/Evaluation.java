@@ -1,8 +1,11 @@
 package io.github.libzeal.zeal.logic.evaluation;
 
-public sealed interface Evaluation
-    permits TerminalEvaluation, CompoundEvaluation, NegationEvaluation, EmptyEvaluation {
+import java.time.Duration;
+
+public interface Evaluation {
 
     String name();
     Result result();
+    Reason reason();
+    Duration elapsedTime();
 }

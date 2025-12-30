@@ -2,8 +2,8 @@ package io.github.libzeal.zeal.logic;
 
 import java.util.List;
 
-public sealed interface CompoundExpression extends Expression
-    permits AndExpression, OrExpression {
+public interface CompoundExpression extends Expression {
 
     List<Expression> children();
+    void append(Expression expression);
 }

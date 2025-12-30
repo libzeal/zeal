@@ -8,14 +8,9 @@ import java.util.List;
 import static io.github.libzeal.zeal.logic.evaluation.Result.FALSE;
 import static io.github.libzeal.zeal.logic.evaluation.Result.TRUE;
 
-public class ShortCircuitEvaluator implements Evaluator {
+public record ShortCircuitEvaluator(int maxDepth) implements Evaluator {
 
     static final int DEFAULT_MAX_DEPTH = 100;
-    private final int maxDepth;
-
-    public ShortCircuitEvaluator(final int maxDepth) {
-        this.maxDepth = maxDepth;
-    }
 
     public ShortCircuitEvaluator() {
         this(DEFAULT_MAX_DEPTH);
@@ -35,9 +30,9 @@ public class ShortCircuitEvaluator implements Evaluator {
             return new EmptyEvaluation();
         }
 
-        return switch(expression) {
+        return switch (expression) {
             case TerminalExpression e -> evaluate(e, context);
-            case NegationExpression e -> evaluate(e, context);
+            case NotExpression e -> evaluate(e, context);
             case AndExpression e -> evaluate(e, context);
             case OrExpression e -> evaluate(e, context);
         };
@@ -56,7 +51,7 @@ public class ShortCircuitEvaluator implements Evaluator {
         }
     }
 
-    private NegationEvaluation evaluate(final NegationExpression expression,
+    private NegationEvaluation evaluate(final NotExpression expression,
                                         final EvaluationContext context) {
 
         final Evaluation child = evaluate(expression.expression(), context);
@@ -89,7 +84,7 @@ public class ShortCircuitEvaluator implements Evaluator {
             final List<Expression> children = expression.children();
             final List<Evaluation> childEvaluations = new ArrayList<>(children.size());
 
-            for (final Expression child: children) {
+            for (final Expression child : children) {
 
                 final Evaluation evaluation = evaluate(child, iterationContext);
                 final Result result = evaluation.result();
@@ -125,7 +120,7 @@ public class ShortCircuitEvaluator implements Evaluator {
             final List<Expression> children = expression.children();
             final List<Evaluation> childEvaluations = new ArrayList<>(children.size());
 
-            for (final Expression child: children) {
+            for (final Expression child : children) {
 
                 final Evaluation evaluation = evaluate(child, iterationContext);
                 final Result result = evaluation.result();

@@ -1,10 +1,6 @@
 package io.github.libzeal.zeal.test;
 
-import io.github.libzeal.zeal.logic.AndExpression;
-import io.github.libzeal.zeal.logic.Expressions;
-import io.github.libzeal.zeal.logic.OrExpression;
-import io.github.libzeal.zeal.logic.evaluation.ShortCircuitEvaluator;
-import io.github.libzeal.zeal.logic.format.SimpleEvaluationFormatter;
+import static io.github.libzeal.zeal.assertions.Assertions.require;
 
 import java.util.List;
 
@@ -12,17 +8,10 @@ public class Main {
 
     void main() {
 
-        final var a = Expressions.tautology();
-        final var b = Expressions.contradiction();
-        final var c = Expressions.tautology();
-        final var list = List.of(a, b, c);
+        require(value("foo"));
+    }
 
-        final var and = new AndExpression(list);
-        final var or = new OrExpression(list);
+    private static UnaryValue<String> value(final String value) {
 
-        final var evaluator = new ShortCircuitEvaluator();
-
-        System.out.println(new SimpleEvaluationFormatter().format(evaluator.evaluate(and)));
-        System.out.println(new SimpleEvaluationFormatter().format(evaluator.evaluate(or)));
     }
 }

@@ -1,14 +1,8 @@
 package io.github.libzeal.zeal.logic.evaluation;
 
-import java.util.function.BooleanSupplier;
+import java.time.Duration;
 
-public record TerminalEvaluation(String name, Result result) implements Evaluation {
+public record TerminalEvaluation(String name, Result result, Reason reason, Duration elapsedTime)
+    implements Evaluation {
 
-    static TerminalEvaluation fromBoolean(final String name, final boolean b) {
-        return new TerminalEvaluation(name, Result.from(b));
-    }
-
-    static TerminalEvaluation fromBooleanSupplier(final String name, final BooleanSupplier supplier) {
-        return fromBoolean(name, supplier.getAsBoolean());
-    }
 }

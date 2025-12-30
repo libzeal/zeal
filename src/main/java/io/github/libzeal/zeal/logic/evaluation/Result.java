@@ -22,4 +22,16 @@ public enum Result {
             case SKIPPED -> SKIPPED;
         };
     }
+
+    public boolean isTrue() {
+        return equals(TRUE);
+    }
+
+    public boolean isFalse() {
+        return equals(FALSE);
+    }
+
+    public boolean isSkipped() {
+        return equals(SKIPPED);
+    }
 }
