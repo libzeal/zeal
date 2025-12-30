@@ -1,6 +1,6 @@
-package io.github.libzeal.zeal.logic.compound;
+package io.github.libzeal.zeal.logic;
 
-import io.github.libzeal.zeal.logic.Expression;
+import java.util.List;
 
 /**
  * An expression composed of sub-expressions.
@@ -25,4 +25,6 @@ public interface CompoundExpression extends Expression {
      *      The expression to prepend.
      */
     void prepend(Expression expression);
+
+    List<Expression> children();
 }

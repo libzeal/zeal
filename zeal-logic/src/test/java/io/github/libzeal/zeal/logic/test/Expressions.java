@@ -1,13 +1,10 @@
 package io.github.libzeal.zeal.logic.test;
 
+import io.github.libzeal.zeal.logic.Expression;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.evaluation.Result;
 import io.github.libzeal.zeal.logic.evaluation.cause.Cause;
-import io.github.libzeal.zeal.logic.evaluation.TerminalEvaluation;
 import io.github.libzeal.zeal.logic.evaluation.cause.CauseGenerator;
-import io.github.libzeal.zeal.logic.unary.UnaryExpression;
-
-import java.util.function.Function;
 
 import static org.mockito.Mockito.*;
 
@@ -15,22 +12,22 @@ public class Expressions {
 
     private Expressions() {}
 
-    public static UnaryExpression<Object> unaryExpression(final Result expectedResult) {
-        return unaryExpression("test predicate", expectedResult);
+    public static Expression expression(final Result expectedResult) {
+        return expression("test predicate", expectedResult);
     }
 
-    public static UnaryExpression<Object> unaryExpression(final String name, final Result expectedResult) {
-        return unaryExpressionWithRootCause(name, expectedResult, Cause::new);
+    public static Expression expression(final String name, final Result expectedResult) {
+        return expressionWithRootCause(name, expectedResult, Cause::new);
     }
 
-    public static UnaryExpression<Object> unaryExpressionWithRootCause(final Result expectedResult,
-                                                                       CauseGenerator rootCauseSupplier) {
-        return unaryExpressionWithRootCause("test predicate", expectedResult, rootCauseSupplier);
+    public static Expression expressionWithRootCause(final Result expectedResult,
+                                                     CauseGenerator rootCauseSupplier) {
+        return expressionWithRootCause("test predicate", expectedResult, rootCauseSupplier);
     }
 
     @SuppressWarnings("unchecked")
-    public static UnaryExpression<Object> unaryExpressionWithRootCause(final String name, final Result expectedResult,
-                                                                  final CauseGenerator rootCauseSupplier) {
+    public static Expression expressionWithRootCause(final String name, final Result expectedResult,
+                                                     final CauseGenerator rootCauseSupplier) {
 
         final Evaluation evaluation = mock(Evaluation.class);
 
@@ -38,15 +35,9 @@ public class Expressions {
         doReturn(name).when(evaluation).name();
         doReturn(rootCauseSupplier.generate(evaluation)).when(evaluation).cause();
 
-        final UnaryExpression<Object> expression = mock(UnaryExpression.class);
+        final Expression expression = mock(Expression.class);
         doReturn(evaluation).when(expression).evaluate();
         doReturn(name).when(expression).name();
-
-        doAnswer(i -> {
-            Cause cause = i.getArgument(0, Cause.class);
-            return TerminalEvaluation.ofSkipped(name, e -> cause);
-        })
-            .when(expression).skip(any(Cause.class));
 
         return expression;
     }

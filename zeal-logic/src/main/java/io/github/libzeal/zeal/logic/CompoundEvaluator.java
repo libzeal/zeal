@@ -1,10 +1,7 @@
-package io.github.libzeal.zeal.logic.compound;
+package io.github.libzeal.zeal.logic;
 
-import io.github.libzeal.zeal.logic.Expression;
+import io.github.libzeal.zeal.logic.evaluation.*;
 import io.github.libzeal.zeal.logic.evaluation.cause.Cause;
-import io.github.libzeal.zeal.logic.evaluation.CompoundEvaluation;
-import io.github.libzeal.zeal.logic.evaluation.Evaluation;
-import io.github.libzeal.zeal.logic.evaluation.Result;
 import io.github.libzeal.zeal.logic.evaluation.cause.CauseGenerator;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
 import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
@@ -76,7 +73,10 @@ class CompoundEvaluator {
     private Evaluation evaluate(final Expression expression, final Tally tally, final Evaluation decider) {
 
         if (passCondition.test(tally) || fails(tally)) {
-            return expression.skip(new Cause(decider));
+
+            final Cause cause = new Cause(decider);
+
+            return new SkippingEvaluator().skip(expression, cause);
         }
         else {
             return expression.evaluate();
@@ -93,7 +93,7 @@ class CompoundEvaluator {
         }
     }
 
-    private CompoundEvaluation compoundEvaluation(final Tally tally, final CauseGenerator causeGenerator,
+    private Evaluation compoundEvaluation(final Tally tally, final CauseGenerator causeGenerator,
                                                   final List<Evaluation> evaluated, final Duration elapsedTime) {
 
         final Rationale rationale = rationaleBuilder.build(tally);
@@ -102,7 +102,7 @@ class CompoundEvaluator {
             return CompoundEvaluation.ofTrue(name, rationale, elapsedTime, causeGenerator, evaluated);
         }
         else if (tally.skipped() == tally.total()) {
-            return CompoundEvaluation.ofSkipped(name, elapsedTime, causeGenerator, evaluated);
+            return new SkippedCompoundEvaluation(name,causeGenerator, evaluated);
         }
         else {
             return CompoundEvaluation.ofFalse(name, rationale, elapsedTime, causeGenerator, evaluated);

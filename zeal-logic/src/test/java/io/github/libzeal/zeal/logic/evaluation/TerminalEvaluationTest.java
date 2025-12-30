@@ -63,22 +63,6 @@ class TerminalEvaluationTest {
     }
 
     @Test
-    void givenNullName_whenOfSkipped_thenExceptionThrown() {
-        assertThrows(
-            NullPointerException.class,
-            () -> TerminalEvaluation.ofSkipped(null, mock(CauseGenerator.class))
-        );
-    }
-
-    @Test
-    void givenNullCauseGenerator_whenOfSkipped_thenExceptionThrown() {
-        assertThrows(
-            NullPointerException.class,
-            () -> TerminalEvaluation.ofSkipped("foo", null)
-        );
-    }
-
-    @Test
     void givenTrueEvaluation_thenDataIsCorrect() {
 
         final String name = "foo";
@@ -108,22 +92,6 @@ class TerminalEvaluationTest {
         assertEquals(rationale, evaluation.rationale());
         assertEquals(evaluation, evaluation.cause().rootCause().evaluation());
         assertEquals(Duration.ofMillis(elapsedTimeMs), evaluation.elapsedTime());
-    }
-
-    @Test
-    void givenSkippedEvaluation_thenDataIsCorrect() {
-
-        final String name = "foo";
-        final Cause cause = mock(Cause.class);
-        final CauseGenerator generator = generator(cause);
-
-        final TerminalEvaluation evaluation = TerminalEvaluation.ofSkipped(name, generator);
-
-        assertEquals(Result.SKIPPED, evaluation.result());
-        assertEquals(name, evaluation.name());
-        assertEquals(SimpleRationale.skipped(), evaluation.rationale());
-        assertEquals(cause, evaluation.cause());
-        assertEquals(Duration.ZERO, evaluation.elapsedTime());
     }
 
     private static CauseGenerator generator(final Cause cause) {
@@ -185,62 +153,6 @@ class TerminalEvaluationTest {
     }
 
     @Test
-    void givenMatchingSkippedEvaluations_whenEquals_thenEqual() {
-
-        final String name = "foo";
-        final Cause cause = mock(Cause.class);
-        final CauseGenerator generator = generator(cause);
-
-        final TerminalEvaluation evaluation1 = TerminalEvaluation.ofSkipped(name, generator);
-        final TerminalEvaluation evaluation2 = TerminalEvaluation.ofSkipped(name, generator);
-
-        assertEquals(evaluation1, evaluation2);
-    }
-
-    @Test
-    void givenNonMatchingNamesSkippedEvaluations_whenEquals_thenNotEqual() {
-
-        final Cause cause = mock(Cause.class);
-        final CauseGenerator generator = generator(cause);
-
-        final TerminalEvaluation evaluation1 = TerminalEvaluation.ofSkipped("foo", generator);
-        final TerminalEvaluation evaluation2 = TerminalEvaluation.ofSkipped("bar", generator);
-
-        assertNotEquals(evaluation1, evaluation2);
-    }
-
-    @Test
-    void givenNonMatchingGeneratorSkippedEvaluations_whenEquals_thenNotEqual() {
-
-        final String name = "foo";
-        final Cause cause1 = mock(Cause.class);
-        final Cause cause2 = mock(Cause.class);
-        final CauseGenerator generator1 = generator(cause1);
-        final CauseGenerator generator2 = generator(cause2);
-
-        doReturn(cause1).when(generator1).generate(any(Evaluation.class));
-        doReturn(cause2).when(generator2).generate(any(Evaluation.class));
-
-        final TerminalEvaluation evaluation1 = TerminalEvaluation.ofSkipped(name, generator1);
-        final TerminalEvaluation evaluation2 = TerminalEvaluation.ofSkipped(name, generator2);
-
-        assertNotEquals(evaluation1, evaluation2);
-    }
-
-    @Test
-    void givenDifferentResultEvaluations_whenEquals_thenNotEqual() {
-
-        final String name = "foo";
-        final Cause cause = mock(Cause.class);
-        final CauseGenerator generator = generator(cause);
-
-        final TerminalEvaluation evaluation1 = TerminalEvaluation.ofTrue(name, mock(Rationale.class), Duration.ofMillis(7));
-        final TerminalEvaluation evaluation2 = TerminalEvaluation.ofSkipped(name, generator);
-
-        assertNotEquals(evaluation1, evaluation2);
-    }
-
-    @Test
     void givenDifferentObjects_whenEquals_thenNotEqual() {
 
         final String name = "foo";
@@ -258,7 +170,7 @@ class TerminalEvaluationTest {
         final CauseGenerator generator = generator(cause);
 
         final TerminalEvaluation evaluation1 = TerminalEvaluation.ofTrue(name, mock(Rationale.class), Duration.ofMillis(7));
-        final TerminalEvaluation evaluation2 = TerminalEvaluation.ofSkipped(name, generator);
+        final TerminalEvaluation evaluation2 = TerminalEvaluation.ofFalse(name, mock(Rationale.class), Duration.ofMillis(7));
 
         assertNotEquals(evaluation1.hashCode(), evaluation2.hashCode());
     }
@@ -292,8 +204,10 @@ class TerminalEvaluationTest {
         final Cause cause1 = mock(Cause.class);
         final Cause cause2 = mock(Cause.class);
 
-        final TerminalEvaluation evaluation1 = TerminalEvaluation.ofSkipped(name, generator(cause1));
-        final TerminalEvaluation evaluation2 = TerminalEvaluation.ofSkipped(name, generator(cause2));
+        final TerminalEvaluation evaluation1 = new TerminalEvaluation(Result.TRUE, name, mock(Rationale.class),
+            Duration.ofMillis(7), generator(cause1));
+        final TerminalEvaluation evaluation2 = new TerminalEvaluation(Result.TRUE, name, mock(Rationale.class),
+            Duration.ofMillis(7), generator(cause2));
 
         assertNotEquals(evaluation1.hashCode(), evaluation2.hashCode());
     }
@@ -302,11 +216,12 @@ class TerminalEvaluationTest {
     void givenMatching_whenHashCode_thenHashCodesEqual() {
 
         final String name = "foo";
-        final Cause cause = mock(Cause.class);
-        final CauseGenerator generator = generator(cause);
+        final Rationale rationale = mock(Rationale.class);
+        final Duration duration = Duration.ofSeconds(1);
+        final CauseGenerator causeGenerator = mock(CauseGenerator.class);
 
-        final TerminalEvaluation evaluation1 = TerminalEvaluation.ofSkipped(name, generator);
-        final TerminalEvaluation evaluation2 = TerminalEvaluation.ofSkipped(name, generator);
+        final TerminalEvaluation evaluation1 = new TerminalEvaluation(Result.TRUE, name, rationale, duration, causeGenerator);
+        final TerminalEvaluation evaluation2 = new TerminalEvaluation(Result.TRUE, name, rationale, duration, causeGenerator);
 
         assertEquals(evaluation1.hashCode(), evaluation2.hashCode());
     }

@@ -38,17 +38,4 @@ class TautologyTest {
         assertEquals(evaluation, evaluation.cause().evaluation());
         assertDepthFirstTraversalIsTerminal(evaluation);
     }
-
-    @Test
-    void givenDefaults_whenSkip_thenSkippedEvaluationIsCorrect() {
-
-        final Cause cause = mock(Cause.class);
-
-        final Evaluation skippedEvaluation = tautology.skip(cause);
-        final Rationale rationale = skippedEvaluation.rationale();
-
-        assertEquals(Tautology.NAME, skippedEvaluation.name());
-        assertEquals(cause, skippedEvaluation.cause().rootCause());
-        assertRationaleIsSkipped(rationale);
-    }
 }

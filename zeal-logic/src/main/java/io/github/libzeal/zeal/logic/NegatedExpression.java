@@ -1,5 +1,6 @@
 package io.github.libzeal.zeal.logic;
 
+import io.github.libzeal.zeal.logic.evaluation.SkippingEvaluator;
 import io.github.libzeal.zeal.logic.evaluation.cause.Cause;
 import io.github.libzeal.zeal.logic.evaluation.CompoundEvaluation;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
@@ -120,22 +121,7 @@ public class NegatedExpression implements Expression {
         return DEFAULT_NAME;
     }
 
-    @Override
-    public Evaluation skip(final Cause cause) {
-
-        final StopWatch stopWatch = StopWatch.started();
-        final List<Evaluation> children = skipWrapped(cause);
-        final Duration elapsedTime = stopWatch.stop();
-
-        return CompoundEvaluation.ofSkipped(name(), elapsedTime, CauseGenerator.withUnderlyingCause(cause), children);
-    }
-
-    private List<Evaluation> skipWrapped(final Cause cause) {
-
-        final List<Evaluation> children = new ArrayList<>(1);
-
-        children.add(wrapped.skip(cause));
-
-        return children;
+    public Expression wrapped() {
+        return wrapped;
     }
 }

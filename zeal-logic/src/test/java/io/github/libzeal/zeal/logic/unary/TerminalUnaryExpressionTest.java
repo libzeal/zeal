@@ -152,39 +152,4 @@ class TerminalUnaryExpressionTest {
         assertEquals(Result.TRUE, evaluation.result());
         assertRationaleIsCorrect(evaluation.rationale());
     }
-
-    @Test
-    void givenNullCause_whenSkip_thenCorrectEvaluationReturned() {
-
-        final TerminalUnaryExpression<Object> expression = TerminalUnaryExpression.of(
-            "someName",
-            new Object(),
-            s -> true,
-            generator()
-        );
-
-        final Evaluation skippedEvaluation = expression.skip(null);
-
-        assertEquals(expression.name(), skippedEvaluation.name());
-        assertEquals(SimpleRationale.skipped(), skippedEvaluation.rationale());
-        assertEquals(skippedEvaluation, skippedEvaluation.cause().evaluation());
-    }
-
-    @Test
-    void givenValidCause_whenSkip_thenCorrectEvaluationReturned() {
-
-        final Evaluation rootCauseEvaluation = TerminalEvaluation.ofTrue("foo", SimpleRationale.empty(), Duration.ZERO);
-        final TerminalUnaryExpression<Object> expression = TerminalUnaryExpression.of(
-            "someName",
-            new Object(),
-            s -> true,
-            generator()
-        );
-
-        final Evaluation skippedEvaluation = expression.skip(new Cause(rootCauseEvaluation));
-
-        assertEquals(expression.name(), skippedEvaluation.name());
-        assertEquals(SimpleRationale.skipped(), skippedEvaluation.rationale());
-        assertEquals(rootCauseEvaluation, skippedEvaluation.cause().rootCause().evaluation());
-    }
 }

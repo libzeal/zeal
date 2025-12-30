@@ -200,11 +200,11 @@ public class UnaryExpressionBuilder<T, E extends ObjectUnaryExpression<T, E>> {
      * @return This builder (fluent interface).
      */
     public E append() {
-        return buildable.append(build());
+        return buildable.append(build().expression());
     }
 
     E prepend() {
-        return buildable.prepend(build());
+        return buildable.prepend(build().expression());
     }
 
     private UnaryExpression<T> build() {

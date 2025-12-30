@@ -109,7 +109,7 @@ final class AssertionExpressionEvaluator<N extends Throwable, F extends Throwabl
 
         final String formattedSuppliedMessage = message == null ? "" : message;
 
-        return formattedSuppliedMessage + "\n\n" + formatter.format(evaluation) + "\nStack trace:";
+        return formattedSuppliedMessage + "\n\n" + formatter.format(evaluation) + "\n\nStack trace:";
     }
 
     /**

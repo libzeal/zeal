@@ -2,6 +2,7 @@ package io.github.libzeal.zeal.logic.evaluation.format.simple;
 
 import io.github.libzeal.zeal.logic.evaluation.CompoundEvaluation;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
+import io.github.libzeal.zeal.logic.evaluation.SkippedTerminalEvaluation;
 import io.github.libzeal.zeal.logic.evaluation.TerminalEvaluation;
 import io.github.libzeal.zeal.logic.evaluation.cause.Cause;
 import io.github.libzeal.zeal.logic.evaluation.cause.CauseGenerator;
@@ -56,7 +57,7 @@ class SimpleFormatterTest {
     void givenOneSkippedEvaluation_whenFormat_thenResultIsCorrect() {
 
         final String name = "foo";
-        final Evaluation evaluation = TerminalEvaluation.ofSkipped(name, CauseGenerator.self());
+        final Evaluation evaluation = new SkippedTerminalEvaluation(name, CauseGenerator.self());
 
         final String expected = evaluationHeading() +
             "\\[ \\] " + name + " \\(.+\\)  <---\\[ Root Cause \\]";

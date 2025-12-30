@@ -1,9 +1,9 @@
 package io.github.libzeal.zeal.logic.condition;
 
 import io.github.libzeal.zeal.logic.Expression;
-import io.github.libzeal.zeal.logic.compound.ConjunctiveExpression;
-import io.github.libzeal.zeal.logic.compound.DisjunctiveExpression;
-import io.github.libzeal.zeal.logic.compound.NonDisjunctiveExpression;
+import io.github.libzeal.zeal.logic.ConjunctiveExpression;
+import io.github.libzeal.zeal.logic.DisjunctiveExpression;
+import io.github.libzeal.zeal.logic.NonDisjunctiveExpression;
 import io.github.libzeal.zeal.logic.rationale.RationaleGenerator;
 import io.github.libzeal.zeal.logic.rationale.SimpleRationaleGenerator;
 import io.github.libzeal.zeal.logic.unary.TerminalUnaryExpression;
@@ -45,7 +45,8 @@ final class ObjectConditions {
             subject,
             o -> o == desired,
             generator
-        );
+        )
+            .expression();
     }
 
     static <T> String exactlyName(final T desired) {
@@ -69,7 +70,8 @@ final class ObjectConditions {
             subject,
             o -> Objects.equals(o, desired),
             generator
-        );
+        )
+            .expression();
     }
 
     static <T> String equalToName(final T desired) {

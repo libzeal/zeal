@@ -1,6 +1,7 @@
 package io.github.libzeal.zeal.logic.unary;
 
 import io.github.libzeal.zeal.logic.Expression;
+import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 
 /**
  * An expression that has a single subject.
@@ -14,7 +15,7 @@ import io.github.libzeal.zeal.logic.Expression;
  * @author Justin Albano
  * @since 0.2.0
  */
-public interface UnaryExpression<S> extends Expression {
+public interface UnaryExpression<S> {
 
     /**
      * Obtains the subject of the expression.
@@ -22,4 +23,10 @@ public interface UnaryExpression<S> extends Expression {
      * @return The subject of the expression.
      */
     S subject();
+
+    Expression expression();
+
+    default Evaluation evaluate() {
+        return expression().evaluate();
+    }
 }

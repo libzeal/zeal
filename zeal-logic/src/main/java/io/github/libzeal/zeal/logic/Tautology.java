@@ -14,7 +14,7 @@ import java.time.Duration;
  * @author Justin Albano
  * @since 0.2.1
  */
-class Tautology implements Expression {
+public class Tautology implements Expression {
 
     static final String NAME = "Tautology";
     private static final Evaluation EVALUATION = new TautologicalEvaluation();
@@ -27,11 +27,6 @@ class Tautology implements Expression {
     @Override
     public Evaluation evaluate() {
         return EVALUATION;
-    }
-
-    @Override
-    public Evaluation skip(final Cause cause) {
-        return TerminalEvaluation.ofSkipped(name(), CauseGenerator.withUnderlyingCause(cause));
     }
 
     private static final class TautologicalEvaluation implements Evaluation {

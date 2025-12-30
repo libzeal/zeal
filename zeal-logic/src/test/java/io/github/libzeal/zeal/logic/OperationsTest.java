@@ -1,11 +1,5 @@
 package io.github.libzeal.zeal.logic;
 
-import io.github.libzeal.zeal.logic.compound.ConjunctiveExpression;
-import io.github.libzeal.zeal.logic.compound.DisjunctiveExpression;
-import io.github.libzeal.zeal.logic.compound.NonConjunctiveExpression;
-import io.github.libzeal.zeal.logic.compound.NonDisjunctiveExpression;
-import io.github.libzeal.zeal.logic.unary.NegatedUnaryExpression;
-import io.github.libzeal.zeal.logic.unary.UnaryExpression;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -29,25 +23,6 @@ class OperationsTest {
 
         assertNotNull(expression);
         assertInstanceOf(NegatedExpression.class, expression);
-    }
-
-    @Test
-    void givenNullWrappedExpression_whenNotUnaryExpression_thenExceptionThrown() {
-        assertThrows(
-            NullPointerException.class,
-            () -> Operations.not(null)
-        );
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    void givenValidWrappedExpression_whenNotUnaryExpression_thenCorrectExpressionReturned() {
-
-        final UnaryExpression<Object> wrappedExpression = mock(UnaryExpression.class);
-        final NegatedUnaryExpression<Object> expression = Operations.not(wrappedExpression);
-
-        assertNotNull(expression);
-        assertInstanceOf(NegatedUnaryExpression.class, expression);
     }
 
     @Test

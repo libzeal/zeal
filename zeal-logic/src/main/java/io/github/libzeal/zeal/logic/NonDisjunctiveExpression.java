@@ -1,18 +1,11 @@
-package io.github.libzeal.zeal.logic.compound;
+package io.github.libzeal.zeal.logic;
 
-import io.github.libzeal.zeal.logic.Expression;
-import io.github.libzeal.zeal.logic.compound.CompoundEvaluator.CompoundRationaleBuilder;
-import io.github.libzeal.zeal.logic.compound.CompoundEvaluator.Tally;
-import io.github.libzeal.zeal.logic.evaluation.cause.Cause;
-import io.github.libzeal.zeal.logic.evaluation.CompoundEvaluation;
+import io.github.libzeal.zeal.logic.CompoundEvaluator.CompoundRationaleBuilder;
+import io.github.libzeal.zeal.logic.CompoundEvaluator.Tally;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
-import io.github.libzeal.zeal.logic.evaluation.cause.CauseGenerator;
-import io.github.libzeal.zeal.logic.util.StopWatch;
 
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static io.github.libzeal.zeal.logic.util.ArgumentValidator.requireDoesNotContainNulls;
 import static java.util.Objects.requireNonNull;
@@ -89,16 +82,8 @@ public class NonDisjunctiveExpression implements CompoundExpression {
     }
 
     @Override
-    public Evaluation skip(final Cause cause) {
-
-        final StopWatch stopWatch = StopWatch.started();
-        final List<Evaluation> evaluations = children.stream()
-            .map(child -> child.skip(cause))
-            .collect(Collectors.toList());
-
-        final Duration elapsedTime = stopWatch.stop();
-
-        return CompoundEvaluation.ofSkipped(name, elapsedTime, CauseGenerator.withUnderlyingCause(cause), evaluations);
+    public List<Expression> children() {
+        return children;
     }
 
     @Override

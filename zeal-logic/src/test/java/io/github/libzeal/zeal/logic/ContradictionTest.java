@@ -38,17 +38,4 @@ class ContradictionTest {
         assertEquals(evaluation, evaluation.cause().evaluation());
         assertDepthFirstTraversalIsTerminal(evaluation);
     }
-
-    @Test
-    void givenDefaults_whenSkip_thenSkippedEvaluationIsCorrect() {
-
-        final Cause cause = mock(Cause.class);
-
-        final Evaluation skippedEvaluation = contradiction.skip(cause);
-        final Rationale rationale = skippedEvaluation.rationale();
-
-        assertEquals(Contradiction.NAME, skippedEvaluation.name());
-        assertEquals(cause, skippedEvaluation.cause().rootCause());
-        assertRationaleIsSkipped(rationale);
-    }
 }

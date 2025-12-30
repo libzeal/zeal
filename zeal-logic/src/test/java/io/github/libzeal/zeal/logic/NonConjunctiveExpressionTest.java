@@ -1,22 +1,20 @@
-package io.github.libzeal.zeal.logic.compound;
+package io.github.libzeal.zeal.logic;
 
-import io.github.libzeal.zeal.logic.Expression;
-import io.github.libzeal.zeal.logic.evaluation.cause.Cause;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.evaluation.Result;
+import io.github.libzeal.zeal.logic.evaluation.cause.Cause;
 import io.github.libzeal.zeal.logic.evaluation.cause.CauseGenerator;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
 import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
 import io.github.libzeal.zeal.logic.test.Expressions;
-import io.github.libzeal.zeal.logic.unary.UnaryExpression;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static io.github.libzeal.zeal.logic.compound.CompoundEvaluator.CompoundRationaleBuilder.format;
-import static io.github.libzeal.zeal.logic.compound.CompoundEvaluator.CompoundRationaleBuilder.formatFailed;
+import static io.github.libzeal.zeal.logic.CompoundEvaluator.CompoundRationaleBuilder.format;
+import static io.github.libzeal.zeal.logic.CompoundEvaluator.CompoundRationaleBuilder.formatFailed;
 import static io.github.libzeal.zeal.logic.test.Arguments.listWithSingleNull;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -122,7 +120,7 @@ class NonConjunctiveExpressionTest {
     @Test
     void givenOnePassingExpressionAppended_whenEvaluate_thenEvaluationIsCorrect() {
 
-        final UnaryExpression<Object> subExpression = Expressions.unaryExpression(Result.TRUE);
+        final Expression subExpression = Expressions.expression(Result.TRUE);
 
         expression.append(subExpression);
 
@@ -139,7 +137,7 @@ class NonConjunctiveExpressionTest {
     @Test
     void givenOneFailingExpressionAppended_whenEvaluate_thenEvaluationIsCorrect() {
 
-        final UnaryExpression<Object> subExpression = Expressions.unaryExpression(Result.FALSE);
+        final Expression subExpression = Expressions.expression(Result.FALSE);
 
         expression.append(subExpression);
 
@@ -156,7 +154,7 @@ class NonConjunctiveExpressionTest {
     @Test
     void givenOneSkippedExpressionAppended_whenEvaluate_thenEvaluationIsCorrect() {
 
-        final UnaryExpression<Object> subExpression = Expressions.unaryExpression(Result.SKIPPED);
+        final Expression subExpression = Expressions.expression(Result.SKIPPED);
 
         expression.append(subExpression);
 
@@ -171,8 +169,8 @@ class NonConjunctiveExpressionTest {
     @Test
     void givenOneFailingExpressionPrependedBeforePassingExpression_whenEvaluate_thenEvaluationIsCorrect() {
 
-        final UnaryExpression<Object> passingSubExpression = Expressions.unaryExpression(Result.TRUE);
-        final UnaryExpression<Object> failingSubExpression = Expressions.unaryExpression(Result.FALSE);
+        final Expression passingSubExpression = Expressions.expression(Result.TRUE);
+        final Expression failingSubExpression = Expressions.expression(Result.FALSE);
 
         expression.append(passingSubExpression);
         expression.prepend(failingSubExpression);
@@ -188,21 +186,19 @@ class NonConjunctiveExpressionTest {
         assertIsSkipped(passingSubExpression);
     }
 
-    private static void assertIsSkipped(UnaryExpression<Object> expression) {
-        verify(expression, times(1)).skip(any(Cause.class));
+    private static void assertIsSkipped(Expression expression) {
         verify(expression, never()).evaluate();
     }
 
-    private static void assertIsNotSkipped(UnaryExpression<Object> expression) {
-        verify(expression, never()).skip(any(Cause.class));
+    private static void assertIsNotSkipped(Expression expression) {
         verify(expression, times(1)).evaluate();
     }
 
     @Test
     void givenOnePassingExpressionPrependedBeforeFailingExpression_whenEvaluate_thenEvaluationIsCorrect() {
 
-        final UnaryExpression<Object> passingSubExpression = Expressions.unaryExpression(Result.TRUE);
-        final UnaryExpression<Object> failingSubExpression = Expressions.unaryExpression(Result.FALSE);
+        final Expression passingSubExpression = Expressions.expression(Result.TRUE);
+        final Expression failingSubExpression = Expressions.expression(Result.FALSE);
 
         expression.append(failingSubExpression);
         expression.prepend(passingSubExpression);
@@ -217,59 +213,16 @@ class NonConjunctiveExpressionTest {
         assertFalse(rationale.hint().isPresent());
         assertIsNotSkipped(failingSubExpression);
     }
-    
-    @Test
-    void givenNoChildren_whenSkip_thenEvaluationIsCorrect() {
-        
-        final Evaluation skippedEvaluation = expression.skip(rootCause());
-
-        assertEquals(expression.name(), skippedEvaluation.name());
-        assertEquals(Result.SKIPPED, skippedEvaluation.result());
-        assertEquals(SimpleRationale.skipped(), skippedEvaluation.rationale());
-    }
 
     private static Cause rootCause() {
         return mock(Cause.class);
     }
 
     @Test
-    void givenOneChild_whenSkip_thenEvaluationIsCorrect() {
-
-        final String subExpressionName = "expression 1";
-        final UnaryExpression<Object> subExpression = Expressions.unaryExpression(subExpressionName, Result.TRUE);
-
-        expression.append(subExpression);
-
-        final Evaluation skippedEvaluation = expression.skip(rootCause());
-
-        assertEquals(expression.name(), skippedEvaluation.name());
-        assertEquals(Result.SKIPPED, skippedEvaluation.result());
-        assertEquals(SimpleRationale.skipped(), skippedEvaluation.rationale());
-    }
-
-    @Test
-    void givenTwoChildren_whenSkip_thenEvaluationIsCorrect() {
-
-        final String subExpressionName1 = "expression 1";
-        final String subExpressionName2 = "expression 2";
-        final UnaryExpression<Object> subExpression1 = Expressions.unaryExpression(subExpressionName1, Result.TRUE);
-        final UnaryExpression<Object> subExpression2 = Expressions.unaryExpression(subExpressionName2, Result.TRUE);
-
-        expression.append(subExpression1);
-        expression.append(subExpression2);
-
-        final Evaluation skippedEvaluation = expression.skip(rootCause());
-
-        assertEquals(expression.name(), skippedEvaluation.name());
-        assertEquals(Result.SKIPPED, skippedEvaluation.result());
-        assertEquals(SimpleRationale.skipped(), skippedEvaluation.rationale());
-    }
-
-    @Test
     void givenSelfRootCause_whenEvaluate_thenRootCauseIsCorrect() {
 
-        final UnaryExpression<Object> subExpression =
-            Expressions.unaryExpressionWithRootCause(Result.TRUE, CauseGenerator.self());
+        final Expression subExpression =
+            Expressions.expressionWithRootCause(Result.TRUE, CauseGenerator.self());
 
         expression.append(subExpression);
 

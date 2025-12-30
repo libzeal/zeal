@@ -1,5 +1,6 @@
 package io.github.libzeal.zeal.logic;
 
+import io.github.libzeal.zeal.logic.evaluation.SkippedTerminalEvaluation;
 import io.github.libzeal.zeal.logic.evaluation.cause.Cause;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.evaluation.Result;
@@ -53,34 +54,6 @@ class NegatedExpressionTest {
     }
 
     @Test
-    void givenTrueExpression_whenSkip_thenSkippedEvaluationIsCorrect() {
-
-        final Cause cause = mock(Cause.class);
-
-        final NegatedExpression expression = new NegatedExpression(Expression.tautology());
-        final Evaluation skippedEvaluation = expression.skip(cause);
-        final Rationale rationale = skippedEvaluation.rationale();
-
-        assertEquals(NegatedExpression.DEFAULT_NAME, skippedEvaluation.name());
-        assertEquals(cause, skippedEvaluation.cause().rootCause());
-        assertRationaleIsSkipped(rationale);
-    }
-
-    @Test
-    void givenFalseExpression_whenSkip_thenSkippedEvaluationIsCorrect() {
-
-        final Cause cause = mock(Cause.class);
-
-        final NegatedExpression expression = new NegatedExpression(Expression.contradiction());
-        final Evaluation skippedEvaluation = expression.skip(cause);
-        final Rationale rationale = skippedEvaluation.rationale();
-
-        assertEquals(NegatedExpression.DEFAULT_NAME, skippedEvaluation.name());
-        assertEquals(cause, skippedEvaluation.cause().rootCause());
-        assertRationaleIsSkipped(rationale);
-    }
-
-    @Test
     void givenSkippedExpression_whenEvaluate_thenEvaluationIsCorrect() {
 
         final Expression skippedExpression = skippedEvaluation();
@@ -100,23 +73,8 @@ class NegatedExpressionTest {
         final Cause cause = mock(Cause.class);
         final Expression skippedExpression = mock(Expression.class);
 
-        doReturn(Expression.tautology().skip(cause)).when(skippedExpression).evaluate();
+        doReturn(new SkippedTerminalEvaluation("foo", e -> cause)).when(skippedExpression).evaluate();
 
         return skippedExpression;
-    }
-
-    @Test
-    void givenSkippedExpression_whenSkip_thenSkippedEvaluationIsCorrect() {
-
-        final Cause cause = mock(Cause.class);
-
-        final Expression skippedExpression = skippedEvaluation();
-        final NegatedExpression expression = new NegatedExpression(skippedExpression);
-        final Evaluation skippedEvaluation = expression.skip(cause);
-        final Rationale rationale = skippedEvaluation.rationale();
-
-        assertEquals(NegatedExpression.DEFAULT_NAME, skippedEvaluation.name());
-        assertEquals(cause, skippedEvaluation.cause().rootCause());
-        assertRationaleIsSkipped(rationale);
     }
 }

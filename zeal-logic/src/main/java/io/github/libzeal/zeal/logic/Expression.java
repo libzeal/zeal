@@ -9,6 +9,7 @@ import io.github.libzeal.zeal.logic.evaluation.Evaluation;
  * @author Justin Albano
  * @since 0.2.0
  */
+@FunctionalInterface
 public interface Expression {
 
     /**
@@ -18,7 +19,9 @@ public interface Expression {
      *
      * @since 0.2.1
      */
-    String name();
+    default String name() {
+        return "(unnamed)";
+    }
 
     /**
      * Evaluates the expression.
@@ -26,18 +29,6 @@ public interface Expression {
      * @return The evaluated expression. This evaluation must not be {@code null}.
      */
     Evaluation evaluate();
-
-    /**
-     * Performs a skipped evaluation.
-     *
-     * @param cause
-     *     The cause of the skipped evaluation.
-     *
-     * @return An evaluation where the execution of the evaluation has been skipped.
-     *
-     * @since 0.2.1
-     */
-    Evaluation skip(Cause cause);
 
     /**
      * Creates a tautology.

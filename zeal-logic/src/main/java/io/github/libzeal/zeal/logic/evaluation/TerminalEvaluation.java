@@ -24,7 +24,7 @@ public class TerminalEvaluation implements Evaluation {
     private final Duration elapsedTime;
     private final CauseGenerator causeGenerator;
 
-    private TerminalEvaluation(final Result result, final String name, final Rationale rationale,
+    TerminalEvaluation(final Result result, final String name, final Rationale rationale,
                                final Duration elapsedTime, final CauseGenerator causeGenerator) {
         this.result = requireNonNull(result);
         this.name = requireNonNull(name);
@@ -63,23 +63,6 @@ public class TerminalEvaluation implements Evaluation {
      */
     public static TerminalEvaluation ofFalse(final String name, final Rationale rationale, final Duration elapsedTime) {
         return new TerminalEvaluation(Result.FALSE, name, rationale, elapsedTime, CauseGenerator.self());
-    }
-
-    /**
-     * Creates a skipped evaluation.
-     *
-     * @param name
-     *     The name of the evaluation.
-     * @param causeGenerator
-     *     The generator for the cause for the evaluation.
-     *
-     * @return The skipped evaluation.
-     */
-    public static TerminalEvaluation ofSkipped(final String name, final CauseGenerator causeGenerator) {
-
-        final SimpleRationale rationale = SimpleRationale.skipped();
-
-        return new TerminalEvaluation(Result.SKIPPED, name, rationale, Duration.ZERO, causeGenerator);
     }
 
     @Override

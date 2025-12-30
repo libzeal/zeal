@@ -1,12 +1,9 @@
 package io.github.libzeal.zeal.types.core.unary;
 
 import io.github.libzeal.zeal.logic.Expression;
-import io.github.libzeal.zeal.logic.compound.ConjunctiveExpression;
+import io.github.libzeal.zeal.logic.ConjunctiveExpression;
 import io.github.libzeal.zeal.logic.condition.Condition;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
-import io.github.libzeal.zeal.logic.evaluation.cause.Cause;
-import io.github.libzeal.zeal.logic.evaluation.TerminalEvaluation;
-import io.github.libzeal.zeal.logic.evaluation.cause.CauseGenerator;
 import io.github.libzeal.zeal.logic.rationale.ValueSupplier;
 import io.github.libzeal.zeal.logic.unary.UnaryExpression;
 
@@ -116,23 +113,24 @@ public class ObjectUnaryExpression<T, E extends ObjectUnaryExpression<T, E>> imp
     }
 
     @Override
-    public final String name() {
-        return name;
-    }
-
-    @Override
     public final T subject() {
         return subject;
     }
 
     @Override
-    public final Evaluation evaluate() {
-        return children.evaluate();
-    }
+    public Expression expression() {
+        return new Expression() {
 
-    @Override
-    public final Evaluation skip(final Cause cause) {
-        return TerminalEvaluation.ofSkipped(name(), CauseGenerator.withUnderlyingCause(cause));
+            @Override
+            public final String name() {
+                return name;
+            }
+
+            @Override
+            public final Evaluation evaluate() {
+                return children.evaluate();
+            }
+        };
     }
 
     /**

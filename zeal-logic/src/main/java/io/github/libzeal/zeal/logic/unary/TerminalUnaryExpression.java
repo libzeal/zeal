@@ -1,5 +1,6 @@
 package io.github.libzeal.zeal.logic.unary;
 
+import io.github.libzeal.zeal.logic.Expression;
 import io.github.libzeal.zeal.logic.evaluation.cause.Cause;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.evaluation.TerminalEvaluation;
@@ -65,34 +66,39 @@ public class TerminalUnaryExpression<T> implements UnaryExpression<T> {
         this.rationaleGenerator = requireNonNull(rationaleGenerator);
     }
 
-    @Override
     public String name() {
         return name;
     }
 
     @Override
-    public Evaluation evaluate() {
-
-        final StopWatch stopWatch = StopWatch.started();
-        final boolean passed = predicate.test(subject);
-        final Rationale rationale = rationaleGenerator.generate(subject, passed);
-        final Duration elapsedTime = stopWatch.stop();
-
-        if (passed) {
-            return TerminalEvaluation.ofTrue(name, rationale, elapsedTime);
-        }
-        else {
-            return TerminalEvaluation.ofFalse(name, rationale, elapsedTime);
-        }
-    }
-
-    @Override
-    public Evaluation skip(final Cause cause) {
-        return TerminalEvaluation.ofSkipped(name, CauseGenerator.withUnderlyingCause(cause));
-    }
-
-    @Override
     public T subject() {
         return subject;
+    }
+
+    @Override
+    public Expression expression() {
+        return new Expression() {
+
+            @Override
+            public String name() {
+                return name;
+            }
+
+            @Override
+            public Evaluation evaluate() {
+
+                final StopWatch stopWatch = StopWatch.started();
+                final boolean passed = predicate.test(subject);
+                final Rationale rationale = rationaleGenerator.generate(subject, passed);
+                final Duration elapsedTime = stopWatch.stop();
+
+                if (passed) {
+                    return TerminalEvaluation.ofTrue(name, rationale, elapsedTime);
+                }
+                else {
+                    return TerminalEvaluation.ofFalse(name, rationale, elapsedTime);
+                }
+            }
+        };
     }
 }

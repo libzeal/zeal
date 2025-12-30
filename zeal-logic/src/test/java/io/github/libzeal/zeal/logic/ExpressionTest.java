@@ -35,20 +35,6 @@ class ExpressionTest {
     }
 
     @Test
-    void givenContradiction_whenSkip_thenSkippedEvaluationIsCorrect() {
-
-        final Cause cause = mock(Cause.class);
-
-        final Expression expression = Expression.contradiction();
-        final Evaluation skippedEvaluation = expression.skip(cause);
-        final Rationale rationale = skippedEvaluation.rationale();
-
-        assertEquals(Contradiction.NAME, skippedEvaluation.name());
-        assertEquals(cause, skippedEvaluation.cause().rootCause());
-        assertRationaleIsSkipped(rationale);
-    }
-
-    @Test
     void givenTautology_whenName_thenNameIsCorrect() {
         assertEquals(Tautology.NAME, Expression.tautology().name());
     }
@@ -65,19 +51,5 @@ class ExpressionTest {
         assertRationaleEquals(rationale, TRUE, TRUE);
         assertEquals(evaluation, evaluation.cause().evaluation());
         assertDepthFirstTraversalIsTerminal(evaluation);
-    }
-
-    @Test
-    void givenTautology_whenSkip_thenSkippedEvaluationIsCorrect() {
-
-        final Cause cause = mock(Cause.class);
-
-        final Expression expression = Expression.tautology();
-        final Evaluation skippedEvaluation = expression.skip(cause);
-        final Rationale rationale = skippedEvaluation.rationale();
-
-        assertEquals(Tautology.NAME, skippedEvaluation.name());
-        assertEquals(cause, skippedEvaluation.cause().rootCause());
-        assertRationaleIsSkipped(rationale);
     }
 }
