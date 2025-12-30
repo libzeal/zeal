@@ -1,4 +1,4 @@
-package io.github.libzeal.zeal.logic.evaluation;
+package io.github.libzeal.zeal.logic.evaluation.traverse;
 
 import org.junit.jupiter.api.Test;
 

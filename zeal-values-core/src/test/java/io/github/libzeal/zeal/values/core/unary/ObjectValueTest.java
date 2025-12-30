@@ -2,8 +2,11 @@ package io.github.libzeal.zeal.values.core.unary;
 
 import io.github.libzeal.zeal.logic.condition.Condition;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
-import io.github.libzeal.zeal.logic.evaluation.FlatteningTraverser;
+import io.github.libzeal.zeal.logic.evaluation.traverse.CollectingTraverserAction;
 import io.github.libzeal.zeal.logic.evaluation.Result;
+import io.github.libzeal.zeal.logic.evaluation.traverse.DepthFirstTraverser;
+import io.github.libzeal.zeal.logic.evaluation.traverse.Traverser;
+import io.github.libzeal.zeal.logic.evaluation.traverse.TraverserAction;
 import io.github.libzeal.zeal.logic.util.Formatter;
 import io.github.libzeal.zeal.values.core.unary.test.EvaluatedExpressionAssertion;
 import io.github.libzeal.zeal.values.core.unary.test.ExpressionTestCaseBuilder;
@@ -86,12 +89,13 @@ public abstract class ObjectValueTest<T, E extends ObjectValue<T, E>> {
         expression.isNull().isNotNull();
 
         final Evaluation eval = expression.evaluate();
+        final Traverser traverser = new DepthFirstTraverser();
+        final CollectingTraverserAction collector = new CollectingTraverserAction();
 
-        final FlatteningTraverser traverser = new FlatteningTraverser();
-        eval.traverseDepthFirst(traverser);
+        traverser.traverse(eval, collector);
 
-        final Evaluation first = traverser.children().get(0);
-        final Evaluation second = traverser.children().get(1);
+        final Evaluation first = collector.get(1).orElse(null);
+        final Evaluation second = collector.get(2).orElse(null);
 
         EvaluatedExpressionAssertion<?> firstAssertion = new EvaluatedExpressionAssertion<>(first);
         EvaluatedExpressionAssertion<?> secondAssertion = new EvaluatedExpressionAssertion<>(second);
@@ -123,11 +127,12 @@ public abstract class ObjectValueTest<T, E extends ObjectValue<T, E>> {
         assertEquals(expression.getClass(), returnedExpression.getClass());
 
         final Evaluation eval = expression.evaluate();
+        final Traverser traverser = new DepthFirstTraverser();
+        final CollectingTraverserAction collector = new CollectingTraverserAction();
 
-        final FlatteningTraverser traverser = new FlatteningTraverser();
-        eval.traverseDepthFirst(traverser);
+        traverser.traverse(eval, collector);
 
-        final Evaluation first = traverser.children().get(0);
+        final Evaluation first = collector.get(1).orElse(null);
         final EvaluatedExpressionAssertion<?> firstEvaluation = new EvaluatedExpressionAssertion<>(first);
 
         assertNotNull(first);

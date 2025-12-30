@@ -54,26 +54,4 @@ public interface Evaluation {
      * @since 0.2.1
      */
     Cause cause();
-
-    /**
-     * Traverses the evaluation depth-first.
-     *
-     * @param traverser
-     *     The traverser to use to traverse the evaluation.
-     *
-     * @since 0.2.1
-     */
-    void traverseDepthFirst(Traverser traverser);
-
-    /**
-     * Traverses the evaluation depth-first.
-     *
-     * @param traverser
-     *     The traverser to use to traverse the evaluation.
-     * @param context
-     *     The context used to traverse the evaluation.
-     *
-     * @since 0.2.1
-     */
-    void traverseDepthFirst(Traverser traverser, TraversalContext context);
 }

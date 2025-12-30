@@ -2,10 +2,12 @@ package io.github.libzeal.zeal.logic.evaluation.format.simple;
 
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.evaluation.Result;
-import io.github.libzeal.zeal.logic.evaluation.TraversalContext;
-import io.github.libzeal.zeal.logic.evaluation.Traverser;
+import io.github.libzeal.zeal.logic.evaluation.traverse.TraversalContext;
+import io.github.libzeal.zeal.logic.evaluation.traverse.DepthFirstTraverser;
 import io.github.libzeal.zeal.logic.evaluation.cause.Cause;
 import io.github.libzeal.zeal.logic.evaluation.format.Formatter;
+import io.github.libzeal.zeal.logic.evaluation.traverse.Traverser;
+import io.github.libzeal.zeal.logic.evaluation.traverse.TraverserAction;
 
 import java.time.Duration;
 
@@ -44,18 +46,20 @@ public class SimpleFormatter implements Formatter {
         final Cause cause = evaluation.cause();
         final SimpleFormatterContext context = new SimpleFormatterContext(cause, 0);
         final StringBuilder builder = new StringBuilder();
-        final Traverser traverser = new FormattingTraverser(evaluation, builder, evaluationFormatter);
+        final Traverser traverser = new DepthFirstTraverser();
+        final TraverserAction action = new FormattingTraverser(evaluation, builder,
+            evaluationFormatter);
         final Heading heading = new Heading("Evaluation");
 
         builder.append(causeFormatter.format(cause, context))
             .append(headingFormatter.format(heading, context));
 
-        evaluation.traverseDepthFirst(traverser);
+        traverser.traverse(evaluation, action);
 
         return builder.toString().trim();
     }
 
-    private static final class FormattingTraverser implements Traverser {
+    private static final class FormattingTraverser implements TraverserAction {
 
         private final Evaluation evaluation;
         private final StringBuilder builder;

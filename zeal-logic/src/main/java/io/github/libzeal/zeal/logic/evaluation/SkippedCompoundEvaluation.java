@@ -8,7 +8,7 @@ import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
 import java.time.Duration;
 import java.util.List;
 
-public class SkippedCompoundEvaluation implements Evaluation {
+public class SkippedCompoundEvaluation implements CompoundEvaluation {
 
     private final String name;
     private final CauseGenerator cause;
@@ -47,22 +47,7 @@ public class SkippedCompoundEvaluation implements Evaluation {
     }
 
     @Override
-    public void traverseDepthFirst(final Traverser traverser) {
-
-        if (traverser != null) {
-            traverseDepthFirst(traverser, TraversalContext.create());
-        }
-    }
-
-    @Override
-    public void traverseDepthFirst(final Traverser traverser, final TraversalContext context) {
-
-        traverser.on(this, context);
-
-        final TraversalContext childContext = context.withIncrementedDepth();
-
-        for (Evaluation child : children) {
-            child.traverseDepthFirst(traverser, childContext);
-        }
+    public List<Evaluation> children() {
+        return children;
     }
 }

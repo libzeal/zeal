@@ -99,13 +99,13 @@ class CompoundEvaluator {
         final Rationale rationale = rationaleBuilder.build(tally);
 
         if (tally.total() == 0 || passCondition.test(tally)) {
-            return CompoundEvaluation.ofTrue(name, rationale, elapsedTime, causeGenerator, evaluated);
+            return EvaluatedCompoundEvaluation.ofTrue(name, rationale, elapsedTime, causeGenerator, evaluated);
         }
         else if (tally.skipped() == tally.total()) {
             return new SkippedCompoundEvaluation(name,causeGenerator, evaluated);
         }
         else {
-            return CompoundEvaluation.ofFalse(name, rationale, elapsedTime, causeGenerator, evaluated);
+            return EvaluatedCompoundEvaluation.ofFalse(name, rationale, elapsedTime, causeGenerator, evaluated);
         }
     }
 

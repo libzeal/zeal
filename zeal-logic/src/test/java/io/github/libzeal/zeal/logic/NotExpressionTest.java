@@ -35,7 +35,6 @@ class NotExpressionTest {
         assertEquals(NotExpression.DEFAULT_NAME, evaluation.name());
         assertRationaleEquals(rationale, ACTUAL_VALUE_WRAPPED_FALSE, ACTUAL_VALUE_WRAPPED_TRUE);
         assertEquals(trueExpression.evaluate(), evaluation.cause().rootCause().evaluation());
-        assertDepthFirstTraversalIsTerminal(evaluation);
     }
 
     @Test
@@ -50,7 +49,6 @@ class NotExpressionTest {
         assertEquals(NotExpression.DEFAULT_NAME, evaluation.name());
         assertRationaleEquals(rationale, ACTUAL_VALUE_WRAPPED_FALSE, ACTUAL_VALUE_WRAPPED_FALSE);
         assertEquals(falseExpression.evaluate(), evaluation.cause().rootCause().evaluation());
-        assertDepthFirstTraversalIsTerminal(evaluation);
     }
 
     @Test
@@ -65,7 +63,6 @@ class NotExpressionTest {
         assertEquals(NotExpression.DEFAULT_NAME, evaluation.name());
         assertRationaleEquals(rationale, ACTUAL_VALUE_WRAPPED_FALSE, ACTUAL_VALUE_WRAPPED_SKIPPED);
         assertNull(evaluation.cause().rootCause().evaluation());
-        assertDepthFirstTraversalIsTerminal(evaluation);
     }
 
     private static Expression skippedEvaluation() {

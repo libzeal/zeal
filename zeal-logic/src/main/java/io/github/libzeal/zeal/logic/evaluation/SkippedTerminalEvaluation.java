@@ -7,7 +7,7 @@ import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
 
 import java.time.Duration;
 
-public class SkippedTerminalEvaluation implements Evaluation {
+public class SkippedTerminalEvaluation implements TerminalEvaluation {
 
     private final String name;
     private final CauseGenerator cause;
@@ -40,18 +40,5 @@ public class SkippedTerminalEvaluation implements Evaluation {
     @Override
     public Cause cause() {
         return cause.generate(this);
-    }
-
-    @Override
-    public void traverseDepthFirst(final Traverser traverser) {
-        traverseDepthFirst(traverser, TraversalContext.create());
-    }
-
-    @Override
-    public void traverseDepthFirst(final Traverser traverser, final TraversalContext context) {
-
-        if (traverser != null) {
-            traverser.on(this, context);
-        }
     }
 }

@@ -1,9 +1,9 @@
 package io.github.libzeal.zeal.logic.evaluation.format.simple;
 
-import io.github.libzeal.zeal.logic.evaluation.CompoundEvaluation;
+import io.github.libzeal.zeal.logic.evaluation.EvaluatedCompoundEvaluation;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.evaluation.SkippedTerminalEvaluation;
-import io.github.libzeal.zeal.logic.evaluation.TerminalEvaluation;
+import io.github.libzeal.zeal.logic.evaluation.EvaluatedTerminalEvaluation;
 import io.github.libzeal.zeal.logic.evaluation.cause.Cause;
 import io.github.libzeal.zeal.logic.evaluation.cause.CauseGenerator;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
@@ -39,7 +39,7 @@ class SimpleFormatterTest {
         final String name = "foo";
         final Duration elapsedTime = Duration.ofMillis(10);
         final Rationale rationale = new SimpleRationale("someExpected", "someActual", "someHint");
-        final Evaluation evaluation = TerminalEvaluation.ofTrue(name, rationale, elapsedTime);
+        final Evaluation evaluation = EvaluatedTerminalEvaluation.ofTrue(name, rationale, elapsedTime);
 
         final String expected = evaluationHeading() +
             "[T] " + name + " (" + elapsedTime.toMillis() + "ms)  <---[ Root Cause ]";
@@ -73,7 +73,7 @@ class SimpleFormatterTest {
         final String name = "foo";
         final Duration elapsedTime = Duration.ofMillis(10);
         final Rationale rationale = new SimpleRationale("someExpected", "someActual", "someHint");
-        final Evaluation evaluation = TerminalEvaluation.ofFalse(name, rationale, elapsedTime);
+        final Evaluation evaluation = EvaluatedTerminalEvaluation.ofFalse(name, rationale, elapsedTime);
 
         final String expected =
             rootCauseHeading() +
@@ -100,12 +100,12 @@ class SimpleFormatterTest {
 
         final Duration childElapsedTime = Duration.ofMillis(10);
         final Rationale childRationale = new SimpleRationale("someExpectedChild", "someActualChild", "someHintChild");
-        final Evaluation childEvaluation = TerminalEvaluation.ofFalse("child", childRationale, childElapsedTime);
+        final Evaluation childEvaluation = EvaluatedTerminalEvaluation.ofFalse("child", childRationale, childElapsedTime);
 
         final Duration parentElapsedTime = Duration.ofMillis(20);
         final Rationale parentRationale = new SimpleRationale("someExpectedParent", "someActualParent",
             "someHintParent");
-        final Evaluation parentEvaluation = CompoundEvaluation.ofFalse(
+        final Evaluation parentEvaluation = EvaluatedCompoundEvaluation.ofFalse(
             "parent",
             parentRationale,
             parentElapsedTime,
@@ -135,12 +135,12 @@ class SimpleFormatterTest {
 
         final Duration childElapsedTime = Duration.ofMillis(10);
         final Rationale childRationale = new SimpleRationale("someExpectedChild", "someActualChild", "someHintChild");
-        final Evaluation childEvaluation = TerminalEvaluation.ofTrue("child", childRationale, childElapsedTime);
+        final Evaluation childEvaluation = EvaluatedTerminalEvaluation.ofTrue("child", childRationale, childElapsedTime);
 
         final Duration parentElapsedTime = Duration.ofMillis(20);
         final Rationale parentRationale = new SimpleRationale("someExpectedParent", "someActualParent",
             "someHintParent");
-        final Evaluation parentEvaluation = CompoundEvaluation.ofFalse(
+        final Evaluation parentEvaluation = EvaluatedCompoundEvaluation.ofFalse(
             "parent",
             parentRationale,
             parentElapsedTime,

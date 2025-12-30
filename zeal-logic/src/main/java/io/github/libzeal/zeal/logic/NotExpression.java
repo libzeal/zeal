@@ -1,7 +1,7 @@
 package io.github.libzeal.zeal.logic;
 
 import io.github.libzeal.zeal.logic.evaluation.cause.Cause;
-import io.github.libzeal.zeal.logic.evaluation.CompoundEvaluation;
+import io.github.libzeal.zeal.logic.evaluation.EvaluatedCompoundEvaluation;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.evaluation.Result;
 import io.github.libzeal.zeal.logic.evaluation.cause.CauseGenerator;
@@ -92,11 +92,11 @@ public class NotExpression implements Expression {
         final Duration elapsedTime = stopWatch.stop();
 
         if (result.isFalse() || result.isSkipped()) {
-            return CompoundEvaluation.ofFalse(name(), rationale, elapsedTime, CauseGenerator.withUnderlyingCause(cause),
+            return EvaluatedCompoundEvaluation.ofFalse(name(), rationale, elapsedTime, CauseGenerator.withUnderlyingCause(cause),
                 children);
         }
         else {
-            return CompoundEvaluation.ofTrue(name(), rationale, elapsedTime, CauseGenerator.withUnderlyingCause(cause), children);
+            return EvaluatedCompoundEvaluation.ofTrue(name(), rationale, elapsedTime, CauseGenerator.withUnderlyingCause(cause), children);
         }
     }
 

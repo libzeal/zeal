@@ -1,4 +1,6 @@
-package io.github.libzeal.zeal.logic.evaluation;
+package io.github.libzeal.zeal.logic.evaluation.traverse;
+
+import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,20 +16,15 @@ import java.util.Optional;
  * @author Justin Albano
  * @since 0.2.1
  */
-public class FlatteningTraverser implements Traverser {
+public class CollectingTraverserAction implements TraverserAction {
 
     private final List<Evaluation> evaluations;
 
     /**
      * Creates a new traverser with an empty found list.
      */
-    public FlatteningTraverser() {
+    public CollectingTraverserAction() {
         this.evaluations = new ArrayList<>();
-    }
-
-    @Override
-    public void on(final Evaluation evaluation, final TraversalContext context) {
-        evaluations.add(evaluation);
     }
 
     /**
@@ -72,5 +69,10 @@ public class FlatteningTraverser implements Traverser {
         else {
             return Optional.empty();
         }
+    }
+
+    @Override
+    public void on(final Evaluation evaluation, final TraversalContext context) {
+        evaluations.add(evaluation);
     }
 }

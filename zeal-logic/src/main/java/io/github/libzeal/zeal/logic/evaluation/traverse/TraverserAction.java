@@ -1,12 +1,8 @@
-package io.github.libzeal.zeal.logic.evaluation;
+package io.github.libzeal.zeal.logic.evaluation.traverse;
 
-/**
- * An entity that traverses the evaluation tree.
- *
- * @author Justin Albano
- * @since 0.2.1
- */
-public interface Traverser {
+import io.github.libzeal.zeal.logic.evaluation.Evaluation;
+
+public interface TraverserAction {
 
     /**
      * Called each time a new evaluation is visited.

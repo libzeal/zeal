@@ -1,7 +1,7 @@
-package io.github.libzeal.zeal.logic.evaluation;
+package io.github.libzeal.zeal.logic.evaluation.traverse;
 
 /**
- * The context used for {@link Traverser} traverses a traversable evaluation.
+ * The context used for {@link DepthFirstTraverser} traverses a traversable evaluation.
  *
  * @author Justin Albano
  * @since 0.2.1

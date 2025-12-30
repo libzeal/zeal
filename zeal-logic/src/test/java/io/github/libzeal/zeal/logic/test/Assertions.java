@@ -1,8 +1,10 @@
 package io.github.libzeal.zeal.logic.test;
 
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
-import io.github.libzeal.zeal.logic.evaluation.TraversalContext;
-import io.github.libzeal.zeal.logic.evaluation.Traverser;
+import io.github.libzeal.zeal.logic.evaluation.TerminalEvaluation;
+import io.github.libzeal.zeal.logic.evaluation.traverse.TraversalContext;
+import io.github.libzeal.zeal.logic.evaluation.traverse.DepthFirstTraverser;
+import io.github.libzeal.zeal.logic.evaluation.traverse.TraverserAction;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
 import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
 
@@ -35,15 +37,10 @@ public class Assertions {
     }
 
     public static void assertDepthFirstTraversalIsTerminal(final Evaluation evaluation) {
-
-        final Traverser traverser = mock(Traverser.class);
-        final Traverser contextTraverser = mock(Traverser.class);
-
-        evaluation.traverseDepthFirst(traverser);
-        evaluation.traverseDepthFirst(contextTraverser, TraversalContext.create());
-
-        verify(traverser).on(eq(evaluation), any(TraversalContext.class));
-        verify(contextTraverser).on(eq(evaluation), any(TraversalContext.class));
+        assertTrue(
+            evaluation instanceof TerminalEvaluation,
+            "Expected evaluation to be terminal. Was: " + evaluation.getClass()
+        );
     }
 
     public static void assertRationaleIsSkipped(final Rationale rationale) {
