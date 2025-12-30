@@ -26,7 +26,7 @@ class NotExpressionTest {
     @Test
     void givenTrueExpression_whenEvaluate_thenEvaluationIsCorrect() {
 
-        final Expression trueExpression = Expression.tautology();
+        final Expression trueExpression = Expressions.tautology();
         final NotExpression expression = new NotExpression(trueExpression);
         final Evaluation evaluation = expression.evaluate();
         final Rationale rationale = evaluation.rationale();
@@ -41,7 +41,7 @@ class NotExpressionTest {
     @Test
     void givenFalseExpression_whenEvaluate_thenEvaluationIsCorrect() {
 
-        final Expression falseExpression = Expression.contradiction();
+        final Expression falseExpression = Expressions.contradiction();
         final NotExpression expression = new NotExpression(falseExpression);
         final Evaluation evaluation = expression.evaluate();
         final Rationale rationale = evaluation.rationale();

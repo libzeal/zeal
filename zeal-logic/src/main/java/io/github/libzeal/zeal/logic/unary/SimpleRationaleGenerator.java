@@ -1,4 +1,7 @@
-package io.github.libzeal.zeal.logic.rationale;
+package io.github.libzeal.zeal.logic.unary;
+
+import io.github.libzeal.zeal.logic.rationale.Rationale;
+import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
 
 import static java.util.Objects.requireNonNull;
 

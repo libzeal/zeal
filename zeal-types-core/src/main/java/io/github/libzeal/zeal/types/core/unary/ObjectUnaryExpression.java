@@ -4,7 +4,7 @@ import io.github.libzeal.zeal.logic.AndExpression;
 import io.github.libzeal.zeal.logic.Expression;
 import io.github.libzeal.zeal.logic.condition.Condition;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
-import io.github.libzeal.zeal.logic.rationale.ValueSupplier;
+import io.github.libzeal.zeal.logic.unary.ValueSupplier;
 import io.github.libzeal.zeal.logic.unary.UnaryExpression;
 
 import java.util.Comparator;
@@ -118,19 +118,13 @@ public class ObjectUnaryExpression<T, E extends ObjectUnaryExpression<T, E>> imp
     }
 
     @Override
-    public Expression expression() {
-        return new Expression() {
+    public final String name() {
+        return name;
+    }
 
-            @Override
-            public final String name() {
-                return name;
-            }
-
-            @Override
-            public final Evaluation evaluate() {
-                return children.evaluate();
-            }
-        };
+    @Override
+    public final Evaluation evaluate() {
+        return children.evaluate();
     }
 
     /**

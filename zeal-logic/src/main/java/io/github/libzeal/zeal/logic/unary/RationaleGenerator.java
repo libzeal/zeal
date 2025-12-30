@@ -1,4 +1,6 @@
-package io.github.libzeal.zeal.logic.rationale;
+package io.github.libzeal.zeal.logic.unary;
+
+import io.github.libzeal.zeal.logic.rationale.Rationale;
 
 /**
  * A generator that creates {@link Rationale} instances based on a supplied subject.

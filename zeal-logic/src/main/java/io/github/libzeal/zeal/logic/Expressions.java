@@ -1,16 +1,54 @@
 package io.github.libzeal.zeal.logic;
 
 import java.util.Arrays;
+import java.util.function.BooleanSupplier;
 
 /**
- * A set of logical operations that can be performed on one or more expressions.
+ * A set of common logical expressions.
  *
  * @author Justin Albano
  * @since 0.2.1
  */
-public final class Operations {
+public final class Expressions {
 
-    private Operations() {
+    private Expressions() {
+    }
+
+    /**
+     * Creates a tautology.
+     *
+     * @return A tautology.
+     *
+     * @since 0.2.1
+     */
+    public static Expression tautology() {
+        return new Tautology();
+    }
+
+    /**
+     * Creates a contradiction.
+     *
+     * @return A contradiction.
+     *
+     * @since 0.2.1
+     */
+    public static Expression contradiction() {
+        return new Contradiction();
+    }
+
+    /**
+     * Creates an expression using the supplied boolean expression.
+     *
+     * @param expression
+     *     The desired boolean expression.
+     *
+     * @return An expression matching the supplied boolean expression.
+     *
+     * @throws NullPointerException
+     *     The supplied expression is {@code null}.
+     */
+    public static BooleanExpression of(final BooleanSupplier expression) {
+        return new BooleanExpression(Expression.DEFAULT_NAME,  expression);
     }
 
     /**

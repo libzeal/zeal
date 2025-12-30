@@ -1,5 +1,6 @@
-package io.github.libzeal.zeal.logic.rationale;
+package io.github.libzeal.zeal.logic.unary;
 
+import io.github.libzeal.zeal.logic.rationale.Rationale;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

@@ -1,6 +1,7 @@
 package io.github.libzeal.zeal.logic.condition;
 
 import io.github.libzeal.zeal.logic.Expression;
+import io.github.libzeal.zeal.logic.Expressions;
 
 /**
  * An object that creates an expression based on a subject.
@@ -38,7 +39,7 @@ public interface Condition<T> {
      * @return A tautology.
      */
     static <T> Condition<T> tautology() {
-        return subject -> Expression.tautology();
+        return subject -> Expressions.tautology();
     }
 
 
@@ -51,6 +52,6 @@ public interface Condition<T> {
      * @return A contradiction.
      */
     static <T> Condition<T> contradiction() {
-        return subject -> Expression.contradiction();
+        return subject -> Expressions.contradiction();
     }
 }

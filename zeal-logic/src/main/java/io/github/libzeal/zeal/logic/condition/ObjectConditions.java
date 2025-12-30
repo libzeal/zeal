@@ -2,10 +2,10 @@ package io.github.libzeal.zeal.logic.condition;
 
 import io.github.libzeal.zeal.logic.AndExpression;
 import io.github.libzeal.zeal.logic.Expression;
-import io.github.libzeal.zeal.logic.Operations;
+import io.github.libzeal.zeal.logic.Expressions;
 import io.github.libzeal.zeal.logic.OrExpression;
-import io.github.libzeal.zeal.logic.rationale.RationaleGenerator;
-import io.github.libzeal.zeal.logic.rationale.SimpleRationaleGenerator;
+import io.github.libzeal.zeal.logic.unary.RationaleGenerator;
+import io.github.libzeal.zeal.logic.unary.SimpleRationaleGenerator;
 import io.github.libzeal.zeal.logic.unary.TerminalUnaryExpression;
 
 import java.util.List;
@@ -45,8 +45,7 @@ final class ObjectConditions {
             subject,
             o -> o == desired,
             generator
-        )
-            .expression();
+        );
     }
 
     static <T> String exactlyName(final T desired) {
@@ -70,8 +69,7 @@ final class ObjectConditions {
             subject,
             o -> Objects.equals(o, desired),
             generator
-        )
-            .expression();
+        );
     }
 
     static <T> String equalToName(final T desired) {
@@ -182,7 +180,7 @@ final class ObjectConditions {
                 .map(c -> c.create(subject))
                 .collect(Collectors.toList());
 
-            return Operations.nor(collected.toArray(new Expression[0]));
+            return Expressions.nor(collected.toArray(new Expression[0]));
         };
     }
 
@@ -197,7 +195,7 @@ final class ObjectConditions {
                 .map(c -> c.create(subject))
                 .collect(Collectors.toList());
 
-            return Operations.nor(collected.toArray(new Expression[0]));
+            return Expressions.nor(collected.toArray(new Expression[0]));
         };
     }
 
@@ -211,7 +209,7 @@ final class ObjectConditions {
                 .map(c -> c.create(subject))
                 .collect(Collectors.toList());
 
-            return Operations.nor(collected.toArray(new Expression[0]));
+            return Expressions.nor(collected.toArray(new Expression[0]));
         };
     }
 }

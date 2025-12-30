@@ -1,12 +1,9 @@
 package io.github.libzeal.zeal.logic.unary;
 
 import io.github.libzeal.zeal.logic.Expression;
-import io.github.libzeal.zeal.logic.evaluation.cause.Cause;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.evaluation.TerminalEvaluation;
-import io.github.libzeal.zeal.logic.evaluation.cause.CauseGenerator;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
-import io.github.libzeal.zeal.logic.rationale.RationaleGenerator;
 import io.github.libzeal.zeal.logic.util.StopWatch;
 
 import java.time.Duration;
@@ -66,6 +63,7 @@ public class TerminalUnaryExpression<T> implements UnaryExpression<T> {
         this.rationaleGenerator = requireNonNull(rationaleGenerator);
     }
 
+    @Override
     public String name() {
         return name;
     }
@@ -76,29 +74,17 @@ public class TerminalUnaryExpression<T> implements UnaryExpression<T> {
     }
 
     @Override
-    public Expression expression() {
-        return new Expression() {
+    public Evaluation evaluate() {
+        final StopWatch stopWatch = StopWatch.started();
+        final boolean passed = predicate.test(subject);
+        final Rationale rationale = rationaleGenerator.generate(subject, passed);
+        final Duration elapsedTime = stopWatch.stop();
 
-            @Override
-            public String name() {
-                return name;
-            }
-
-            @Override
-            public Evaluation evaluate() {
-
-                final StopWatch stopWatch = StopWatch.started();
-                final boolean passed = predicate.test(subject);
-                final Rationale rationale = rationaleGenerator.generate(subject, passed);
-                final Duration elapsedTime = stopWatch.stop();
-
-                if (passed) {
-                    return TerminalEvaluation.ofTrue(name, rationale, elapsedTime);
-                }
-                else {
-                    return TerminalEvaluation.ofFalse(name, rationale, elapsedTime);
-                }
-            }
-        };
+        if (passed) {
+            return TerminalEvaluation.ofTrue(name, rationale, elapsedTime);
+        }
+        else {
+            return TerminalEvaluation.ofFalse(name, rationale, elapsedTime);
+        }
     }
 }

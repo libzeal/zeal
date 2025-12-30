@@ -120,7 +120,7 @@ class AndExpressionTest {
     @Test
     void givenOnePassingExpressionAppended_whenEvaluate_thenEvaluationIsCorrect() {
 
-        final Expression subExpression = Expression.tautology();
+        final Expression subExpression = Expressions.expression(Result.TRUE);
 
         expression.append(subExpression);
 
@@ -137,7 +137,7 @@ class AndExpressionTest {
     @Test
     void givenOneFailingExpressionAppended_whenEvaluate_thenEvaluationIsCorrect() {
 
-        final Expression subExpression = Expression.contradiction();
+        final Expression subExpression = Expressions.expression(Result.FALSE);
 
         expression.append(subExpression);
 

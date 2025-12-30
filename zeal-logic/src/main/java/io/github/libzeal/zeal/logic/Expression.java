@@ -12,6 +12,8 @@ import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 @FunctionalInterface
 public interface Expression {
 
+    static final String DEFAULT_NAME = "(unnamed)";
+
     /**
      * Obtains the name of the expression.
      *
@@ -20,7 +22,7 @@ public interface Expression {
      * @since 0.2.1
      */
     default String name() {
-        return "(unnamed)";
+        return DEFAULT_NAME;
     }
 
     /**
@@ -29,26 +31,4 @@ public interface Expression {
      * @return The evaluated expression. This evaluation must not be {@code null}.
      */
     Evaluation evaluate();
-
-    /**
-     * Creates a tautology.
-     *
-     * @return A tautology.
-     *
-     * @since 0.2.1
-     */
-    static Expression tautology() {
-        return new Tautology();
-    }
-
-    /**
-     * Creates a contradiction.
-     *
-     * @return A contradiction.
-     *
-     * @since 0.2.1
-     */
-    static Expression contradiction() {
-        return new Contradiction();
-    }
 }

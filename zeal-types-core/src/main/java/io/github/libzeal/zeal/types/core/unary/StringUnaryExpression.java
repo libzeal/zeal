@@ -1,6 +1,6 @@
 package io.github.libzeal.zeal.types.core.unary;
 
-import io.github.libzeal.zeal.logic.rationale.ValueSupplier;
+import io.github.libzeal.zeal.logic.unary.ValueSupplier;
 
 /**
  * An expression used to evaluate {@link String} instances.

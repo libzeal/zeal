@@ -1,9 +1,9 @@
 package io.github.libzeal.zeal.types.core.unary;
 
 import io.github.libzeal.zeal.logic.Expression;
-import io.github.libzeal.zeal.logic.rationale.RationaleGenerator;
-import io.github.libzeal.zeal.logic.rationale.SimpleRationaleGenerator;
-import io.github.libzeal.zeal.logic.rationale.ValueSupplier;
+import io.github.libzeal.zeal.logic.unary.RationaleGenerator;
+import io.github.libzeal.zeal.logic.unary.SimpleRationaleGenerator;
+import io.github.libzeal.zeal.logic.unary.ValueSupplier;
 import io.github.libzeal.zeal.logic.unary.TerminalUnaryExpression;
 import io.github.libzeal.zeal.logic.unary.UnaryExpression;
 import io.github.libzeal.zeal.logic.util.Formatter;
@@ -200,11 +200,11 @@ public class UnaryExpressionBuilder<T, E extends ObjectUnaryExpression<T, E>> {
      * @return This builder (fluent interface).
      */
     public E append() {
-        return buildable.append(build().expression());
+        return buildable.append(build());
     }
 
     E prepend() {
-        return buildable.prepend(build().expression());
+        return buildable.prepend(build());
     }
 
     private UnaryExpression<T> build() {
