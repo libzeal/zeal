@@ -1,8 +1,8 @@
 package io.github.libzeal.zeal.logic;
 
+import io.github.libzeal.zeal.logic.evaluation.cause.Cause;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.evaluation.Result;
-import io.github.libzeal.zeal.logic.evaluation.cause.Cause;
 import io.github.libzeal.zeal.logic.evaluation.cause.CauseGenerator;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
 import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
@@ -14,32 +14,32 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static io.github.libzeal.zeal.logic.CompoundEvaluator.CompoundRationaleBuilder.format;
-import static io.github.libzeal.zeal.logic.CompoundEvaluator.CompoundRationaleBuilder.formatFailed;
+import static io.github.libzeal.zeal.logic.CompoundEvaluator.CompoundRationaleBuilder.formatPassed;
 import static io.github.libzeal.zeal.logic.test.Arguments.listWithSingleNull;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-class NonConjunctiveExpressionTest {
+class AndExpressionTest {
 
     private String name;
-    private NonConjunctiveExpression expression;
+    private AndExpression expression;
 
     @BeforeEach
     void setUp() {
 
         name = "foo";
 
-        expression = new NonConjunctiveExpression(name, new ArrayList<>());
+        expression = new AndExpression(name, new ArrayList<>());
     }
 
     @Test
     void givenNullName_whenConstruct_thenExceptionThrown() {
 
-        final ArrayList<Expression> list = new ArrayList<>();
+        final ArrayList<Expression> children = new ArrayList<>();
 
         assertThrows(
             NullPointerException.class,
-            () -> new NonConjunctiveExpression(null, list)
+            () -> new AndExpression(null, children)
         );
     }
 
@@ -47,7 +47,7 @@ class NonConjunctiveExpressionTest {
     void givenNullExpressionList_whenConstruct_thenExceptionThrown() {
         assertThrows(
             NullPointerException.class,
-            () -> new NonConjunctiveExpression(name, null)
+            () -> new AndExpression(name, null)
         );
     }
 
@@ -55,7 +55,7 @@ class NonConjunctiveExpressionTest {
     void givenNullName_whenConstructWithNameOnly_thenExceptionThrown() {
         assertThrows(
             NullPointerException.class,
-            () -> new NonConjunctiveExpression(null)
+            () -> new AndExpression(null)
         );
     }
 
@@ -63,7 +63,7 @@ class NonConjunctiveExpressionTest {
     void givenNullChildren_whenWithDefaultName_thenExceptionThrown() {
         assertThrows(
             NullPointerException.class,
-            () -> NonConjunctiveExpression.withDefaultName(null)
+            () -> AndExpression.withDefaultName(null)
         );
     }
 
@@ -74,7 +74,7 @@ class NonConjunctiveExpressionTest {
 
         assertThrows(
             NullPointerException.class,
-            () -> new NonConjunctiveExpression("foo", children)
+            () -> new AndExpression("foo", children)
         );
     }
 
@@ -85,7 +85,7 @@ class NonConjunctiveExpressionTest {
 
         assertThrows(
             NullPointerException.class,
-            () -> NonConjunctiveExpression.withDefaultName(children)
+            () -> AndExpression.withDefaultName(children)
         );
     }
 
@@ -94,9 +94,9 @@ class NonConjunctiveExpressionTest {
 
         final List<Expression> children = new ArrayList<>();
 
-        final Expression defaultNameExpression = NonConjunctiveExpression.withDefaultName(children);
+        final Expression defaultNameExpression = AndExpression.withDefaultName(children);
 
-        assertEquals(NonConjunctiveExpression.DEFAULT_NAME, defaultNameExpression.name());
+        assertEquals(AndExpression.DEFAULT_NAME, defaultNameExpression.name());
     }
 
     @Test
@@ -112,7 +112,7 @@ class NonConjunctiveExpressionTest {
 
         assertEquals(Result.TRUE, evaluation.result());
         assertEquals(name, evaluation.name());
-        assertEquals(formatFailed(0), rationale.expected());
+        assertEquals(formatPassed(0), rationale.expected());
         assertEquals(format(0, 0, 0), rationale.actual());
         assertFalse(rationale.hint().isPresent());
     }
@@ -120,24 +120,7 @@ class NonConjunctiveExpressionTest {
     @Test
     void givenOnePassingExpressionAppended_whenEvaluate_thenEvaluationIsCorrect() {
 
-        final Expression subExpression = Expressions.expression(Result.TRUE);
-
-        expression.append(subExpression);
-
-        final Evaluation evaluation = expression.evaluate();
-        final Rationale rationale = evaluation.rationale();
-
-        assertEquals(Result.FALSE, evaluation.result());
-        assertEquals(name, evaluation.name());
-        assertEquals(formatFailed(1), rationale.expected());
-        assertEquals(format(1, 0, 0), rationale.actual());
-        assertFalse(rationale.hint().isPresent());
-    }
-
-    @Test
-    void givenOneFailingExpressionAppended_whenEvaluate_thenEvaluationIsCorrect() {
-
-        final Expression subExpression = Expressions.expression(Result.FALSE);
+        final Expression subExpression = Expression.tautology();
 
         expression.append(subExpression);
 
@@ -146,7 +129,24 @@ class NonConjunctiveExpressionTest {
 
         assertEquals(Result.TRUE, evaluation.result());
         assertEquals(name, evaluation.name());
-        assertEquals(formatFailed(1), rationale.expected());
+        assertEquals(formatPassed(1), rationale.expected());
+        assertEquals(format(1, 0, 0), rationale.actual());
+        assertFalse(rationale.hint().isPresent());
+    }
+
+    @Test
+    void givenOneFailingExpressionAppended_whenEvaluate_thenEvaluationIsCorrect() {
+
+        final Expression subExpression = Expression.contradiction();
+
+        expression.append(subExpression);
+
+        final Evaluation evaluation = expression.evaluate();
+        final Rationale rationale = evaluation.rationale();
+
+        assertEquals(Result.FALSE, evaluation.result());
+        assertEquals(name, evaluation.name());
+        assertEquals(formatPassed(1), rationale.expected());
         assertEquals(format(0, 1, 0), rationale.actual());
         assertFalse(rationale.hint().isPresent());
     }
@@ -178,9 +178,9 @@ class NonConjunctiveExpressionTest {
         final Evaluation evaluation = expression.evaluate();
         final Rationale rationale = evaluation.rationale();
 
-        assertEquals(Result.TRUE, evaluation.result());
+        assertEquals(Result.FALSE, evaluation.result());
         assertEquals(name, evaluation.name());
-        assertEquals(formatFailed(1), rationale.expected());
+        assertEquals(formatPassed(2), rationale.expected());
         assertEquals(format(0, 1, 1), rationale.actual());
         assertFalse(rationale.hint().isPresent());
         assertIsSkipped(passingSubExpression);
@@ -206,9 +206,9 @@ class NonConjunctiveExpressionTest {
         final Evaluation evaluation = expression.evaluate();
         final Rationale rationale = evaluation.rationale();
 
-        assertEquals(Result.TRUE, evaluation.result());
+        assertEquals(Result.FALSE, evaluation.result());
         assertEquals(name, evaluation.name());
-        assertEquals(formatFailed(1), rationale.expected());
+        assertEquals(formatPassed(2), rationale.expected());
         assertEquals(format(1, 1, 0), rationale.actual());
         assertFalse(rationale.hint().isPresent());
         assertIsNotSkipped(failingSubExpression);
@@ -222,7 +222,8 @@ class NonConjunctiveExpressionTest {
     void givenSelfRootCause_whenEvaluate_thenRootCauseIsCorrect() {
 
         final Expression subExpression =
-            Expressions.expressionWithRootCause(Result.TRUE, CauseGenerator.self());
+            Expressions.expressionWithRootCause(Result.FALSE, CauseGenerator.self())
+                ;
 
         expression.append(subExpression);
 

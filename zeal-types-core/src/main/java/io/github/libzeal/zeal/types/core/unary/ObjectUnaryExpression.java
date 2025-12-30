@@ -1,7 +1,7 @@
 package io.github.libzeal.zeal.types.core.unary;
 
+import io.github.libzeal.zeal.logic.AndExpression;
 import io.github.libzeal.zeal.logic.Expression;
-import io.github.libzeal.zeal.logic.ConjunctiveExpression;
 import io.github.libzeal.zeal.logic.condition.Condition;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.rationale.ValueSupplier;
@@ -57,7 +57,7 @@ public class ObjectUnaryExpression<T, E extends ObjectUnaryExpression<T, E>> imp
 
     private final String name;
     private final T subject;
-    private final ConjunctiveExpression children;
+    private final AndExpression children;
     private final UnaryExpressionBuilder.BuildableExpression<E> buildable;
 
     /**
@@ -81,7 +81,7 @@ public class ObjectUnaryExpression<T, E extends ObjectUnaryExpression<T, E>> imp
     protected ObjectUnaryExpression(T subject, String name) {
         this.name = requireNonNull(name);
         this.subject = subject;
-        this.children = new ConjunctiveExpression(name);
+        this.children = new AndExpression(name);
         this.buildable = buildable();
     }
 

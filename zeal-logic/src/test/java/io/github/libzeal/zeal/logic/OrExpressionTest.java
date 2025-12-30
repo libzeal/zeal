@@ -7,7 +7,6 @@ import io.github.libzeal.zeal.logic.evaluation.cause.CauseGenerator;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
 import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
 import io.github.libzeal.zeal.logic.test.Expressions;
-import io.github.libzeal.zeal.logic.unary.UnaryExpression;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -15,22 +14,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static io.github.libzeal.zeal.logic.CompoundEvaluator.CompoundRationaleBuilder.format;
-import static io.github.libzeal.zeal.logic.CompoundEvaluator.CompoundRationaleBuilder.formatFailed;
+import static io.github.libzeal.zeal.logic.CompoundEvaluator.CompoundRationaleBuilder.formatPassed;
 import static io.github.libzeal.zeal.logic.test.Arguments.listWithSingleNull;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-class NonDisjunctiveExpressionTest {
+class OrExpressionTest {
 
     private String name;
-    private NonDisjunctiveExpression expression;
+    private OrExpression expression;
 
     @BeforeEach
     void setUp() {
 
         name = "foo";
 
-        expression = new NonDisjunctiveExpression(name, new ArrayList<>());
+        expression = new OrExpression(name, new ArrayList<>());
     }
 
     @Test
@@ -40,7 +39,7 @@ class NonDisjunctiveExpressionTest {
 
         assertThrows(
             NullPointerException.class,
-            () -> new NonDisjunctiveExpression(null, list)
+            () -> new OrExpression(null, list)
         );
     }
 
@@ -48,7 +47,7 @@ class NonDisjunctiveExpressionTest {
     void givenNullPredicateList_whenConstruct_thenExceptionThrown() {
         assertThrows(
             NullPointerException.class,
-            () -> new NonDisjunctiveExpression(name, null)
+            () -> new OrExpression(name, null)
         );
     }
 
@@ -56,7 +55,7 @@ class NonDisjunctiveExpressionTest {
     void givenNullName_whenConstructWithNameOnly_thenExceptionThrown() {
         assertThrows(
             NullPointerException.class,
-            () -> new NonDisjunctiveExpression(null)
+            () -> new OrExpression(null)
         );
     }
 
@@ -64,7 +63,7 @@ class NonDisjunctiveExpressionTest {
     void givenNullChildren_whenWithDefaultName_thenExceptionThrown() {
         assertThrows(
             NullPointerException.class,
-            () -> NonDisjunctiveExpression.withDefaultName(null)
+            () -> OrExpression.withDefaultName(null)
         );
     }
 
@@ -75,7 +74,7 @@ class NonDisjunctiveExpressionTest {
 
         assertThrows(
             NullPointerException.class,
-            () -> new NonDisjunctiveExpression("foo", children)
+            () -> new OrExpression("foo", children)
         );
     }
 
@@ -86,7 +85,7 @@ class NonDisjunctiveExpressionTest {
 
         assertThrows(
             NullPointerException.class,
-            () -> NonDisjunctiveExpression.withDefaultName(children)
+            () -> OrExpression.withDefaultName(children)
         );
     }
 
@@ -95,9 +94,9 @@ class NonDisjunctiveExpressionTest {
 
         final List<Expression> children = new ArrayList<>();
 
-        final Expression defaultNameExpression = NonDisjunctiveExpression.withDefaultName(children);
+        final Expression defaultNameExpression = OrExpression.withDefaultName(children);
 
-        assertEquals(NonDisjunctiveExpression.DEFAULT_NAME, defaultNameExpression.name());
+        assertEquals(OrExpression.DEFAULT_NAME, defaultNameExpression.name());
     }
 
     @Test
@@ -113,7 +112,7 @@ class NonDisjunctiveExpressionTest {
 
         assertEquals(Result.TRUE, evaluation.result());
         assertEquals(name, evaluation.name());
-        assertEquals(formatFailed(0), rationale.expected());
+        assertEquals(formatPassed(0), rationale.expected());
         assertEquals(format(0, 0, 0), rationale.actual());
         assertFalse(rationale.hint().isPresent());
     }
@@ -128,9 +127,9 @@ class NonDisjunctiveExpressionTest {
         final Evaluation evaluation = expression.evaluate();
         final Rationale rationale = evaluation.rationale();
 
-        assertEquals(Result.FALSE, evaluation.result());
+        assertEquals(Result.TRUE, evaluation.result());
         assertEquals(name, evaluation.name());
-        assertEquals(formatFailed(1), rationale.expected());
+        assertEquals(formatPassed(1), rationale.expected());
         assertEquals(format(1, 0, 0), rationale.actual());
         assertFalse(rationale.hint().isPresent());
     }
@@ -145,9 +144,9 @@ class NonDisjunctiveExpressionTest {
         final Evaluation evaluation = expression.evaluate();
         final Rationale rationale = evaluation.rationale();
 
-        assertEquals(Result.TRUE, evaluation.result());
+        assertEquals(Result.FALSE, evaluation.result());
         assertEquals(name, evaluation.name());
-        assertEquals(formatFailed(1), rationale.expected());
+        assertEquals(formatPassed(1), rationale.expected());
         assertEquals(format(0, 1, 0), rationale.actual());
         assertFalse(rationale.hint().isPresent());
     }
@@ -160,11 +159,10 @@ class NonDisjunctiveExpressionTest {
         expression.append(subPredicate);
 
         final Evaluation evaluation = expression.evaluate();
-        final Rationale rationale = evaluation.rationale();
 
         assertEquals(Result.SKIPPED, evaluation.result());
         assertEquals(name, evaluation.name());
-        assertEquals(SimpleRationale.skipped(), rationale);
+        assertEquals(SimpleRationale.skipped(), evaluation.rationale());
     }
 
     @Test
@@ -179,9 +177,9 @@ class NonDisjunctiveExpressionTest {
         final Evaluation evaluation = expression.evaluate();
         final Rationale rationale = evaluation.rationale();
 
-        assertEquals(Result.FALSE, evaluation.result());
+        assertEquals(Result.TRUE, evaluation.result());
         assertEquals(name, evaluation.name());
-        assertEquals(formatFailed(2), rationale.expected());
+        assertEquals(formatPassed(1), rationale.expected());
         assertEquals(format(1, 1, 0), rationale.actual());
         assertFalse(rationale.hint().isPresent());
         assertIsNotSkipped(failingSubPredicate);
@@ -207,9 +205,9 @@ class NonDisjunctiveExpressionTest {
         final Evaluation evaluation = expression.evaluate();
         final Rationale rationale = evaluation.rationale();
 
-        assertEquals(Result.FALSE, evaluation.result());
+        assertEquals(Result.TRUE, evaluation.result());
         assertEquals(name, evaluation.name());
-        assertEquals(formatFailed(2), rationale.expected());
+        assertEquals(formatPassed(1), rationale.expected());
         assertEquals(format(1, 0, 1), rationale.actual());
         assertFalse(rationale.hint().isPresent());
         assertIsSkipped(failingSubPredicate);
@@ -223,7 +221,8 @@ class NonDisjunctiveExpressionTest {
     void givenSelfRootCause_whenEvaluate_thenRootCauseIsCorrect() {
 
         final Expression subExpression =
-            Expressions.expressionWithRootCause(Result.TRUE, CauseGenerator.self());
+            Expressions.expressionWithRootCause(Result.FALSE, CauseGenerator.self())
+                ;
 
         expression.append(subExpression);
 

@@ -7,6 +7,6 @@ public class PreconditionExamples {
 
     public static void main(String[] args) {
 
-        require(value("foo").isEqualTo("baz").isEqualTo("bar"));
+        require(value("foo").isEqualTo("foo").isEqualTo("bar").isEqualTo("baz"));
     }
 }

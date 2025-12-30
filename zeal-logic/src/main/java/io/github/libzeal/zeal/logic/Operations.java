@@ -24,8 +24,8 @@ public final class Operations {
      * @throws NullPointerException
      *     The supplied expression is {@code null}.
      */
-    public static NegatedExpression not(final Expression expression) {
-        return new NegatedExpression(expression);
+    public static NotExpression not(final Expression expression) {
+        return new NotExpression(expression);
     }
 
     /**
@@ -39,8 +39,8 @@ public final class Operations {
      * @throws NullPointerException
      *     Any of the supplied expressions is {@code null}.
      */
-    public static ConjunctiveExpression and(final Expression... expressions) {
-        return ConjunctiveExpression.withDefaultName(Arrays.asList(expressions));
+    public static AndExpression and(final Expression... expressions) {
+        return AndExpression.withDefaultName(Arrays.asList(expressions));
     }
 
     /**
@@ -54,8 +54,8 @@ public final class Operations {
      * @throws NullPointerException
      *     Any of the supplied expressions is {@code null}.
      */
-    public static DisjunctiveExpression or(final Expression... expressions) {
-        return DisjunctiveExpression.withDefaultName(Arrays.asList(expressions));
+    public static OrExpression or(final Expression... expressions) {
+        return OrExpression.withDefaultName(Arrays.asList(expressions));
     }
 
     /**
@@ -69,8 +69,8 @@ public final class Operations {
      * @throws NullPointerException
      *     Any of the supplied expressions is {@code null}.
      */
-    public static NonConjunctiveExpression nand(final Expression... expressions) {
-        return NonConjunctiveExpression.withDefaultName(Arrays.asList(expressions));
+    public static NotExpression nand(final Expression... expressions) {
+        return new NotExpression(AndExpression.withDefaultName(Arrays.asList(expressions)));
     }
 
     /**
@@ -84,7 +84,7 @@ public final class Operations {
      * @throws NullPointerException
      *     Any of the supplied expressions is {@code null}.
      */
-    public static NonDisjunctiveExpression nor(final Expression... expressions) {
-        return NonDisjunctiveExpression.withDefaultName(Arrays.asList(expressions));
+    public static NotExpression nor(final Expression... expressions) {
+        return new NotExpression(OrExpression.withDefaultName(Arrays.asList(expressions)));
     }
 }

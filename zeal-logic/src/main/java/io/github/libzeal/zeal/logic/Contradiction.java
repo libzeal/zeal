@@ -14,7 +14,7 @@ import java.time.Duration;
  * @author Justin Albano
  * @since 0.2.1
  */
-public class Contradiction implements Expression {
+class Contradiction implements Expression {
 
     static final String NAME = "Contradiction";
     private static final Evaluation EVALUATION = new ContradictoryEvaluation();

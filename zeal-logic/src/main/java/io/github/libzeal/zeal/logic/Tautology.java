@@ -14,7 +14,7 @@ import java.time.Duration;
  * @author Justin Albano
  * @since 0.2.1
  */
-public class Tautology implements Expression {
+class Tautology implements Expression {
 
     static final String NAME = "Tautology";
     private static final Evaluation EVALUATION = new TautologicalEvaluation();

@@ -1,9 +1,9 @@
 package io.github.libzeal.zeal.logic.condition;
 
+import io.github.libzeal.zeal.logic.AndExpression;
 import io.github.libzeal.zeal.logic.Expression;
-import io.github.libzeal.zeal.logic.ConjunctiveExpression;
-import io.github.libzeal.zeal.logic.DisjunctiveExpression;
-import io.github.libzeal.zeal.logic.NonDisjunctiveExpression;
+import io.github.libzeal.zeal.logic.Operations;
+import io.github.libzeal.zeal.logic.OrExpression;
 import io.github.libzeal.zeal.logic.rationale.RationaleGenerator;
 import io.github.libzeal.zeal.logic.rationale.SimpleRationaleGenerator;
 import io.github.libzeal.zeal.logic.unary.TerminalUnaryExpression;
@@ -92,7 +92,7 @@ final class ObjectConditions {
                 .map(c -> c.create(subject))
                 .collect(Collectors.toList());
 
-            return DisjunctiveExpression.withDefaultName(collected);
+            return OrExpression.withDefaultName(collected);
         };
     }
 
@@ -107,7 +107,7 @@ final class ObjectConditions {
                 .map(c -> c.create(subject))
                 .collect(Collectors.toList());
 
-            return DisjunctiveExpression.withDefaultName(collected);
+            return OrExpression.withDefaultName(collected);
         };
     }
 
@@ -121,7 +121,7 @@ final class ObjectConditions {
                 .map(c -> c.create(subject))
                 .collect(Collectors.toList());
 
-            return DisjunctiveExpression.withDefaultName(collected);
+            return OrExpression.withDefaultName(collected);
         };
     }
 
@@ -139,7 +139,7 @@ final class ObjectConditions {
                 .map(c -> c.create(subject))
                 .collect(Collectors.toList());
 
-            return ConjunctiveExpression.withDefaultName(collected);
+            return AndExpression.withDefaultName(collected);
         };
     }
 
@@ -154,7 +154,7 @@ final class ObjectConditions {
                 .map(c -> c.create(subject))
                 .collect(Collectors.toList());
 
-            return ConjunctiveExpression.withDefaultName(collected);
+            return AndExpression.withDefaultName(collected);
         };
     }
 
@@ -168,7 +168,7 @@ final class ObjectConditions {
                 .map(c -> c.create(subject))
                 .collect(Collectors.toList());
 
-            return ConjunctiveExpression.withDefaultName(collected);
+            return AndExpression.withDefaultName(collected);
         };
     }
 
@@ -182,7 +182,7 @@ final class ObjectConditions {
                 .map(c -> c.create(subject))
                 .collect(Collectors.toList());
 
-            return NonDisjunctiveExpression.withDefaultName(collected);
+            return Operations.nor(collected.toArray(new Expression[0]));
         };
     }
 
@@ -197,7 +197,7 @@ final class ObjectConditions {
                 .map(c -> c.create(subject))
                 .collect(Collectors.toList());
 
-            return NonDisjunctiveExpression.withDefaultName(collected);
+            return Operations.nor(collected.toArray(new Expression[0]));
         };
     }
 
@@ -211,7 +211,7 @@ final class ObjectConditions {
                 .map(c -> c.create(subject))
                 .collect(Collectors.toList());
 
-            return NonDisjunctiveExpression.withDefaultName(collected);
+            return Operations.nor(collected.toArray(new Expression[0]));
         };
     }
 }

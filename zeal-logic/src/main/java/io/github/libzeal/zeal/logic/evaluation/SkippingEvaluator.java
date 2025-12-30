@@ -1,9 +1,7 @@
 package io.github.libzeal.zeal.logic.evaluation;
 
-import io.github.libzeal.zeal.logic.Contradiction;
 import io.github.libzeal.zeal.logic.Expression;
-import io.github.libzeal.zeal.logic.NegatedExpression;
-import io.github.libzeal.zeal.logic.Tautology;
+import io.github.libzeal.zeal.logic.NotExpression;
 import io.github.libzeal.zeal.logic.CompoundExpression;
 import io.github.libzeal.zeal.logic.evaluation.cause.Cause;
 
@@ -15,10 +13,10 @@ public class SkippingEvaluator {
 
     public Evaluation skip(final Expression expression, final Cause cause) {
 
-        if (expression instanceof NegatedExpression) {
+        if (expression instanceof NotExpression) {
 
-            final NegatedExpression negatedExpression = (NegatedExpression) expression;
-            final Expression wrapped = negatedExpression.wrapped();
+            final NotExpression notExpression = (NotExpression) expression;
+            final Expression wrapped = notExpression.wrapped();
             final Evaluation wrappedEvaluation = skip(wrapped, cause);
 
             return new SkippedCompoundEvaluation(expression.name(), e -> cause,

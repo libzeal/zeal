@@ -19,10 +19,10 @@ class OperationsTest {
     void givenValidWrappedExpression_whenNot_thenCorrectExpressionReturned() {
 
         final Expression wrappedExpression = mock(Expression.class);
-        final NegatedExpression expression = Operations.not(wrappedExpression);
+        final NotExpression expression = Operations.not(wrappedExpression);
 
         assertNotNull(expression);
-        assertInstanceOf(NegatedExpression.class, expression);
+        assertInstanceOf(NotExpression.class, expression);
     }
 
     @Test
@@ -37,10 +37,10 @@ class OperationsTest {
     void givenValidWrappedExpressions_whenAnd_thenCorrectExpressionReturned() {
 
         final Expression wrappedExpression = mock(Expression.class);
-        final ConjunctiveExpression expression = Operations.and(wrappedExpression);
+        final AndExpression expression = Operations.and(wrappedExpression);
 
         assertNotNull(expression);
-        assertInstanceOf(ConjunctiveExpression.class, expression);
+        assertInstanceOf(AndExpression.class, expression);
     }
 
     @Test
@@ -55,10 +55,10 @@ class OperationsTest {
     void givenValidWrappedExpressions_whenOr_thenCorrectExpressionReturned() {
 
         final Expression wrappedExpression = mock(Expression.class);
-        final DisjunctiveExpression expression = Operations.or(wrappedExpression);
+        final OrExpression expression = Operations.or(wrappedExpression);
 
         assertNotNull(expression);
-        assertInstanceOf(DisjunctiveExpression.class, expression);
+        assertInstanceOf(OrExpression.class, expression);
     }
 
     @Test
@@ -73,10 +73,10 @@ class OperationsTest {
     void givenValidWrappedExpressions_whenNand_thenCorrectExpressionReturned() {
 
         final Expression wrappedExpression = mock(Expression.class);
-        final NonConjunctiveExpression expression = Operations.nand(wrappedExpression);
+        final Expression expression = Operations.nand(wrappedExpression);
 
         assertNotNull(expression);
-        assertInstanceOf(NonConjunctiveExpression.class, expression);
+        assertInstanceOf(NotExpression.class, expression);
     }
 
     @Test
@@ -91,9 +91,9 @@ class OperationsTest {
     void givenValidWrappedExpressions_whenNor_thenCorrectExpressionReturned() {
 
         final Expression wrappedExpression = mock(Expression.class);
-        final NonDisjunctiveExpression expression = Operations.nor(wrappedExpression);
+        final Expression expression = Operations.nor(wrappedExpression);
 
         assertNotNull(expression);
-        assertInstanceOf(NonDisjunctiveExpression.class, expression);
+        assertInstanceOf(NotExpression.class, expression);
     }
 }

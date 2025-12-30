@@ -1,6 +1,5 @@
 package io.github.libzeal.zeal.logic;
 
-import io.github.libzeal.zeal.logic.evaluation.SkippingEvaluator;
 import io.github.libzeal.zeal.logic.evaluation.cause.Cause;
 import io.github.libzeal.zeal.logic.evaluation.CompoundEvaluation;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
@@ -25,7 +24,7 @@ import static java.util.Objects.requireNonNull;
  * @author Justin Albano
  * @since 0.2.1
  */
-public class NegatedExpression implements Expression {
+public class NotExpression implements Expression {
 
     /**
      * The actual value for the rationale if the wrapped expression is true.
@@ -58,7 +57,7 @@ public class NegatedExpression implements Expression {
      * @throws NullPointerException
      *     The supplied wrapped expression is {@code null}.
      */
-    public NegatedExpression(final Expression wrapped) {
+    public NotExpression(final Expression wrapped) {
         this.wrapped = requireNonNull(wrapped);
     }
 

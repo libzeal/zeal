@@ -11,50 +11,50 @@ import static io.github.libzeal.zeal.logic.util.ArgumentValidator.requireDoesNot
 import static java.util.Objects.requireNonNull;
 
 /**
- * A compound expression where all sub-expression must be pass for the compound expression to pass.
+ * A compound expression where at least one sub-expression must be pass for the compound expression to pass.
  *
  * @author Justin Albano
  * @since 0.2.1
  */
-public class ConjunctiveExpression implements CompoundExpression {
+public class OrExpression implements CompoundExpression {
 
-    static final String DEFAULT_NAME = "All (AND)";
+    static final String DEFAULT_NAME = "Any (OR)";
     private final String name;
     private final List<Expression> children;
 
     /**
-     * Creates a new conjunctive expression.
+     * Creates a new disjunctive expression.
      *
      * @param name
      *     The name of the expression.
      * @param children
-     *     The expressions used to initialize the compound expression.
+     *     The expressions used initialize to the compound expression.
      *
      * @throws NullPointerException
      *     The supplied name is {@code null} or the children contains a {@code null} value.
      */
-    public ConjunctiveExpression(String name, List<Expression> children) {
+    public OrExpression(String name, List<Expression> children) {
         this.name = requireNonNull(name);
         this.children = requireDoesNotContainNulls(children);
     }
 
     /**
-     * Creates a new conjunctive expression using a default name.
+     * Creates a new disjunctive expression using a default name.
      *
      * @param children
      *     The expressions used to initialize the compound expression.
      *
-     * @return A conjunctive expression with a default name.
+     * @return A disjunctive expression with a default name.
      *
      * @throws NullPointerException
      *     The supplied name is {@code null} or the children contains a {@code null} value.
      */
-    public static ConjunctiveExpression withDefaultName(final List<Expression> children) {
-        return new ConjunctiveExpression(DEFAULT_NAME, children);
+    public static OrExpression withDefaultName(final List<Expression> children) {
+        return new OrExpression(DEFAULT_NAME, children);
     }
 
     /**
-     * Creates a new conjunctive expression with an empty default sub-expression list.
+     * Creates a new disjunctive expression with an empty default sub-expression list.
      *
      * @param name
      *     The name of the expression.
@@ -62,7 +62,7 @@ public class ConjunctiveExpression implements CompoundExpression {
      * @throws NullPointerException
      *     The supplied name is {@code null}.
      */
-    public ConjunctiveExpression(String name) {
+    public OrExpression(String name) {
         this(name, new ArrayList<>(1));
     }
 
@@ -72,13 +72,13 @@ public class ConjunctiveExpression implements CompoundExpression {
     }
 
     @Override
-    public void append(final Expression expression) {
-        this.children.add(expression);
+    public void append(Expression predicate) {
+        this.children.add(predicate);
     }
 
     @Override
-    public void prepend(final Expression expression) {
-        this.children.add(0, expression);
+    public void prepend(Expression predicate) {
+        this.children.add(0, predicate);
     }
 
     @Override
@@ -89,12 +89,13 @@ public class ConjunctiveExpression implements CompoundExpression {
     @Override
     public Evaluation evaluate() {
 
-        final CompoundRationaleBuilder builder = CompoundRationaleBuilder.withExpectedPassed(children.size());
+        final int expectedPassed = children.isEmpty() ? 0 : 1;
+        final CompoundRationaleBuilder builder = CompoundRationaleBuilder.withExpectedPassed(expectedPassed);
 
         return new CompoundEvaluator(
             name,
-            Tally::allPassed,
-            Tally::anyFailed,
+            Tally::anyPassed,
+            Tally::allFailed,
             builder
         ).evaluate(children);
     }
