@@ -5,6 +5,7 @@ import io.github.libzeal.zeal.logic.CompoundEvaluator.Tally;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static io.github.libzeal.zeal.logic.util.ArgumentValidator.requireDoesNotContainNulls;
@@ -18,7 +19,7 @@ import static java.util.Objects.requireNonNull;
  */
 public class AndExpression implements CompoundExpression {
 
-    static final String DEFAULT_NAME = "All (AND)";
+    static final String DEFAULT_NAME = "AND";
     private final String name;
     private final List<Expression> children;
 
@@ -49,8 +50,23 @@ public class AndExpression implements CompoundExpression {
      * @throws NullPointerException
      *     The supplied name is {@code null} or the children contains a {@code null} value.
      */
-    public static AndExpression withDefaultName(final List<Expression> children) {
+    public static AndExpression unnamed(final List<Expression> children) {
         return new AndExpression(DEFAULT_NAME, children);
+    }
+
+    /**
+     * Creates a new conjunctive expression using a default name.
+     *
+     * @param children
+     *     The expressions used to initialize the compound expression.
+     *
+     * @return A conjunctive expression with a default name.
+     *
+     * @throws NullPointerException
+     *     The supplied name is {@code null} or the children contains a {@code null} value.
+     */
+    public static AndExpression unnamed(final Expression... children) {
+        return new AndExpression(DEFAULT_NAME, Arrays.asList(children));
     }
 
     /**

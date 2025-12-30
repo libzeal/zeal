@@ -5,6 +5,7 @@ import io.github.libzeal.zeal.logic.CompoundEvaluator.Tally;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static io.github.libzeal.zeal.logic.util.ArgumentValidator.requireDoesNotContainNulls;
@@ -18,7 +19,7 @@ import static java.util.Objects.requireNonNull;
  */
 public class OrExpression implements CompoundExpression {
 
-    static final String DEFAULT_NAME = "Any (OR)";
+    static final String DEFAULT_NAME = "OR";
     private final String name;
     private final List<Expression> children;
 
@@ -49,8 +50,23 @@ public class OrExpression implements CompoundExpression {
      * @throws NullPointerException
      *     The supplied name is {@code null} or the children contains a {@code null} value.
      */
-    public static OrExpression withDefaultName(final List<Expression> children) {
+    public static OrExpression unnamed(final List<Expression> children) {
         return new OrExpression(DEFAULT_NAME, children);
+    }
+
+    /**
+     * Creates a new disjunctive expression using a default name.
+     *
+     * @param children
+     *     The expressions used to initialize the compound expression.
+     *
+     * @return A disjunctive expression with a default name.
+     *
+     * @throws NullPointerException
+     *     The supplied name is {@code null} or the children contains a {@code null} value.
+     */
+    public static OrExpression unnamed(final Expression... children) {
+        return new OrExpression(DEFAULT_NAME, Arrays.asList(children));
     }
 
     /**

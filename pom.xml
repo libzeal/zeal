@@ -66,7 +66,7 @@
         <module>zeal-assertion</module>
         <module>zeal-assertion-examples</module>
         <module>zeal-logic</module>
-        <module>zeal-types-core</module>
+        <module>zeal-values-core</module>
         <module>zeal-report-aggregate</module>
     </modules>
 
@@ -89,7 +89,7 @@
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>zeal-types-core</artifactId>
+                <artifactId>zeal-values-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

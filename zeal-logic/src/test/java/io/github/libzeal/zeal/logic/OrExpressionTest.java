@@ -60,10 +60,18 @@ class OrExpressionTest {
     }
 
     @Test
-    void givenNullChildren_whenWithDefaultName_thenExceptionThrown() {
+    void givenNullListChildren_whenWithDefaultName_thenExceptionThrown() {
         assertThrows(
             NullPointerException.class,
-            () -> OrExpression.withDefaultName(null)
+            () -> OrExpression.unnamed((List<Expression>) null)
+        );
+    }
+
+    @Test
+    void givenNullVarargsChildren_whenWithDefaultName_thenExceptionThrown() {
+        assertThrows(
+            NullPointerException.class,
+            () -> OrExpression.unnamed((Expression[]) null)
         );
     }
 
@@ -85,7 +93,7 @@ class OrExpressionTest {
 
         assertThrows(
             NullPointerException.class,
-            () -> OrExpression.withDefaultName(children)
+            () -> OrExpression.unnamed(children)
         );
     }
 
@@ -94,7 +102,7 @@ class OrExpressionTest {
 
         final List<Expression> children = new ArrayList<>();
 
-        final Expression defaultNameExpression = OrExpression.withDefaultName(children);
+        final Expression defaultNameExpression = OrExpression.unnamed(children);
 
         assertEquals(OrExpression.DEFAULT_NAME, defaultNameExpression.name());
     }

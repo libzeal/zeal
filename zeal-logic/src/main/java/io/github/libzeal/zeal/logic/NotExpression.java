@@ -44,8 +44,9 @@ public class NotExpression implements Expression {
     /**
      * The default name of a negated expression.
      */
-    public static final String DEFAULT_NAME = "Not (NOT)";
+    public static final String DEFAULT_NAME = "NOT";
 
+    private final String name;
     private final Expression wrapped;
 
     /**
@@ -57,8 +58,22 @@ public class NotExpression implements Expression {
      * @throws NullPointerException
      *     The supplied wrapped expression is {@code null}.
      */
-    public NotExpression(final Expression wrapped) {
+    public NotExpression(final String name, final Expression wrapped) {
+        this.name = name;
         this.wrapped = requireNonNull(wrapped);
+    }
+
+    /**
+     * Creates a new expression that negates the supplied expression.
+     *
+     * @param wrapped
+     *     The expression to negate.
+     *
+     * @throws NullPointerException
+     *     The supplied wrapped expression is {@code null}.
+     */
+    public static NotExpression unnamed(final Expression wrapped) {
+        return new NotExpression(DEFAULT_NAME, wrapped);
     }
 
     @Override
@@ -117,7 +132,7 @@ public class NotExpression implements Expression {
 
     @Override
     public String name() {
-        return DEFAULT_NAME;
+        return name;
     }
 
     public Expression wrapped() {

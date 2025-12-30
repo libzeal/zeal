@@ -7,8 +7,8 @@
       <sourceFolder url="file://$MODULE_DIR$/zeal-assertion/src/test/java" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/zeal-logic/src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/zeal-logic/src/test/java" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/zeal-types-core/src/main/java" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/zeal-types-core/src/test/java" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/zeal-values-core/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/zeal-values-core/src/test/java" isTestSource="true" />
     </content>
   </component>
 </module>

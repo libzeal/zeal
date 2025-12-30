@@ -90,7 +90,7 @@ final class ObjectConditions {
                 .map(c -> c.create(subject))
                 .collect(Collectors.toList());
 
-            return OrExpression.withDefaultName(collected);
+            return OrExpression.unnamed(collected);
         };
     }
 
@@ -105,7 +105,7 @@ final class ObjectConditions {
                 .map(c -> c.create(subject))
                 .collect(Collectors.toList());
 
-            return OrExpression.withDefaultName(collected);
+            return OrExpression.unnamed(collected);
         };
     }
 
@@ -119,7 +119,7 @@ final class ObjectConditions {
                 .map(c -> c.create(subject))
                 .collect(Collectors.toList());
 
-            return OrExpression.withDefaultName(collected);
+            return OrExpression.unnamed(collected);
         };
     }
 
@@ -137,7 +137,7 @@ final class ObjectConditions {
                 .map(c -> c.create(subject))
                 .collect(Collectors.toList());
 
-            return AndExpression.withDefaultName(collected);
+            return AndExpression.unnamed(collected);
         };
     }
 
@@ -152,7 +152,7 @@ final class ObjectConditions {
                 .map(c -> c.create(subject))
                 .collect(Collectors.toList());
 
-            return AndExpression.withDefaultName(collected);
+            return AndExpression.unnamed(collected);
         };
     }
 
@@ -166,7 +166,7 @@ final class ObjectConditions {
                 .map(c -> c.create(subject))
                 .collect(Collectors.toList());
 
-            return AndExpression.withDefaultName(collected);
+            return AndExpression.unnamed(collected);
         };
     }
 

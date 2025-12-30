@@ -60,10 +60,18 @@ class AndExpressionTest {
     }
 
     @Test
-    void givenNullChildren_whenWithDefaultName_thenExceptionThrown() {
+    void givenNullListChildren_whenWithDefaultName_thenExceptionThrown() {
         assertThrows(
             NullPointerException.class,
-            () -> AndExpression.withDefaultName(null)
+            () -> AndExpression.unnamed((List<Expression>) null)
+        );
+    }
+
+    @Test
+    void givenNullVarargsChildren_whenWithDefaultName_thenExceptionThrown() {
+        assertThrows(
+            NullPointerException.class,
+            () -> AndExpression.unnamed((Expression[]) null)
         );
     }
 
@@ -85,7 +93,7 @@ class AndExpressionTest {
 
         assertThrows(
             NullPointerException.class,
-            () -> AndExpression.withDefaultName(children)
+            () -> AndExpression.unnamed(children)
         );
     }
 
@@ -94,7 +102,7 @@ class AndExpressionTest {
 
         final List<Expression> children = new ArrayList<>();
 
-        final Expression defaultNameExpression = AndExpression.withDefaultName(children);
+        final Expression defaultNameExpression = AndExpression.unnamed(children);
 
         assertEquals(AndExpression.DEFAULT_NAME, defaultNameExpression.name());
     }

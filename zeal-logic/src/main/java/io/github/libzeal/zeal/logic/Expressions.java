@@ -63,7 +63,7 @@ public final class Expressions {
      *     The supplied expression is {@code null}.
      */
     public static NotExpression not(final Expression expression) {
-        return new NotExpression(expression);
+        return NotExpression.unnamed(expression);
     }
 
     /**
@@ -78,7 +78,7 @@ public final class Expressions {
      *     Any of the supplied expressions is {@code null}.
      */
     public static AndExpression and(final Expression... expressions) {
-        return AndExpression.withDefaultName(Arrays.asList(expressions));
+        return AndExpression.unnamed(Arrays.asList(expressions));
     }
 
     /**
@@ -93,7 +93,7 @@ public final class Expressions {
      *     Any of the supplied expressions is {@code null}.
      */
     public static OrExpression or(final Expression... expressions) {
-        return OrExpression.withDefaultName(Arrays.asList(expressions));
+        return OrExpression.unnamed(Arrays.asList(expressions));
     }
 
     /**
@@ -108,7 +108,7 @@ public final class Expressions {
      *     Any of the supplied expressions is {@code null}.
      */
     public static NotExpression nand(final Expression... expressions) {
-        return new NotExpression(AndExpression.withDefaultName(Arrays.asList(expressions)));
+        return NotExpression.unnamed(AndExpression.unnamed(expressions));
     }
 
     /**
@@ -123,6 +123,6 @@ public final class Expressions {
      *     Any of the supplied expressions is {@code null}.
      */
     public static NotExpression nor(final Expression... expressions) {
-        return new NotExpression(OrExpression.withDefaultName(Arrays.asList(expressions)));
+        return NotExpression.unnamed(OrExpression.unnamed(expressions));
     }
 }

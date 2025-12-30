@@ -19,7 +19,7 @@ class NotExpressionTest {
     void givenNullWrappedExpression_whenConstruct_thenExceptionThrown() {
         assertThrows(
             NullPointerException.class,
-            () -> new NotExpression(null)
+            () -> NotExpression.unnamed(null)
         );
     }
 
@@ -27,7 +27,7 @@ class NotExpressionTest {
     void givenTrueExpression_whenEvaluate_thenEvaluationIsCorrect() {
 
         final Expression trueExpression = Expressions.tautology();
-        final NotExpression expression = new NotExpression(trueExpression);
+        final NotExpression expression = NotExpression.unnamed(trueExpression);
         final Evaluation evaluation = expression.evaluate();
         final Rationale rationale = evaluation.rationale();
 
@@ -42,7 +42,7 @@ class NotExpressionTest {
     void givenFalseExpression_whenEvaluate_thenEvaluationIsCorrect() {
 
         final Expression falseExpression = Expressions.contradiction();
-        final NotExpression expression = new NotExpression(falseExpression);
+        final NotExpression expression = NotExpression.unnamed(falseExpression);
         final Evaluation evaluation = expression.evaluate();
         final Rationale rationale = evaluation.rationale();
 
@@ -57,7 +57,7 @@ class NotExpressionTest {
     void givenSkippedExpression_whenEvaluate_thenEvaluationIsCorrect() {
 
         final Expression skippedExpression = skippedEvaluation();
-        final NotExpression expression = new NotExpression(skippedExpression);
+        final NotExpression expression = NotExpression.unnamed(skippedExpression);
         final Evaluation evaluation = expression.evaluate();
         final Rationale rationale = evaluation.rationale();
 
