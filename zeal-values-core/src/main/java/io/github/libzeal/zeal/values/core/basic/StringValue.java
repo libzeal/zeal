@@ -1,4 +1,4 @@
-package io.github.libzeal.zeal.values.core.unary;
+package io.github.libzeal.zeal.values.core.basic;
 
 import io.github.libzeal.zeal.logic.unary.ValueSupplier;
 

@@ -1,5 +1,7 @@
 package io.github.libzeal.zeal.values.core.unary.boxed;
 
+import io.github.libzeal.zeal.values.core.boxed.BoxedShortValue;
+
 class BoxedShortValueTest extends BoxedWholeNumberValueTest<Short, BoxedShortValue> {
 
     @Override

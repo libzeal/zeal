@@ -1,4 +1,4 @@
-package io.github.libzeal.zeal.values.core.unary;
+package io.github.libzeal.zeal.values.core.basic;
 
 /**
  * An expression used to evaluate {@link Object} instances.

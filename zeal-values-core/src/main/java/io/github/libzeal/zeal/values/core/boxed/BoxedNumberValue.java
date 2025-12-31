@@ -1,8 +1,8 @@
-package io.github.libzeal.zeal.values.core.unary.boxed;
+package io.github.libzeal.zeal.values.core.boxed;
 
 import io.github.libzeal.zeal.logic.util.Formatter;
-import io.github.libzeal.zeal.values.core.unary.ObjectValue;
-import io.github.libzeal.zeal.values.core.unary.ValueBuilder;
+import io.github.libzeal.zeal.values.core.basic.ObjectValue;
+import io.github.libzeal.zeal.values.core.basic.ValueBuilder;
 
 import java.util.function.Predicate;
 

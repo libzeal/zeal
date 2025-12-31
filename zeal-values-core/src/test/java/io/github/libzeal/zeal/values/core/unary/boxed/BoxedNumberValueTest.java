@@ -1,6 +1,7 @@
 package io.github.libzeal.zeal.values.core.unary.boxed;
 
 import io.github.libzeal.zeal.logic.util.Formatter;
+import io.github.libzeal.zeal.values.core.boxed.BoxedNumberValue;
 import io.github.libzeal.zeal.values.core.unary.test.ExpressionTestCaseBuilder;
 import io.github.libzeal.zeal.values.core.unary.ObjectValueTest;
 

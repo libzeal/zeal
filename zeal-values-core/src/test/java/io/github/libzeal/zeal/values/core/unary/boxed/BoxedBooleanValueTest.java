@@ -1,5 +1,6 @@
 package io.github.libzeal.zeal.values.core.unary.boxed;
 
+import io.github.libzeal.zeal.values.core.boxed.BoxedBooleanValue;
 import io.github.libzeal.zeal.values.core.unary.ObjectValueTest;
 import io.github.libzeal.zeal.values.core.unary.test.ExpressionTestCaseBuilder;
 

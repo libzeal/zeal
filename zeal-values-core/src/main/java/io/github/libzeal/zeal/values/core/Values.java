@@ -1,8 +1,9 @@
 package io.github.libzeal.zeal.values.core;
 
-import io.github.libzeal.zeal.values.core.unary.GeneralEnumValue;
-import io.github.libzeal.zeal.values.core.unary.GeneralObjectValue;
-import io.github.libzeal.zeal.values.core.unary.StringValue;
+import io.github.libzeal.zeal.values.core.basic.GeneralEnumValue;
+import io.github.libzeal.zeal.values.core.basic.GeneralObjectValue;
+import io.github.libzeal.zeal.values.core.basic.StringValue;
+import io.github.libzeal.zeal.values.core.boxed.*;
 import io.github.libzeal.zeal.values.core.unary.boxed.*;
 
 /**

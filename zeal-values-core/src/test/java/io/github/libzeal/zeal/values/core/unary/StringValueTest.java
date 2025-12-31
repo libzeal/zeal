@@ -1,5 +1,6 @@
 package io.github.libzeal.zeal.values.core.unary;
 
+import io.github.libzeal.zeal.values.core.basic.StringValue;
 import io.github.libzeal.zeal.values.core.unary.test.ExpressionTestCaseBuilder;
 
 import static io.github.libzeal.zeal.logic.evaluation.Result.FALSE;

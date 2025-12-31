@@ -6,8 +6,8 @@ import io.github.libzeal.zeal.logic.evaluation.traverse.CollectingTraverserActio
 import io.github.libzeal.zeal.logic.evaluation.Result;
 import io.github.libzeal.zeal.logic.evaluation.traverse.DepthFirstTraverser;
 import io.github.libzeal.zeal.logic.evaluation.traverse.Traverser;
-import io.github.libzeal.zeal.logic.evaluation.traverse.TraverserAction;
 import io.github.libzeal.zeal.logic.util.Formatter;
+import io.github.libzeal.zeal.values.core.basic.ObjectValue;
 import io.github.libzeal.zeal.values.core.unary.test.EvaluatedExpressionAssertion;
 import io.github.libzeal.zeal.values.core.unary.test.ExpressionTestCaseBuilder;
 import org.junit.jupiter.api.Test;
@@ -24,7 +24,7 @@ import java.util.stream.Stream;
 import static io.github.libzeal.zeal.logic.evaluation.Result.*;
 import static io.github.libzeal.zeal.logic.evaluation.Result.FALSE;
 import static io.github.libzeal.zeal.logic.evaluation.Result.TRUE;
-import static io.github.libzeal.zeal.values.core.unary.ObjectValue.*;
+import static io.github.libzeal.zeal.values.core.basic.ObjectValue.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 

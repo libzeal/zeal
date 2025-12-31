@@ -1,5 +1,6 @@
 package io.github.libzeal.zeal.values.core.unary;
 
+import io.github.libzeal.zeal.values.core.basic.GeneralEnumValue;
 import io.github.libzeal.zeal.values.core.unary.test.MockEnum;
 
 @SuppressWarnings("java:S2187")

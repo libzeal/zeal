@@ -1,14 +1,14 @@
-package io.github.libzeal.zeal.values.core.unary.boxed;
+package io.github.libzeal.zeal.values.core.boxed;
 
 /**
- * An expression used to evaluate {@link Double} instances.
+ * An expression used to evaluate {@link Float} instances.
  * <p>
- * Note: Many of the predicates of this expression require unboxing, resulting in some performance loss.
+ * Many of the predicates of this expression require unboxing, resulting in some performance loss.
  *
  * @author Justin Albano
  * @since 0.2.0
  */
-public class BoxedDoubleValue extends BoxedNumberValue<Double, BoxedDoubleValue> {
+public class BoxedFloatValue extends BoxedNumberValue<Float, BoxedFloatValue> {
 
     /**
      * Creates a new expression.
@@ -16,8 +16,8 @@ public class BoxedDoubleValue extends BoxedNumberValue<Double, BoxedDoubleValue>
      * @param subject
      *     The subject of the expression.
      */
-    public BoxedDoubleValue(final Double subject) {
-        super(subject, "Double expression");
+    public BoxedFloatValue(final Float subject) {
+        super(subject, "Float expression");
     }
 
     /**
@@ -33,7 +33,7 @@ public class BoxedDoubleValue extends BoxedNumberValue<Double, BoxedDoubleValue>
      *
      * @return This expression (fluent interface).
      */
-    public BoxedDoubleValue isEqualTo(final Double value, final Double delta) {
+    public BoxedFloatValue isEqualTo(final Float value, final Float delta) {
         return append(
             expression(d -> Math.abs(d - value) <= delta)
                 .name("isEqualTo[" + value + " +/- " + delta + "]")
@@ -46,9 +46,9 @@ public class BoxedDoubleValue extends BoxedNumberValue<Double, BoxedDoubleValue>
      *
      * @return This expression (fluent interface).
      */
-    public BoxedDoubleValue isFinite() {
+    public BoxedFloatValue isFinite() {
         return append(
-            expression(Double::isFinite)
+            expression(Float::isFinite)
                 .name("isFinite")
                 .expected("finite")
         );
@@ -59,7 +59,7 @@ public class BoxedDoubleValue extends BoxedNumberValue<Double, BoxedDoubleValue>
      *
      * @return This expression (fluent interface).
      */
-    public BoxedDoubleValue isInfinite() {
+    public BoxedFloatValue isInfinite() {
         return append(
             expression(l -> l.isInfinite())
                 .name("isInfinite")
@@ -72,7 +72,7 @@ public class BoxedDoubleValue extends BoxedNumberValue<Double, BoxedDoubleValue>
      *
      * @return This expression (fluent interface).
      */
-    public BoxedDoubleValue isNaN() {
+    public BoxedFloatValue isNaN() {
         return append(
             expression(l -> l.isNaN())
                 .name("isNaN")
@@ -81,42 +81,42 @@ public class BoxedDoubleValue extends BoxedNumberValue<Double, BoxedDoubleValue>
     }
 
     @Override
-    protected Double zero() {
-        return 0.0;
+    protected Float zero() {
+        return 0.0f;
     }
 
     @Override
-    protected Double min() {
-        return Double.MIN_VALUE;
+    protected Float min() {
+        return Float.MIN_VALUE;
     }
 
     @Override
-    protected Double max() {
-        return Double.MAX_VALUE;
+    protected Float max() {
+        return Float.MAX_VALUE;
     }
 
     @Override
-    protected boolean eq(final Double a, final Double b) {
+    protected boolean eq(final Float a, final Float b) {
         return a.equals(b);
     }
 
     @Override
-    protected boolean lt(final Double a, final Double b) {
+    protected boolean lt(final Float a, final Float b) {
         return a < b;
     }
 
     @Override
-    protected boolean gt(final Double a, final Double b) {
+    protected boolean gt(final Float a, final Float b) {
         return a > b;
     }
 
     @Override
-    protected boolean gte(final Double a, final Double b) {
+    protected boolean gte(final Float a, final Float b) {
         return a >= b;
     }
 
     @Override
-    protected boolean lte(final Double a, final Double b) {
+    protected boolean lte(final Float a, final Float b) {
         return a <= b;
     }
 }

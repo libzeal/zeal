@@ -1,4 +1,4 @@
-package io.github.libzeal.zeal.values.core.unary.boxed;
+package io.github.libzeal.zeal.values.core.boxed;
 
 /**
  * An expression used to evaluate {@link Long} instances.

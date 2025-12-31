@@ -1,14 +1,14 @@
-package io.github.libzeal.zeal.values.core.unary.boxed;
+package io.github.libzeal.zeal.values.core.boxed;
 
 /**
- * An expression used to evaluate {@link Float} instances.
+ * An expression used to evaluate {@link Double} instances.
  * <p>
- * Many of the predicates of this expression require unboxing, resulting in some performance loss.
+ * Note: Many of the predicates of this expression require unboxing, resulting in some performance loss.
  *
  * @author Justin Albano
  * @since 0.2.0
  */
-public class BoxedFloatValue extends BoxedNumberValue<Float, BoxedFloatValue> {
+public class BoxedDoubleValue extends BoxedNumberValue<Double, BoxedDoubleValue> {
 
     /**
      * Creates a new expression.
@@ -16,8 +16,8 @@ public class BoxedFloatValue extends BoxedNumberValue<Float, BoxedFloatValue> {
      * @param subject
      *     The subject of the expression.
      */
-    public BoxedFloatValue(final Float subject) {
-        super(subject, "Float expression");
+    public BoxedDoubleValue(final Double subject) {
+        super(subject, "Double expression");
     }
 
     /**
@@ -33,7 +33,7 @@ public class BoxedFloatValue extends BoxedNumberValue<Float, BoxedFloatValue> {
      *
      * @return This expression (fluent interface).
      */
-    public BoxedFloatValue isEqualTo(final Float value, final Float delta) {
+    public BoxedDoubleValue isEqualTo(final Double value, final Double delta) {
         return append(
             expression(d -> Math.abs(d - value) <= delta)
                 .name("isEqualTo[" + value + " +/- " + delta + "]")
@@ -46,9 +46,9 @@ public class BoxedFloatValue extends BoxedNumberValue<Float, BoxedFloatValue> {
      *
      * @return This expression (fluent interface).
      */
-    public BoxedFloatValue isFinite() {
+    public BoxedDoubleValue isFinite() {
         return append(
-            expression(Float::isFinite)
+            expression(Double::isFinite)
                 .name("isFinite")
                 .expected("finite")
         );
@@ -59,7 +59,7 @@ public class BoxedFloatValue extends BoxedNumberValue<Float, BoxedFloatValue> {
      *
      * @return This expression (fluent interface).
      */
-    public BoxedFloatValue isInfinite() {
+    public BoxedDoubleValue isInfinite() {
         return append(
             expression(l -> l.isInfinite())
                 .name("isInfinite")
@@ -72,7 +72,7 @@ public class BoxedFloatValue extends BoxedNumberValue<Float, BoxedFloatValue> {
      *
      * @return This expression (fluent interface).
      */
-    public BoxedFloatValue isNaN() {
+    public BoxedDoubleValue isNaN() {
         return append(
             expression(l -> l.isNaN())
                 .name("isNaN")
@@ -81,42 +81,42 @@ public class BoxedFloatValue extends BoxedNumberValue<Float, BoxedFloatValue> {
     }
 
     @Override
-    protected Float zero() {
-        return 0.0f;
+    protected Double zero() {
+        return 0.0;
     }
 
     @Override
-    protected Float min() {
-        return Float.MIN_VALUE;
+    protected Double min() {
+        return Double.MIN_VALUE;
     }
 
     @Override
-    protected Float max() {
-        return Float.MAX_VALUE;
+    protected Double max() {
+        return Double.MAX_VALUE;
     }
 
     @Override
-    protected boolean eq(final Float a, final Float b) {
+    protected boolean eq(final Double a, final Double b) {
         return a.equals(b);
     }
 
     @Override
-    protected boolean lt(final Float a, final Float b) {
+    protected boolean lt(final Double a, final Double b) {
         return a < b;
     }
 
     @Override
-    protected boolean gt(final Float a, final Float b) {
+    protected boolean gt(final Double a, final Double b) {
         return a > b;
     }
 
     @Override
-    protected boolean gte(final Float a, final Float b) {
+    protected boolean gte(final Double a, final Double b) {
         return a >= b;
     }
 
     @Override
-    protected boolean lte(final Float a, final Float b) {
+    protected boolean lte(final Double a, final Double b) {
         return a <= b;
     }
 }

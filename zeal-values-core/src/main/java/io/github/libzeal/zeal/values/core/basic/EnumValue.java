@@ -1,4 +1,4 @@
-package io.github.libzeal.zeal.values.core.unary;
+package io.github.libzeal.zeal.values.core.basic;
 
 /**
  * The abstract base class for all Enum-based expressions.

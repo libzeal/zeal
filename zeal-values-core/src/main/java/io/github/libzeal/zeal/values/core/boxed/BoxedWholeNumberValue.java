@@ -1,6 +1,6 @@
-package io.github.libzeal.zeal.values.core.unary.boxed;
+package io.github.libzeal.zeal.values.core.boxed;
 
-import io.github.libzeal.zeal.values.core.unary.ObjectValue;
+import io.github.libzeal.zeal.values.core.basic.ObjectValue;
 
 /**
  * An expression used to evaluate whole number {@link Number} instances (such as {@link Long}).

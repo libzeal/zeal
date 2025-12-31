@@ -1,7 +1,7 @@
 package io.github.libzeal.zeal.values.core.unary.test;
 
 import io.github.libzeal.zeal.logic.evaluation.Result;
-import io.github.libzeal.zeal.values.core.unary.ObjectValue;
+import io.github.libzeal.zeal.values.core.basic.ObjectValue;
 import org.junit.jupiter.params.provider.Arguments;
 
 import java.util.ArrayList;
