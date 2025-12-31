@@ -1,6 +1,4 @@
-package io.github.libzeal.zeal.values.core.unary;
-
-import io.github.libzeal.zeal.values.core.basic.GeneralObjectValue;
+package io.github.libzeal.zeal.values.core.basic;
 
 @SuppressWarnings("java:S2187")
 class GeneralObjectValueTest extends ObjectValueTest<Object, GeneralObjectValue<Object>> {

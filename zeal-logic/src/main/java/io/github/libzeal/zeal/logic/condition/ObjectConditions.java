@@ -6,7 +6,7 @@ import io.github.libzeal.zeal.logic.Expressions;
 import io.github.libzeal.zeal.logic.OrExpression;
 import io.github.libzeal.zeal.logic.unary.RationaleGenerator;
 import io.github.libzeal.zeal.logic.unary.SimpleRationaleGenerator;
-import io.github.libzeal.zeal.logic.unary.TerminalUnaryExpression;
+import io.github.libzeal.zeal.logic.future.ComputableExpression;
 
 import java.util.List;
 import java.util.Objects;
@@ -40,7 +40,7 @@ final class ObjectConditions {
             (s, passed) -> exactlyHint(desired)
         );
 
-        return subject -> TerminalUnaryExpression.of(
+        return subject -> new ComputableExpression<>(
             exactlyName(desired),
             subject,
             o -> o == desired,
@@ -64,7 +64,7 @@ final class ObjectConditions {
             (s, passed) -> equalToHint(desired)
         );
 
-        return subject -> TerminalUnaryExpression.of(
+        return subject -> new ComputableExpression<>(
             equalToName(desired),
             subject,
             o -> Objects.equals(o, desired),
@@ -175,13 +175,8 @@ final class ObjectConditions {
 
         requireNonNull(conditions);
 
-        return subject -> {
-            final List<Expression> collected = Stream.of(conditions)
-                .map(c -> c.create(subject))
-                .collect(Collectors.toList());
-
-            return Expressions.nor(collected.toArray(new Expression[0]));
-        };
+        return subject -> Expressions.nor(Stream.of(conditions)
+                .map(c -> c.create(subject)).toArray(Expression[]::new));
     }
 
     @SafeVarargs
@@ -189,27 +184,17 @@ final class ObjectConditions {
 
         requireNonNull(values);
 
-        return subject -> {
-            final List<Expression> collected = Stream.of(values)
+        return subject -> Expressions.nor(Stream.of(values)
                 .map(ObjectConditions::equalTo)
-                .map(c -> c.create(subject))
-                .collect(Collectors.toList());
-
-            return Expressions.nor(collected.toArray(new Expression[0]));
-        };
+                .map(c -> c.create(subject)).toArray(Expression[]::new));
     }
 
     public static <T> Condition<T> noneOf(final Iterable<T> values) {
 
         requireNonNull(values);
 
-        return subject -> {
-            final List<Expression> collected = streamOf(values)
+        return subject -> Expressions.nor(streamOf(values)
                 .map(ObjectConditions::equalTo)
-                .map(c -> c.create(subject))
-                .collect(Collectors.toList());
-
-            return Expressions.nor(collected.toArray(new Expression[0]));
-        };
+                .map(c -> c.create(subject)).toArray(Expression[]::new));
     }
 }

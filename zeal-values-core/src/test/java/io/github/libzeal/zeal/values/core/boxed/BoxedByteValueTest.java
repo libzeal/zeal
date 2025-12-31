@@ -1,6 +1,4 @@
-package io.github.libzeal.zeal.values.core.unary.boxed;
-
-import io.github.libzeal.zeal.values.core.boxed.BoxedByteValue;
+package io.github.libzeal.zeal.values.core.boxed;
 
 class BoxedByteValueTest extends BoxedWholeNumberValueTest<Byte, BoxedByteValue> {
 

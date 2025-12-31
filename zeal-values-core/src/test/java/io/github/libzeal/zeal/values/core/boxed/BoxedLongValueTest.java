@@ -1,6 +1,4 @@
-package io.github.libzeal.zeal.values.core.unary.boxed;
-
-import io.github.libzeal.zeal.values.core.boxed.BoxedLongValue;
+package io.github.libzeal.zeal.values.core.boxed;
 
 class BoxedLongValueTest extends BoxedWholeNumberValueTest<Long, BoxedLongValue> {
 

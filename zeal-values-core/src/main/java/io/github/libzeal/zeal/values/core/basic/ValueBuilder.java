@@ -1,5 +1,7 @@
 package io.github.libzeal.zeal.values.core.basic;
 
+import io.github.libzeal.zeal.logic.Expression;
+import io.github.libzeal.zeal.logic.future.ComputableExpression;
 import io.github.libzeal.zeal.logic.unary.*;
 import io.github.libzeal.zeal.logic.util.Formatter;
 
@@ -181,12 +183,12 @@ public class ValueBuilder<T, E extends ObjectValue<T, E>> {
         return hint((s, passed) -> hint);
     }
 
-    public UnaryExpression<T> build() {
+    public Expression build() {
 
         final RationaleGenerator<T> rationaleGenerator = new SimpleRationaleGenerator<>(expected, actual, hint);
         final Predicate<T> predicate = predicate();
 
-        return TerminalUnaryExpression.of(name, subject, predicate, rationaleGenerator);
+        return new ComputableExpression<>(name, subject, predicate, rationaleGenerator);
     }
 
     private Predicate<T> predicate() {

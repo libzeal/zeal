@@ -35,6 +35,24 @@ public class EvaluatedTerminalEvaluation implements TerminalEvaluation {
     /**
      * Creates a true evaluation.
      *
+     * @param result
+     *      The result of the evaluation.
+     * @param name
+     *     The name of the evaluation.
+     * @param rationale
+     *     The rationale for the evaluation.
+     * @param elapsedTime
+     *     The elapsed time of the evaluation.
+     *
+     * @return The evaluation.
+     */
+    public static EvaluatedTerminalEvaluation of(final Result result, final String name, final Rationale rationale, final Duration elapsedTime) {
+        return new EvaluatedTerminalEvaluation(result, name, rationale, elapsedTime, CauseGenerator.self());
+    }
+
+    /**
+     * Creates a true evaluation.
+     *
      * @param name
      *     The name of the evaluation.
      * @param rationale

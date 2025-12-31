@@ -1,9 +1,9 @@
-package io.github.libzeal.zeal.values.core.unary.boxed;
+package io.github.libzeal.zeal.values.core.boxed;
 
 import io.github.libzeal.zeal.logic.util.Formatter;
 import io.github.libzeal.zeal.values.core.boxed.BoxedNumberValue;
-import io.github.libzeal.zeal.values.core.unary.test.ExpressionTestCaseBuilder;
-import io.github.libzeal.zeal.values.core.unary.ObjectValueTest;
+import io.github.libzeal.zeal.values.core.basic.test.ExpressionTestCaseBuilder;
+import io.github.libzeal.zeal.values.core.basic.ObjectValueTest;
 
 import static io.github.libzeal.zeal.logic.evaluation.Result.FALSE;
 import static io.github.libzeal.zeal.logic.evaluation.Result.TRUE;

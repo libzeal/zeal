@@ -1,4 +1,4 @@
-package io.github.libzeal.zeal.values.core.unary.test;
+package io.github.libzeal.zeal.values.core.basic.test;
 
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.evaluation.Result;

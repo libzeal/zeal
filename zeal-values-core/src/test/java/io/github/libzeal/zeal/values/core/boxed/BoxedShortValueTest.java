@@ -1,6 +1,4 @@
-package io.github.libzeal.zeal.values.core.unary.boxed;
-
-import io.github.libzeal.zeal.values.core.boxed.BoxedShortValue;
+package io.github.libzeal.zeal.values.core.boxed;
 
 class BoxedShortValueTest extends BoxedWholeNumberValueTest<Short, BoxedShortValue> {
 

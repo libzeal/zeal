@@ -1,7 +1,6 @@
-package io.github.libzeal.zeal.values.core.unary;
+package io.github.libzeal.zeal.values.core.basic;
 
-import io.github.libzeal.zeal.values.core.basic.GeneralEnumValue;
-import io.github.libzeal.zeal.values.core.unary.test.MockEnum;
+import io.github.libzeal.zeal.values.core.basic.test.MockEnum;
 
 @SuppressWarnings("java:S2187")
 class GeneralEnumValueTest extends EnumValueTest<MockEnum> {

@@ -94,7 +94,7 @@ public class ObjectValue<T, E extends ObjectValue<T, E>> implements UnaryExpress
     @SuppressWarnings("unchecked")
     protected final E append(final ValueBuilder<T, E> builder) {
 
-        final UnaryExpression<T> expression = builder.build();
+        final Expression expression = builder.build();
 
         children.append(expression);
 
@@ -104,7 +104,7 @@ public class ObjectValue<T, E extends ObjectValue<T, E>> implements UnaryExpress
     @SuppressWarnings("unchecked")
     private E prepend(final ValueBuilder<T, E> builder) {
 
-        final UnaryExpression<T> expression = builder.build();
+        final Expression expression = builder.build();
 
         children.prepend(expression);
 

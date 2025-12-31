@@ -1,9 +1,10 @@
-package io.github.libzeal.zeal.logic.unary;
+package io.github.libzeal.zeal.logic.future;
 
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.evaluation.Result;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
 import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
+import io.github.libzeal.zeal.logic.unary.RationaleGenerator;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -12,7 +13,7 @@ import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
-class TerminalUnaryExpressionTest {
+class ComputableExpressionTest {
 
     private static final String EXPECTED = "foo";
     private static final String ACTUAL = "bar";
@@ -26,7 +27,7 @@ class TerminalUnaryExpressionTest {
 
         assertThrows(
             NullPointerException.class,
-            () -> TerminalUnaryExpression.of(null, subject, s -> true, generator)
+            () -> new ComputableExpression<>(null, subject, s -> true, generator)
         );
     }
 
@@ -44,7 +45,7 @@ class TerminalUnaryExpressionTest {
     @Test
     void givenNullSubject_whenOf_thenExceptionNotThrown() {
         assertDoesNotThrow(
-            () -> TerminalUnaryExpression.of("someName", null, s -> true, generator())
+            () -> new ComputableExpression<>("someName", null, s -> true, generator())
         );
     }
 
@@ -56,7 +57,7 @@ class TerminalUnaryExpressionTest {
 
         assertThrows(
             NullPointerException.class,
-            () -> TerminalUnaryExpression.of("someName", subject, null, generator)
+            () -> new ComputableExpression<>("someName", subject, null, generator)
         );
     }
 
@@ -67,7 +68,7 @@ class TerminalUnaryExpressionTest {
 
         assertThrows(
             NullPointerException.class,
-            () -> TerminalUnaryExpression.of("someName", subject, s -> true, null)
+            () -> new ComputableExpression<>("someName", subject, s -> true, null)
         );
     }
 
@@ -75,27 +76,17 @@ class TerminalUnaryExpressionTest {
     void givenNullableExpression_whenName_thenNameIsCorrect() {
 
         final String name = "someName";
-        final TerminalUnaryExpression<Object> expression = TerminalUnaryExpression.of(name, new Object(),
+        final ComputableExpression<Object> expression = new ComputableExpression<>(name, new Object(),
             s -> true, generator());
 
         assertEquals(name, expression.name());
     }
 
     @Test
-    void givenNullableExpression_whenSubject_thenSubjectIsCorrect() {
-
-        final Object subject = new Object();
-        final TerminalUnaryExpression<Object> expression = TerminalUnaryExpression.of("someName", subject,
-            s -> true, generator());
-
-        assertEquals(subject, expression.subject());
-    }
-
-    @Test
     void givenTrueNullableExpression_whenEvaluate_thenEvaluationIsCorrect() {
 
         final Object subject = new Object();
-        final TerminalUnaryExpression<Object> expression = TerminalUnaryExpression.of(
+        final ComputableExpression<Object> expression = new ComputableExpression<>(
             "someName",
             subject,
             s -> true,
@@ -119,7 +110,7 @@ class TerminalUnaryExpressionTest {
     void givenFalseNullableExpression_whenEvaluate_thenEvaluationIsCorrect() {
 
         final Object subject = new Object();
-        final TerminalUnaryExpression<Object> expression = TerminalUnaryExpression.of(
+        final ComputableExpression<Object> expression = new ComputableExpression<>(
             "someName",
             subject,
             s -> false,
@@ -135,7 +126,7 @@ class TerminalUnaryExpressionTest {
     @Test
     void givenNullSubjectNullableExpression_whenEvaluate_thenEvaluationIsCorrect() {
 
-        final TerminalUnaryExpression<Object> expression = TerminalUnaryExpression.of(
+        final ComputableExpression<Object> expression = new ComputableExpression<>(
             "someName",
             null,
             s -> true,

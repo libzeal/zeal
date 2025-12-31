@@ -3,7 +3,7 @@ package io.github.libzeal.zeal.logic.condition;
 import io.github.libzeal.zeal.logic.Expression;
 import io.github.libzeal.zeal.logic.unary.RationaleGenerator;
 import io.github.libzeal.zeal.logic.unary.SimpleRationaleGenerator;
-import io.github.libzeal.zeal.logic.unary.TerminalUnaryExpression;
+import io.github.libzeal.zeal.logic.future.ComputableExpression;
 
 import java.util.function.Predicate;
 
@@ -47,6 +47,6 @@ class SimpleCondition<T> implements Condition<T> {
             (s, passed) -> passed ? "satisfied" : "unsatisfied"
         );
 
-        return TerminalUnaryExpression.of(name, subject, predicate, generator);
+        return new ComputableExpression<>(name, subject, predicate, generator);
     }
 }

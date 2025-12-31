@@ -46,4 +46,14 @@ public enum Result {
     public boolean isSkipped() {
         return equals(SKIPPED);
     }
+
+    public static Result from(final boolean passed) {
+
+        if (passed) {
+            return TRUE;
+        }
+        else {
+            return FALSE;
+        }
+    }
 }

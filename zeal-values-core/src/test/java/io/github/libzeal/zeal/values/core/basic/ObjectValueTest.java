@@ -1,4 +1,4 @@
-package io.github.libzeal.zeal.values.core.unary;
+package io.github.libzeal.zeal.values.core.basic;
 
 import io.github.libzeal.zeal.logic.condition.Condition;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
@@ -7,9 +7,8 @@ import io.github.libzeal.zeal.logic.evaluation.Result;
 import io.github.libzeal.zeal.logic.evaluation.traverse.DepthFirstTraverser;
 import io.github.libzeal.zeal.logic.evaluation.traverse.Traverser;
 import io.github.libzeal.zeal.logic.util.Formatter;
-import io.github.libzeal.zeal.values.core.basic.ObjectValue;
-import io.github.libzeal.zeal.values.core.unary.test.EvaluatedExpressionAssertion;
-import io.github.libzeal.zeal.values.core.unary.test.ExpressionTestCaseBuilder;
+import io.github.libzeal.zeal.values.core.basic.test.EvaluatedExpressionAssertion;
+import io.github.libzeal.zeal.values.core.basic.test.ExpressionTestCaseBuilder;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.params.ParameterizedTest;

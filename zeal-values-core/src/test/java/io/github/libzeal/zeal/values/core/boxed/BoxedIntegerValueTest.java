@@ -1,6 +1,4 @@
-package io.github.libzeal.zeal.values.core.unary.boxed;
-
-import io.github.libzeal.zeal.values.core.boxed.BoxedIntegerValue;
+package io.github.libzeal.zeal.values.core.boxed;
 
 class BoxedIntegerValueTest extends BoxedWholeNumberValueTest<Integer, BoxedIntegerValue> {
 
