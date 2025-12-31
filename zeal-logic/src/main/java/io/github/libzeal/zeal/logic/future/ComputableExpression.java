@@ -60,13 +60,11 @@ public class ComputableExpression<T> implements Expression {
 
     @Override
     public Evaluation evaluate() {
-
-        final StopWatch stopWatch = StopWatch.started();
-        final boolean passed = predicate.test(subject);
-        final Rationale rationale = rationaleGenerator.generate(subject, passed);
-        final Duration elapsedTime = stopWatch.stop();
-        final Result result = Result.from(passed);
-
-        return EvaluatedTerminalEvaluation.of(result, name, rationale, elapsedTime);
+        return EvaluationComputer.of(
+                name,
+                () -> predicate.test(subject),
+                passed -> rationaleGenerator.generate(subject, passed)
+        )
+                .compute();
     }
 }
