@@ -17,7 +17,7 @@ public class BoxedIntegerValue extends BoxedWholeNumberValue<Integer, BoxedInteg
      *     The subject of the expression.
      */
     public BoxedIntegerValue(final Integer subject) {
-        super(subject, "Integer expression");
+        super(subject, "Integer value");
     }
 
     @Override

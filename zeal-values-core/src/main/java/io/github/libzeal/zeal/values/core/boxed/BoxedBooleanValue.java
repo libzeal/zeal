@@ -19,7 +19,7 @@ public class BoxedBooleanValue extends ObjectValue<Boolean, BoxedBooleanValue> {
      *     The subject of the expression.
      */
     public BoxedBooleanValue(final Boolean subject) {
-        super(subject, "Boolean expression");
+        super(subject, "Boolean value");
     }
 
     /**

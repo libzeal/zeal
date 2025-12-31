@@ -25,7 +25,7 @@ public class StringValue extends ObjectValue<String, StringValue> {
      *     The subject of the expression.
      */
     public StringValue(String subject) {
-        super(subject, "String evaluation");
+        super(subject, "String value");
     }
 
     /**

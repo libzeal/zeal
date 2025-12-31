@@ -27,7 +27,7 @@ public abstract class EnumValue<T extends Enum<T>, B extends EnumValue<T, B>>
      *     The subject of the expression.
      */
     protected EnumValue(T subject) {
-        this(subject, "Enum evaluation");
+        this(subject, "Enum value");
     }
 
     /**

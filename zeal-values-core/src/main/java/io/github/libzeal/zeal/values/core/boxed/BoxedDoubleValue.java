@@ -17,7 +17,7 @@ public class BoxedDoubleValue extends BoxedNumberValue<Double, BoxedDoubleValue>
      *     The subject of the expression.
      */
     public BoxedDoubleValue(final Double subject) {
-        super(subject, "Double expression");
+        super(subject, "Double value");
     }
 
     /**

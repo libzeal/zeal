@@ -17,7 +17,7 @@ public class BoxedFloatValue extends BoxedNumberValue<Float, BoxedFloatValue> {
      *     The subject of the expression.
      */
     public BoxedFloatValue(final Float subject) {
-        super(subject, "Float expression");
+        super(subject, "Float value");
     }
 
     /**

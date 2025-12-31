@@ -15,7 +15,7 @@ public class BoxedByteValue extends BoxedWholeNumberValue<Byte, BoxedByteValue> 
      *     The subject of the expression.
      */
     public BoxedByteValue(final Byte subject) {
-        super(subject, "Byte expression");
+        super(subject, "Byte value");
     }
 
     @Override

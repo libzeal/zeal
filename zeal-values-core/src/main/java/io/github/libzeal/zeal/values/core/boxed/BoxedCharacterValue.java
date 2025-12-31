@@ -26,7 +26,7 @@ public class BoxedCharacterValue extends ObjectValue<Character, BoxedCharacterVa
      *     The subject of the expression.
      */
     public BoxedCharacterValue(final Character subject) {
-        super(subject, "Character expression");
+        super(subject, "Character value");
     }
 
     /**

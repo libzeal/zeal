@@ -66,7 +66,7 @@ public class ObjectValue<T, E extends ObjectValue<T, E>> implements UnaryExpress
      *     The subject of the expression.
      */
     protected ObjectValue(T subject) {
-        this(subject, "Object[" + stringify(subject) + "] evaluation");
+        this(subject, "Object[" + stringify(subject) + "] value");
     }
 
     /**

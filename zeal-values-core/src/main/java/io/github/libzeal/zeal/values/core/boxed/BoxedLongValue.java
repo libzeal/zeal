@@ -17,7 +17,7 @@ public class BoxedLongValue extends BoxedWholeNumberValue<Long, BoxedLongValue> 
      *     The subject of the expression.
      */
     public BoxedLongValue(final Long subject) {
-        super(subject, "Long expression");
+        super(subject, "Long value");
     }
 
     @Override

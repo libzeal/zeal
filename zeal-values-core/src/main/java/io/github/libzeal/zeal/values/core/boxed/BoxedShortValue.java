@@ -17,7 +17,7 @@ public class BoxedShortValue extends BoxedWholeNumberValue<Short, BoxedShortValu
      *     The subject of the expression.
      */
     public BoxedShortValue(final Short subject) {
-        super(subject, "Short expression");
+        super(subject, "Short value");
     }
 
     @Override
