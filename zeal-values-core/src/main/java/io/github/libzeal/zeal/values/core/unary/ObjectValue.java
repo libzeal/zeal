@@ -92,7 +92,7 @@ public class ObjectValue<T, E extends ObjectValue<T, E>> implements UnaryExpress
     }
 
     @SuppressWarnings("unchecked")
-    protected E append(final ValueBuilder<T, E> builder) {
+    protected final E append(final ValueBuilder<T, E> builder) {
 
         final UnaryExpression<T> expression = builder.build();
 
@@ -156,7 +156,7 @@ public class ObjectValue<T, E extends ObjectValue<T, E>> implements UnaryExpress
      * @throws NullPointerException
      *     The supplied test was {@code null}.
      */
-    protected final ValueBuilder<T, E> nullableExpression(Predicate<T> test) {
+    private final ValueBuilder<T, E> nullableExpression(Predicate<T> test) {
         return ValueBuilder.nullable(subject, requireNonNull(test));
     }
 

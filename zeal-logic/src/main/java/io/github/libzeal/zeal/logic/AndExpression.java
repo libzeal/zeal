@@ -78,7 +78,7 @@ public class AndExpression implements CompoundExpression {
      * @throws NullPointerException
      *     The supplied name is {@code null}.
      */
-    public AndExpression(String name) {
+    public AndExpression(final String name) {
         this(name, new ArrayList<>(1));
     }
 
