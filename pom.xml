@@ -60,7 +60,7 @@
         <module>zeal-assertion</module>
         <module>zeal-assertion-examples</module>
         <module>zeal-logic</module>
-        <module>zeal-values-core</module>
+        <module>zeal-values</module>
     </modules>
 
     <dependencyManagement>
@@ -72,17 +72,12 @@
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>zeal-expression</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
                 <artifactId>zeal-logic</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>zeal-values-core</artifactId>
+                <artifactId>zeal-values</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

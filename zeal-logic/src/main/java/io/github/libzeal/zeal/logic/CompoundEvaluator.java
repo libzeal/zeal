@@ -15,7 +15,7 @@ import java.util.function.Predicate;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A common evaluator used to evaluated {@link CompoundExpression}.
+ * A common evaluator used to evaluate {@link CompoundExpression}s.
  *
  * @author Justin Albano
  * @since 0.2.1

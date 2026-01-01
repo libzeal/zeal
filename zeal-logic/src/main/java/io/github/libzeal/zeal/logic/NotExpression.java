@@ -87,6 +87,7 @@ public class NotExpression implements Expression {
         final Cause cause = wrappedEvaluation.cause();
 
         final List<Evaluation> children = new ArrayList<>(1);
+
         children.add(wrappedEvaluation);
 
         final Duration elapsedTime = stopWatch.stop();

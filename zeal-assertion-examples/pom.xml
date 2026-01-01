@@ -17,7 +17,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>zeal-values-core</artifactId>
+            <artifactId>zeal-values</artifactId>
         </dependency>
     </dependencies>
 

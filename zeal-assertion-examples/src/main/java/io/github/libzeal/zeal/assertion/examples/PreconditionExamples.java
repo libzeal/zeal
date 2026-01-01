@@ -1,7 +1,7 @@
 package io.github.libzeal.zeal.assertion.examples;
 
 import static io.github.libzeal.zeal.assertion.Assertions.require;
-import static io.github.libzeal.zeal.values.core.Values.value;
+import static io.github.libzeal.zeal.values.Values.value;
 
 public class PreconditionExamples {
 
