@@ -1,6 +1,6 @@
 package io.github.libzeal.zeal.values.core.boxed;
 
-import io.github.libzeal.zeal.values.api.ObjectValue;
+import io.github.libzeal.zeal.values.api.BaseObjectValue;
 
 /**
  * An expression used to evaluate {@link Boolean} instances.
@@ -10,7 +10,7 @@ import io.github.libzeal.zeal.values.api.ObjectValue;
  * @author Justin Albano
  * @since 0.2.0
  */
-public class BoxedBooleanValue extends ObjectValue<Boolean, BoxedBooleanValue> {
+public class BoxedBooleanValue extends BaseObjectValue<Boolean, BoxedBooleanValue> {
 
     /**
      * Creates a new expression.

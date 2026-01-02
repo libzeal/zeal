@@ -1,8 +1,8 @@
 package io.github.libzeal.zeal.values.core.boxed;
 
 import io.github.libzeal.zeal.logic.util.Formatter;
-import io.github.libzeal.zeal.values.api.ObjectValue;
-import io.github.libzeal.zeal.values.core.ValueBuilder;
+import io.github.libzeal.zeal.values.api.BaseObjectValue;
+import io.github.libzeal.zeal.values.api.SimpleValueBuilder;
 
 import java.util.function.Predicate;
 
@@ -15,10 +15,10 @@ import java.util.function.Predicate;
  *     The type of the subclass.
  *
  * @author Justin Albano
- * @see ObjectValue
+ * @see BaseObjectValue
  * @since 0.2.0
  */
-public abstract class BoxedNumberValue<T extends Number, E extends ObjectValue<T, E>> extends ObjectValue<T, E> {
+public abstract class BoxedNumberValue<T extends Number, E extends BaseObjectValue<T, E>> extends BaseObjectValue<T, E> {
 
     private static final String CANNOT_COMPARE_TO_NULL = "Always fail: cannot compare to subject to (null)";
 
@@ -55,7 +55,7 @@ public abstract class BoxedNumberValue<T extends Number, E extends ObjectValue<T
                                            final String expectedValue,
                                            final Predicate<T> longPredicate) {
 
-        final ValueBuilder<T, E> builder = expression(longPredicate)
+        final SimpleValueBuilder<T, E> builder = expression(longPredicate)
             .name(name);
 
         if (value == null) {

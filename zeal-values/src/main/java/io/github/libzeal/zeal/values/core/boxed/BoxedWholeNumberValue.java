@@ -1,6 +1,6 @@
 package io.github.libzeal.zeal.values.core.boxed;
 
-import io.github.libzeal.zeal.values.api.ObjectValue;
+import io.github.libzeal.zeal.values.api.BaseObjectValue;
 
 /**
  * An expression used to evaluate whole number {@link Number} instances (such as {@link Long}).
@@ -11,10 +11,10 @@ import io.github.libzeal.zeal.values.api.ObjectValue;
  *     The type of the subclass.
  *
  * @author Justin Albano
- * @see ObjectValue
+ * @see BaseObjectValue
  * @since 0.2.0
  */
-public abstract class BoxedWholeNumberValue<T extends Number, E extends ObjectValue<T, E>>
+public abstract class BoxedWholeNumberValue<T extends Number, E extends BaseObjectValue<T, E>>
     extends BoxedNumberValue<T, E> {
 
     /**

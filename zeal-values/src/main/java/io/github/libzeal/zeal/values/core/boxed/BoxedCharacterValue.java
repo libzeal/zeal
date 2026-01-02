@@ -1,6 +1,6 @@
 package io.github.libzeal.zeal.values.core.boxed;
 
-import io.github.libzeal.zeal.values.api.ObjectValue;
+import io.github.libzeal.zeal.values.api.BaseObjectValue;
 
 /**
  * An expression used to evaluate {@link Character} instances.
@@ -10,7 +10,7 @@ import io.github.libzeal.zeal.values.api.ObjectValue;
  * @author Justin Albano
  * @since 0.2.0
  */
-public class BoxedCharacterValue extends ObjectValue<Character, BoxedCharacterValue> {
+public class BoxedCharacterValue extends BaseObjectValue<Character, BoxedCharacterValue> {
 
     private static final String IS_LOWER_CASE = "isLowerCase";
     private static final String IS_UPPER_CASE = "isUpperCase";

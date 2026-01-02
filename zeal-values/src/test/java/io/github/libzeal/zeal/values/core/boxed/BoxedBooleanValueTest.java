@@ -1,12 +1,12 @@
 package io.github.libzeal.zeal.values.core.boxed;
 
-import io.github.libzeal.zeal.values.api.ObjectValueTest;
+import io.github.libzeal.zeal.values.api.BasedObjectValueTest;
 import io.github.libzeal.zeal.values.core.test.ExpressionTestCaseBuilder;
 
 import static io.github.libzeal.zeal.logic.evaluation.Result.FALSE;
 import static io.github.libzeal.zeal.logic.evaluation.Result.TRUE;
 
-public class BoxedBooleanValueTest extends ObjectValueTest<Boolean, BoxedBooleanValue> {
+public class BoxedBooleanValueTest extends BasedObjectValueTest<Boolean, BoxedBooleanValue> {
 
     @Override
     protected BoxedBooleanValue expression(final Boolean value) {

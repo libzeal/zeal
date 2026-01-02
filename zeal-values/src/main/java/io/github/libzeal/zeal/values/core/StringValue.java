@@ -1,7 +1,8 @@
 package io.github.libzeal.zeal.values.core;
 
 import io.github.libzeal.zeal.logic.unary.future.rationale.ComputableField;
-import io.github.libzeal.zeal.values.api.ObjectValue;
+import io.github.libzeal.zeal.values.api.BaseObjectValue;
+import io.github.libzeal.zeal.values.api.CommonRationale;
 
 /**
  * An expression used to evaluate {@link String} instances.
@@ -9,7 +10,9 @@ import io.github.libzeal.zeal.values.api.ObjectValue;
  * @author Justin Albano
  * @since 0.2.0
  */
-public class StringValue extends ObjectValue<String, StringValue> {
+public class StringValue extends BaseObjectValue<String, StringValue> {
+
+    // TODO: Add cachedExpression(...) for StringValue methods
 
     private static final String EQUALS_OPERATOR = ":=";
     private static final String NOT_EQUALS_OPERATOR = "!=";
@@ -25,7 +28,7 @@ public class StringValue extends ObjectValue<String, StringValue> {
      * @param subject
      *     The subject of the expression.
      */
-    public StringValue(String subject) {
+    public StringValue(final String subject) {
         super(subject, "String value");
     }
 
@@ -192,31 +195,18 @@ public class StringValue extends ObjectValue<String, StringValue> {
     public StringValue includes(final char c) {
         return append(
             expression(s -> s.indexOf(c) != -1)
-                .name(includesName(c))
-                .expected(includesName(c))
-                .actual((s, passed) -> passed ? includesName(c) : excludesName(c))
+                .name(CommonRationale.includes(c))
+                .expected(CommonRationale.includes(c))
+                .actual((s, passed) -> passed ? CommonRationale.includes(c) : CommonRationale.excludes(c))
                 .hint((s, passed) -> needleInHaystackHint(s, c))
         );
-    }
-
-    private static String includesName(final char c) {
-        return "includes[" + c + "]";
-    }
-
-    private static String excludesName(final char c) {
-        return "excludes[" + c + "]";
     }
 
     static String needleInHaystackHint(String s, char c) {
 
         final int index = s.indexOf(c);
 
-        if (index != -1) {
-            return "'" + c + "' found at index " + index;
-        }
-        else {
-            return "String does not include '" + c + "'";
-        }
+        return CommonRationale.needleInHaystackHint("String", index, c);
     }
 
     /**
@@ -230,31 +220,18 @@ public class StringValue extends ObjectValue<String, StringValue> {
     public StringValue includes(final CharSequence sequence) {
         return append(
             expression(s -> s.contains(sequence))
-                .name(includesName(sequence))
-                .expected(includesName(sequence))
-                .actual((s, passed) -> passed ? includesName(sequence) : excludesName(sequence))
+                .name(CommonRationale.includes(sequence))
+                .expected(CommonRationale.includes(sequence))
+                .actual((s, passed) -> passed ? CommonRationale.includes(sequence) : CommonRationale.excludes(sequence))
                 .hint((s, passed) -> needleInHaystackHint(s, sequence))
         );
-    }
-
-    private static String includesName(final CharSequence c) {
-        return "includes[" + c + "]";
-    }
-
-    private static String excludesName(final CharSequence c) {
-        return "excludes[" + c + "]";
     }
 
     static String needleInHaystackHint(String s, CharSequence sequence) {
 
         final int index = s.indexOf(sequence.toString());
 
-        if (index != -1) {
-            return "\"" + sequence + "\" found at index " + index;
-        }
-        else {
-            return "String does not include \"" + sequence + "\"";
-        }
+        return CommonRationale.needleInHaystackHint("String", index, sequence);
     }
 
     /**
@@ -268,9 +245,9 @@ public class StringValue extends ObjectValue<String, StringValue> {
     public StringValue excludes(final char c) {
         return append(
             expression(s -> s.indexOf(c) == -1)
-                .name(excludesName(c))
-                .expected(excludesName(c))
-                .actual((s, passed) -> passed ? excludesName(c) : includesName(c))
+                .name(CommonRationale.excludes(c))
+                .expected(CommonRationale.excludes(c))
+                .actual((s, passed) -> passed ? CommonRationale.excludes(c) : CommonRationale.includes(c))
                 .hint((s, passed) -> needleInHaystackHint(s, c))
         );
     }
@@ -286,9 +263,9 @@ public class StringValue extends ObjectValue<String, StringValue> {
     public StringValue excludes(final CharSequence sequence) {
         return append(
             expression(s -> !s.contains(sequence))
-                .name(excludesName(sequence))
-                .expected(excludesName(sequence))
-                .actual((s, passed) -> passed ? excludesName(sequence) : includesName(sequence))
+                .name(CommonRationale.excludes(sequence))
+                .expected(CommonRationale.excludes(sequence))
+                .actual((s, passed) -> passed ? CommonRationale.excludes(sequence) : CommonRationale.includes(sequence))
                 .hint((s, passed) -> needleInHaystackHint(s, sequence))
         );
     }

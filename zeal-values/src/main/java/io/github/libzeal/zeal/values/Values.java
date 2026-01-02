@@ -1,9 +1,14 @@
 package io.github.libzeal.zeal.values;
 
-import io.github.libzeal.zeal.values.core.GeneralEnumValue;
-import io.github.libzeal.zeal.values.core.GeneralObjectValue;
+import io.github.libzeal.zeal.values.collection.*;
+import io.github.libzeal.zeal.values.core.EnumValue;
+import io.github.libzeal.zeal.values.core.ObjectValue;
 import io.github.libzeal.zeal.values.core.StringValue;
 import io.github.libzeal.zeal.values.core.boxed.*;
+
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * A class containing static methods that wrap common values as unary expressions.
@@ -26,8 +31,8 @@ public class Values {
      *
      * @return An expression that wraps the supplied value.
      */
-    public static <T> GeneralObjectValue<T> value(final T value) {
-        return new GeneralObjectValue<>(value);
+    public static <T> ObjectValue<T> value(final T value) {
+        return new ObjectValue<>(value);
     }
 
     /**
@@ -40,8 +45,8 @@ public class Values {
      *
      * @return An expression that wraps the supplied {@link Enum}.
      */
-    public static <T extends Enum<T>> GeneralEnumValue<T> value(final T value) {
-        return new GeneralEnumValue<>(value);
+    public static <T extends Enum<T>> EnumValue<T> value(final T value) {
+        return new EnumValue<>(value);
     }
 
     /**
@@ -138,5 +143,29 @@ public class Values {
      */
     public static BoxedCharacterValue value(final Character value) {
         return new BoxedCharacterValue(value);
+    }
+
+    // -------------------------------------------------------------------------
+    // Arrays & Collections
+    // -------------------------------------------------------------------------
+
+    public static <T> ArrayValue<T> value(final T[] value) {
+        return new ArrayValue<>(value);
+    }
+
+    public static <T> IteratorValue<T> value(final Iterator<T> value) {
+        return new IteratorValue<>(value);
+    }
+
+    public static <T> IterableValue<T> value(final Iterable<T> value) {
+        return new IterableValue<>(value);
+    }
+
+    public static <T> CollectionValue<T> value(final Collection<T> value) {
+        return new CollectionValue<>(value);
+    }
+
+    public static <T> ListValue<T> value(final List<T> value) {
+        return new ListValue<>(value);
     }
 }

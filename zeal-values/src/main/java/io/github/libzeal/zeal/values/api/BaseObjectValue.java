@@ -5,7 +5,8 @@ import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.unary.future.ComputableExpression;
 import io.github.libzeal.zeal.logic.unary.UnaryExpression;
 import io.github.libzeal.zeal.logic.unary.future.rationale.ComputableField;
-import io.github.libzeal.zeal.values.core.ValueBuilder;
+import io.github.libzeal.zeal.values.api.cache.CachablePredicate;
+import io.github.libzeal.zeal.values.api.cache.CachedValueBuilder;
 
 import java.util.Comparator;
 import java.util.Objects;
@@ -31,18 +32,18 @@ import static java.util.Objects.requireNonNull;
  *     The type of the subclass. This type is an example of the
  *     <a href="https://stackoverflow.com/q/4173254/2403253">Curiously Recurring Template Pattern (CRTP)</a>
  *     . This type allows for the fluent interface methods of this class to return the subtype object, rather than
- *     {@link ObjectValue}. If {@link ObjectValue} were returned from the fluent interface methods,
+ *     {@link BaseObjectValue}. If {@link BaseObjectValue} were returned from the fluent interface methods,
  *     then the subclass type would be lost, resulting in the methods available on the subtype to no longer be available
- *     as methods from {@link ObjectValue} are called. For example, if a {@code StringExpression} (extending
+ *     as methods from {@link BaseObjectValue} are called. For example, if a {@code StringExpression} (extending
  *     this class) had a method called {@code includesCharacter(char)}, the following would cause an error:
  *     <pre><code>new StringExpression("foo").isNotNull().includeCharacter('c');</code></pre>
- *     Since the {@code isNotNull()} method would return a {@link ObjectValue} object, rather than a
+ *     Since the {@code isNotNull()} method would return a {@link BaseObjectValue} object, rather than a
  *     {@code StringExpression}, thus hiding the {@code includesCharacter(char)} method of {@code  StringExpression}.
  *
  * @author Justin Albano
  * @since 0.2.0
  */
-public class ObjectValue<T, E extends ObjectValue<T, E>> implements UnaryExpression<T> {
+public abstract class BaseObjectValue<T, E extends BaseObjectValue<T, E>> implements UnaryExpression<T> {
 
     private static final String PREDICATE_SATISFIED = "Predicate satisfied";
     private static final String PREDICATE_UNSATISFIED = "Predicate unsatisfied";
@@ -65,7 +66,7 @@ public class ObjectValue<T, E extends ObjectValue<T, E>> implements UnaryExpress
      * @param subject
      *     The subject of the expression.
      */
-    protected ObjectValue(T subject) {
+    protected BaseObjectValue(T subject) {
         this(subject, "Object[" + stringify(subject) + "] value");
     }
 
@@ -77,7 +78,7 @@ public class ObjectValue<T, E extends ObjectValue<T, E>> implements UnaryExpress
      * @param name
      *     The name of the expression.
      */
-    protected ObjectValue(T subject, String name) {
+    protected BaseObjectValue(T subject, String name) {
         this.name = requireNonNull(name);
         this.subject = subject;
         this.children = new UnaryExpressionChain<>();
@@ -88,27 +89,27 @@ public class ObjectValue<T, E extends ObjectValue<T, E>> implements UnaryExpress
 
         children.append(expression);
 
-        return (E) ObjectValue.this;
+        return (E) BaseObjectValue.this;
     }
 
     @SuppressWarnings("unchecked")
-    protected final E append(final ValueBuilder<T, E> builder) {
+    protected final E append(final ValueBuilder<T> builder) {
 
         final ComputableExpression<T> expression = builder.build();
 
         children.append(expression);
 
-        return (E) ObjectValue.this;
+        return (E) BaseObjectValue.this;
     }
 
     @SuppressWarnings("unchecked")
-    private E prepend(final ValueBuilder<T, E> builder) {
+    private E prepend(final ValueBuilder<T> builder) {
 
         final ComputableExpression<T> expression = builder.build();
 
         children.prepend(expression);
 
-        return (E) ObjectValue.this;
+        return (E) BaseObjectValue.this;
     }
 
     @Override
@@ -127,9 +128,43 @@ public class ObjectValue<T, E extends ObjectValue<T, E>> implements UnaryExpress
     }
 
     /**
-     * Creates a builder for a new evaluation.
+     * Creates a builder for a new expression.
      *
      * @param test
+     *     The predicate (test) for the expression. The supplied predicate can assume that the subject will never be
+     *     {@code null} (a {@code null} check will be performed before the predicate is evaluated.
+     *
+     * @return The expression builder.
+     *
+     * @throws NullPointerException
+     *     The supplied test was {@code null}.
+     */
+    protected final SimpleValueBuilder<T, E> expression(final Predicate<T> test) {
+        return SimpleValueBuilder.notNullable(test);
+    }
+
+    /**
+     * Creates a builder for a new expression, where the supplied test may receive a {@code null} subject.
+     * <p>
+     * For example, if the supplied test is <code>subject, passed) -&gt; subject.toString().equals("hi")</code>, the
+     * value of {@code o} may be {@code null} and should be handled accordingly.
+     *
+     * @param test
+     *     The predicate (test) for the expression. The subject supplied to the predicate <em>may be {@code null}</em>.
+     *
+     * @return The expression builder.
+     *
+     * @throws NullPointerException
+     *     The supplied test was {@code null}.
+     */
+    protected final SimpleValueBuilder<T, E> nullableExpression(final Predicate<T> test) {
+        return SimpleValueBuilder.nullable(test);
+    }
+
+    /**
+     * Creates a builder for a new cachable expression.
+     *
+     * @param predicate
      *     The predicate (test) for the evaluation. The supplied predicate can assume that the subject will never be
      *     {@code null} (a {@code null} check will be performed before the predicate is evaluated.
      *
@@ -138,26 +173,8 @@ public class ObjectValue<T, E extends ObjectValue<T, E>> implements UnaryExpress
      * @throws NullPointerException
      *     The supplied test was {@code null}.
      */
-    protected final ValueBuilder<T, E> expression(Predicate<T> test) {
-        return ValueBuilder.notNullable(test);
-    }
-
-    /**
-     * Creates a builder for a new evaluation, where the supplied test may receive a {@code null} subject.
-     * <p>
-     * For example, if the supplied test is <code>subject, passed) -&gt; subject.toString().equals("hi")</code>, the
-     * value of {@code o} may be {@code null} and should be handled accordingly.
-     *
-     * @param test
-     *     The predicate (test) for the evaluation. The subject supplied to the predicate <em>may be {@code null}</em>.
-     *
-     * @return The evaluation builder.
-     *
-     * @throws NullPointerException
-     *     The supplied test was {@code null}.
-     */
-    private final ValueBuilder<T, E> nullableExpression(Predicate<T> test) {
-        return ValueBuilder.nullable(test);
+    protected final <C> CachedValueBuilder<T, E, C> cachableExpression(final CachablePredicate<T, C> predicate) {
+        return CachedValueBuilder.of(predicate);
     }
 
     /**
@@ -217,7 +234,7 @@ public class ObjectValue<T, E extends ObjectValue<T, E>> implements UnaryExpress
      */
     public E isType(final Class<?> type) {
 
-        final ValueBuilder<T, E> builder = expression(s -> s.getClass().equals(type));
+        final SimpleValueBuilder<T, E> builder = expression(s -> s.getClass().equals(type));
 
         if (type == null) {
             builder.name("isType[(null)]")
@@ -245,7 +262,7 @@ public class ObjectValue<T, E extends ObjectValue<T, E>> implements UnaryExpress
      */
     public E isNotType(final Class<?> type) {
 
-        final ValueBuilder<T, E> builder = expression(o -> type != null && !o.getClass().equals(type));
+        final SimpleValueBuilder<T, E> builder = expression(o -> type != null && !o.getClass().equals(type));
 
         if (type == null) {
             builder.name("isNotType[(null)]")
@@ -281,7 +298,7 @@ public class ObjectValue<T, E extends ObjectValue<T, E>> implements UnaryExpress
      */
     public E isInstanceOf(final Class<?> type) {
 
-        final ValueBuilder<T, E> builder = expression(s -> type != null && type.isAssignableFrom(s.getClass()));
+        final SimpleValueBuilder<T, E> builder = expression(s -> type != null && type.isAssignableFrom(s.getClass()));
 
         if (type == null) {
             builder.name("isInstanceOf[(null)]")
@@ -318,7 +335,7 @@ public class ObjectValue<T, E extends ObjectValue<T, E>> implements UnaryExpress
      */
     public E isNotInstanceOf(final Class<?> type) {
 
-        final ValueBuilder<T, E> builder = expression(s -> type != null && !type.isAssignableFrom(s.getClass()));
+        final SimpleValueBuilder<T, E> builder = expression(s -> type != null && !type.isAssignableFrom(s.getClass()));
 
         if (type == null) {
             builder.name("isNotInstanceOf[(null)]")
@@ -450,7 +467,7 @@ public class ObjectValue<T, E extends ObjectValue<T, E>> implements UnaryExpress
         );
     }
 
-    private ValueBuilder<T, E> comparableEquals(final T other, final Comparator<T> comparator) {
+    private SimpleValueBuilder<T, E> comparableEquals(final T other, final Comparator<T> comparator) {
 
         if (comparator == null) {
             return nullableExpression(s -> false)
@@ -512,7 +529,7 @@ public class ObjectValue<T, E extends ObjectValue<T, E>> implements UnaryExpress
         );
     }
 
-    private ValueBuilder<T, E> comparableNotEquals(final T other, final Comparator<T> comparator) {
+    private SimpleValueBuilder<T, E> comparableNotEquals(final T other, final Comparator<T> comparator) {
 
         if (comparator == null) {
             return nullableExpression(s -> false)

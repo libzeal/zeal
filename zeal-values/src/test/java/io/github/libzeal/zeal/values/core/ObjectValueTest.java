@@ -1,13 +1,13 @@
 package io.github.libzeal.zeal.values.core;
 
-import io.github.libzeal.zeal.values.api.ObjectValueTest;
+import io.github.libzeal.zeal.values.api.BasedObjectValueTest;
 
 @SuppressWarnings("java:S2187")
-class GeneralObjectValueTest extends ObjectValueTest<Object, GeneralObjectValue<Object>> {
+class ObjectValueTest extends BasedObjectValueTest<Object, ObjectValue<Object>> {
 
     @Override
-    protected GeneralObjectValue<Object> expression(Object value) {
-        return new GeneralObjectValue<>(value);
+    protected ObjectValue<Object> expression(Object value) {
+        return new ObjectValue<>(value);
     }
 
     @Override

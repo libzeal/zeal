@@ -23,7 +23,7 @@ import java.util.stream.Stream;
 import static io.github.libzeal.zeal.logic.evaluation.Result.*;
 import static io.github.libzeal.zeal.logic.evaluation.Result.FALSE;
 import static io.github.libzeal.zeal.logic.evaluation.Result.TRUE;
-import static io.github.libzeal.zeal.values.api.ObjectValue.*;
+import static io.github.libzeal.zeal.values.api.BaseObjectValue.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -52,13 +52,13 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  *     The type of the expression under test. This type is an example of the
  *     <a href="https://stackoverflow.com/q/4173254/2403253">Curiously Recurring Template Pattern (CRTP)</a>.
  *     This type allows for the fluent interface methods of this class to return the subtype object, rather than
- *     {@link ObjectValue}. For example:
+ *     {@link BaseObjectValue}. For example:
  *     <pre><code>
  *         public class StringExpressionCheck extends ObjectExpressionTest<String, StringExpression> { //...
  *     </code></pre>
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public abstract class ObjectValueTest<T, E extends ObjectValue<T, E>> {
+public abstract class BasedObjectValueTest<T, E extends BaseObjectValue<T, E>> {
 
     private final Comparator<T> equalComparator = (a, b) -> 0;
     private final Comparator<T> lessThanComparator = (a, b) -> -1;
@@ -421,7 +421,7 @@ public abstract class ObjectValueTest<T, E extends ObjectValue<T, E>> {
         final T value1 = exampleValue1();
         final T value2 = exampleValue2();
 
-        builder.newTest(ObjectValue::isEqualTo)
+        builder.newTest(BaseObjectValue::isEqualTo)
                 .subject(value1)
                 .expectedState(TRUE)
                 .expectedName(value -> "isEqualTo[" + value1 + "]")
@@ -535,7 +535,7 @@ public abstract class ObjectValueTest<T, E extends ObjectValue<T, E>> {
         final T value1 = exampleValue1();
         final T value2 = exampleValue2();
 
-        builder.newTest(ObjectValue::isNotEqualTo)
+        builder.newTest(BaseObjectValue::isNotEqualTo)
                 .subject(value1)
                 .expectedState(FALSE)
                 .expectedName(value -> "isNotEqualTo[" + value + "]")

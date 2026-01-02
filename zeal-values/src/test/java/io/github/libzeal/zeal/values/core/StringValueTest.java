@@ -1,12 +1,12 @@
 package io.github.libzeal.zeal.values.core;
 
-import io.github.libzeal.zeal.values.api.ObjectValueTest;
+import io.github.libzeal.zeal.values.api.BasedObjectValueTest;
 import io.github.libzeal.zeal.values.core.test.ExpressionTestCaseBuilder;
 
 import static io.github.libzeal.zeal.logic.evaluation.Result.FALSE;
 import static io.github.libzeal.zeal.logic.evaluation.Result.TRUE;
 
-class StringValueTest extends ObjectValueTest<String, StringValue> {
+class StringValueTest extends BasedObjectValueTest<String, StringValue> {
 
     @Override
     protected StringValue expression(String value) {
