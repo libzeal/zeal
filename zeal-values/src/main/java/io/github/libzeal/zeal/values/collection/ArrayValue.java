@@ -20,7 +20,7 @@ public class ArrayValue<T> extends BaseObjectValue<T[], ArrayValue<T>> {
                 expression(s -> s.length == length)
                         .name("hasLength[" + length + "]")
                         .expected("length = " + length)
-                        .actual((s, passed) -> String.valueOf(s.length))
+                        .actual(context -> String.valueOf(context.subject().length))
         );
     }
 
@@ -29,7 +29,7 @@ public class ArrayValue<T> extends BaseObjectValue<T[], ArrayValue<T>> {
                 expression(s -> s.length < length)
                         .name("isShortThan[" + length + "]")
                         .expected("length < " + length)
-                        .actual((s, passed) -> String.valueOf(s.length))
+                        .actual(context -> String.valueOf(context.subject().length))
         );
     }
 
@@ -38,7 +38,7 @@ public class ArrayValue<T> extends BaseObjectValue<T[], ArrayValue<T>> {
                 expression(s -> s.length <= length)
                         .name("isShortThanOrEqualTo[" + length + "]")
                         .expected("length <= " + length)
-                        .actual((s, passed) -> String.valueOf(s.length))
+                        .actual(context -> String.valueOf(context.subject().length))
         );
     }
 
@@ -47,7 +47,7 @@ public class ArrayValue<T> extends BaseObjectValue<T[], ArrayValue<T>> {
                 expression(s -> s.length > length)
                         .name("isLongerThan[" + length + "]")
                         .expected("length > " + length)
-                        .actual((s, passed) -> String.valueOf(s.length))
+                        .actual(context -> String.valueOf(context.subject().length))
         );
     }
 
@@ -56,7 +56,7 @@ public class ArrayValue<T> extends BaseObjectValue<T[], ArrayValue<T>> {
                 expression(s -> s.length >= length)
                         .name("isLongerThanOrEqualTo[" + length + "]")
                         .expected("length >= " + length)
-                        .actual((s, passed) -> String.valueOf(s.length))
+                        .actual(context -> String.valueOf(context.subject().length))
         );
     }
 

@@ -32,7 +32,7 @@ public class BoxedBooleanValue extends BaseObjectValue<Boolean, BoxedBooleanValu
             expression(Boolean::booleanValue)
                 .name("isTrue")
                 .expected("true")
-                .actual((s, passed) -> String.valueOf(s))
+                .actual(context -> String.valueOf(context.subject()))
         );
     }
 
@@ -46,7 +46,7 @@ public class BoxedBooleanValue extends BaseObjectValue<Boolean, BoxedBooleanValu
             expression(b -> !b)
                 .name("isFalse")
                 .expected("false")
-                .actual((s, passed) -> String.valueOf(s))
+                .actual(context -> String.valueOf(context.subject()))
         );
     }
 }

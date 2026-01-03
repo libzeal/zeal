@@ -25,7 +25,7 @@ public class IteratorValue<T> extends BaseObjectValue<Iterator<T>, IteratorValue
     }
 
     private static <T> ComputableField<Iterator<T>> hasNextActual() {
-        return (s, passed) -> passed ? hasNextName() : doesNotHaveNextName();
+        return context -> context.ifPassedOrElse(hasNextName(), doesNotHaveNextName());
     }
 
     private static String doesNotHaveNextName() {

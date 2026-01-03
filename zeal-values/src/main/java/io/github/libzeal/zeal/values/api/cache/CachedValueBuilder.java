@@ -10,7 +10,6 @@ import io.github.libzeal.zeal.logic.unary.future.ComputableExpression;
 import io.github.libzeal.zeal.logic.util.StopWatch;
 import io.github.libzeal.zeal.values.api.BaseObjectValue;
 import io.github.libzeal.zeal.values.api.ValueBuilder;
-import io.github.libzeal.zeal.values.api.cache.CachedComputableField.EvaluationContext;
 
 import java.time.Duration;
 
@@ -18,17 +17,17 @@ import static java.util.Objects.requireNonNull;
 
 public class CachedValueBuilder<T, E, C> implements ValueBuilder<T> {
 
-    private final CachablePredicate<T, C> test;
+    private final CacheablePredicate<T, C> test;
     private String name = "<unnamed>";
     private CachedComputableField<T, C> expected = context -> "<not set>";
-    private CachedComputableField<T, C> actual = EvaluationContext::stringifiedSubject;
+    private CachedComputableField<T, C> actual = CachedComputableRationaleContext::stringifiedSubject;
     private CachedComputableField<T, C> hint = null;
 
-    public static <T, E extends BaseObjectValue<T, E>, C> CachedValueBuilder<T, E, C> of(final CachablePredicate<T, C> test) {
+    public static <T, E extends BaseObjectValue<T, E>, C> CachedValueBuilder<T, E, C> of(final CacheablePredicate<T, C> test) {
         return new CachedValueBuilder<>(test);
     }
 
-    private CachedValueBuilder(final CachablePredicate<T, C> test) {
+    private CachedValueBuilder(final CacheablePredicate<T, C> test) {
         this.test = test;
     }
 
@@ -143,10 +142,10 @@ public class CachedValueBuilder<T, E, C> implements ValueBuilder<T> {
     private static class CachedComputableExpression<T, C> implements ComputableExpression<T> {
 
         private final String name;
-        private final CachablePredicate<T, C> predicate;
+        private final CacheablePredicate<T, C> predicate;
         private final CachedComputableRationale<T, C> computableRationale;
 
-        public CachedComputableExpression(final String name, final CachablePredicate<T, C> predicate,
+        public CachedComputableExpression(final String name, final CacheablePredicate<T, C> predicate,
                                           final CachedComputableRationale<T, C> computableRationale) {
             this.name = requireNonNull(name);
             this.predicate = requireNonNull(predicate);
@@ -163,10 +162,10 @@ public class CachedValueBuilder<T, E, C> implements ValueBuilder<T> {
 
         private final String name;
         private final T subject;
-        private final CachablePredicate<T, C> predicate;
+        private final CacheablePredicate<T, C> predicate;
         private final CachedComputableRationale<T, C> computableRationale;
 
-        public CachedExpression(final String name, final T subject, final CachablePredicate<T, C> predicate,
+        public CachedExpression(final String name, final T subject, final CacheablePredicate<T, C> predicate,
                                 final CachedComputableRationale<T, C> computableRationale) {
             this.name = requireNonNull(name);
             this.subject = subject;
@@ -187,7 +186,7 @@ public class CachedValueBuilder<T, E, C> implements ValueBuilder<T> {
             final boolean passed = predicateResult.passed();
             final C cache = predicateResult.cache();
             final Duration elapsedTime = stopWatch.stop();
-            final EvaluationContext<T, C> context = new EvaluationContext<>(subject, passed, cache);
+            final CachedComputableRationaleContext<T, C> context = new CachedComputableRationaleContext<>(subject, passed, cache);
 
             final Rationale rationale = computableRationale.compute(context);
             final Result result = Result.from(passed);
@@ -210,7 +209,7 @@ public class CachedValueBuilder<T, E, C> implements ValueBuilder<T> {
             this.hint = hint;
         }
 
-        public Rationale compute(final EvaluationContext<T, C> context) {
+        public Rationale compute(final CachedComputableRationaleContext<T, C> context) {
 
             final String generatedExpected = expected.compute(context);
             final String generatedActual = actual.compute(context);

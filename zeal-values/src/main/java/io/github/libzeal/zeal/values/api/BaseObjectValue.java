@@ -5,7 +5,7 @@ import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.unary.future.ComputableExpression;
 import io.github.libzeal.zeal.logic.unary.UnaryExpression;
 import io.github.libzeal.zeal.logic.unary.future.rationale.ComputableField;
-import io.github.libzeal.zeal.values.api.cache.CachablePredicate;
+import io.github.libzeal.zeal.values.api.cache.CacheablePredicate;
 import io.github.libzeal.zeal.values.api.cache.CachedValueBuilder;
 
 import java.util.Comparator;
@@ -173,7 +173,7 @@ public abstract class BaseObjectValue<T, E extends BaseObjectValue<T, E>> implem
      * @throws NullPointerException
      *     The supplied test was {@code null}.
      */
-    protected final <C> CachedValueBuilder<T, E, C> cachableExpression(final CachablePredicate<T, C> predicate) {
+    protected final <C> CachedValueBuilder<T, E, C> cachableExpression(final CacheablePredicate<T, C> predicate) {
         return CachedValueBuilder.of(predicate);
     }
 
@@ -248,7 +248,7 @@ public abstract class BaseObjectValue<T, E extends BaseObjectValue<T, E>> implem
         }
 
         return append(
-            builder.actual((s, passed) -> s.getClass().toString())
+            builder.actual(context -> context.subject().getClass().toString())
         );
     }
 
@@ -276,7 +276,7 @@ public abstract class BaseObjectValue<T, E extends BaseObjectValue<T, E>> implem
         }
 
         return append(
-            builder.actual((s, passed) -> s.getClass().toString())
+            builder.actual(context -> context.subject().getClass().toString())
         );
     }
 
@@ -312,7 +312,7 @@ public abstract class BaseObjectValue<T, E extends BaseObjectValue<T, E>> implem
         }
 
         return append(
-            builder.actual((s, passed) -> s.getClass().toString())
+            builder.actual(context -> context.subject().getClass().toString())
         );
     }
 
@@ -349,7 +349,7 @@ public abstract class BaseObjectValue<T, E extends BaseObjectValue<T, E>> implem
         }
 
         return append(
-            builder.actual((s, passed) -> s.getClass().toString())
+            builder.actual(context -> context.subject().getClass().toString())
         );
     }
 
@@ -565,7 +565,7 @@ public abstract class BaseObjectValue<T, E extends BaseObjectValue<T, E>> implem
     }
 
     private static <T> ComputableField<T> hashCodeSupplier() {
-        return (s, passed) -> String.valueOf(s.hashCode());
+        return context -> String.valueOf(context.subject().hashCode());
     }
 
     /**
@@ -653,7 +653,7 @@ public abstract class BaseObjectValue<T, E extends BaseObjectValue<T, E>> implem
             expression(predicate)
                 .name("predicate")
                 .expected(PREDICATE_SATISFIED)
-                .actual((o, passed) -> passed ? PREDICATE_SATISFIED : PREDICATE_UNSATISFIED)
+                .actual(context -> context.ifPassedOrElse(PREDICATE_SATISFIED, PREDICATE_UNSATISFIED))
         );
     }
 
@@ -670,7 +670,7 @@ public abstract class BaseObjectValue<T, E extends BaseObjectValue<T, E>> implem
             expression(o -> !predicate.test(o))
                 .name("not[predicate]")
                 .expected(PREDICATE_UNSATISFIED)
-                .actual((o, passed) -> passed ? PREDICATE_UNSATISFIED : PREDICATE_SATISFIED)
+                .actual(context -> context.ifPassedOrElse(PREDICATE_UNSATISFIED, PREDICATE_SATISFIED))
         );
     }
 }

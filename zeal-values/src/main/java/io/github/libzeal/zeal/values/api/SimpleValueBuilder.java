@@ -26,8 +26,8 @@ public class SimpleValueBuilder<T, E extends BaseObjectValue<T, E>> implements V
     private final boolean nullable;
     private final Predicate<T> test;
     private String name = "<unnamed>";
-    private ComputableField<T> expected = (s, passed) -> "<not set>";
-    private ComputableField<T> actual = (s, passed) -> Formatter.stringify(s);
+    private ComputableField<T> expected = context -> "<not set>";
+    private ComputableField<T> actual = context -> Formatter.stringify(context.subject());
     private ComputableField<T> hint = null;
 
     /**
@@ -111,7 +111,7 @@ public class SimpleValueBuilder<T, E extends BaseObjectValue<T, E>> implements V
      * @return This builder (fluent interface).
      */
     public SimpleValueBuilder<T, E> expected(final String expected) {
-        return expected((s, passed) -> expected);
+        return expected(context -> expected);
     }
 
     /**
@@ -123,7 +123,7 @@ public class SimpleValueBuilder<T, E extends BaseObjectValue<T, E>> implements V
      * @return This builder (fluent interface).
      */
     public SimpleValueBuilder<T, E> expected(final long expected) {
-        return expected((s, passed) -> String.valueOf(expected));
+        return expected(context -> String.valueOf(expected));
     }
 
     /**
@@ -148,7 +148,7 @@ public class SimpleValueBuilder<T, E extends BaseObjectValue<T, E>> implements V
      * @return This builder (fluent interface).
      */
     public SimpleValueBuilder<T, E> actual(final String actual) {
-        return actual((s, passed) -> actual);
+        return actual(context -> actual);
     }
 
     /**
@@ -173,7 +173,7 @@ public class SimpleValueBuilder<T, E extends BaseObjectValue<T, E>> implements V
      * @return This builder (fluent interface).
      */
     public SimpleValueBuilder<T, E> hint(final String hint) {
-        return hint((s, passed) -> hint);
+        return hint(context -> hint);
     }
 
     @Override

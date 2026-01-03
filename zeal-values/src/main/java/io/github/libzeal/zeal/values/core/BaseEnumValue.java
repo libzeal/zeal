@@ -57,7 +57,7 @@ public abstract class BaseEnumValue<T extends Enum<T>, B extends BaseEnumValue<T
             expression(s -> s.ordinal() == ordinal)
                 .name("ordinalIs[" + ordinal + "]")
                 .expected(ordinal)
-                .actual((s, passed) -> String.valueOf(s.ordinal()))
+                .actual(context -> String.valueOf(context.subject().ordinal()))
         );
     }
 
@@ -73,8 +73,8 @@ public abstract class BaseEnumValue<T extends Enum<T>, B extends BaseEnumValue<T
         return append(
             expression(s -> s.ordinal() != ordinal)
                 .name("not[ordinalIs[" + ordinal + "]]")
-                .expected((value, passed) -> "not[" + ordinal + "]")
-                .actual((s, passed) -> String.valueOf(s.ordinal()))
+                .expected(context -> "not[" + ordinal + "]")
+                .actual(context -> String.valueOf(context.subject().ordinal()))
         );
     }
 
@@ -91,7 +91,7 @@ public abstract class BaseEnumValue<T extends Enum<T>, B extends BaseEnumValue<T
             expression(s -> s.name().equals(name))
                 .name("nameIs[" + name + "]")
                 .expected(name)
-                .actual((s, passed) -> s.name())
+                .actual(context -> context.subject().name())
         );
     }
 
@@ -108,7 +108,7 @@ public abstract class BaseEnumValue<T extends Enum<T>, B extends BaseEnumValue<T
             expression(s -> !s.name().equals(name))
                 .name("not[nameIs[" + name + "]]")
                 .expected("not[" + name + "]")
-                .actual((s, passed) -> s.name())
+                .actual(context -> context.subject().name())
         );
     }
 
@@ -126,7 +126,7 @@ public abstract class BaseEnumValue<T extends Enum<T>, B extends BaseEnumValue<T
             expression(s -> s.name().equalsIgnoreCase(name))
                 .name("caseInsensitiveNameIs[" + name + "]")
                 .expected("caseInsensitive[" + name + "]")
-                .actual((s, passed) -> s.name())
+                .actual(context -> context.subject().name())
         );
     }
 
@@ -144,7 +144,7 @@ public abstract class BaseEnumValue<T extends Enum<T>, B extends BaseEnumValue<T
             expression(s -> !s.name().equalsIgnoreCase(name))
                 .name("not[caseInsensitiveNameIs[" + name + "]]")
                 .expected("not[caseInsensitive[" + name + "]]")
-                .actual((s, passed) -> s.name())
+                .actual(context -> context.subject().name())
         );
     }
 }

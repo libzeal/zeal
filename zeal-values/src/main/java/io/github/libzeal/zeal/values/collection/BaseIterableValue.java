@@ -3,7 +3,7 @@ package io.github.libzeal.zeal.values.collection;
 import io.github.libzeal.zeal.logic.util.Formatter;
 import io.github.libzeal.zeal.values.api.BaseObjectValue;
 import io.github.libzeal.zeal.values.api.CommonRationale;
-import io.github.libzeal.zeal.values.api.cache.CachedComputableField.EvaluationContext;
+import io.github.libzeal.zeal.values.api.cache.CachedComputableRationaleContext;
 import io.github.libzeal.zeal.values.api.cache.SequenceCaches;
 import io.github.libzeal.zeal.values.api.cache.SequenceCaches.SizeCache;
 import io.github.libzeal.zeal.values.api.cache.SimpleCacheResult;
@@ -39,7 +39,7 @@ public abstract class BaseIterableValue<T, I extends Iterable<T>, E extends Base
         );
     }
 
-    private String actualSize(final EvaluationContext<I, SizeCache> context) {
+    private String actualSize(final CachedComputableRationaleContext<I, SizeCache> context) {
         return String.valueOf(context.cache().size());
     }
 
@@ -123,7 +123,7 @@ public abstract class BaseIterableValue<T, I extends Iterable<T>, E extends Base
             expression(this::findIsEmpty)
                 .name("isEmpty")
                 .expected("isEmpty")
-                .actual((s, passed) -> passed ? "isEmpty" : "isNotEmpty")
+                .actual(context -> context.ifPassedOrElse("isEmpty", "isNotEmpty"))
         );
     }
 
@@ -132,7 +132,7 @@ public abstract class BaseIterableValue<T, I extends Iterable<T>, E extends Base
             expression(s -> !findIsEmpty(s))
                 .name("isNotEmpty")
                 .expected("size > 0")
-                .actual((s, passed) -> passed ? "isNotEmpty" : "isEmpty")
+                .actual(context -> context.ifPassedOrElse("isNotEmpty", "isEmpty"))
         );
     }
 
@@ -239,22 +239,19 @@ public abstract class BaseIterableValue<T, I extends Iterable<T>, E extends Base
             expression(s -> desired == null || findContainsAny(s, desired))
                 .name("includesAny")
                 .expected("All desired elements in subject")
-                .actual((s, passed) ->
-                    passed ?
-                        "Any desired element in subject" :
+                .actual(context -> context.ifPassedOrElse(
+                        "Any desired element in subject",
                         "All desired elements missing in subject"
-                )
-                .hint((s, passed) -> {
+                ))
+                .hint(context -> {
                         if (desired == null) {
                             return "Desired elements is (null), which passes by default";
                         }
                         else {
-                            if (passed) {
-                                return "Any desired element found in subject";
-                            }
-                            else {
-                                return "All desired elements missing in subject";
-                            }
+                            return context.ifPassedOrElse(
+                                "Any desired element found in subject",
+                                "All desired elements missing in subject"
+                            );
                         }
                     }
                 )

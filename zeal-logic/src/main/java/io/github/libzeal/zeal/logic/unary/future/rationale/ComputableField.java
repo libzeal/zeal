@@ -1,6 +1,9 @@
 package io.github.libzeal.zeal.logic.unary.future.rationale;
 
 import io.github.libzeal.zeal.logic.rationale.Rationale;
+import io.github.libzeal.zeal.logic.util.Formatter;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A formatter that consumes a subject and provides a string representation. This interface is intended to be used to
@@ -15,17 +18,5 @@ import io.github.libzeal.zeal.logic.rationale.Rationale;
 @FunctionalInterface
 public interface ComputableField<T> {
 
-    /**
-     * Computes the value based on the supplied subject.
-     *
-     * @param subject
-     *     The subject to compute the value for.
-     * @param passed
-     *     A flag denoting if the evaluation for which the value is supplied passed or failed. This flag is passed in as
-     *     optimization that allows implementations to know if the evaluation passed without having to recompute the
-     *     evaluation.
-     *
-     * @return The computed value.
-     */
-    String compute(T subject, boolean passed);
+    String compute(ComputableRationaleContext<T> context);
 }

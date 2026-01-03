@@ -33,7 +33,8 @@ public class StringValue extends BaseObjectValue<String, StringValue> {
     }
 
     /**
-     * Adds a predicate to the expression that checks if the subject is empty (has a length of {@code 0}).
+     * Adds a predicate to the expression that checks if the subject is empty
+     * (has a length of {@code 0}).
      *
      * @return This expression (fluent interface).
      *
@@ -49,11 +50,12 @@ public class StringValue extends BaseObjectValue<String, StringValue> {
     }
 
     private static ComputableField<String> isPredicatedPassed() {
-        return (o, passed) -> passed ? "true" : "false";
+        return context -> context.ifPassedOrElse("true", "false");
     }
 
     /**
-     * Adds a predicate to the expression that checks if the subject is not empty (has a length greater than
+     * Adds a predicate to the expression that checks if the subject is not
+     * empty (has a length greater than
      * {@code 0}).
      *
      * @return This expression (fluent interface).
@@ -70,7 +72,8 @@ public class StringValue extends BaseObjectValue<String, StringValue> {
     }
 
     /**
-     * Adds a predicate to the expression that checks if the subject is blank (empty or contains only whitespace).
+     * Adds a predicate to the expression that checks if the subject is blank
+     * (empty or contains only whitespace).
      *
      * @return This expression (fluent interface).
      */
@@ -84,7 +87,8 @@ public class StringValue extends BaseObjectValue<String, StringValue> {
     }
 
     /**
-     * Adds a predicate to the expression that checks if the subject is not blank (empty or contains only whitespace).
+     * Adds a predicate to the expression that checks if the subject is not
+     * blank (empty or contains only whitespace).
      *
      * @return This expression (fluent interface).
      */
@@ -98,7 +102,8 @@ public class StringValue extends BaseObjectValue<String, StringValue> {
     }
 
     /**
-     * Adds a predicate to the expression that checks if the length of the subject is equal to the supplied length.
+     * Adds a predicate to the expression that checks if the length of the
+     * subject is equal to the supplied length.
      *
      * @param length
      *     The desired length of the subject.
@@ -110,12 +115,13 @@ public class StringValue extends BaseObjectValue<String, StringValue> {
             expression(s -> s.length() == length)
                 .name("hasLengthOf[" + length + "]")
                 .expected(LENGTH_EQUAL_PREFIX + length)
-                .actual((s, passed) -> LENGTH_EQUAL_PREFIX + s.length())
+                .actual(context -> LENGTH_EQUAL_PREFIX + context.subject().length())
         );
     }
 
     /**
-     * Adds a predicate to the expression that checks if the length of the subject is longer than the supplied length.
+     * Adds a predicate to the expression that checks if the length of the
+     * subject is longer than the supplied length.
      *
      * @param length
      *     The desired minimum length of the subject (exclusive).
@@ -127,12 +133,13 @@ public class StringValue extends BaseObjectValue<String, StringValue> {
             expression(s -> s.length() > length)
                 .name("isLongerThan[" + length + "]")
                 .expected("length > " + length)
-                .actual((value, passed) -> LENGTH_EQUAL_PREFIX + value.length())
+                .actual(context -> LENGTH_EQUAL_PREFIX + context.subject().length())
         );
     }
 
     /**
-     * Adds a predicate to the expression that checks if the length of the subject is longer than or equal to the
+     * Adds a predicate to the expression that checks if the length of the
+     * subject is longer than or equal to the
      * supplied length.
      *
      * @param length
@@ -145,12 +152,13 @@ public class StringValue extends BaseObjectValue<String, StringValue> {
             expression(s -> s.length() >= length)
                 .name("isLongerThanOrEqualTo[" + length + "]")
                 .expected("length >= " + length)
-                .actual((value, passed) -> LENGTH_EQUAL_PREFIX + value.length())
+                .actual(context -> LENGTH_EQUAL_PREFIX + context.subject().length())
         );
     }
 
     /**
-     * Adds a predicate to the expression that checks if the length of the subject is shorter than the supplied length.
+     * Adds a predicate to the expression that checks if the length of the
+     * subject is shorter than the supplied length.
      *
      * @param length
      *     The desired maximum length of the subject (exclusive).
@@ -162,12 +170,13 @@ public class StringValue extends BaseObjectValue<String, StringValue> {
             expression(s -> s.length() < length)
                 .name("isShorterThan[" + length + "]")
                 .expected("length < " + length)
-                .actual((value, passed) -> LENGTH_EQUAL_PREFIX + value.length())
+                .actual(context -> LENGTH_EQUAL_PREFIX + context.subject().length())
         );
     }
 
     /**
-     * Adds a predicate to the expression that checks if the length of the subject is shorter than or equal to the
+     * Adds a predicate to the expression that checks if the length of the
+     * subject is shorter than or equal to the
      * supplied length.
      *
      * @param length
@@ -180,12 +189,13 @@ public class StringValue extends BaseObjectValue<String, StringValue> {
             expression(s -> s.length() <= length)
                 .name("isShorterThanOrEqualTo[" + length + "]")
                 .expected("length <= " + length)
-                .actual((value, passed) -> LENGTH_EQUAL_PREFIX + value.length())
+                .actual(context -> LENGTH_EQUAL_PREFIX + context.subject().length())
         );
     }
 
     /**
-     * Adds a predicate to the expression that checks if the subject contains the supplied character.
+     * Adds a predicate to the expression that checks if the subject contains
+     * the supplied character.
      *
      * @param c
      *     The character to ensure is included in the subject.
@@ -197,8 +207,8 @@ public class StringValue extends BaseObjectValue<String, StringValue> {
             expression(s -> s.indexOf(c) != -1)
                 .name(CommonRationale.includes(c))
                 .expected(CommonRationale.includes(c))
-                .actual((s, passed) -> passed ? CommonRationale.includes(c) : CommonRationale.excludes(c))
-                .hint((s, passed) -> needleInHaystackHint(s, c))
+                .actual(context -> context.ifPassedOrElse(CommonRationale.includes(c), CommonRationale.excludes(c)))
+                .hint(context -> needleInHaystackHint(context.subject(), c))
         );
     }
 
@@ -210,7 +220,8 @@ public class StringValue extends BaseObjectValue<String, StringValue> {
     }
 
     /**
-     * Adds a predicate to the expression that checks if the subject contains the supplied sequence.
+     * Adds a predicate to the expression that checks if the subject contains
+     * the supplied sequence.
      *
      * @param sequence
      *     The sequence to ensure is included in the subject.
@@ -222,8 +233,8 @@ public class StringValue extends BaseObjectValue<String, StringValue> {
             expression(s -> s.contains(sequence))
                 .name(CommonRationale.includes(sequence))
                 .expected(CommonRationale.includes(sequence))
-                .actual((s, passed) -> passed ? CommonRationale.includes(sequence) : CommonRationale.excludes(sequence))
-                .hint((s, passed) -> needleInHaystackHint(s, sequence))
+                .actual(context -> context.ifPassedOrElse(CommonRationale.includes(sequence), CommonRationale.excludes(sequence)))
+                .hint(context -> needleInHaystackHint(context.subject(), sequence))
         );
     }
 
@@ -235,7 +246,8 @@ public class StringValue extends BaseObjectValue<String, StringValue> {
     }
 
     /**
-     * Adds a predicate to the expression that checks if the subject does not contain the supplied character.
+     * Adds a predicate to the expression that checks if the subject does not
+     * contain the supplied character.
      *
      * @param c
      *     The character to ensure is excluded from the subject.
@@ -247,13 +259,14 @@ public class StringValue extends BaseObjectValue<String, StringValue> {
             expression(s -> s.indexOf(c) == -1)
                 .name(CommonRationale.excludes(c))
                 .expected(CommonRationale.excludes(c))
-                .actual((s, passed) -> passed ? CommonRationale.excludes(c) : CommonRationale.includes(c))
-                .hint((s, passed) -> needleInHaystackHint(s, c))
+                .actual(context -> context.ifPassedOrElse(CommonRationale.excludes(c), CommonRationale.includes(c)))
+                .hint(context -> needleInHaystackHint(context.subject(), c))
         );
     }
 
     /**
-     * Adds a predicate to the expression that checks if the subject does not contain the supplied sequence.
+     * Adds a predicate to the expression that checks if the subject does not
+     * contain the supplied sequence.
      *
      * @param sequence
      *     The sequence to ensure is excluded from the subject.
@@ -265,13 +278,14 @@ public class StringValue extends BaseObjectValue<String, StringValue> {
             expression(s -> !s.contains(sequence))
                 .name(CommonRationale.excludes(sequence))
                 .expected(CommonRationale.excludes(sequence))
-                .actual((s, passed) -> passed ? CommonRationale.excludes(sequence) : CommonRationale.includes(sequence))
-                .hint((s, passed) -> needleInHaystackHint(s, sequence))
+                .actual(context -> context.ifPassedOrElse(CommonRationale.excludes(sequence), CommonRationale.includes(sequence)))
+                .hint(context -> needleInHaystackHint(context.subject(), sequence))
         );
     }
 
     /**
-     * Adds a predicate to the expression that checks if number of times subject contains the supplied character is
+     * Adds a predicate to the expression that checks if number of times subject
+     * contains the supplied character is
      * equal to the supplied argument.
      *
      * @param c
@@ -286,7 +300,7 @@ public class StringValue extends BaseObjectValue<String, StringValue> {
             expression(s -> characterCount(s, c) == times)
                 .name(occursName(c, times, EQUALS_OPERATOR))
                 .expected(OCCURRENCES_PREFIX + " " + EQUALS_OPERATOR + " " + times)
-                .actual((value, passed) -> OCCURRENCES_PREFIX + " " + EQUALS_OPERATOR + " " + characterCount(value, c))
+                .actual(context -> OCCURRENCES_PREFIX + " " + EQUALS_OPERATOR + " " + characterCount(context.subject(), c))
         );
     }
 
@@ -301,7 +315,8 @@ public class StringValue extends BaseObjectValue<String, StringValue> {
     }
 
     /**
-     * Adds a predicate to the expression that checks if number of times subject contains the supplied character is
+     * Adds a predicate to the expression that checks if number of times subject
+     * contains the supplied character is
      * greater than the supplied argument.
      *
      * @param c
@@ -316,12 +331,13 @@ public class StringValue extends BaseObjectValue<String, StringValue> {
             expression(s -> characterCount(s, c) > times)
                 .name(occursName(c, times, ">"))
                 .expected(OCCURRENCES_PREFIX + " > " + times)
-                .actual((value, passed) -> OCCURRENCES_PREFIX + " " + EQUALS_OPERATOR + " " + characterCount(value, c))
+                .actual(context -> OCCURRENCES_PREFIX + " " + EQUALS_OPERATOR + " " + characterCount(context.subject(), c))
         );
     }
 
     /**
-     * Adds a predicate to the expression that checks if number of times subject contains the supplied character is
+     * Adds a predicate to the expression that checks if number of times subject
+     * contains the supplied character is
      * greater than or equal to the supplied argument.
      *
      * @param c
@@ -336,12 +352,13 @@ public class StringValue extends BaseObjectValue<String, StringValue> {
             expression(s -> characterCount(s, c) >= times)
                 .name(occursName(c, times, ">="))
                 .expected(OCCURRENCES_PREFIX + " >= " + times)
-                .actual((value, passed) -> OCCURRENCES_PREFIX + " " + EQUALS_OPERATOR + " " + characterCount(value, c))
+                .actual(context -> OCCURRENCES_PREFIX + " " + EQUALS_OPERATOR + " " + characterCount(context.subject(), c))
         );
     }
 
     /**
-     * Adds a predicate to the expression that checks if number of times subject contains the supplied character is less
+     * Adds a predicate to the expression that checks if number of times subject
+     * contains the supplied character is less
      * than the supplied argument.
      *
      * @param c
@@ -356,12 +373,13 @@ public class StringValue extends BaseObjectValue<String, StringValue> {
             expression(s -> characterCount(s, c) < times)
                 .name(occursName(c, times, "<"))
                 .expected(OCCURRENCES_PREFIX + " < " + times)
-                .actual((value, passed) -> OCCURRENCES_PREFIX + " " + EQUALS_OPERATOR + " " + characterCount(value, c))
+                .actual(context -> OCCURRENCES_PREFIX + " " + EQUALS_OPERATOR + " " + characterCount(context.subject(), c))
         );
     }
 
     /**
-     * Adds a predicate to the expression that checks if number of times subject contains the supplied character is less
+     * Adds a predicate to the expression that checks if number of times subject
+     * contains the supplied character is less
      * than or equal to the supplied argument.
      *
      * @param c
@@ -376,12 +394,13 @@ public class StringValue extends BaseObjectValue<String, StringValue> {
             expression(s -> characterCount(s, c) <= times)
                 .name(occursName(c, times, "<="))
                 .expected(OCCURRENCES_PREFIX + " <= " + times)
-                .actual((value, passed) -> OCCURRENCES_PREFIX + " " + EQUALS_OPERATOR + " " + characterCount(value, c))
+                .actual(context -> OCCURRENCES_PREFIX + " " + EQUALS_OPERATOR + " " + characterCount(context.subject(), c))
         );
     }
 
     /**
-     * Adds a predicate to the expression that checks if the subject starts with the supplied prefix.
+     * Adds a predicate to the expression that checks if the subject starts with
+     * the supplied prefix.
      *
      * @param prefix
      *     The desired prefix.
@@ -397,7 +416,8 @@ public class StringValue extends BaseObjectValue<String, StringValue> {
     }
 
     /**
-     * Adds a predicate to the expression that checks if the subject does not start with the supplied prefix.
+     * Adds a predicate to the expression that checks if the subject does not
+     * start with the supplied prefix.
      *
      * @param prefix
      *     The prefix to ensure the subject does not have.
@@ -413,7 +433,8 @@ public class StringValue extends BaseObjectValue<String, StringValue> {
     }
 
     /**
-     * Adds a predicate to the expression that checks if the subject ends with the supplied suffix.
+     * Adds a predicate to the expression that checks if the subject ends with
+     * the supplied suffix.
      *
      * @param suffix
      *     The desired suffix.
@@ -429,7 +450,8 @@ public class StringValue extends BaseObjectValue<String, StringValue> {
     }
 
     /**
-     * Adds a predicate to the expression that checks if the subject does not end with the supplied suffix.
+     * Adds a predicate to the expression that checks if the subject does not
+     * end with the supplied suffix.
      *
      * @param suffix
      *     The suffix to ensure the subject does not have.
@@ -445,7 +467,8 @@ public class StringValue extends BaseObjectValue<String, StringValue> {
     }
 
     /**
-     * Adds a predicate to the expression that checks if the supplied regular expression matches the subject.
+     * Adds a predicate to the expression that checks if the supplied regular
+     * expression matches the subject.
      *
      * @param regex
      *     The regular expression to match.
@@ -461,7 +484,8 @@ public class StringValue extends BaseObjectValue<String, StringValue> {
     }
 
     /**
-     * Adds a predicate to the expression that checks if the supplied regular expression does not match the subject.
+     * Adds a predicate to the expression that checks if the supplied regular
+     * expression does not match the subject.
      *
      * @param regex
      *     The regular expression to not match.
@@ -477,7 +501,8 @@ public class StringValue extends BaseObjectValue<String, StringValue> {
     }
 
     /**
-     * Adds a predicate to the expression that checks if the supplied argument equals the subject, ignoring case.
+     * Adds a predicate to the expression that checks if the supplied argument
+     * equals the subject, ignoring case.
      *
      * @param other
      *     The string to match.
@@ -493,7 +518,8 @@ public class StringValue extends BaseObjectValue<String, StringValue> {
     }
 
     /**
-     * Adds a predicate to the expression that checks if the first index of the supplied needle in the subject matches
+     * Adds a predicate to the expression that checks if the first index of the
+     * supplied needle in the subject matches
      * the supplied index.
      *
      * @param needle
@@ -508,12 +534,13 @@ public class StringValue extends BaseObjectValue<String, StringValue> {
             expression(s -> s.indexOf(needle) == index)
                 .name(INDEX_OF_PREFIX + "[" + needle + "] " + EQUALS_OPERATOR + " " + index)
                 .expected(index)
-                .actual((s, passed) -> String.valueOf(s.indexOf(needle)))
+                .actual(context -> String.valueOf(context.subject().indexOf(needle)))
         );
     }
 
     /**
-     * Adds a predicate to the expression that checks if the first index of the supplied needle in the subject matches
+     * Adds a predicate to the expression that checks if the first index of the
+     * supplied needle in the subject matches
      * the supplied index.
      *
      * @param needle
@@ -528,12 +555,13 @@ public class StringValue extends BaseObjectValue<String, StringValue> {
             expression(s -> s.indexOf(needle) == index)
                 .name(INDEX_OF_PREFIX + "[" + needle + "] " + EQUALS_OPERATOR + " " + index)
                 .expected(index)
-                .actual((s, passed) -> String.valueOf(s.indexOf(needle)))
+                .actual(context -> String.valueOf(context.subject().indexOf(needle)))
         );
     }
 
     /**
-     * Adds a predicate to the expression that checks if the first index of the supplied needle in the subject does not
+     * Adds a predicate to the expression that checks if the first index of the
+     * supplied needle in the subject does not
      * match the supplied index.
      *
      * @param needle
@@ -547,13 +575,14 @@ public class StringValue extends BaseObjectValue<String, StringValue> {
         return append(
             expression(s -> s.indexOf(needle) != index)
                 .name(INDEX_OF_PREFIX + "[" + needle + "] " + NOT_EQUALS_OPERATOR + " " + index)
-                .expected((s, passed) -> "not[" + index + "]")
-                .actual((s, passed) -> String.valueOf(s.indexOf(needle)))
+                .expected(context -> "not[" + index + "]")
+                .actual(context -> String.valueOf(context.subject().indexOf(needle)))
         );
     }
 
     /**
-     * Adds a predicate to the expression that checks if the first index of the supplied needle in the subject does not
+     * Adds a predicate to the expression that checks if the first index of the
+     * supplied needle in the subject does not
      * match the supplied index.
      *
      * @param needle
@@ -567,13 +596,14 @@ public class StringValue extends BaseObjectValue<String, StringValue> {
         return append(
             expression(s -> s.indexOf(needle) != index)
                 .name(INDEX_OF_PREFIX + "[" + needle + "] " + NOT_EQUALS_OPERATOR + " " + index)
-                .expected((s, passed) -> "not[" + index + "]")
-                .actual((s, passed) -> String.valueOf(s.indexOf(needle)))
+                .expected(context -> "not[" + index + "]")
+                .actual(context -> String.valueOf(context.subject().indexOf(needle)))
         );
     }
 
     /**
-     * Adds a predicate to the expression that checks if the last index of the supplied needle in the subject matches
+     * Adds a predicate to the expression that checks if the last index of the
+     * supplied needle in the subject matches
      * the supplied index.
      *
      * @param needle
@@ -588,12 +618,13 @@ public class StringValue extends BaseObjectValue<String, StringValue> {
             expression(s -> s.lastIndexOf(needle) == index)
                 .name(LAST_INDEX_OF_PREFIX + "[" + needle + "] " + EQUALS_OPERATOR + " " + index)
                 .expected(index)
-                .actual((s, passed) -> String.valueOf(s.lastIndexOf(needle)))
+                .actual(context -> String.valueOf(context.subject().lastIndexOf(needle)))
         );
     }
 
     /**
-     * Adds a predicate to the expression that checks if the last index of the supplied needle in the subject matches
+     * Adds a predicate to the expression that checks if the last index of the
+     * supplied needle in the subject matches
      * the supplied index.
      *
      * @param needle
@@ -608,12 +639,13 @@ public class StringValue extends BaseObjectValue<String, StringValue> {
             expression(s -> s.lastIndexOf(needle) == index)
                 .name(LAST_INDEX_OF_PREFIX + "[" + needle + "] " + EQUALS_OPERATOR + " " + index)
                 .expected(index)
-                .actual((s, passed) -> String.valueOf(s.lastIndexOf(needle)))
+                .actual(context -> String.valueOf(context.subject().lastIndexOf(needle)))
         );
     }
 
     /**
-     * Adds a predicate to the expression that checks if the last index of the supplied needle in the subject does not
+     * Adds a predicate to the expression that checks if the last index of the
+     * supplied needle in the subject does not
      * match the supplied index.
      *
      * @param needle
@@ -627,13 +659,14 @@ public class StringValue extends BaseObjectValue<String, StringValue> {
         return append(
             expression(s -> s.lastIndexOf(needle) != index)
                 .name(LAST_INDEX_OF_PREFIX + "[" + needle + "] " + NOT_EQUALS_OPERATOR + " " + index)
-                .expected((s, passed) -> "not[" + index + "]")
-                .actual((s, passed) -> String.valueOf(s.lastIndexOf(needle)))
+                .expected(context -> "not[" + index + "]")
+                .actual(context -> String.valueOf(context.subject().lastIndexOf(needle)))
         );
     }
 
     /**
-     * Adds a predicate to the expression that checks if the last index of the supplied needle in the subject does not
+     * Adds a predicate to the expression that checks if the last index of the
+     * supplied needle in the subject does not
      * match the supplied index.
      *
      * @param needle
@@ -647,8 +680,8 @@ public class StringValue extends BaseObjectValue<String, StringValue> {
         return append(
             expression(s -> s.lastIndexOf(needle) != index)
                 .name(LAST_INDEX_OF_PREFIX + "[" + needle + "] " + NOT_EQUALS_OPERATOR + " " + index)
-                .expected((s, passed) -> "not[" + index + "]")
-                .actual((s, passed) -> String.valueOf(s.lastIndexOf(needle)))
+                .expected(context -> "not[" + index + "]")
+                .actual(context -> String.valueOf(context.subject().lastIndexOf(needle)))
         );
     }
 }
