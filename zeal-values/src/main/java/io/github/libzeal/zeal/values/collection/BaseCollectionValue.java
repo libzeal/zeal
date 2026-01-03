@@ -1,10 +1,10 @@
 package io.github.libzeal.zeal.values.collection;
 
-import io.github.libzeal.zeal.values.api.CommonRationale;
-import io.github.libzeal.zeal.values.api.cache.SequenceCaches;
-import io.github.libzeal.zeal.values.api.cache.SimpleCacheResult;
-
 import java.util.Collection;
+import java.util.List;
+import java.util.function.Predicate;
+
+import static java.util.stream.Collectors.toList;
 
 public abstract class BaseCollectionValue<T, C extends Collection<T>, E extends BaseCollectionValue<T, C, E>>
         extends BaseIterableValue<T, C, E> {
@@ -21,5 +21,10 @@ public abstract class BaseCollectionValue<T, C extends Collection<T>, E extends 
     @Override
     protected boolean findIsEmpty(final C subject) {
         return subject.isEmpty();
+    }
+
+    @Override
+    protected Predicate<T> findContains(final C haystack) {
+        return haystack::contains;
     }
 }

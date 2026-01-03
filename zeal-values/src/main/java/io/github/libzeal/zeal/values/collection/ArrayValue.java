@@ -2,8 +2,12 @@ package io.github.libzeal.zeal.values.collection;
 
 import io.github.libzeal.zeal.values.api.BaseObjectValue;
 import io.github.libzeal.zeal.values.api.CommonRationale;
+import io.github.libzeal.zeal.values.api.cache.SequenceCaches;
+import io.github.libzeal.zeal.values.api.cache.SimpleCacheResult;
 
 import java.util.Objects;
+
+import static io.github.libzeal.zeal.logic.util.Formatter.stringify;
 
 public class ArrayValue<T> extends BaseObjectValue<T[], ArrayValue<T>> {
 
@@ -56,50 +60,54 @@ public class ArrayValue<T> extends BaseObjectValue<T[], ArrayValue<T>> {
         );
     }
 
-    public ArrayValue<T> includes(final T value) {
+    public ArrayValue<T> includes(final T desired) {
         return append(
-                expression(s -> includes(value, s))
-                        .name(CommonRationale.includes(value))
-                        .expected(CommonRationale.includes(value))
-                        .actual((s, passed) -> passed ? CommonRationale.includes(value) : CommonRationale.excludes(value))
-                        .hint((s, passed) -> needleInHaystackHint(s, value))
+                cachableExpression(s -> {
+
+                    final int index = findIndex(s, desired);
+
+                    return SimpleCacheResult.of(index > -1)
+                            .withCache(SequenceCaches.index(index));
+                })
+                        .name(CommonRationale.includes(desired))
+                        .expected(CommonRationale.includes(desired))
+                        .actual(context -> context.passed() ? CommonRationale.includes(desired) : CommonRationale.excludes(desired))
+                        .hint(context -> needleInHaystackHint(desired, context.cache().index()))
         );
     }
 
-    private static <E> boolean includes(final E value, final E[] s) {
-
-        for (final E element: s) {
-            if (Objects.equals(element, value)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    static <E> String needleInHaystackHint(final E[] haystack, final E needle) {
+    protected int findIndex(final T[] haystack, final T needle)  {
 
         int index = 0;
 
-        for (final E element: haystack) {
-
+        for (final T element : haystack) {
             if (Objects.equals(element, needle)) {
-                break;
+                return index;
             }
 
             index++;
         }
 
-        return CommonRationale.needleInHaystackHint("Array", index, needle);
+        return -1;
     }
 
-    public ArrayValue<T> excludes(final T value) {
+    private static <T> String needleInHaystackHint(final T desired, final int index) {
+        return CommonRationale.needleInHaystackHint("Iterable", index, desired);
+    }
+
+    public ArrayValue<T> excludes(final T desired) {
         return append(
-                expression(s -> excludes(value, s))
-                        .name(CommonRationale.excludes(value))
-                        .expected(CommonRationale.excludes(value))
-                        .actual((s, passed) -> passed ? CommonRationale.excludes(value) : CommonRationale.includes(value))
-                        .hint((s, passed) -> needleInHaystackHint(s, value))
+                cachableExpression(s -> {
+
+                    final int index = findIndex(s, desired);
+
+                    return SimpleCacheResult.of(index == -1)
+                            .withCache(SequenceCaches.index(index));
+                })
+                        .name(CommonRationale.excludes(desired))
+                        .expected(CommonRationale.excludes(desired))
+                        .actual(context -> context.passed() ? CommonRationale.excludes(desired) : CommonRationale.includes(desired))
+                        .hint(context -> needleInHaystackHint(desired, context.cache().index()))
         );
     }
 
@@ -114,19 +122,103 @@ public class ArrayValue<T> extends BaseObjectValue<T[], ArrayValue<T>> {
         return true;
     }
 
-//    public ArrayValue<T> hasAtIndex(final T value, final int index) {
-//
-//    }
-//
-//    public ArrayValue<T> doesNotHaveAtIndex(final T value, final int index) {
-//
-//    }
-//
-//    public ArrayValue<T> startsWith(final T value) {
-//
-//    }
-//
-//    public ArrayValue<T> endsWith(final T value) {
-//
-//    }
+    public ArrayValue<T> hasAtIndex(final T desired, final int index) {
+
+        final String desiredName = stringify(desired);
+
+        return append(
+                cachableExpression(s -> {
+
+                    final T found = findAtIndex(s, index);
+
+                    return SimpleCacheResult.of(Objects.equals(desired, found))
+                            .withCache(SequenceCaches.element(found));
+                })
+                        .name("hasAtIndex[desired=" + desiredName + ", index=" + index + "]")
+                        .expected(desiredName)
+                        .actual(context ->
+                                context.cache().element().getOrElse("(null)", desiredName))
+                        .hint(context ->
+                                context.cache().element().getOrElse(
+                                        "Index " + index + " is beyond array length of " + context.subject().length,
+                                        "Index " + index + " is within bounds, but the desired element was not found there"
+                                ))
+        );
+    }
+
+    private static <T> T findAtIndex(final T[] array, final int index) {
+
+        if (index > 0 && index < array.length) {
+            return array[index];
+        }
+        else {
+            return null;
+        }
+    }
+
+    public ArrayValue<T> doesNotHaveAtIndex(final T desired, final int index) {
+
+        final String desiredName = stringify(desired);
+
+        return append(
+                cachableExpression(s -> {
+
+                    final T found = findAtIndex(s, index);
+
+                    return SimpleCacheResult.of(!Objects.equals(desired, found))
+                            .withCache(SequenceCaches.element(found));
+                })
+                        .name("doesNotHaveAtIndex[desired=" + desiredName + ", index=" + index + "]")
+                        .expected("not[" + desiredName + "]")
+                        .actual(context ->
+                                context.cache().element().getOrElse("(null)", desiredName
+                                ))
+        );
+    }
+
+    public ArrayValue<T> startsWith(final T desired) {
+
+        final String desiredName = stringify(desired);
+
+        return append(
+                cachableExpression(s -> {
+
+                    final T found = findAtIndex(s, 0);
+
+                    return SimpleCacheResult.of(Objects.equals(desired, found))
+                            .withCache(SequenceCaches.element(found));
+                })
+                        .name("startsWith[" + desiredName + "]")
+                        .expected(desiredName)
+                        .actual(context ->
+                                context.subject().length == 0 ? "(null)" : desiredName
+                        )
+                        .hint(context ->
+                                context.subject().length == 0 ? "Array is empty" : "Array has at least one element, but the first element is not " + desiredName
+                        )
+        );
+    }
+
+    public ArrayValue<T> endsWith(final T desired) {
+
+        final String desiredName = stringify(desired);
+
+        return append(
+                cachableExpression(s -> {
+
+                    final T found = findAtIndex(s, s.length - 1);
+
+                    return SimpleCacheResult.of(Objects.equals(desired, found))
+                            .withCache(SequenceCaches.element(found));
+                })
+                        .name("endsWith[" + desiredName + "]")
+                        .expected(desiredName)
+                        .actual(context ->
+                                context.subject().length == 0 ? "(null)" : desiredName
+                        )
+                        .hint(context ->
+                                context.subject().length == 0 ? "Array is empty" : "Array has at least one element, but the last element is not " + desiredName
+                        )
+        );
+    }
 }

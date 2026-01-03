@@ -16,6 +16,14 @@ public final class SimpleCacheResult<C> implements CacheableResult<C> {
         return new SimpleCacheResultBuilder(passed);
     }
 
+    public static SimpleCacheResultBuilder ofPassed() {
+        return new SimpleCacheResultBuilder(true);
+    }
+
+    public static SimpleCacheResultBuilder ofFailed() {
+        return new SimpleCacheResultBuilder(false);
+    }
+
     @Override
     public boolean passed() {
         return passed;

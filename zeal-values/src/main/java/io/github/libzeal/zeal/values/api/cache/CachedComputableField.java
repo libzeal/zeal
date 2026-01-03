@@ -15,7 +15,7 @@ public interface CachedComputableField<T, C> {
         private final boolean passed;
         private final C cache;
 
-        public EvaluationContext(final T subject, final boolean passed, final C cache) {
+        EvaluationContext(final T subject, final boolean passed, final C cache) {
             this.subject = requireNonNull(subject);
             this.passed = passed;
             this.cache = requireNonNull(cache);
