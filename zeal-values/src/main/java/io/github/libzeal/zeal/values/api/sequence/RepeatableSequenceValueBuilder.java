@@ -22,15 +22,19 @@ public class RepeatableSequenceValueBuilder {
                     .withCache(SequenceCaches.count(count));
             })
             .name("includesExactly[desired=" + desiredAsString + ", times=" + times + "]")
-            .expected("found " + desiredAsString + " " + times + " times")
+            .expected("found '" + desiredAsString + "' " + times + " " + timesSuffix(times))
             .actual(context ->
-                "found " + desiredAsString + " " + context.cache().value() + " times"
+                "found '" + desiredAsString + "' " + context.cache().value() + " " + timesSuffix(context.cache().value())
             )
             .hint(context ->
                 context.cache().value() == 0 ?
                     "Desired value not found in array" :
-                    "Desired value was found, but " + context.cache().value() + " times"
+                    "Desired value was found, but " + context.cache().value() + " " + timesSuffix(context.cache().value())
             );
+    }
+
+    private static String timesSuffix(final long times) {
+        return times == 1 ? "time" : "times";
     }
 
     public static <T, S> ValueBuilder<S> includesMoreThan(final T desired, final long times, final RepeatableSequenceOperations<T, S> ops) {
@@ -45,14 +49,14 @@ public class RepeatableSequenceValueBuilder {
                     .withCache(SequenceCaches.count(count));
             })
             .name("includesMoreThan[desired=" + desiredAsString + ", times=" + times + "]")
-            .expected("found " + desiredAsString + " more than " + times + " times")
+            .expected("found '" + desiredAsString + "' more than " + times + " " + timesSuffix(times))
             .actual(context ->
-                "found " + desiredAsString + " " + context.cache().value() + " times"
+                "found '" + desiredAsString + "' " + context.cache().value() + " " + timesSuffix(context.cache().value())
             )
             .hint(context ->
                 context.cache().value() == 0 ?
                     "Desired value not found in array" :
-                    "Desired value was found, but " + context.cache().value() + " times"
+                    "Desired value was found, but " + context.cache().value() + " " + timesSuffix(context.cache().value())
             );
     }
 
@@ -68,14 +72,14 @@ public class RepeatableSequenceValueBuilder {
                     .withCache(SequenceCaches.count(count));
             })
             .name("includesMoreThanOrEqualTo[desired=" + desiredAsString + ", times=" + times + "]")
-            .expected("found " + desiredAsString + " more than or equal to " + times + " times")
+            .expected("found '" + desiredAsString + "' more than or equal to " + times + " " + timesSuffix(times))
             .actual(context ->
-                "found " + desiredAsString + " " + context.cache().value() + " times"
+                "found '" + desiredAsString + "' " + context.cache().value() + " " + timesSuffix(context.cache().value())
             )
             .hint(context ->
                 context.cache().value() == 0 ?
                     "Desired value not found in array" :
-                    "Desired value was found, but " + context.cache().value() + " times"
+                    "Desired value was found, but " + context.cache().value() + " " + timesSuffix(context.cache().value())
             );
     }
 
@@ -91,14 +95,14 @@ public class RepeatableSequenceValueBuilder {
                     .withCache(SequenceCaches.count(count));
             })
             .name("includesLessThan[desired=" + desiredAsString + ", times=" + times + "]")
-            .expected("found " + desiredAsString + " than than " + times + " times")
+            .expected("found '" + desiredAsString + "' less than " + times + " " + timesSuffix(times))
             .actual(context ->
-                "found " + desiredAsString + " " + context.cache().value() + " times"
+                "found '" + desiredAsString + "' " + context.cache().value() + " " + timesSuffix(context.cache().value())
             )
             .hint(context ->
                 context.cache().value() == 0 ?
                     "Desired value not found in array" :
-                    "Desired value was found, but " + context.cache().value() + " times"
+                    "Desired value was found, but " + context.cache().value() + " " + timesSuffix(context.cache().value())
             );
     }
 
@@ -113,15 +117,15 @@ public class RepeatableSequenceValueBuilder {
                 return SimpleCacheResult.of(count <= times)
                     .withCache(SequenceCaches.count(count));
             })
-            .name("includesLessThan[desired=" + desiredAsString + ", times=" + times + "]")
-            .expected("found " + desiredAsString + " than than or equal to " + times + " times")
+            .name("includesLessThanOrEqualTo[desired=" + desiredAsString + ", times=" + times + "]")
+            .expected("found '" + desiredAsString + "' less than or equal to " + times + " " + timesSuffix(times))
             .actual(context ->
-                "found " + desiredAsString + " " + context.cache().value() + " times"
+                "found '" + desiredAsString + "' " + context.cache().value() + " " + timesSuffix(context.cache().value())
             )
             .hint(context ->
                 context.cache().value() == 0 ?
                     "Desired value not found in array" :
-                    "Desired value was found, but " + context.cache().value() + " times"
+                    "Desired value was found, but " + context.cache().value() + " " + timesSuffix(context.cache().value())
             );
     }
 

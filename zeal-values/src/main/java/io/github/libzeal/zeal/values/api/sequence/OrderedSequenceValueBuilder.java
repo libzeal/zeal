@@ -15,9 +15,10 @@ import static io.github.libzeal.zeal.logic.util.Formatter.stringify;
 public class OrderedSequenceValueBuilder {
 
     public interface OrderedSequenceOperations<T, S> extends SequenceOperations<T, S> {
-        T lastElement(final S haystack);
-        T atIndex(S haystack, int index);
+        T lastElement(S haystack, T desired);
+        T atIndex(S haystack, int index, T desired);
         int indexOf(S haystack, T needle);
+        T firstElement(S haystack, T desired);
     }
 
     public static <T, S> ValueBuilder<S> hasAtIndex(final T desired, final int index, final OrderedSequenceOperations<T, S> ops) {
@@ -26,7 +27,7 @@ public class OrderedSequenceValueBuilder {
 
         return CachedValueBuilder.of((S s) -> {
 
-                final T found = ops.atIndex(s, index);
+                final T found = ops.atIndex(s, index, desired);
 
                 return SimpleCacheResult.of(Objects.equals(desired, found))
                     .withCache(SequenceCaches.element(found));
@@ -34,10 +35,13 @@ public class OrderedSequenceValueBuilder {
             .name("hasAtIndex[desired=" + desiredName + ", index=" + index + "]")
             .expected(desiredName)
             .actual(context ->
-                context.cache().value().getOrElseGet(Formatter::stringify, () -> "(null)"))
+                context.cache().value().getOrElseGet(
+                    Formatter::stringify,
+                    () -> "Index " + index + " is out of bounds"
+                ))
             .hint(context ->
                 context.cache().value().getOrElse(
-                    "Index " + index + " is beyond array length of " + ops.size(context.subject()),
+                    "Index " + index + " is beyond Value length of " + ops.size(context.subject()),
                     "Index " + index + " is within bounds, but the desired element was not found there"
                 ));
     }
@@ -48,7 +52,7 @@ public class OrderedSequenceValueBuilder {
 
         return CachedValueBuilder.of((S s) -> {
 
-                final T found = ops.atIndex(s, index);
+                final T found = ops.atIndex(s, index, desired);
 
                 return SimpleCacheResult.of(!Objects.equals(desired, found))
                     .withCache(SequenceCaches.element(found));
@@ -56,7 +60,9 @@ public class OrderedSequenceValueBuilder {
             .name("doesNotHaveAtIndex[desired=" + desiredName + ", index=" + index + "]")
             .expected("not[" + desiredName + "]")
             .actual(context ->
-                context.cache().value().getOrElse("(null)", desiredName
+                context.cache().value().getOrElseGet(
+                    Formatter::stringify,
+                    () -> "Index " + index + " is out of bounds"
                 ));
     }
 
@@ -66,7 +72,7 @@ public class OrderedSequenceValueBuilder {
 
         return CachedValueBuilder.of((S s) -> {
 
-                final T found = ops.atIndex(s, 0);
+                final T found = ops.firstElement(s, desired);
 
                 return SimpleCacheResult.of(Objects.equals(desired, found))
                     .withCache(SequenceCaches.element(found));
@@ -74,10 +80,10 @@ public class OrderedSequenceValueBuilder {
             .name("startsWith[" + desiredName + "]")
             .expected(desiredName)
             .actual(context ->
-                context.cache().value().getOrElseGet(Formatter::stringify, () -> "(null)")
+                context.cache().value().getOrElseGet(Formatter::stringify, () -> "Value is empty")
             )
             .hint(context ->
-                ops.size(context.subject()) == 0 ? "Array is empty" : "Array has at least one element, but the first element is not " + desiredName
+                ops.size(context.subject()) == 0 ? "Value is empty" : "Value has at least one element, but the first element is not " + desiredName
             );
     }
 
@@ -87,15 +93,15 @@ public class OrderedSequenceValueBuilder {
 
         return CachedValueBuilder.of((S s) -> {
 
-                final T found = ops.atIndex(s, 0);
+                final T found = ops.firstElement(s, desired);
 
                 return SimpleCacheResult.of(desired == null || !Objects.equals(desired, found))
                     .withCache(SequenceCaches.element(found));
             })
             .name("doesNotStartWith[" + desiredName + "]")
-            .expected(desiredName)
+            .expected("not[" + desiredName + "]")
             .actual(context ->
-                context.cache().value().getOrElseGet(Formatter::stringify, () -> "(null)")
+                context.cache().value().getOrElseGet(Formatter::stringify, () -> "Value is empty")
             )
             .hint(context ->
                 "The first element is " + desiredName
@@ -108,7 +114,7 @@ public class OrderedSequenceValueBuilder {
 
         return CachedValueBuilder.of((S s) -> {
 
-                final T found = ops.lastElement(s);
+                final T found = ops.lastElement(s, desired);
 
                 return SimpleCacheResult.of(Objects.equals(desired, found))
                     .withCache(SequenceCaches.element(found));
@@ -116,10 +122,10 @@ public class OrderedSequenceValueBuilder {
             .name("endsWith[" + desiredName + "]")
             .expected(desiredName)
             .actual(context ->
-                context.cache().value().getOrElseGet(Formatter::stringify, () -> "(null)")
+                context.cache().value().getOrElseGet(Formatter::stringify, () -> "Value is empty")
             )
             .hint(context ->
-                ops.size(context.subject()) == 0 ? "Array is empty" : "Array has at least one element, but the last element is not " + desiredName
+                ops.size(context.subject()) == 0 ? "Value is empty" : "Value has at least one element, but the last element is not " + desiredName
             );
     }
 
@@ -129,22 +135,21 @@ public class OrderedSequenceValueBuilder {
 
         return CachedValueBuilder.of((S s) -> {
 
-                final T found = ops.lastElement(s);
+                final T found = ops.lastElement(s, desired);
 
                 return SimpleCacheResult.of(desired == null || !Objects.equals(desired, found))
                     .withCache(SequenceCaches.element(found));
             })
             .name("doesNotEndWith[" + desiredName + "]")
-            .expected(desiredName)
+            .expected("not[" + desiredName + "]")
             .actual(context ->
-                context.cache().value().getOrElseGet(Formatter::stringify, () -> "(null)")
+                context.cache().value().getOrElseGet(Formatter::stringify, () -> "Value is empty")
             )
             .hint(context ->
                 "The last element is " + desiredName
             );
     }
 
-    // TODO: Use indices for these two methods
     public static <T, S> ValueBuilder<S> includes(final T desired, final OrderedSequenceOperations<T, S> ops) {
         return CachedValueBuilder.of((S s) -> {
 

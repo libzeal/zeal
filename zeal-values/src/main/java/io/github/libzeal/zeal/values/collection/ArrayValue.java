@@ -221,7 +221,7 @@ public class ArrayValue<T> extends BaseObjectValue<T[], ArrayValue<T>>
         );
     }
 
-    private static final class ArraySequenceOperations<T>
+    protected static final class ArraySequenceOperations<T>
         implements OrderedSequenceOperations<T, T[]>, RepeatableSequenceOperations<T, T[]> {
 
         @Override
@@ -238,6 +238,17 @@ public class ArrayValue<T> extends BaseObjectValue<T[], ArrayValue<T>>
             }
 
             return -1;
+        }
+
+        @Override
+        public T firstElement(final T[] haystack, final T desired) {
+
+            if (haystack.length > 0) {
+                return haystack[0];
+            }
+            else {
+                return null;
+            }
         }
 
         @Override
@@ -262,7 +273,7 @@ public class ArrayValue<T> extends BaseObjectValue<T[], ArrayValue<T>>
         }
 
         @Override
-        public T atIndex(final T[] haystack, final int index) {
+        public T atIndex(final T[] haystack, final int index, final T desired) {
 
             if (index > 0 && index < haystack.length) {
                 return haystack[index];
@@ -295,8 +306,14 @@ public class ArrayValue<T> extends BaseObjectValue<T[], ArrayValue<T>>
         }
 
         @Override
-        public T lastElement(final T[] haystack) {
-            return haystack[haystack.length - 1];
+        public T lastElement(final T[] haystack, final T desired) {
+
+            if (haystack.length > 0) {
+                return haystack[haystack.length - 1];
+            }
+            else {
+                return null;
+            }
         }
     }
 }

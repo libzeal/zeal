@@ -1,5 +1,8 @@
 package io.github.libzeal.zeal.values.api;
 
+import java.util.Arrays;
+import java.util.Collection;
+
 import static io.github.libzeal.zeal.logic.util.Formatter.stringify;
 
 public class StandardRationales {
@@ -49,12 +52,41 @@ public class StandardRationales {
         }
     }
 
+    public static final class Names {
+
+        private Names() {}
+
+        public static String name(final String name) {
+            return name;
+        }
+
+        public static String nameWithValue(final String name, final Object value) {
+            return name + "[" + stringify(value) + "]";
+        }
+
+        public static String nameWithValues(final String name, final Collection<Object> values) {
+            return name + values;
+        }
+
+        public static String nameWithValues(final String name, final Object... values) {
+            return name + Arrays.asList(values);
+        }
+
+        public static String nameWithPairs(final String name, final Object key, final Object value) {
+            return name + "[" + key + "=" + stringify(value) + "]";
+        }
+
+        public static String nameWithPairs(final String name, final Object key1, final Object value1, final Object key2, final Object value2) {
+            return name + "[" + key1 + "=" + stringify(value1) + ", " + key2 + "=" + stringify(value2) + "]";
+        }
+    }
+
     public static <T> String includes(final T value) {
-        return "includes[" + stringify(value) + "]";
+        return Names.nameWithValue("includes", value);
     }
 
     public static <T> String excludes(final T value) {
-        return "excludes[" + stringify(value) + "]";
+        return Names.nameWithValue("excludes", value);
     }
 
     public static <T> String needleInHaystackHint(final int index, final T element) {

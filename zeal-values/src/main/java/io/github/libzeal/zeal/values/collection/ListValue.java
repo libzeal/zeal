@@ -101,12 +101,18 @@ public class ListValue<T> extends BaseCollectionValue<T, List<T>, ListSequenceOp
         implements OrderedSequenceOperations<T, List<T>>, RepeatableSequenceOperations<T, List<T>> {
 
         @Override
-        public T lastElement(final List<T> haystack) {
-            return haystack.get(haystack.size() - 1);
+        public T lastElement(final List<T> haystack, final T desired) {
+
+            if (haystack.isEmpty()) {
+                return null;
+            }
+            else {
+                return haystack.get(haystack.size() - 1);
+            }
         }
 
         @Override
-        public T atIndex(final List<T> haystack, final int index) {
+        public T atIndex(final List<T> haystack, final int index, final T desired) {
 
             if (index < haystack.size()) {
                 return haystack.get(index);
@@ -119,6 +125,17 @@ public class ListValue<T> extends BaseCollectionValue<T, List<T>, ListSequenceOp
         @Override
         public int indexOf(final List<T> haystack, final T needle) {
             return haystack.indexOf(needle);
+        }
+
+        @Override
+        public T firstElement(final List<T> haystack, final T desired) {
+
+            if (haystack.isEmpty()) {
+                return null;
+            }
+            else {
+                return haystack.get(0);
+            }
         }
 
         @Override

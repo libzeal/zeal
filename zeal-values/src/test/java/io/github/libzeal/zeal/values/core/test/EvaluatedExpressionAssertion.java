@@ -13,7 +13,7 @@ public class EvaluatedExpressionAssertion<T> {
     }
 
     public void assertStateIs(Result expected) {
-        Assertions.assertEquals(expected, eval.result(), "Result is incorrect");
+        Assertions.assertEquals(expected, eval.result(), "Result is incorrect (" + eval.name() + ")");
     }
 
     public void assertNameIs(String name) {
@@ -21,7 +21,7 @@ public class EvaluatedExpressionAssertion<T> {
     }
 
     public void assertExpectedIs(String expected) {
-        Assertions.assertEquals(expected, eval.rationale().expected(), "Expected value is incorrect");
+        Assertions.assertEquals(expected, eval.rationale().expected(), "Expected value is incorrect (" + eval.name() + ")");
     }
 
     public void assertCompoundExpectedValue(final String expected) {
@@ -29,7 +29,7 @@ public class EvaluatedExpressionAssertion<T> {
     }
 
     public void assertActualIs(String actual) {
-        Assertions.assertEquals(actual, eval.rationale().actual(), "Actual value is incorrect");
+        Assertions.assertEquals(actual, eval.rationale().actual(), "Actual value is incorrect (" + eval.name() + ")");
     }
 
     public void assertCompoundActualValueIs(final int passed, final int failed, final int skipped) {

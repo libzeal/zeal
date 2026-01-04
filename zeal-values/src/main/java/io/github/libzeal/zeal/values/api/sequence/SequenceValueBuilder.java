@@ -25,6 +25,7 @@ public class SequenceValueBuilder {
         List<T> findAllIn(S haystack, Collection<T> needles);
 
         int size(S haystack);
+
         boolean isEmpty(S haystack);
 
         boolean includes(S haystack, T needle);
@@ -53,43 +54,43 @@ public class SequenceValueBuilder {
 
     public static <T, S> ValueBuilder<S> hasLengthOf(final int length, final SequenceOperations<T, S> ops) {
         return SimpleValueBuilder.notNullable((S s) -> ops.size(s) == length)
-            .name("hasLength[" + length + "]")
-            .expected(Operators.EQ.display(LENGTH, 0))
+            .name("hasLengthOf[" + length + "]")
+            .expected(Operators.EQ.display(LENGTH, length))
             .actual(actualLength(ops));
     }
 
     public static <T, S> ValueBuilder<S> doesNotHaveLengthOf(final int length, final SequenceOperations<T, S> ops) {
         return SimpleValueBuilder.notNullable((S s) -> ops.size(s) != length)
             .name("doesNotHaveLengthOf[" + length + "]")
-            .expected(Operators.NE.display(LENGTH, 0))
+            .expected(Operators.NE.display(LENGTH, length))
             .actual(actualLength(ops));
     }
 
     public static <T, S> ValueBuilder<S> isShorterThan(final int length, final SequenceOperations<T, S> ops) {
         return SimpleValueBuilder.notNullable((S s) -> ops.size(s) < length)
-            .name("isShortThan[" + length + "]")
-            .expected(Operators.LT.display(LENGTH, 0))
+            .name("isShorterThan[" + length + "]")
+            .expected(Operators.LT.display(LENGTH, length))
             .actual(actualLength(ops));
     }
 
     public static <T, S> ValueBuilder<S> isShorterThanOrEqualTo(final int length, final SequenceOperations<T, S> ops) {
         return SimpleValueBuilder.notNullable((S s) -> ops.size(s) <= length)
-            .name("isShortThanOrEqualTo[" + length + "]")
-            .expected(Operators.LTE.display(LENGTH, 0))
+            .name("isShorterThanOrEqualTo[" + length + "]")
+            .expected(Operators.LTE.display(LENGTH, length))
             .actual(actualLength(ops));
     }
 
     public static <T, S> ValueBuilder<S> isLongerThan(final int length, final SequenceOperations<T, S> ops) {
         return SimpleValueBuilder.notNullable((S s) -> ops.size(s) > length)
             .name("isLongerThan[" + length + "]")
-            .expected(Operators.GT.display(LENGTH, 0))
+            .expected(Operators.GT.display(LENGTH, length))
             .actual(actualLength(ops));
     }
 
     public static <T, S> ValueBuilder<S> isLongerThanOrEqualTo(final int length, final SequenceOperations<T, S> ops) {
         return SimpleValueBuilder.notNullable((S s) -> ops.size(s) >= length)
             .name("isLongerThanOrEqualTo[" + length + "]")
-            .expected(Operators.GTE.display(LENGTH, 0))
+            .expected(Operators.GTE.display(LENGTH, length))
             .actual(actualLength(ops));
     }
 
