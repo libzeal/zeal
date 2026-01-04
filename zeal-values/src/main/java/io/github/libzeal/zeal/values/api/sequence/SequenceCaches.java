@@ -1,4 +1,4 @@
-package io.github.libzeal.zeal.values.api.cache;
+package io.github.libzeal.zeal.values.api.sequence;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,25 +68,8 @@ public class SequenceCaches {
             this.value = value;
         }
 
-        public Value<T> value() {
-            return new Value<>(value);
-        }
-
-        public static final class Value<T> {
-
-            private final T value;
-
-            private Value(final T value) {
-                this.value = value;
-            }
-
-            public <A> A getOrElse(final A ifFound, final A orElse) {
-                return value != null ? ifFound : orElse;
-            }
-
-            public <A> A getOrElseGet(final Function<T, A> ifFound, final Supplier<A> orElse) {
-                return value != null ? ifFound.apply(value) : orElse.get();
-            }
+        public T value() {
+            return value;
         }
     }
 

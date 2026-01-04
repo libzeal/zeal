@@ -1,10 +1,9 @@
-package io.github.libzeal.zeal.values.api.sequence;
+package io.github.libzeal.zeal.values.api.sequence.builder;
 
 import io.github.libzeal.zeal.values.api.ValueBuilder;
 import io.github.libzeal.zeal.values.api.cache.CachedValueBuilder;
-import io.github.libzeal.zeal.values.api.cache.SequenceCaches;
+import io.github.libzeal.zeal.values.api.sequence.SequenceCaches;
 import io.github.libzeal.zeal.values.api.cache.SimpleCacheResult;
-import io.github.libzeal.zeal.values.api.sequence.SequenceValueBuilder.SequenceOperations;
 
 import static io.github.libzeal.zeal.logic.util.Formatter.stringify;
 import static io.github.libzeal.zeal.values.api.StandardRationales.Names.withPairs;
@@ -130,7 +129,7 @@ public class RepeatableSequenceValueBuilder {
             );
     }
 
-    public interface RepeatableSequenceOperations<T, S> extends SequenceOperations<T, S> {
+    public interface RepeatableSequenceOperations<T, S> {
         int occurrences(S haystack, T needle);
     }
 }

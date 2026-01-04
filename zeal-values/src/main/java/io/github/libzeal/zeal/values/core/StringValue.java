@@ -1,9 +1,15 @@
 package io.github.libzeal.zeal.values.core;
 
 import io.github.libzeal.zeal.values.api.BaseObjectValue;
-import io.github.libzeal.zeal.values.api.sequence.*;
-import io.github.libzeal.zeal.values.api.sequence.OrderedSequenceValueBuilder.OrderedSequenceOperations;
-import io.github.libzeal.zeal.values.api.sequence.RepeatableSequenceValueBuilder.RepeatableSequenceOperations;
+import io.github.libzeal.zeal.values.api.sequence.InspectableSequenceValue;
+import io.github.libzeal.zeal.values.api.sequence.OrderedSequenceValue;
+import io.github.libzeal.zeal.values.api.sequence.RepeatableSequenceValue;
+import io.github.libzeal.zeal.values.api.sequence.SizedSequenceValue;
+import io.github.libzeal.zeal.values.api.sequence.builder.*;
+import io.github.libzeal.zeal.values.api.sequence.builder.InspectableSequenceValueBuilder.InspectableSequenceOperations;
+import io.github.libzeal.zeal.values.api.sequence.builder.OrderedSequenceValueBuilder.OrderedSequenceOperations;
+import io.github.libzeal.zeal.values.api.sequence.builder.RepeatableSequenceValueBuilder.RepeatableSequenceOperations;
+import io.github.libzeal.zeal.values.api.sequence.builder.SizedSequenceValueBuilder.SizedSequenceOperations;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -17,7 +23,10 @@ import static java.util.stream.Collectors.toList;
  * @author Justin Albano
  */
 public class StringValue extends BaseObjectValue<String, StringValue>
-    implements OrderedSequenceValue<Character, String, StringValue>,
+    implements
+        SizedSequenceValue<String, StringValue>,
+        InspectableSequenceValue<Character, String, StringValue>,
+        OrderedSequenceValue<Character, String, StringValue>,
         RepeatableSequenceValue<Character, String, StringValue> {
 
     private static final String EQUALS_OPERATOR = "=";
@@ -42,14 +51,14 @@ public class StringValue extends BaseObjectValue<String, StringValue>
     @Override
     public StringValue isEmpty() {
         return append(
-            SequenceValueBuilder.isEmpty(operations)
+            SizedSequenceValueBuilder.isEmpty(operations)
         );
     }
 
     @Override
     public StringValue isNotEmpty() {
         return append(
-            SequenceValueBuilder.isNotEmpty(operations)
+            SizedSequenceValueBuilder.isNotEmpty(operations)
         );
     }
 
@@ -84,42 +93,42 @@ public class StringValue extends BaseObjectValue<String, StringValue>
     @Override
     public StringValue hasLengthOf(final int length) {
         return append(
-            SequenceValueBuilder.hasLengthOf(length, operations)
+            SizedSequenceValueBuilder.hasLengthOf(length, operations)
         );
     }
 
     @Override
     public StringValue doesNotHaveLengthOf(final int length) {
         return append(
-            SequenceValueBuilder.doesNotHaveLengthOf(length, operations)
+            SizedSequenceValueBuilder.doesNotHaveLengthOf(length, operations)
         );
     }
 
     @Override
     public StringValue isShorterThan(final int length) {
         return append(
-            SequenceValueBuilder.isShorterThan(length, operations)
+            SizedSequenceValueBuilder.isShorterThan(length, operations)
         );
     }
 
     @Override
     public StringValue isShorterThanOrEqualTo(final int length) {
         return append(
-            SequenceValueBuilder.isShorterThanOrEqualTo(length, operations)
+            SizedSequenceValueBuilder.isShorterThanOrEqualTo(length, operations)
         );
     }
 
     @Override
     public StringValue isLongerThan(final int length) {
         return append(
-            SequenceValueBuilder.isLongerThan(length, operations)
+            SizedSequenceValueBuilder.isLongerThan(length, operations)
         );
     }
 
     @Override
     public StringValue isLongerThanOrEqualTo(final int length) {
         return append(
-            SequenceValueBuilder.isLongerThanOrEqualTo(length, operations)
+            SizedSequenceValueBuilder.isLongerThanOrEqualTo(length, operations)
         );
     }
 
@@ -139,7 +148,7 @@ public class StringValue extends BaseObjectValue<String, StringValue>
     @Override
     public StringValue includesAll(final Collection<Character> desired) {
         return append(
-            SequenceValueBuilder.includesAll(desired, operations)
+            InspectableSequenceValueBuilder.includesAll(desired, operations)
         );
     }
 
@@ -151,7 +160,7 @@ public class StringValue extends BaseObjectValue<String, StringValue>
     @Override
     public StringValue includesAny(final Collection<Character> desired) {
         return append(
-            SequenceValueBuilder.includesAny(desired, operations)
+            InspectableSequenceValueBuilder.includesAny(desired, operations)
         );
     }
 
@@ -211,7 +220,7 @@ public class StringValue extends BaseObjectValue<String, StringValue>
     @Override
     public StringValue excludesAll(final Collection<Character> desired) {
         return append(
-            SequenceValueBuilder.excludesAll(desired, operations)
+            InspectableSequenceValueBuilder.excludesAll(desired, operations)
         );
     }
 
@@ -223,7 +232,7 @@ public class StringValue extends BaseObjectValue<String, StringValue>
     @Override
     public StringValue excludesAny(final Collection<Character> desired) {
         return append(
-            SequenceValueBuilder.excludesAny(desired, operations)
+            InspectableSequenceValueBuilder.excludesAny(desired, operations)
         );
     }
 
@@ -484,39 +493,42 @@ public class StringValue extends BaseObjectValue<String, StringValue>
         );
     }
 
-    protected static final class StringOperations implements RepeatableSequenceOperations<Character, String>,
+    protected static final class StringOperations implements
+        SizedSequenceOperations<String>,
+        InspectableSequenceOperations<Character, String>,
+        RepeatableSequenceOperations<Character, String>,
         OrderedSequenceOperations<Character, String> {
 
         @Override
-        public Character lastElement(final String haystack, final Character desired) {
+        public Element<Character> lastElement(final String haystack, final Character desired) {
 
             if (haystack.isEmpty()) {
-                return null;
+                return Element.missing();
             }
             else {
-                return haystack.charAt(haystack.length() - 1);
+                return Element.found(haystack.charAt(haystack.length() - 1));
             }
         }
 
         @Override
-        public Character firstElement(final String haystack, final Character desired) {
+        public Element<Character> firstElement(final String haystack, final Character desired) {
 
             if (haystack.isEmpty()) {
-                return null;
+                return Element.missing();
             }
             else {
-                return haystack.charAt(0);
+                return Element.found(haystack.charAt(0));
             }
         }
 
         @Override
-        public Character atIndex(final String haystack, final int index, final Character desired) {
+        public Element<Character> atIndex(final String haystack, final int index, final Character desired) {
 
             if (index < haystack.length()) {
-                return haystack.charAt(index);
+                return Element.found(haystack.charAt(index));
             }
             else {
-                return null;
+                return Element.missing();
             }
         }
 
@@ -573,37 +585,39 @@ public class StringValue extends BaseObjectValue<String, StringValue>
     }
 
     protected static final class StringOnStringOperations implements
+        SizedSequenceOperations<String>,
+        InspectableSequenceOperations<CharSequence, String>,
         OrderedSequenceOperations<CharSequence, String> {
 
         @Override
-        public String lastElement(final String haystack, final CharSequence desired) {
+        public Element<CharSequence> lastElement(final String haystack, final CharSequence desired) {
 
             final int length = desired.length();
 
             if (haystack.isEmpty()) {
-                return null;
+                return Element.missing();
             }
             else if (length > haystack.length()) {
-                return haystack;
+                return Element.found(haystack);
             }
             else {
-                return haystack.substring(haystack.length() - length);
+                return Element.found(haystack.substring(haystack.length() - length));
             }
         }
 
         @Override
-        public String atIndex(final String haystack, final int index, final CharSequence desired) {
+        public Element<CharSequence> atIndex(final String haystack, final int index, final CharSequence desired) {
 
             final int length = desired.length();
 
             if (haystack.isEmpty() || index >= haystack.length()) {
-                return null;
+                return Element.missing();
             }
             else if ((index + length) > haystack.length()) {
-                return haystack.substring(index);
+                return Element.found(haystack.substring(index));
             }
             else {
-                return haystack.substring(index, length);
+                return Element.found(haystack.substring(index, length));
             }
         }
 
@@ -613,18 +627,18 @@ public class StringValue extends BaseObjectValue<String, StringValue>
         }
 
         @Override
-        public CharSequence firstElement(final String haystack, final CharSequence desired) {
+        public Element<CharSequence> firstElement(final String haystack, final CharSequence desired) {
 
             final int length = desired.length();
 
             if (haystack.isEmpty()) {
-                return null;
+                return Element.missing();
             }
             else if (length > haystack.length()) {
-                return haystack;
+                return Element.found(haystack);
             }
             else {
-                return haystack.substring(0, length);
+                return Element.found(haystack.substring(0, length));
             }
         }
 

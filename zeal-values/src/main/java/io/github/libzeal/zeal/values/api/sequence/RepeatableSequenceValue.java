@@ -20,8 +20,7 @@ import java.util.Set;
  *
  * @author Justin Albano
  */
-public interface RepeatableSequenceValue<T, S, V extends BaseObjectValue<S, V>>
-    extends SequenceValue<T, S, V> {
+public interface RepeatableSequenceValue<T, S, V extends BaseObjectValue<S, V>> {
 
     /**
      * Checks that the desired element occurs the desired number of times in the

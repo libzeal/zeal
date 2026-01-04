@@ -1,101 +1,29 @@
-package io.github.libzeal.zeal.values.api.sequence;
+package io.github.libzeal.zeal.values.api.sequence.builder;
 
-import io.github.libzeal.zeal.logic.unary.future.rationale.ComputableField;
 import io.github.libzeal.zeal.logic.util.Formatter;
-import io.github.libzeal.zeal.values.api.StandardRationales;
 import io.github.libzeal.zeal.values.api.SimpleValueBuilder;
-import io.github.libzeal.zeal.values.api.StandardRationales.Operators;
+import io.github.libzeal.zeal.values.api.StandardRationales;
 import io.github.libzeal.zeal.values.api.ValueBuilder;
 import io.github.libzeal.zeal.values.api.cache.CachedValueBuilder;
-import io.github.libzeal.zeal.values.api.cache.SequenceCaches;
+import io.github.libzeal.zeal.values.api.sequence.SequenceCaches;
 import io.github.libzeal.zeal.values.api.cache.SimpleCacheResult;
 import io.github.libzeal.zeal.values.config.Configuration;
 
 import java.util.Collection;
 import java.util.List;
 
-import static io.github.libzeal.zeal.values.api.StandardRationales.Names.withValue;
 import static java.util.stream.Collectors.toList;
 
-public class SequenceValueBuilder {
+public class InspectableSequenceValueBuilder {
 
-    private static final String LENGTH = "length";
-
-    public interface SequenceOperations<T, S> {
+    public interface InspectableSequenceOperations<T, S> {
 
         List<T> findAllIn(S haystack, Collection<T> needles);
-
-        int size(S haystack);
-
-        boolean isEmpty(S haystack);
 
         boolean includes(S haystack, T needle);
     }
 
-    public static <T, S> ValueBuilder<S> isEmpty(final SequenceOperations<T, S> ops) {
-        return SimpleValueBuilder.notNullable(ops::isEmpty)
-            .name("isEmpty")
-            .expected(Operators.EQ.display(LENGTH, 0))
-            .actual(actualLength(ops));
-    }
-
-    private static <T, S> ComputableField<S> actualLength(final SequenceOperations<T, S> ops) {
-        return context -> {
-            final int size = ops.size(context.subject());
-            return Operators.EQ.display(LENGTH, size);
-        };
-    }
-
-    public static <T, S> ValueBuilder<S> isNotEmpty(final SequenceOperations<T, S> ops) {
-        return SimpleValueBuilder.notNullable((S s) -> !ops.isEmpty(s))
-            .name("isNotEmpty")
-            .expected(Operators.GT.display(LENGTH, 0))
-            .actual(actualLength(ops));
-    }
-
-    public static <T, S> ValueBuilder<S> hasLengthOf(final int length, final SequenceOperations<T, S> ops) {
-        return SimpleValueBuilder.notNullable((S s) -> ops.size(s) == length)
-            .name("hasLengthOf[" + length + "]")
-            .expected(Operators.EQ.display(LENGTH, length))
-            .actual(actualLength(ops));
-    }
-
-    public static <T, S> ValueBuilder<S> doesNotHaveLengthOf(final int length, final SequenceOperations<T, S> ops) {
-        return SimpleValueBuilder.notNullable((S s) -> ops.size(s) != length)
-            .name(withValue("doesNotHaveLengthOf", length))
-            .expected(Operators.NE.display(LENGTH, length))
-            .actual(actualLength(ops));
-    }
-
-    public static <T, S> ValueBuilder<S> isShorterThan(final int length, final SequenceOperations<T, S> ops) {
-        return SimpleValueBuilder.notNullable((S s) -> ops.size(s) < length)
-            .name(withValue("isShorterThan", length))
-            .expected(Operators.LT.display(LENGTH, length))
-            .actual(actualLength(ops));
-    }
-
-    public static <T, S> ValueBuilder<S> isShorterThanOrEqualTo(final int length, final SequenceOperations<T, S> ops) {
-        return SimpleValueBuilder.notNullable((S s) -> ops.size(s) <= length)
-            .name(withValue("isShorterThanOrEqualTo", length))
-            .expected(Operators.LTE.display(LENGTH, length))
-            .actual(actualLength(ops));
-    }
-
-    public static <T, S> ValueBuilder<S> isLongerThan(final int length, final SequenceOperations<T, S> ops) {
-        return SimpleValueBuilder.notNullable((S s) -> ops.size(s) > length)
-            .name(withValue("isLongerThan", length))
-            .expected(Operators.GT.display(LENGTH, length))
-            .actual(actualLength(ops));
-    }
-
-    public static <T, S> ValueBuilder<S> isLongerThanOrEqualTo(final int length, final SequenceOperations<T, S> ops) {
-        return SimpleValueBuilder.notNullable((S s) -> ops.size(s) >= length)
-            .name(withValue("isLongerThanOrEqualTo", length))
-            .expected(Operators.GTE.display(LENGTH, length))
-            .actual(actualLength(ops));
-    }
-
-    public static <T, S> ValueBuilder<S> includes(final T desired, final SequenceOperations<T, S> ops) {
+    public static <T, S> ValueBuilder<S> includes(final T desired, final InspectableSequenceOperations<T, S> ops) {
         return SimpleValueBuilder.notNullable((S s) -> ops.includes(s, desired))
             .name(StandardRationales.includes(desired))
             .expected(StandardRationales.includes(desired))
@@ -103,7 +31,7 @@ public class SequenceValueBuilder {
     }
 
     public static <T, S> ValueBuilder<S> includesAll(final Collection<T> desired,
-                                                     final SequenceOperations<T, S> ops) {
+                                                     final InspectableSequenceOperations<T, S> ops) {
 
         return CachedValueBuilder.of((S s) -> {
 
@@ -143,7 +71,7 @@ public class SequenceValueBuilder {
             );
     }
 
-    public static <T, S> ValueBuilder<S> includesAny(final Collection<T> desired, final SequenceOperations<T, S> ops) {
+    public static <T, S> ValueBuilder<S> includesAny(final Collection<T> desired, final InspectableSequenceOperations<T, S> ops) {
 
         return CachedValueBuilder.of((S s) -> {
 
@@ -205,14 +133,14 @@ public class SequenceValueBuilder {
         return missing;
     }
 
-    public static <T, S> ValueBuilder<S> excludes(final T desired, final SequenceOperations<T, S> ops) {
+    public static <T, S> ValueBuilder<S> excludes(final T desired, final InspectableSequenceOperations<T, S> ops) {
         return SimpleValueBuilder.notNullable((S s) -> !ops.includes(s, desired))
             .name(StandardRationales.excludes(desired))
             .expected(StandardRationales.excludes(desired))
             .actual(context -> context.passed() ? StandardRationales.excludes(desired) : StandardRationales.includes(desired));
     }
 
-    public static <T, S> ValueBuilder<S> excludesAll(final Collection<T> desired, final SequenceOperations<T, S> ops) {
+    public static <T, S> ValueBuilder<S> excludesAll(final Collection<T> desired, final InspectableSequenceOperations<T, S> ops) {
         return CachedValueBuilder.of((S s) -> {
 
                 if (desired == null) {
@@ -255,7 +183,7 @@ public class SequenceValueBuilder {
             );
     }
 
-    public static <T, S> ValueBuilder<S> excludesAny(final Collection<T> desired, final SequenceOperations<T, S> ops) {
+    public static <T, S> ValueBuilder<S> excludesAny(final Collection<T> desired, final InspectableSequenceOperations<T, S> ops) {
         return CachedValueBuilder.of((S s) -> {
 
                 if (desired == null) {

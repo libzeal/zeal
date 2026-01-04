@@ -15,8 +15,7 @@ import io.github.libzeal.zeal.values.api.BaseObjectValue;
  *
  * @author Justin Albano
  */
-public interface OrderedSequenceValue<T, S, V extends BaseObjectValue<S, V>>
-    extends SequenceValue<T, S, V> {
+public interface OrderedSequenceValue<T, S, V extends BaseObjectValue<S, V>> {
 
     /**
      * Checks that the desired element occurs at the desired index.

@@ -1,6 +1,6 @@
 package io.github.libzeal.zeal.values.collection;
 
-import io.github.libzeal.zeal.values.api.sequence.RepeatableSequenceValueBuilder.RepeatableSequenceOperations;
+import io.github.libzeal.zeal.values.api.sequence.builder.RepeatableSequenceValueBuilder.RepeatableSequenceOperations;
 import io.github.libzeal.zeal.values.collection.BaseCollectionValue.CollectionSequenceOperations;
 
 import java.util.Collection;

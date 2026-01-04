@@ -1,12 +1,18 @@
 package io.github.libzeal.zeal.values.collection;
 
 import io.github.libzeal.zeal.values.api.BaseObjectValue;
-import io.github.libzeal.zeal.values.api.sequence.SequenceValue;
-import io.github.libzeal.zeal.values.api.sequence.SequenceValueBuilder;
-import io.github.libzeal.zeal.values.api.sequence.SequenceValueBuilder.SequenceOperations;
+import io.github.libzeal.zeal.values.api.sequence.InspectableSequenceValue;
+import io.github.libzeal.zeal.values.api.sequence.SizedSequenceValue;
+import io.github.libzeal.zeal.values.api.sequence.builder.InspectableSequenceValueBuilder;
+import io.github.libzeal.zeal.values.api.sequence.builder.InspectableSequenceValueBuilder.InspectableSequenceOperations;
+import io.github.libzeal.zeal.values.api.sequence.builder.SizedSequenceValueBuilder;
+import io.github.libzeal.zeal.values.api.sequence.builder.SizedSequenceValueBuilder.SizedSequenceOperations;
 import io.github.libzeal.zeal.values.collection.BaseIterableValue.IterableSequenceOperations;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.StreamSupport;
 
 import static java.util.Objects.requireNonNull;
@@ -16,7 +22,9 @@ public abstract class BaseIterableValue<T, I extends Iterable<T>,
         O extends IterableSequenceOperations<T, I>,
         E extends BaseIterableValue<T, I, O, E>>
     extends BaseObjectValue<I, E>
-    implements SequenceValue<T, I, E> {
+    implements
+    SizedSequenceValue<I, E>,
+    InspectableSequenceValue<T, I, E> {
 
     private final O sequenceOps;
 
@@ -32,70 +40,70 @@ public abstract class BaseIterableValue<T, I extends Iterable<T>,
     @Override
     public E isEmpty() {
         return append(
-            SequenceValueBuilder.isEmpty(sequenceOps)
+            SizedSequenceValueBuilder.isEmpty(sequenceOps)
         );
     }
 
     @Override
     public E isNotEmpty() {
         return append(
-            SequenceValueBuilder.isNotEmpty(sequenceOps)
+            SizedSequenceValueBuilder.isNotEmpty(sequenceOps)
         );
     }
 
     @Override
     public E hasLengthOf(final int length) {
         return append(
-            SequenceValueBuilder.hasLengthOf(length, sequenceOps)
+            SizedSequenceValueBuilder.hasLengthOf(length, sequenceOps)
         );
     }
 
     @Override
     public E doesNotHaveLengthOf(final int length) {
         return append(
-            SequenceValueBuilder.doesNotHaveLengthOf(length, sequenceOps)
+            SizedSequenceValueBuilder.doesNotHaveLengthOf(length, sequenceOps)
         );
     }
 
     @Override
     public E isShorterThan(final int length) {
         return append(
-            SequenceValueBuilder.isShorterThan(length, sequenceOps)
+            SizedSequenceValueBuilder.isShorterThan(length, sequenceOps)
         );
     }
 
     @Override
     public E isShorterThanOrEqualTo(final int length) {
         return append(
-            SequenceValueBuilder.isShorterThanOrEqualTo(length, sequenceOps)
+            SizedSequenceValueBuilder.isShorterThanOrEqualTo(length, sequenceOps)
         );
     }
 
     @Override
     public E isLongerThan(final int length) {
         return append(
-            SequenceValueBuilder.isLongerThan(length, sequenceOps)
+            SizedSequenceValueBuilder.isLongerThan(length, sequenceOps)
         );
     }
 
     @Override
     public E isLongerThanOrEqualTo(final int length) {
         return append(
-            SequenceValueBuilder.isLongerThanOrEqualTo(length, sequenceOps)
+            SizedSequenceValueBuilder.isLongerThanOrEqualTo(length, sequenceOps)
         );
     }
 
     @Override
     public E includes(final T desired) {
         return append(
-            SequenceValueBuilder.includes(desired, sequenceOps)
+            InspectableSequenceValueBuilder.includes(desired, sequenceOps)
         );
     }
 
     @Override
     public E includesAll(final Collection<T> desired) {
         return append(
-            SequenceValueBuilder.includesAll(desired, sequenceOps)
+            InspectableSequenceValueBuilder.includesAll(desired, sequenceOps)
         );
     }
 
@@ -108,7 +116,7 @@ public abstract class BaseIterableValue<T, I extends Iterable<T>,
     @Override
     public E includesAny(final Collection<T> desired) {
         return append(
-            SequenceValueBuilder.includesAny(desired, sequenceOps)
+            InspectableSequenceValueBuilder.includesAny(desired, sequenceOps)
         );
     }
 
@@ -121,14 +129,14 @@ public abstract class BaseIterableValue<T, I extends Iterable<T>,
     @Override
     public E excludes(final T desired) {
         return append(
-            SequenceValueBuilder.excludes(desired, sequenceOps)
+            InspectableSequenceValueBuilder.excludes(desired, sequenceOps)
         );
     }
 
     @Override
     public E excludesAll(final Collection<T> desired) {
         return append(
-            SequenceValueBuilder.excludesAll(desired, sequenceOps)
+            InspectableSequenceValueBuilder.excludesAll(desired, sequenceOps)
         );
     }
 
@@ -141,7 +149,7 @@ public abstract class BaseIterableValue<T, I extends Iterable<T>,
     @Override
     public E excludesAny(final Collection<T> desired) {
         return append(
-            SequenceValueBuilder.excludesAny(desired, sequenceOps)
+            InspectableSequenceValueBuilder.excludesAny(desired, sequenceOps)
         );
     }
 
@@ -152,7 +160,8 @@ public abstract class BaseIterableValue<T, I extends Iterable<T>,
     }
 
     protected static class IterableSequenceOperations<T, I extends Iterable<T>>
-        implements SequenceOperations<T, I> {
+        implements SizedSequenceOperations<I>,
+        InspectableSequenceOperations<T, I> {
 
         @Override
         public List<T> findAllIn(final I haystack, final Collection<T> needles) {

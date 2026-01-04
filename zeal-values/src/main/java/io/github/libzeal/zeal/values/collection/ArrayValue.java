@@ -2,18 +2,20 @@ package io.github.libzeal.zeal.values.collection;
 
 import io.github.libzeal.zeal.values.api.BaseObjectValue;
 import io.github.libzeal.zeal.values.api.sequence.*;
-import io.github.libzeal.zeal.values.api.sequence.OrderedSequenceValueBuilder.OrderedSequenceOperations;
-import io.github.libzeal.zeal.values.api.sequence.RepeatableSequenceValueBuilder.RepeatableSequenceOperations;
+import io.github.libzeal.zeal.values.api.sequence.builder.*;
+import io.github.libzeal.zeal.values.api.sequence.builder.InspectableSequenceValueBuilder.InspectableSequenceOperations;
+import io.github.libzeal.zeal.values.api.sequence.builder.OrderedSequenceValueBuilder.OrderedSequenceOperations;
+import io.github.libzeal.zeal.values.api.sequence.builder.RepeatableSequenceValueBuilder.RepeatableSequenceOperations;
+import io.github.libzeal.zeal.values.api.sequence.builder.SizedSequenceValueBuilder.SizedSequenceOperations;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import static java.util.stream.Collectors.toList;
 
-public class ArrayValue<T> extends BaseObjectValue<T[], ArrayValue<T>>
-    implements OrderedSequenceValue<T, T[], ArrayValue<T>>,
+public class ArrayValue<T> extends BaseObjectValue<T[], ArrayValue<T>> implements
+    SizedSequenceValue<T[], ArrayValue<T>>,
+    InspectableSequenceValue<T, T[], ArrayValue<T>>,
+    OrderedSequenceValue<T, T[], ArrayValue<T>>,
     RepeatableSequenceValue<T, T[], ArrayValue<T>> {
 
     private final ArraySequenceOperations<T> operations = new ArraySequenceOperations<>();
@@ -25,56 +27,56 @@ public class ArrayValue<T> extends BaseObjectValue<T[], ArrayValue<T>>
     @Override
     public ArrayValue<T> isEmpty() {
         return append(
-            SequenceValueBuilder.isEmpty(operations)
+            SizedSequenceValueBuilder.isEmpty(operations)
         );
     }
 
     @Override
     public ArrayValue<T> isNotEmpty() {
         return append(
-            SequenceValueBuilder.isNotEmpty(operations)
+            SizedSequenceValueBuilder.isNotEmpty(operations)
         );
     }
 
     @Override
     public ArrayValue<T> hasLengthOf(final int length) {
         return append(
-            SequenceValueBuilder.hasLengthOf(length, operations)
+            SizedSequenceValueBuilder.hasLengthOf(length, operations)
         );
     }
 
     @Override
     public ArrayValue<T> doesNotHaveLengthOf(final int length) {
         return append(
-            SequenceValueBuilder.doesNotHaveLengthOf(length, operations)
+            SizedSequenceValueBuilder.doesNotHaveLengthOf(length, operations)
         );
     }
 
     @Override
     public ArrayValue<T> isShorterThan(final int length) {
         return append(
-            SequenceValueBuilder.isShorterThan(length, operations)
+            SizedSequenceValueBuilder.isShorterThan(length, operations)
         );
     }
 
     @Override
     public ArrayValue<T> isShorterThanOrEqualTo(final int length) {
         return append(
-            SequenceValueBuilder.isShorterThanOrEqualTo(length, operations)
+            SizedSequenceValueBuilder.isShorterThanOrEqualTo(length, operations)
         );
     }
 
     @Override
     public ArrayValue<T> isLongerThan(final int length) {
         return append(
-            SequenceValueBuilder.isLongerThan(length, operations)
+            SizedSequenceValueBuilder.isLongerThan(length, operations)
         );
     }
 
     @Override
     public ArrayValue<T> isLongerThanOrEqualTo(final int length) {
         return append(
-            SequenceValueBuilder.isLongerThanOrEqualTo(length, operations)
+            SizedSequenceValueBuilder.isLongerThanOrEqualTo(length, operations)
         );
     }
 
@@ -88,7 +90,7 @@ public class ArrayValue<T> extends BaseObjectValue<T[], ArrayValue<T>>
     @Override
     public ArrayValue<T> includesAll(final Collection<T> desired) {
         return append(
-            SequenceValueBuilder.includesAll(desired, operations)
+            InspectableSequenceValueBuilder.includesAll(desired, operations)
         );
     }
 
@@ -101,7 +103,7 @@ public class ArrayValue<T> extends BaseObjectValue<T[], ArrayValue<T>>
     @Override
     public ArrayValue<T> includesAny(final Collection<T> desired) {
         return append(
-            SequenceValueBuilder.includesAny(desired, operations)
+            InspectableSequenceValueBuilder.includesAny(desired, operations)
         );
     }
 
@@ -156,7 +158,7 @@ public class ArrayValue<T> extends BaseObjectValue<T[], ArrayValue<T>>
     @Override
     public ArrayValue<T> excludesAll(final Collection<T> desired) {
         return append(
-            SequenceValueBuilder.excludesAll(desired, operations)
+            InspectableSequenceValueBuilder.excludesAll(desired, operations)
         );
     }
 
@@ -169,7 +171,7 @@ public class ArrayValue<T> extends BaseObjectValue<T[], ArrayValue<T>>
     @Override
     public ArrayValue<T> excludesAny(final Collection<T> desired) {
         return append(
-            SequenceValueBuilder.excludesAny(desired, operations)
+            InspectableSequenceValueBuilder.excludesAny(desired, operations)
         );
     }
 
@@ -222,7 +224,11 @@ public class ArrayValue<T> extends BaseObjectValue<T[], ArrayValue<T>>
     }
 
     protected static final class ArraySequenceOperations<T>
-        implements OrderedSequenceOperations<T, T[]>, RepeatableSequenceOperations<T, T[]> {
+        implements
+            SizedSequenceOperations<T[]>,
+            InspectableSequenceOperations<T, T[]>,
+            OrderedSequenceOperations<T, T[]>,
+            RepeatableSequenceOperations<T, T[]> {
 
         @Override
         public int indexOf(final T[] haystack, final T needle) {
@@ -241,13 +247,13 @@ public class ArrayValue<T> extends BaseObjectValue<T[], ArrayValue<T>>
         }
 
         @Override
-        public T firstElement(final T[] haystack, final T desired) {
+        public Element<T> firstElement(final T[] haystack, final T desired) {
 
             if (haystack.length > 0) {
-                return haystack[0];
+                return Element.found(haystack[0]);
             }
             else {
-                return null;
+                return Element.missing();
             }
         }
 
@@ -273,13 +279,13 @@ public class ArrayValue<T> extends BaseObjectValue<T[], ArrayValue<T>>
         }
 
         @Override
-        public T atIndex(final T[] haystack, final int index, final T desired) {
+        public Element<T> atIndex(final T[] haystack, final int index, final T desired) {
 
             if (index > 0 && index < haystack.length) {
-                return haystack[index];
+                return Element.found(haystack[index]);
             }
             else {
-                return null;
+                return Element.missing();
             }
         }
 
@@ -306,13 +312,13 @@ public class ArrayValue<T> extends BaseObjectValue<T[], ArrayValue<T>>
         }
 
         @Override
-        public T lastElement(final T[] haystack, final T desired) {
+        public Element<T> lastElement(final T[] haystack, final T desired) {
 
             if (haystack.length > 0) {
-                return haystack[haystack.length - 1];
+                return Element.found(haystack[haystack.length - 1]);
             }
             else {
-                return null;
+                return Element.missing();
             }
         }
     }

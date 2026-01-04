@@ -1,11 +1,12 @@
 package io.github.libzeal.zeal.values.collection;
 
 import io.github.libzeal.zeal.values.api.sequence.OrderedSequenceValue;
-import io.github.libzeal.zeal.values.api.sequence.OrderedSequenceValueBuilder;
-import io.github.libzeal.zeal.values.api.sequence.OrderedSequenceValueBuilder.OrderedSequenceOperations;
+import io.github.libzeal.zeal.values.api.sequence.builder.Element;
+import io.github.libzeal.zeal.values.api.sequence.builder.OrderedSequenceValueBuilder;
+import io.github.libzeal.zeal.values.api.sequence.builder.OrderedSequenceValueBuilder.OrderedSequenceOperations;
 import io.github.libzeal.zeal.values.api.sequence.RepeatableSequenceValue;
-import io.github.libzeal.zeal.values.api.sequence.RepeatableSequenceValueBuilder;
-import io.github.libzeal.zeal.values.api.sequence.RepeatableSequenceValueBuilder.RepeatableSequenceOperations;
+import io.github.libzeal.zeal.values.api.sequence.builder.RepeatableSequenceValueBuilder;
+import io.github.libzeal.zeal.values.api.sequence.builder.RepeatableSequenceValueBuilder.RepeatableSequenceOperations;
 import io.github.libzeal.zeal.values.collection.ListValue.ListSequenceOperations;
 
 import java.util.Collections;
@@ -96,29 +97,37 @@ public class ListValue<T> extends BaseCollectionValue<T, List<T>, ListSequenceOp
         );
     }
 
+//    public ListValue<T> lastIndexOfIs(final T desired, final int index) {
+//
+//    }
+//
+//    public ListValue<T> lastIndexOfIsNot(final T desired, final int index) {
+//
+//    }
+
     public static final class ListSequenceOperations<T>
         extends CollectionSequenceOperations<T, List<T>>
         implements OrderedSequenceOperations<T, List<T>>, RepeatableSequenceOperations<T, List<T>> {
 
         @Override
-        public T lastElement(final List<T> haystack, final T desired) {
+        public Element<T> lastElement(final List<T> haystack, final T desired) {
 
             if (haystack.isEmpty()) {
-                return null;
+                return Element.missing();
             }
             else {
-                return haystack.get(haystack.size() - 1);
+                return Element.found(haystack.get(haystack.size() - 1));
             }
         }
 
         @Override
-        public T atIndex(final List<T> haystack, final int index, final T desired) {
+        public Element<T> atIndex(final List<T> haystack, final int index, final T desired) {
 
             if (index < haystack.size()) {
-                return haystack.get(index);
+                return Element.found(haystack.get(index));
             }
             else {
-                return null;
+                return Element.missing();
             }
         }
 
@@ -128,13 +137,13 @@ public class ListValue<T> extends BaseCollectionValue<T, List<T>, ListSequenceOp
         }
 
         @Override
-        public T firstElement(final List<T> haystack, final T desired) {
+        public Element<T> firstElement(final List<T> haystack, final T desired) {
 
             if (haystack.isEmpty()) {
-                return null;
+                return Element.missing();
             }
             else {
-                return haystack.get(0);
+                return Element.found(haystack.get(0));
             }
         }
 
