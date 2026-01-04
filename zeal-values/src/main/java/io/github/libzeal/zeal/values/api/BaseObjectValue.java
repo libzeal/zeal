@@ -41,7 +41,6 @@ import static java.util.Objects.requireNonNull;
  *     {@code StringExpression}, thus hiding the {@code includesCharacter(char)} method of {@code  StringExpression}.
  *
  * @author Justin Albano
- * @since 0.2.0
  */
 public abstract class BaseObjectValue<T, E extends BaseObjectValue<T, E>> implements UnaryExpression<T> {
 
@@ -79,7 +78,7 @@ public abstract class BaseObjectValue<T, E extends BaseObjectValue<T, E>> implem
      *     The name of the expression.
      */
     protected BaseObjectValue(T subject, String name) {
-        this.name = requireNonNull(name);
+        this.name = requireNonNull(name) + ": " + stringify(subject);
         this.subject = subject;
         this.children = new UnaryExpressionChain<>();
     }
@@ -139,7 +138,7 @@ public abstract class BaseObjectValue<T, E extends BaseObjectValue<T, E>> implem
      * @throws NullPointerException
      *     The supplied test was {@code null}.
      */
-    protected final SimpleValueBuilder<T, E> expression(final Predicate<T> test) {
+    protected final SimpleValueBuilder<T> expression(final Predicate<T> test) {
         return SimpleValueBuilder.notNullable(test);
     }
 
@@ -157,7 +156,7 @@ public abstract class BaseObjectValue<T, E extends BaseObjectValue<T, E>> implem
      * @throws NullPointerException
      *     The supplied test was {@code null}.
      */
-    protected final SimpleValueBuilder<T, E> nullableExpression(final Predicate<T> test) {
+    protected final SimpleValueBuilder<T> nullableExpression(final Predicate<T> test) {
         return SimpleValueBuilder.nullable(test);
     }
 
@@ -173,7 +172,7 @@ public abstract class BaseObjectValue<T, E extends BaseObjectValue<T, E>> implem
      * @throws NullPointerException
      *     The supplied test was {@code null}.
      */
-    protected final <C> CachedValueBuilder<T, E, C> cachableExpression(final CacheablePredicate<T, C> predicate) {
+    protected final <C> CachedValueBuilder<T, C> cachableExpression(final CacheablePredicate<T, C> predicate) {
         return CachedValueBuilder.of(predicate);
     }
 
@@ -234,7 +233,7 @@ public abstract class BaseObjectValue<T, E extends BaseObjectValue<T, E>> implem
      */
     public E isType(final Class<?> type) {
 
-        final SimpleValueBuilder<T, E> builder = expression(s -> s.getClass().equals(type));
+        final SimpleValueBuilder<T> builder = expression(s -> s.getClass().equals(type));
 
         if (type == null) {
             builder.name("isType[(null)]")
@@ -262,7 +261,7 @@ public abstract class BaseObjectValue<T, E extends BaseObjectValue<T, E>> implem
      */
     public E isNotType(final Class<?> type) {
 
-        final SimpleValueBuilder<T, E> builder = expression(o -> type != null && !o.getClass().equals(type));
+        final SimpleValueBuilder<T> builder = expression(o -> type != null && !o.getClass().equals(type));
 
         if (type == null) {
             builder.name("isNotType[(null)]")
@@ -298,7 +297,7 @@ public abstract class BaseObjectValue<T, E extends BaseObjectValue<T, E>> implem
      */
     public E isInstanceOf(final Class<?> type) {
 
-        final SimpleValueBuilder<T, E> builder = expression(s -> type != null && type.isAssignableFrom(s.getClass()));
+        final SimpleValueBuilder<T> builder = expression(s -> type != null && type.isAssignableFrom(s.getClass()));
 
         if (type == null) {
             builder.name("isInstanceOf[(null)]")
@@ -335,7 +334,7 @@ public abstract class BaseObjectValue<T, E extends BaseObjectValue<T, E>> implem
      */
     public E isNotInstanceOf(final Class<?> type) {
 
-        final SimpleValueBuilder<T, E> builder = expression(s -> type != null && !type.isAssignableFrom(s.getClass()));
+        final SimpleValueBuilder<T> builder = expression(s -> type != null && !type.isAssignableFrom(s.getClass()));
 
         if (type == null) {
             builder.name("isNotInstanceOf[(null)]")
@@ -467,7 +466,7 @@ public abstract class BaseObjectValue<T, E extends BaseObjectValue<T, E>> implem
         );
     }
 
-    private SimpleValueBuilder<T, E> comparableEquals(final T other, final Comparator<T> comparator) {
+    private SimpleValueBuilder<T> comparableEquals(final T other, final Comparator<T> comparator) {
 
         if (comparator == null) {
             return nullableExpression(s -> false)
@@ -529,7 +528,7 @@ public abstract class BaseObjectValue<T, E extends BaseObjectValue<T, E>> implem
         );
     }
 
-    private SimpleValueBuilder<T, E> comparableNotEquals(final T other, final Comparator<T> comparator) {
+    private SimpleValueBuilder<T> comparableNotEquals(final T other, final Comparator<T> comparator) {
 
         if (comparator == null) {
             return nullableExpression(s -> false)

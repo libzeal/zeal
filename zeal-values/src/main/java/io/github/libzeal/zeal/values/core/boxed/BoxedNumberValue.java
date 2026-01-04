@@ -16,7 +16,6 @@ import java.util.function.Predicate;
  *
  * @author Justin Albano
  * @see BaseObjectValue
- * @since 0.2.0
  */
 public abstract class BoxedNumberValue<T extends Number, E extends BaseObjectValue<T, E>> extends BaseObjectValue<T, E> {
 
@@ -55,7 +54,7 @@ public abstract class BoxedNumberValue<T extends Number, E extends BaseObjectVal
                                            final String expectedValue,
                                            final Predicate<T> longPredicate) {
 
-        final SimpleValueBuilder<T, E> builder = expression(longPredicate)
+        final SimpleValueBuilder<T> builder = expression(longPredicate)
             .name(name);
 
         if (value == null) {

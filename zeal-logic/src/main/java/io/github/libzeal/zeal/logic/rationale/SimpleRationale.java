@@ -8,7 +8,6 @@ import java.util.Optional;
  * strings are already constructed without any indirection).
  *
  * @author Justin Albano
- * @since 0.2.0
  */
 public class SimpleRationale implements Rationale {
 

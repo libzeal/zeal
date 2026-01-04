@@ -1,328 +1,194 @@
 package io.github.libzeal.zeal.values.collection;
 
-import io.github.libzeal.zeal.logic.util.Formatter;
 import io.github.libzeal.zeal.values.api.BaseObjectValue;
-import io.github.libzeal.zeal.values.api.CommonRationale;
-import io.github.libzeal.zeal.values.api.cache.CachedComputableRationaleContext;
-import io.github.libzeal.zeal.values.api.cache.SequenceCaches;
-import io.github.libzeal.zeal.values.api.cache.SequenceCaches.SizeCache;
-import io.github.libzeal.zeal.values.api.cache.SimpleCacheResult;
-import io.github.libzeal.zeal.values.config.Configuration;
+import io.github.libzeal.zeal.values.api.sequence.SequenceValue;
+import io.github.libzeal.zeal.values.api.sequence.SequenceValueBuilder;
+import io.github.libzeal.zeal.values.api.sequence.SequenceValueBuilder.SequenceOperations;
+import io.github.libzeal.zeal.values.collection.BaseIterableValue.IterableSequenceOperations;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-import java.util.function.Predicate;
+import java.util.*;
+import java.util.stream.StreamSupport;
 
+import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
-public abstract class BaseIterableValue<T, I extends Iterable<T>, E extends BaseIterableValue<T, I, E>>
-    extends BaseObjectValue<I, E> {
+public abstract class BaseIterableValue<T, I extends Iterable<T>,
+        O extends IterableSequenceOperations<T, I>,
+        E extends BaseIterableValue<T, I, O, E>>
+    extends BaseObjectValue<I, E>
+    implements SequenceValue<T, I, E> {
 
-    protected BaseIterableValue(final I subject, final String name) {
+    private final O sequenceOps;
+
+    protected BaseIterableValue(final I subject, final String name, final O sequenceOps) {
         super(subject, name);
+        this.sequenceOps = requireNonNull(sequenceOps);
     }
 
-    public E hasSize(final long expected) {
-        return append(
-            cachableExpression(s -> {
-
-                final long size = findSize(s);
-
-                return SimpleCacheResult.of(size == expected)
-                    .withCache(SequenceCaches.size(size));
-            })
-                .name("size[" + expected + "]")
-                .expected("size = " + expected)
-                .actual(this::actualSize)
-        );
+    protected O operations() {
+        return sequenceOps;
     }
 
-    private String actualSize(final CachedComputableRationaleContext<I, SizeCache> context) {
-        return String.valueOf(context.cache().size());
-    }
-
-    public E doesNotHaveSize(final long expected) {
-        return append(
-            cachableExpression(s -> {
-
-                final long size = findSize(s);
-
-                return SimpleCacheResult.of(size != expected)
-                    .withCache(SequenceCaches.size(size));
-            })
-                .name("not[size[" + expected + "]]")
-                .expected("size != " + expected)
-                .actual(this::actualSize)
-        );
-    }
-
-    public E isSmallerThan(final long expected) {
-        return append(
-            cachableExpression(s -> {
-
-                final long size = findSize(s);
-
-                return SimpleCacheResult.of(size < expected)
-                    .withCache(SequenceCaches.size(size));
-            })
-                .name("isSmallerThan[" + expected + "]")
-                .expected("size < " + expected)
-                .actual(this::actualSize)
-        );
-    }
-
-    public E isSmallerThanOrEqualTo(final long expected) {
-        return append(
-            cachableExpression(s -> {
-
-                final long size = findSize(s);
-
-                return SimpleCacheResult.of(size <= expected)
-                    .withCache(SequenceCaches.size(size));
-            })
-                .name("isSmallerThanOrEqualTo[" + expected + "]")
-                .expected("size <= " + expected)
-                .actual(this::actualSize)
-        );
-    }
-
-    public E isLargerThan(final long expected) {
-        return append(
-            cachableExpression(s -> {
-
-                final long size = findSize(s);
-
-                return SimpleCacheResult.of(size > expected)
-                    .withCache(SequenceCaches.size(size));
-            })
-                .name("isLargerThan[" + expected + "]")
-                .expected("size > " + expected)
-                .actual(this::actualSize)
-        );
-    }
-
-    public E isLargerThanOrEqualTo(final long expected) {
-        return append(
-            cachableExpression(s -> {
-
-                final long size = findSize(s);
-
-                return SimpleCacheResult.of(size >= expected)
-                    .withCache(SequenceCaches.size(size));
-            })
-                .name("isLargerThanOrEqualTo[" + expected + "]")
-                .expected("size >= " + expected)
-                .actual(this::actualSize)
-        );
-    }
-
+    @Override
     public E isEmpty() {
         return append(
-            expression(this::findIsEmpty)
-                .name("isEmpty")
-                .expected("isEmpty")
-                .actual(context -> context.ifPassedOrElse("isEmpty", "isNotEmpty"))
+            SequenceValueBuilder.isEmpty(sequenceOps)
         );
     }
 
+    @Override
     public E isNotEmpty() {
         return append(
-            expression(s -> !findIsEmpty(s))
-                .name("isNotEmpty")
-                .expected("size > 0")
-                .actual(context -> context.ifPassedOrElse("isNotEmpty", "isEmpty"))
+            SequenceValueBuilder.isNotEmpty(sequenceOps)
         );
     }
 
+    @Override
+    public E hasLengthOf(final int length) {
+        return append(
+            SequenceValueBuilder.hasLengthOf(length, sequenceOps)
+        );
+    }
+
+    @Override
+    public E doesNotHaveLengthOf(final int length) {
+        return append(
+            SequenceValueBuilder.doesNotHaveLengthOf(length, sequenceOps)
+        );
+    }
+
+    @Override
+    public E isShorterThan(final int length) {
+        return append(
+            SequenceValueBuilder.isShorterThan(length, sequenceOps)
+        );
+    }
+
+    @Override
+    public E isShorterThanOrEqualTo(final int length) {
+        return append(
+            SequenceValueBuilder.isShorterThanOrEqualTo(length, sequenceOps)
+        );
+    }
+
+    @Override
+    public E isLongerThan(final int length) {
+        return append(
+            SequenceValueBuilder.isLongerThan(length, sequenceOps)
+        );
+    }
+
+    @Override
+    public E isLongerThanOrEqualTo(final int length) {
+        return append(
+            SequenceValueBuilder.isLongerThanOrEqualTo(length, sequenceOps)
+        );
+    }
+
+    @Override
     public E includes(final T desired) {
         return append(
-            cachableExpression(s -> {
-
-                final int index = findIndex(s, desired);
-
-                return SimpleCacheResult.of(index > -1)
-                    .withCache(SequenceCaches.index(index));
-            })
-                .name(CommonRationale.includes(desired))
-                .expected(CommonRationale.includes(desired))
-                .actual(context -> context.passed() ? CommonRationale.includes(desired) : CommonRationale.excludes(desired))
-                .hint(context -> needleInHaystackHint(desired, context.cache().index()))
+            SequenceValueBuilder.includes(desired, sequenceOps)
         );
     }
 
-    private static <T> String needleInHaystackHint(final T desired, final int index) {
-        return CommonRationale.needleInHaystackHint("Iterable", index, desired);
-    }
-
-    public E excludes(final T desired) {
-        return append(
-            cachableExpression(s -> {
-
-                final int index = findIndex(s, desired);
-
-                return SimpleCacheResult.of(index == -1)
-                    .withCache(SequenceCaches.index(index));
-            })
-                .name(CommonRationale.excludes(desired))
-                .expected(CommonRationale.excludes(desired))
-                .actual(context -> context.passed() ? CommonRationale.excludes(desired) : CommonRationale.includes(desired))
-                .hint(context -> needleInHaystackHint(desired, context.cache().index()))
-        );
-    }
-
+    @Override
     public E includesAll(final Collection<T> desired) {
         return append(
-            cachableExpression(s -> {
-
-                if (desired == null) {
-                    return SimpleCacheResult.ofPassed()
-                        .withCache(SequenceCaches.<T>nonFound());
-                }
-
-                final List<T> found = findContainsAll(s, desired);
-
-                return SimpleCacheResult.of(desired.size() == found.size())
-                    .withCache(SequenceCaches.found(found));
-            })
-                .name("includesAll")
-                .expected("All desired elements in subject")
-                .actual(context ->
-                    context.passed() ?
-                        "All desired elements in subject" :
-                        "At least one desired element missing in subject"
-                )
-                .hint(context -> {
-                        if (desired == null) {
-                            return "Desired elements is (null), which passes by default";
-                        }
-                        else {
-                            if (context.passed()) {
-                                return "All desired elements found in subject";
-                            }
-                            else {
-                                final List<String> missing = computeMissing(desired, context.cache().elements());
-
-                                return "The following desired elements were not found: " + missing;
-                            }
-                        }
-                    }
-                )
+            SequenceValueBuilder.includesAll(desired, sequenceOps)
         );
     }
 
-    private static <T> List<String> computeMissing(final Collection<T> desired, final List<T> found) {
-
-        final boolean truncated = desired.size() > Configuration.MAX_LIST_DISPLAY_LENGTH;
-
-        final List<String> missing = desired.stream()
-            .filter(d -> !found.contains(d))
-            .limit(Configuration.MAX_LIST_DISPLAY_LENGTH)
-            .map(Formatter::stringify)
-            .collect(toList());
-
-        if (truncated) {
-            missing.add("...");
-        }
-
-        return missing;
-    }
-
+    @Override
     @SafeVarargs
     public final E includesAllOf(final T... desired) {
         return includesAll(Arrays.asList(desired));
     }
 
+    @Override
     public E includesAny(final Collection<T> desired) {
         return append(
-            expression(s -> desired == null || findContainsAny(s, desired))
-                .name("includesAny")
-                .expected("All desired elements in subject")
-                .actual(context -> context.ifPassedOrElse(
-                        "Any desired element in subject",
-                        "All desired elements missing in subject"
-                ))
-                .hint(context -> {
-                        if (desired == null) {
-                            return "Desired elements is (null), which passes by default";
-                        }
-                        else {
-                            return context.ifPassedOrElse(
-                                "Any desired element found in subject",
-                                "All desired elements missing in subject"
-                            );
-                        }
-                    }
-                )
+            SequenceValueBuilder.includesAny(desired, sequenceOps)
         );
     }
 
+    @Override
     @SafeVarargs
     public final E includesAnyOf(final T... desired) {
         return includesAny(Arrays.asList(desired));
     }
 
-//    public E excludesAll(final Collection<T> desired) {
-//
-//    }
-//
-//    public E excludesAllOf(final T... desired) {
-//
-//    }
-//
-//    public E excludesAny(final Collection<T> desired) {
-//
-//    }
-//
-//    public E excludesAnyOf(final T... desired) {
-//
-//    }
-
-    @SuppressWarnings("unchecked")
-    protected long findSize(final I subject) {
-
-        long count = 0;
-
-        for (final T e : subject) {
-            count++;
-        }
-
-        return count;
+    @Override
+    public E excludes(final T desired) {
+        return append(
+            SequenceValueBuilder.excludes(desired, sequenceOps)
+        );
     }
 
-    protected int findIndex(final I haystack, final T needle) {
+    @Override
+    public E excludesAll(final Collection<T> desired) {
+        return append(
+            SequenceValueBuilder.excludesAll(desired, sequenceOps)
+        );
+    }
 
-        int index = 0;
+    @Override
+    @SafeVarargs
+    public final E excludesAllOf(final T... desired) {
+        return excludesAll(Arrays.asList(desired));
+    }
 
-        for (final T element : haystack) {
+    @Override
+    public E excludesAny(final Collection<T> desired) {
+        return append(
+            SequenceValueBuilder.excludesAny(desired, sequenceOps)
+        );
+    }
 
-            if (Objects.equals(element, needle)) {
-                return index;
+    @Override
+    @SafeVarargs
+    public final E excludesAnyOf(final T... desired) {
+        return excludesAny(Arrays.asList(desired));
+    }
+
+    protected static class IterableSequenceOperations<T, I extends Iterable<T>>
+        implements SequenceOperations<T, I> {
+
+        @Override
+        public List<T> findAllIn(final I haystack, final Collection<T> needles) {
+            return StreamSupport.stream(haystack.spliterator(), false)
+                .filter(needles::contains)
+                .collect(toList());
+        }
+
+        @Override
+        public int size(final I haystack) {
+
+            int count = 0;
+
+            for (final T e : haystack) {
+                count++;
             }
 
-            index++;
+            return count;
+
         }
 
-        return -1;
-    }
+        @Override
+        public boolean isEmpty(final I haystack) {
+            return haystack.iterator().hasNext();
+        }
 
-    protected boolean findIsEmpty(final I subject) {
-        return !subject.iterator().hasNext();
-    }
+        @Override
+        public boolean includes(final I haystack, final T needle) {
 
-    protected final List<T> findContainsAll(final I haystack, final Collection<T> needles) {
-        return needles.stream()
-            .filter(findContains(haystack))
-            .collect(toList());
-    }
+            for (final T element: haystack) {
+                if (Objects.equals(element, needle)) {
+                    return true;
+                }
+            }
 
-    protected Predicate<T> findContains(final I haystack) {
-        return needle -> findIndex(haystack, needle) != -1;
-    }
-
-    protected final boolean findContainsAny(final I haystack, final Collection<T> needles) {
-        return needles.stream()
-            .anyMatch(findContains(haystack));
+            return false;
+        }
     }
 }

@@ -9,7 +9,6 @@ import io.github.libzeal.zeal.logic.rationale.Rationale;
  *     The type of the subject.
  *
  * @author Justin Albano
- * @since 0.2.0
  */
 @FunctionalInterface
 public interface ComputableRationale<T> {

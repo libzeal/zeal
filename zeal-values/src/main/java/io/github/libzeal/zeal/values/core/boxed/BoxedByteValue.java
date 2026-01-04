@@ -4,7 +4,6 @@ package io.github.libzeal.zeal.values.core.boxed;
  * An expression used to evaluate {@link Byte} instances.
  *
  * @author Justin Albano
- * @since 0.2.0
  */
 public class BoxedByteValue extends BoxedWholeNumberValue<Byte, BoxedByteValue> {
 

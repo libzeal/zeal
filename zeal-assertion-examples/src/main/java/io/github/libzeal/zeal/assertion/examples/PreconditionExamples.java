@@ -14,5 +14,6 @@ public class PreconditionExamples {
         final List<String> list = Collections.singletonList("foo");
 
         require(value(list).includesAllOf("bar", "baz"));
+        require(value("foo").isNotEmpty());
     }
 }

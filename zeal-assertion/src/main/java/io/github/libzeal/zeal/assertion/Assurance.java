@@ -10,7 +10,6 @@ import io.github.libzeal.zeal.logic.unary.UnaryExpression;
  * Responsible for evaluating postconditions.
  *
  * @author Justin Albano
- * @since 0.2.0
  */
 public class Assurance {
 

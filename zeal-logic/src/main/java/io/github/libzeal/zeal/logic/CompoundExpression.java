@@ -6,7 +6,6 @@ import java.util.List;
  * An expression composed of sub-expressions.
  *
  * @author Justin Albano
- * @since 0.2.1
  */
 public interface CompoundExpression extends Expression {
 

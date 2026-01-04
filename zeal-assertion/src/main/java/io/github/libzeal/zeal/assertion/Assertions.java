@@ -11,7 +11,6 @@ import io.github.libzeal.zeal.logic.evaluation.Result;
  * Basic assertions that verify expressions.
  *
  * @author Justin Albano
- * @since 0.2.0
  */
 public class Assertions {
 

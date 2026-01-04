@@ -2,25 +2,40 @@ package io.github.libzeal.zeal.values.core;
 
 import io.github.libzeal.zeal.logic.unary.future.rationale.ComputableField;
 import io.github.libzeal.zeal.values.api.BaseObjectValue;
-import io.github.libzeal.zeal.values.api.CommonRationale;
+import io.github.libzeal.zeal.values.api.StandardRationales;
+import io.github.libzeal.zeal.values.api.sequence.OrderedSequenceValue;
+import io.github.libzeal.zeal.values.api.sequence.OrderedSequenceValueBuilder;
+import io.github.libzeal.zeal.values.api.sequence.OrderedSequenceValueBuilder.OrderedSequenceOperations;
+import io.github.libzeal.zeal.values.api.sequence.RepeatableSequenceValue;
+import io.github.libzeal.zeal.values.api.sequence.RepeatableSequenceValueBuilder.RepeatableSequenceOperations;
+import io.github.libzeal.zeal.values.api.sequence.SequenceValueBuilder;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+
+import static java.util.stream.Collectors.toList;
 
 /**
- * An expression used to evaluate {@link String} instances.
+ * A value used to evaluate {@link String} instances.
  *
  * @author Justin Albano
- * @since 0.2.0
  */
-public class StringValue extends BaseObjectValue<String, StringValue> {
+public class StringValue extends BaseObjectValue<String, StringValue>
+    implements OrderedSequenceValue<Character, String, StringValue>,
+        RepeatableSequenceValue<Character, String, StringValue> {
 
     // TODO: Add cachedExpression(...) for StringValue methods
 
     private static final String EQUALS_OPERATOR = ":=";
     private static final String NOT_EQUALS_OPERATOR = "!=";
     private static final String LENGTH_EQUAL_PREFIX = "length " + EQUALS_OPERATOR + " ";
-    private static final String OCCURS = "occurs";
+    private static final String INCLUDES = "includes";
     private static final String INDEX_OF_PREFIX = "indexOf";
     private static final String LAST_INDEX_OF_PREFIX = "lastIndexOf";
     private static final String OCCURRENCES_PREFIX = "occurrences";
+
+    private final StringOperations operations;
 
     /**
      * Creates a new expression.
@@ -30,6 +45,7 @@ public class StringValue extends BaseObjectValue<String, StringValue> {
      */
     public StringValue(final String subject) {
         super(subject, "String value");
+        this.operations = new StringOperations();
     }
 
     /**
@@ -40,12 +56,10 @@ public class StringValue extends BaseObjectValue<String, StringValue> {
      *
      * @see String#isEmpty()
      */
+    @Override
     public StringValue isEmpty() {
         return append(
-            expression(String::isEmpty)
-                .name("isEmpty")
-                .expected("true")
-                .actual(isPredicatedPassed())
+            SequenceValueBuilder.isEmpty(operations)
         );
     }
 
@@ -62,12 +76,10 @@ public class StringValue extends BaseObjectValue<String, StringValue> {
      *
      * @see String#isEmpty()
      */
+    @Override
     public StringValue isNotEmpty() {
         return append(
-            expression(s -> !s.isEmpty())
-                .name("isNotEmpty")
-                .expected("true")
-                .actual(isPredicatedPassed())
+            SequenceValueBuilder.isNotEmpty(operations)
         );
     }
 
@@ -110,10 +122,21 @@ public class StringValue extends BaseObjectValue<String, StringValue> {
      *
      * @return This expression (fluent interface).
      */
-    public StringValue hasLengthOf(final long length) {
+    @Override
+    public StringValue hasLengthOf(final int length) {
         return append(
             expression(s -> s.length() == length)
                 .name("hasLengthOf[" + length + "]")
+                .expected(LENGTH_EQUAL_PREFIX + length)
+                .actual(context -> LENGTH_EQUAL_PREFIX + context.subject().length())
+        );
+    }
+
+    @Override
+    public StringValue doesNotHaveLengthOf(final int length) {
+        return append(
+            expression(s -> s.length() != length)
+                .name("doesNotHaveLengthOf[" + length + "]")
                 .expected(LENGTH_EQUAL_PREFIX + length)
                 .actual(context -> LENGTH_EQUAL_PREFIX + context.subject().length())
         );
@@ -128,7 +151,8 @@ public class StringValue extends BaseObjectValue<String, StringValue> {
      *
      * @return This expression (fluent interface).
      */
-    public StringValue isLongerThan(final long length) {
+    @Override
+    public StringValue isLongerThan(final int length) {
         return append(
             expression(s -> s.length() > length)
                 .name("isLongerThan[" + length + "]")
@@ -147,7 +171,8 @@ public class StringValue extends BaseObjectValue<String, StringValue> {
      *
      * @return This expression (fluent interface).
      */
-    public StringValue isLongerThanOrEqualTo(long length) {
+    @Override
+    public StringValue isLongerThanOrEqualTo(int length) {
         return append(
             expression(s -> s.length() >= length)
                 .name("isLongerThanOrEqualTo[" + length + "]")
@@ -165,7 +190,8 @@ public class StringValue extends BaseObjectValue<String, StringValue> {
      *
      * @return This expression (fluent interface).
      */
-    public StringValue isShorterThan(long length) {
+    @Override
+    public StringValue isShorterThan(int length) {
         return append(
             expression(s -> s.length() < length)
                 .name("isShorterThan[" + length + "]")
@@ -184,12 +210,24 @@ public class StringValue extends BaseObjectValue<String, StringValue> {
      *
      * @return This expression (fluent interface).
      */
-    public StringValue isShorterThanOrEqualTo(long length) {
+    @Override
+    public StringValue isShorterThanOrEqualTo(int length) {
         return append(
             expression(s -> s.length() <= length)
                 .name("isShorterThanOrEqualTo[" + length + "]")
                 .expected("length <= " + length)
                 .actual(context -> LENGTH_EQUAL_PREFIX + context.subject().length())
+        );
+    }
+
+    @Override
+    public StringValue includes(final Character c) {
+        return append(
+            expression(s -> s.indexOf(c) != -1)
+                .name(StandardRationales.includes(c))
+                .expected(StandardRationales.includes(c))
+                .actual(context -> context.ifPassedOrElse(StandardRationales.includes(c), StandardRationales.excludes(c)))
+                .hint(context -> needleInHaystackHint(context.subject(), c))
         );
     }
 
@@ -202,12 +240,13 @@ public class StringValue extends BaseObjectValue<String, StringValue> {
      *
      * @return This expression (fluent interface).
      */
+
     public StringValue includes(final char c) {
         return append(
             expression(s -> s.indexOf(c) != -1)
-                .name(CommonRationale.includes(c))
-                .expected(CommonRationale.includes(c))
-                .actual(context -> context.ifPassedOrElse(CommonRationale.includes(c), CommonRationale.excludes(c)))
+                .name(StandardRationales.includes(c))
+                .expected(StandardRationales.includes(c))
+                .actual(context -> context.ifPassedOrElse(StandardRationales.includes(c), StandardRationales.excludes(c)))
                 .hint(context -> needleInHaystackHint(context.subject(), c))
         );
     }
@@ -216,7 +255,7 @@ public class StringValue extends BaseObjectValue<String, StringValue> {
 
         final int index = s.indexOf(c);
 
-        return CommonRationale.needleInHaystackHint("String", index, c);
+        return StandardRationales.needleInHaystackHint(index, c);
     }
 
     /**
@@ -231,18 +270,53 @@ public class StringValue extends BaseObjectValue<String, StringValue> {
     public StringValue includes(final CharSequence sequence) {
         return append(
             expression(s -> s.contains(sequence))
-                .name(CommonRationale.includes(sequence))
-                .expected(CommonRationale.includes(sequence))
-                .actual(context -> context.ifPassedOrElse(CommonRationale.includes(sequence), CommonRationale.excludes(sequence)))
+                .name(StandardRationales.includes(sequence))
+                .expected(StandardRationales.includes(sequence))
+                .actual(context -> context.ifPassedOrElse(StandardRationales.includes(sequence), StandardRationales.excludes(sequence)))
                 .hint(context -> needleInHaystackHint(context.subject(), sequence))
         );
+    }
+
+    @Override
+    public StringValue includesAll(final Collection<Character> desired) {
+        return append(
+            SequenceValueBuilder.includesAll(desired, operations)
+        );
+    }
+
+    @Override
+    public StringValue includesAllOf(final Character... desired) {
+        return includesAll(Arrays.asList(desired));
+    }
+
+    @Override
+    public StringValue includesAny(final Collection<Character> desired) {
+        return append(
+            SequenceValueBuilder.includesAny(desired, operations)
+        );
+    }
+
+    @Override
+    public StringValue includesAnyOf(final Character... desired) {
+        return includesAny(Arrays.asList(desired));
     }
 
     static String needleInHaystackHint(String s, CharSequence sequence) {
 
         final int index = s.indexOf(sequence.toString());
 
-        return CommonRationale.needleInHaystackHint("String", index, sequence);
+        return StandardRationales.needleInHaystackHint(index, sequence);
+    }
+
+    @Override
+    public StringValue excludes(final Character c) {
+        return append(
+            expression(s -> s.indexOf(c) == -1)
+                .name(StandardRationales.excludes(c))
+                .expected(StandardRationales.excludes(c))
+                .actual(context -> context.ifPassedOrElse(StandardRationales.excludes(c), StandardRationales.includes(c)))
+                .hint(context -> needleInHaystackHint(context.subject(), c))
+        );
     }
 
     /**
@@ -257,9 +331,9 @@ public class StringValue extends BaseObjectValue<String, StringValue> {
     public StringValue excludes(final char c) {
         return append(
             expression(s -> s.indexOf(c) == -1)
-                .name(CommonRationale.excludes(c))
-                .expected(CommonRationale.excludes(c))
-                .actual(context -> context.ifPassedOrElse(CommonRationale.excludes(c), CommonRationale.includes(c)))
+                .name(StandardRationales.excludes(c))
+                .expected(StandardRationales.excludes(c))
+                .actual(context -> context.ifPassedOrElse(StandardRationales.excludes(c), StandardRationales.includes(c)))
                 .hint(context -> needleInHaystackHint(context.subject(), c))
         );
     }
@@ -276,11 +350,49 @@ public class StringValue extends BaseObjectValue<String, StringValue> {
     public StringValue excludes(final CharSequence sequence) {
         return append(
             expression(s -> !s.contains(sequence))
-                .name(CommonRationale.excludes(sequence))
-                .expected(CommonRationale.excludes(sequence))
-                .actual(context -> context.ifPassedOrElse(CommonRationale.excludes(sequence), CommonRationale.includes(sequence)))
+                .name(StandardRationales.excludes(sequence))
+                .expected(StandardRationales.excludes(sequence))
+                .actual(context -> context.ifPassedOrElse(StandardRationales.excludes(sequence), StandardRationales.includes(sequence)))
                 .hint(context -> needleInHaystackHint(context.subject(), sequence))
         );
+    }
+
+    @Override
+    public StringValue excludesAll(final Collection<Character> desired) {
+        return append(
+            SequenceValueBuilder.excludesAll(desired, operations)
+        );
+    }
+
+    @Override
+    public StringValue excludesAllOf(final Character... desired) {
+        return excludesAll(Arrays.asList(desired));
+    }
+
+    @Override
+    public StringValue excludesAny(final Collection<Character> desired) {
+        return append(
+            SequenceValueBuilder.excludesAny(desired, operations)
+        );
+    }
+
+    @Override
+    public StringValue excludesAnyOf(final Character... desired) {
+        return excludesAny(Arrays.asList(desired));
+    }
+
+    @Override
+    public StringValue includesExactly(final Character c, final long times) {
+        return append(
+            expression(s -> characterCount(s, c) == times)
+                .name(occursName(c, times, EQUALS_OPERATOR))
+                .expected(OCCURRENCES_PREFIX + " " + EQUALS_OPERATOR + " " + times)
+                .actual(context -> OCCURRENCES_PREFIX + " " + EQUALS_OPERATOR + " " + characterCount(context.subject(), c))
+        );
+    }
+
+    public StringValue includesOnce(final char c) {
+        return includesExactly(c, 1);
     }
 
     /**
@@ -295,7 +407,7 @@ public class StringValue extends BaseObjectValue<String, StringValue> {
      *
      * @return This expression (fluent interface).
      */
-    public StringValue occursName(final char c, final long times) {
+    public StringValue includesExactly(final char c, final long times) {
         return append(
             expression(s -> characterCount(s, c) == times)
                 .name(occursName(c, times, EQUALS_OPERATOR))
@@ -311,7 +423,17 @@ public class StringValue extends BaseObjectValue<String, StringValue> {
     }
 
     private static String occursName(final char c, final long times, final String operator) {
-        return OCCURS + "[" + c + "] " + operator + " " + times;
+        return INCLUDES + "[" + c + "] " + operator + " " + times;
+    }
+
+    @Override
+    public StringValue includesMoreThan(final Character c, final long times) {
+        return append(
+            expression(s -> characterCount(s, c) > times)
+                .name(occursName(c, times, ">"))
+                .expected(OCCURRENCES_PREFIX + " > " + times)
+                .actual(context -> OCCURRENCES_PREFIX + " " + EQUALS_OPERATOR + " " + characterCount(context.subject(), c))
+        );
     }
 
     /**
@@ -326,11 +448,21 @@ public class StringValue extends BaseObjectValue<String, StringValue> {
      *
      * @return This expression (fluent interface).
      */
-    public StringValue occursMoreThan(final char c, final long times) {
+    public StringValue includesMoreThan(final char c, final long times) {
         return append(
             expression(s -> characterCount(s, c) > times)
                 .name(occursName(c, times, ">"))
                 .expected(OCCURRENCES_PREFIX + " > " + times)
+                .actual(context -> OCCURRENCES_PREFIX + " " + EQUALS_OPERATOR + " " + characterCount(context.subject(), c))
+        );
+    }
+
+    @Override
+    public StringValue includesMoreThanOrEqualTo(final Character c, final long times) {
+        return append(
+            expression(s -> characterCount(s, c) >= times)
+                .name(occursName(c, times, ">="))
+                .expected(OCCURRENCES_PREFIX + " >= " + times)
                 .actual(context -> OCCURRENCES_PREFIX + " " + EQUALS_OPERATOR + " " + characterCount(context.subject(), c))
         );
     }
@@ -347,11 +479,21 @@ public class StringValue extends BaseObjectValue<String, StringValue> {
      *
      * @return This expression (fluent interface).
      */
-    public StringValue occursMoreThanOrEqualTo(final char c, final long times) {
+    public StringValue includesMoreThanOrEqualTo(final char c, final long times) {
         return append(
             expression(s -> characterCount(s, c) >= times)
                 .name(occursName(c, times, ">="))
                 .expected(OCCURRENCES_PREFIX + " >= " + times)
+                .actual(context -> OCCURRENCES_PREFIX + " " + EQUALS_OPERATOR + " " + characterCount(context.subject(), c))
+        );
+    }
+
+    @Override
+    public StringValue includesLessThan(final Character c, final long times) {
+        return append(
+            expression(s -> characterCount(s, c) < times)
+                .name(occursName(c, times, "<"))
+                .expected(OCCURRENCES_PREFIX + " < " + times)
                 .actual(context -> OCCURRENCES_PREFIX + " " + EQUALS_OPERATOR + " " + characterCount(context.subject(), c))
         );
     }
@@ -368,11 +510,21 @@ public class StringValue extends BaseObjectValue<String, StringValue> {
      *
      * @return This expression (fluent interface).
      */
-    public StringValue occursLessThan(final char c, final long times) {
+    public StringValue includesLessThan(final char c, final long times) {
         return append(
             expression(s -> characterCount(s, c) < times)
                 .name(occursName(c, times, "<"))
                 .expected(OCCURRENCES_PREFIX + " < " + times)
+                .actual(context -> OCCURRENCES_PREFIX + " " + EQUALS_OPERATOR + " " + characterCount(context.subject(), c))
+        );
+    }
+
+    @Override
+    public StringValue includesLessThanOrEqualTo(final Character c, final long times) {
+        return append(
+            expression(s -> characterCount(s, c) <= times)
+                .name(occursName(c, times, "<="))
+                .expected(OCCURRENCES_PREFIX + " <= " + times)
                 .actual(context -> OCCURRENCES_PREFIX + " " + EQUALS_OPERATOR + " " + characterCount(context.subject(), c))
         );
     }
@@ -389,12 +541,29 @@ public class StringValue extends BaseObjectValue<String, StringValue> {
      *
      * @return This expression (fluent interface).
      */
-    public StringValue occursLessThanOrEqualTo(final char c, final long times) {
+    public StringValue includesLessThanOrEqualTo(final char c, final long times) {
         return append(
             expression(s -> characterCount(s, c) <= times)
                 .name(occursName(c, times, "<="))
                 .expected(OCCURRENCES_PREFIX + " <= " + times)
                 .actual(context -> OCCURRENCES_PREFIX + " " + EQUALS_OPERATOR + " " + characterCount(context.subject(), c))
+        );
+    }
+
+    @Override
+    public StringValue startsWith(final Character prefix) {
+        return append(
+            expression(s -> !s.isEmpty() && s.charAt(0) == prefix)
+                .name("startsWith[" + prefix + "]")
+                .expected("startsWith[" + prefix + "]")
+        );
+    }
+
+    public StringValue startsWith(final char prefix) {
+        return append(
+            expression(s -> !s.isEmpty() && s.charAt(0) == prefix)
+                .name("startsWith[" + prefix + "]")
+                .expected("startsWith[" + prefix + "]")
         );
     }
 
@@ -415,6 +584,23 @@ public class StringValue extends BaseObjectValue<String, StringValue> {
         );
     }
 
+    @Override
+    public StringValue doesNotStartWith(final Character prefix) {
+        return append(
+            expression(s -> !s.isEmpty() && s.charAt(0) != prefix)
+                .name("doesNotStartWith[" + prefix + "]")
+                .expected("not[startsWith[" + prefix + "]]")
+        );
+    }
+
+    public StringValue doesNotStartWith(final char prefix) {
+        return append(
+            expression(s -> !s.isEmpty() && s.charAt(0) != prefix)
+                .name("doesNotStartWith[" + prefix + "]")
+                .expected("not[startsWith[" + prefix + "]]")
+        );
+    }
+
     /**
      * Adds a predicate to the expression that checks if the subject does not
      * start with the supplied prefix.
@@ -432,6 +618,23 @@ public class StringValue extends BaseObjectValue<String, StringValue> {
         );
     }
 
+    @Override
+    public StringValue endsWith(final Character suffix) {
+        return append(
+            expression(s -> !s.isEmpty() && s.charAt(s.length() - 1) == suffix)
+                .name("endsWith[" + suffix + "]")
+                .expected("endsWith[" + suffix + "]")
+        );
+    }
+
+    public StringValue endsWith(final char suffix) {
+        return append(
+            expression(s -> !s.isEmpty() && s.charAt(s.length() - 1) == suffix)
+                .name("endsWith[" + suffix + "]")
+                .expected("endsWith[" + suffix + "]")
+        );
+    }
+
     /**
      * Adds a predicate to the expression that checks if the subject ends with
      * the supplied suffix.
@@ -446,6 +649,23 @@ public class StringValue extends BaseObjectValue<String, StringValue> {
             expression(s -> s.endsWith(suffix))
                 .name("endsWith[" + suffix + "]")
                 .expected("endsWith[" + suffix + "]")
+        );
+    }
+
+    @Override
+    public StringValue doesNotEndWith(final Character suffix) {
+        return append(
+            expression(s -> !s.isEmpty() && s.charAt(s.length() - 1) != suffix)
+                .name("doesNotEndWith[" + suffix + "]")
+                .expected("not[endsWith[" + suffix + "]]")
+        );
+    }
+
+    public StringValue doesNotEndWith(final char suffix) {
+        return append(
+            expression(s -> !s.isEmpty() && s.charAt(s.length() - 1) != suffix)
+                .name("doesNotEndWith[" + suffix + "]")
+                .expected("not[endsWith[" + suffix + "]]")
         );
     }
 
@@ -517,6 +737,16 @@ public class StringValue extends BaseObjectValue<String, StringValue> {
         );
     }
 
+    @Override
+    public StringValue hasAtIndex(final Character needle, final int index) {
+        return append(
+            expression(s -> s.indexOf(needle) == index)
+                .name(INDEX_OF_PREFIX + "[" + needle + "] " + EQUALS_OPERATOR + " " + index)
+                .expected(index)
+                .actual(context -> String.valueOf(context.subject().indexOf(needle)))
+        );
+    }
+
     /**
      * Adds a predicate to the expression that checks if the first index of the
      * supplied needle in the subject matches
@@ -555,6 +785,16 @@ public class StringValue extends BaseObjectValue<String, StringValue> {
             expression(s -> s.indexOf(needle) == index)
                 .name(INDEX_OF_PREFIX + "[" + needle + "] " + EQUALS_OPERATOR + " " + index)
                 .expected(index)
+                .actual(context -> String.valueOf(context.subject().indexOf(needle)))
+        );
+    }
+
+    @Override
+    public StringValue doesNotHaveAtIndex(final Character needle, final int index) {
+        return append(
+            expression(s -> s.indexOf(needle) != index)
+                .name(INDEX_OF_PREFIX + "[" + needle + "] " + NOT_EQUALS_OPERATOR + " " + index)
+                .expected(context -> "not[" + index + "]")
                 .actual(context -> String.valueOf(context.subject().indexOf(needle)))
         );
     }
@@ -683,5 +923,76 @@ public class StringValue extends BaseObjectValue<String, StringValue> {
                 .expected(context -> "not[" + index + "]")
                 .actual(context -> String.valueOf(context.subject().lastIndexOf(needle)))
         );
+    }
+
+    private static final class StringOperations implements RepeatableSequenceOperations<Character, String>,
+        OrderedSequenceOperations<Character, String> {
+
+        @Override
+        public Character lastElement(final String haystack) {
+            return haystack.charAt(haystack.length() - 1);
+        }
+
+        @Override
+        public Character atIndex(final String haystack, final int index) {
+
+            if (index < haystack.length()) {
+                return haystack.charAt(index);
+            }
+            else {
+                return null;
+            }
+        }
+
+        @Override
+        public int indexOf(final String haystack, final Character needle) {
+
+            if (needle == null) {
+                return -1;
+            }
+            else {
+                return haystack.indexOf(needle);
+            }
+        }
+
+        @Override
+        public int occurrences(final String haystack, final Character needle) {
+
+            if (needle == null) {
+                return 0;
+            }
+
+            int count = 0;
+
+            for (int i = 0; i < haystack.length(); i++) {
+                if (haystack.charAt(i) == needle) {
+                    count++;
+                }
+            }
+
+            return count;
+        }
+
+        @Override
+        public List<Character> findAllIn(final String haystack, final Collection<Character> needles) {
+            return needles.stream()
+                .filter(c -> haystack.indexOf(c) != -1)
+                .collect(toList());
+        }
+
+        @Override
+        public int size(final String haystack) {
+            return haystack.length();
+        }
+
+        @Override
+        public boolean isEmpty(final String haystack) {
+            return haystack.isEmpty();
+        }
+
+        @Override
+        public boolean includes(final String haystack, final Character needle) {
+            return haystack.indexOf(needle) >= 0;
+        }
     }
 }

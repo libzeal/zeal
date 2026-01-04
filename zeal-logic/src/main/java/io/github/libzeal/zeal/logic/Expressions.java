@@ -7,7 +7,6 @@ import java.util.function.BooleanSupplier;
  * A set of common logical expressions.
  *
  * @author Justin Albano
- * @since 0.2.1
  */
 public final class Expressions {
 

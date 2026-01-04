@@ -8,14 +8,13 @@ import io.github.libzeal.zeal.logic.rationale.Rationale;
 import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
 import io.github.libzeal.zeal.logic.unary.future.ComputableExpression;
 import io.github.libzeal.zeal.logic.util.StopWatch;
-import io.github.libzeal.zeal.values.api.BaseObjectValue;
 import io.github.libzeal.zeal.values.api.ValueBuilder;
 
 import java.time.Duration;
 
 import static java.util.Objects.requireNonNull;
 
-public class CachedValueBuilder<T, E, C> implements ValueBuilder<T> {
+public class CachedValueBuilder<T, C> implements ValueBuilder<T> {
 
     private final CacheablePredicate<T, C> test;
     private String name = "<unnamed>";
@@ -23,7 +22,7 @@ public class CachedValueBuilder<T, E, C> implements ValueBuilder<T> {
     private CachedComputableField<T, C> actual = CachedComputableRationaleContext::stringifiedSubject;
     private CachedComputableField<T, C> hint = null;
 
-    public static <T, E extends BaseObjectValue<T, E>, C> CachedValueBuilder<T, E, C> of(final CacheablePredicate<T, C> test) {
+    public static <T, C> CachedValueBuilder<T, C> of(final CacheablePredicate<T, C> test) {
         return new CachedValueBuilder<>(test);
     }
 
@@ -39,7 +38,7 @@ public class CachedValueBuilder<T, E, C> implements ValueBuilder<T> {
      *
      * @return This builder (fluent interface).
      */
-    public CachedValueBuilder<T, E, C> name(final String name) {
+    public CachedValueBuilder<T, C> name(final String name) {
         this.name = name;
         return this;
     }
@@ -52,7 +51,7 @@ public class CachedValueBuilder<T, E, C> implements ValueBuilder<T> {
      *
      * @return This builder (fluent interface).
      */
-    public CachedValueBuilder<T, E, C> expected(final CachedComputableField<T, C> expected) {
+    public CachedValueBuilder<T, C> expected(final CachedComputableField<T, C> expected) {
         this.expected = expected;
         return this;
     }
@@ -65,7 +64,7 @@ public class CachedValueBuilder<T, E, C> implements ValueBuilder<T> {
      *
      * @return This builder (fluent interface).
      */
-    public CachedValueBuilder<T, E, C> expected(final String expected) {
+    public CachedValueBuilder<T, C> expected(final String expected) {
         return expected(context -> expected);
     }
 
@@ -77,7 +76,7 @@ public class CachedValueBuilder<T, E, C> implements ValueBuilder<T> {
      *
      * @return This builder (fluent interface).
      */
-    public CachedValueBuilder<T, E, C> expected(final long expected) {
+    public CachedValueBuilder<T, C> expected(final long expected) {
         return expected(context -> String.valueOf(expected));
     }
 
@@ -89,7 +88,7 @@ public class CachedValueBuilder<T, E, C> implements ValueBuilder<T> {
      *
      * @return This builder (fluent interface).
      */
-    public CachedValueBuilder<T, E, C> actual(final CachedComputableField<T, C> actual) {
+    public CachedValueBuilder<T, C> actual(final CachedComputableField<T, C> actual) {
         this.actual = actual;
         return this;
     }
@@ -102,7 +101,7 @@ public class CachedValueBuilder<T, E, C> implements ValueBuilder<T> {
      *
      * @return This builder (fluent interface).
      */
-    public CachedValueBuilder<T, E, C> actual(final String actual) {
+    public CachedValueBuilder<T, C> actual(final String actual) {
         return actual(context -> actual);
     }
 
@@ -114,7 +113,7 @@ public class CachedValueBuilder<T, E, C> implements ValueBuilder<T> {
      *
      * @return This builder (fluent interface).
      */
-    public CachedValueBuilder<T, E, C> hint(final CachedComputableField<T, C> hint) {
+    public CachedValueBuilder<T, C> hint(final CachedComputableField<T, C> hint) {
         this.hint = hint;
         return this;
     }
@@ -127,7 +126,7 @@ public class CachedValueBuilder<T, E, C> implements ValueBuilder<T> {
      *
      * @return This builder (fluent interface).
      */
-    public CachedValueBuilder<T, E, C> hint(final String hint) {
+    public CachedValueBuilder<T, C> hint(final String hint) {
         return hint(context -> hint);
     }
 

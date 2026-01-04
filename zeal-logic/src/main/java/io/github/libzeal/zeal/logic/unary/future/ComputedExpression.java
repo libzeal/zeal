@@ -21,7 +21,6 @@ import static java.util.Objects.requireNonNull;
  *     The type of the subject.
  *
  * @author Justin Albano
- * @since 0.2.1
  */
 public class ComputedExpression<T> implements Expression {
 

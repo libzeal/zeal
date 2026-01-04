@@ -15,13 +15,10 @@ import java.util.function.Predicate;
  *
  * @param <T>
  *     The type of the subject.
- * @param <E>
- *     The type of the expression.
  *
  * @author Justin Albano
- * @since 0.2.0
  */
-public class SimpleValueBuilder<T, E extends BaseObjectValue<T, E>> implements ValueBuilder<T> {
+public class SimpleValueBuilder<T> implements ValueBuilder<T> {
 
     private final boolean nullable;
     private final Predicate<T> test;
@@ -37,12 +34,10 @@ public class SimpleValueBuilder<T, E extends BaseObjectValue<T, E>> implements V
      *     The predicate.
      * @param <T>
      *     The type of the subject.
-     * @param <E>
-     *     The type of the expression.
      *
      * @return The builder.
      */
-    public static <T, E extends BaseObjectValue<T, E>> SimpleValueBuilder<T, E> notNullable(final Predicate<T> test) {
+    public static <T> SimpleValueBuilder<T> notNullable(final Predicate<T> test) {
         return new SimpleValueBuilder<>(false, test);
     }
 
@@ -53,12 +48,10 @@ public class SimpleValueBuilder<T, E extends BaseObjectValue<T, E>> implements V
      *     The predicate.
      * @param <T>
      *     The type of the subject.
-     * @param <E>
-     *     The type of the expression.
      *
      * @return The builder.
      */
-    public static <T, E extends BaseObjectValue<T, E>> SimpleValueBuilder<T, E> nullable(final Predicate<T> test) {
+    public static <T> SimpleValueBuilder<T> nullable(final Predicate<T> test) {
         return new SimpleValueBuilder<>(true, test);
     }
 
@@ -84,7 +77,7 @@ public class SimpleValueBuilder<T, E extends BaseObjectValue<T, E>> implements V
      *
      * @return This builder (fluent interface).
      */
-    public SimpleValueBuilder<T, E> name(final String name) {
+    public SimpleValueBuilder<T> name(final String name) {
         this.name = name;
         return this;
     }
@@ -97,7 +90,7 @@ public class SimpleValueBuilder<T, E extends BaseObjectValue<T, E>> implements V
      *
      * @return This builder (fluent interface).
      */
-    public SimpleValueBuilder<T, E> expected(final ComputableField<T> expected) {
+    public SimpleValueBuilder<T> expected(final ComputableField<T> expected) {
         this.expected = expected;
         return this;
     }
@@ -110,7 +103,7 @@ public class SimpleValueBuilder<T, E extends BaseObjectValue<T, E>> implements V
      *
      * @return This builder (fluent interface).
      */
-    public SimpleValueBuilder<T, E> expected(final String expected) {
+    public SimpleValueBuilder<T> expected(final String expected) {
         return expected(context -> expected);
     }
 
@@ -122,7 +115,7 @@ public class SimpleValueBuilder<T, E extends BaseObjectValue<T, E>> implements V
      *
      * @return This builder (fluent interface).
      */
-    public SimpleValueBuilder<T, E> expected(final long expected) {
+    public SimpleValueBuilder<T> expected(final long expected) {
         return expected(context -> String.valueOf(expected));
     }
 
@@ -134,7 +127,7 @@ public class SimpleValueBuilder<T, E extends BaseObjectValue<T, E>> implements V
      *
      * @return This builder (fluent interface).
      */
-    public SimpleValueBuilder<T, E> actual(final ComputableField<T> actual) {
+    public SimpleValueBuilder<T> actual(final ComputableField<T> actual) {
         this.actual = actual;
         return this;
     }
@@ -147,7 +140,7 @@ public class SimpleValueBuilder<T, E extends BaseObjectValue<T, E>> implements V
      *
      * @return This builder (fluent interface).
      */
-    public SimpleValueBuilder<T, E> actual(final String actual) {
+    public SimpleValueBuilder<T> actual(final String actual) {
         return actual(context -> actual);
     }
 
@@ -159,7 +152,7 @@ public class SimpleValueBuilder<T, E extends BaseObjectValue<T, E>> implements V
      *
      * @return This builder (fluent interface).
      */
-    public SimpleValueBuilder<T, E> hint(final ComputableField<T> hint) {
+    public SimpleValueBuilder<T> hint(final ComputableField<T> hint) {
         this.hint = hint;
         return this;
     }
@@ -172,7 +165,7 @@ public class SimpleValueBuilder<T, E extends BaseObjectValue<T, E>> implements V
      *
      * @return This builder (fluent interface).
      */
-    public SimpleValueBuilder<T, E> hint(final String hint) {
+    public SimpleValueBuilder<T> hint(final String hint) {
         return hint(context -> hint);
     }
 

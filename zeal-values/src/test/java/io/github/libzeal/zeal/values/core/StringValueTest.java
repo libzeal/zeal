@@ -36,11 +36,11 @@ class StringValueTest extends BasedObjectValueTest<String, StringValue> {
         isShorterThanOrEqualToTestCases(builder);
         includesTestCases(builder);
         excludesTestCases(builder);
-        occursTestCases(builder);
-        occursMoreThanTestCases(builder);
-        occursMoreThanOrEqualToTestCases(builder);
-        occursLessThanTestCases(builder);
-        occursLessThanOrEqualToTestCases(builder);
+        includesExactlyTestCases(builder);
+        includesExactlyMoreThanTestCases(builder);
+        includesExactlyMoreThanOrEqualToTestCases(builder);
+        includesExactlyLessThanTestCases(builder);
+        includesExactlyLessThanOrEqualToTestCases(builder);
         startsWithTestCases(builder);
         doesNotStartWithTestCases(builder);
         endsWithTestCases(builder);
@@ -59,22 +59,22 @@ class StringValueTest extends BasedObjectValueTest<String, StringValue> {
                 .subject("a")
                 .expectedState(FALSE)
                 .expectedName("isEmpty")
-                .expectedExpected("true")
-                .expectedActual("false")
+                .expectedExpected("length = 0")
+                .expectedActual("length = 1")
                 .addTest()
             .newTest((expression, value) -> expression.isEmpty())
                 .subject("")
                 .expectedState(TRUE)
                 .expectedName("isEmpty")
-                .expectedExpected("true")
-                .expectedActual("true")
+                .expectedExpected("length = 0")
+                .expectedActual("length = 0")
                 .addTest()
             .newTest((expression, value) -> expression.isEmpty())
                 .subject(" ")
                 .expectedState(FALSE)
                 .expectedName("isEmpty")
-                .expectedExpected("true")
-                .expectedActual("false")
+                .expectedExpected("length = 0")
+                .expectedActual("length = 1")
                 .addTest();
     }
 
@@ -83,22 +83,22 @@ class StringValueTest extends BasedObjectValueTest<String, StringValue> {
                 .subject("a")
                 .expectedState(TRUE)
                 .expectedName("isNotEmpty")
-                .expectedExpected("true")
-                .expectedActual("true")
+                .expectedExpected("length > 0")
+                .expectedActual("length = 1")
                 .addTest()
             .newTest((expression, value) -> expression.isNotEmpty())
                 .subject("")
                 .expectedState(FALSE)
                 .expectedName("isNotEmpty")
-                .expectedExpected("true")
-                .expectedActual("false")
+                .expectedExpected("length > 0")
+                .expectedActual("length = 0")
                 .addTest()
             .newTest((expression, value) -> expression.isNotEmpty())
                 .subject(" ")
                 .expectedState(TRUE)
                 .expectedName("isNotEmpty")
-                .expectedExpected("true")
-                .expectedActual("true")
+                .expectedExpected("length > 0")
+                .expectedActual("length = 1")
                 .addTest();
     }
 
@@ -340,121 +340,121 @@ class StringValueTest extends BasedObjectValueTest<String, StringValue> {
                 .addTest();
     }
 
-    private void occursTestCases(ExpressionTestCaseBuilder<String, StringValue> builder) {
-        builder.newTest((expression, value) -> expression.occursName('a', 1))
+    private void includesExactlyTestCases(ExpressionTestCaseBuilder<String, StringValue> builder) {
+        builder.newTest((expression, value) -> expression.includesExactly('a', 1))
                 .subject("ab")
                 .expectedState(TRUE)
-                .expectedName("occurs[a] := 1")
+                .expectedName("includes[a] := 1")
                 .expectedExpected("occurrences := 1")
                 .expectedActual("occurrences := 1")
                 .addTest()
-            .newTest((expression, value) -> expression.occursName('a', 1))
+            .newTest((expression, value) -> expression.includesExactly('a', 1))
                 .subject("aab")
                 .expectedState(FALSE)
-                .expectedName("occurs[a] := 1")
+                .expectedName("includes[a] := 1")
                 .expectedExpected("occurrences := 1")
                 .expectedActual("occurrences := 2")
                 .addTest()
-            .newTest((expression, value) -> expression.occursName('a', 1))
+            .newTest((expression, value) -> expression.includesExactly('a', 1))
                 .subject("b")
                 .expectedState(FALSE)
-                .expectedName("occurs[a] := 1")
+                .expectedName("includes[a] := 1")
                 .expectedExpected("occurrences := 1")
                 .expectedActual("occurrences := 0")
                 .addTest();
     }
 
-    private void occursMoreThanTestCases(ExpressionTestCaseBuilder<String, StringValue> builder) {
-        builder.newTest((expression, value) -> expression.occursMoreThan('a', 1))
+    private void includesExactlyMoreThanTestCases(ExpressionTestCaseBuilder<String, StringValue> builder) {
+        builder.newTest((expression, value) -> expression.includesMoreThan('a', 1))
                 .subject("ab")
                 .expectedState(FALSE)
-                .expectedName("occurs[a] > 1")
+                .expectedName("includes[a] > 1")
                 .expectedExpected("occurrences > 1")
                 .expectedActual("occurrences := 1")
                 .addTest()
-            .newTest((expression, value) -> expression.occursMoreThan('a', 1))
+            .newTest((expression, value) -> expression.includesMoreThan('a', 1))
                 .subject("aab")
                 .expectedState(TRUE)
-                .expectedName("occurs[a] > 1")
+                .expectedName("includes[a] > 1")
                 .expectedExpected("occurrences > 1")
                 .expectedActual("occurrences := 2")
                 .addTest()
-            .newTest((expression, value) -> expression.occursMoreThan('a', 1))
+            .newTest((expression, value) -> expression.includesMoreThan('a', 1))
                 .subject("b")
                 .expectedState(FALSE)
-                .expectedName("occurs[a] > 1")
+                .expectedName("includes[a] > 1")
                 .expectedExpected("occurrences > 1")
                 .expectedActual("occurrences := 0")
                 .addTest();
     }
 
-    private void occursMoreThanOrEqualToTestCases(ExpressionTestCaseBuilder<String, StringValue> builder) {
-        builder.newTest((expression, value) -> expression.occursMoreThanOrEqualTo('a', 1))
+    private void includesExactlyMoreThanOrEqualToTestCases(ExpressionTestCaseBuilder<String, StringValue> builder) {
+        builder.newTest((expression, value) -> expression.includesMoreThanOrEqualTo('a', 1))
                 .subject("ab")
                 .expectedState(TRUE)
-                .expectedName("occurs[a] >= 1")
+                .expectedName("includes[a] >= 1")
                 .expectedExpected("occurrences >= 1")
                 .expectedActual("occurrences := 1")
                 .addTest()
-            .newTest((expression, value) -> expression.occursMoreThanOrEqualTo('a', 1))
+            .newTest((expression, value) -> expression.includesMoreThanOrEqualTo('a', 1))
                 .subject("aab")
                 .expectedState(TRUE)
-                .expectedName("occurs[a] >= 1")
+                .expectedName("includes[a] >= 1")
                 .expectedExpected("occurrences >= 1")
                 .expectedActual("occurrences := 2")
                 .addTest()
-            .newTest((expression, value) -> expression.occursMoreThanOrEqualTo('a', 1))
+            .newTest((expression, value) -> expression.includesMoreThanOrEqualTo('a', 1))
                 .subject("b")
                 .expectedState(FALSE)
-                .expectedName("occurs[a] >= 1")
+                .expectedName("includes[a] >= 1")
                 .expectedExpected("occurrences >= 1")
                 .expectedActual("occurrences := 0")
                 .addTest();
     }
 
-    private void occursLessThanTestCases(ExpressionTestCaseBuilder<String, StringValue> builder) {
-        builder.newTest((expression, value) -> expression.occursLessThan('a', 1))
+    private void includesExactlyLessThanTestCases(ExpressionTestCaseBuilder<String, StringValue> builder) {
+        builder.newTest((expression, value) -> expression.includesLessThan('a', 1))
                 .subject("ab")
                 .expectedState(FALSE)
-                .expectedName("occurs[a] < 1")
+                .expectedName("includes[a] < 1")
                 .expectedExpected("occurrences < 1")
                 .expectedActual("occurrences := 1")
                 .addTest()
-            .newTest((expression, value) -> expression.occursLessThan('a', 1))
+            .newTest((expression, value) -> expression.includesLessThan('a', 1))
                 .subject("aab")
                 .expectedState(FALSE)
-                .expectedName("occurs[a] < 1")
+                .expectedName("includes[a] < 1")
                 .expectedExpected("occurrences < 1")
                 .expectedActual("occurrences := 2")
                 .addTest()
-            .newTest((expression, value) -> expression.occursLessThan('a', 1))
+            .newTest((expression, value) -> expression.includesLessThan('a', 1))
                 .subject("b")
                 .expectedState(TRUE)
-                .expectedName("occurs[a] < 1")
+                .expectedName("includes[a] < 1")
                 .expectedExpected("occurrences < 1")
                 .expectedActual("occurrences := 0")
                 .addTest();
     }
 
-    private void occursLessThanOrEqualToTestCases(ExpressionTestCaseBuilder<String, StringValue> builder) {
-        builder.newTest((expression, value) -> expression.occursLessThanOrEqualTo('a', 1))
+    private void includesExactlyLessThanOrEqualToTestCases(ExpressionTestCaseBuilder<String, StringValue> builder) {
+        builder.newTest((expression, value) -> expression.includesLessThanOrEqualTo('a', 1))
                 .subject("ab")
                 .expectedState(TRUE)
-                .expectedName("occurs[a] <= 1")
+                .expectedName("includes[a] <= 1")
                 .expectedExpected("occurrences <= 1")
                 .expectedActual("occurrences := 1")
                 .addTest()
-            .newTest((expression, value) -> expression.occursLessThanOrEqualTo('a', 1))
+            .newTest((expression, value) -> expression.includesLessThanOrEqualTo('a', 1))
                 .subject("aab")
                 .expectedState(FALSE)
-                .expectedName("occurs[a] <= 1")
+                .expectedName("includes[a] <= 1")
                 .expectedExpected("occurrences <= 1")
                 .expectedActual("occurrences := 2")
                 .addTest()
-            .newTest((expression, value) -> expression.occursLessThanOrEqualTo('a', 1))
+            .newTest((expression, value) -> expression.includesLessThanOrEqualTo('a', 1))
                 .subject("b")
                 .expectedState(TRUE)
-                .expectedName("occurs[a] <= 1")
+                .expectedName("includes[a] <= 1")
                 .expectedExpected("occurrences <= 1")
                 .expectedActual("occurrences := 0")
                 .addTest();

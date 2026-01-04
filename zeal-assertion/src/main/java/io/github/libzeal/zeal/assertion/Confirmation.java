@@ -10,7 +10,6 @@ import io.github.libzeal.zeal.logic.evaluation.Result;
  * Responsible for evaluating assertions.
  *
  * @author Justin Albano
- * @since 0.2.0
  */
 public class Confirmation {
 

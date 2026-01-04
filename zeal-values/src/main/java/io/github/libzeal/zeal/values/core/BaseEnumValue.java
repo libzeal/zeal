@@ -17,7 +17,6 @@ import io.github.libzeal.zeal.values.api.BaseObjectValue;
  * @author Justin Albano
  * @see BaseObjectValue
  * @see Enum
- * @since 0.2.0
  */
 public abstract class BaseEnumValue<T extends Enum<T>, B extends BaseEnumValue<T, B>>
     extends BaseObjectValue<T, B> {

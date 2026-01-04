@@ -1,8 +1,8 @@
 package io.github.libzeal.zeal.values.api.cache;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class SequenceCaches {
@@ -10,92 +10,96 @@ public class SequenceCaches {
     private SequenceCaches() {
     }
 
-    public static SizeCache size(final long size) {
-        return new SizeCache(size);
+    public static LongCache size(final long size) {
+        return new LongCache(size);
     }
 
-    public static IndexCache index(final int index) {
-        return new IndexCache(index);
+    public static LongCache count(final long size) {
+        return new LongCache(size);
     }
 
-    public static <T> ElementCache<T> element(final T element) {
-        return new ElementCache<>(element);
+    public static IntCache index(final int index) {
+        return new IntCache(index);
     }
 
-    public static <T> ElementCaches<T> found(final List<T> elements) {
-        return new ElementCaches<>(elements);
+    public static <T> ObjectCache<T> element(final T element) {
+        return new ObjectCache<>(element);
     }
 
-    public static <T> ElementCaches<T> nonFound() {
-        return new ElementCaches<>(new ArrayList<>(0));
+    public static <T> ListCache<T> found(final List<T> elements) {
+        return new ListCache<>(elements);
     }
 
-    public static final class SizeCache {
+    public static <T> ListCache<T> nonFound() {
+        return new ListCache<>(new ArrayList<>(0));
+    }
 
-        private final long size;
+    public static final class LongCache {
 
-        private SizeCache(final long size) {
-            this.size = size;
+        private final long value;
+
+        private LongCache(final long value) {
+            this.value = value;
         }
 
-        public long size() {
-            return size;
-        }
-    }
-
-    public static final class IndexCache {
-
-        private final int index;
-
-        private IndexCache(final int index) {
-            this.index = index;
-        }
-
-        public int index() {
-            return index;
+        public long value() {
+            return value;
         }
     }
 
-    public static final class ElementCache<T> {
+    public static final class IntCache {
 
-        private final T element;
+        private final int value;
 
-        private ElementCache(final T element) {
-            this.element = element;
+        private IntCache(final int value) {
+            this.value = value;
         }
 
-        public Element<T> element() {
-            return new Element<>(element);
+        public int value() {
+            return value;
+        }
+    }
+
+    public static final class ObjectCache<T> {
+
+        private final T value;
+
+        private ObjectCache(final T value) {
+            this.value = value;
         }
 
-        public static final class Element<T> {
+        public Value<T> value() {
+            return new Value<>(value);
+        }
 
-            private final T element;
+        public static final class Value<T> {
 
-            private Element(final T element) {
-                this.element = element;
+            private final T value;
+
+            private Value(final T value) {
+                this.value = value;
             }
 
             public <A> A getOrElse(final A ifFound, final A orElse) {
-                return element != null ? ifFound : orElse;
+                return value != null ? ifFound : orElse;
             }
 
-            public <A> A getOrElse(final Supplier<A> ifFound, final Supplier<A> orElse) {
-                return element != null ? ifFound.get() : orElse.get();
+            public <A> A getOrElseGet(final Function<T, A> ifFound, final Supplier<A> orElse) {
+                return value != null ? ifFound.apply(value) : orElse.get();
             }
         }
     }
 
-    public static final class ElementCaches<T> {
+    public static final class ListCache<T> {
 
-        private final List<T> elements;
+        private final List<T> values;
 
-        private ElementCaches(final List<T> elements) {
-            this.elements = elements;
+        private ListCache(final List<T> values) {
+            this.values = values;
         }
 
-        public List<T> elements() {
-            return elements;
+        public List<T> value() {
+            return values;
         }
     }
 }

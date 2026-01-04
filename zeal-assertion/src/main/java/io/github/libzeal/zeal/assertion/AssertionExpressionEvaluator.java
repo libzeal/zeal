@@ -12,7 +12,6 @@ import static java.util.Objects.requireNonNull;
  * and how to handle error cases.
  *
  * @author Justin Albano
- * @since 0.2.0
  */
 final class AssertionExpressionEvaluator<N extends Throwable, F extends Throwable> {
 

@@ -8,7 +8,6 @@ import io.github.libzeal.zeal.values.api.BaseObjectValue;
  * Note:  Many of the predicates of this expression require unboxing, resulting in some performance loss.
  *
  * @author Justin Albano
- * @since 0.2.0
  */
 public class BoxedCharacterValue extends BaseObjectValue<Character, BoxedCharacterValue> {
 

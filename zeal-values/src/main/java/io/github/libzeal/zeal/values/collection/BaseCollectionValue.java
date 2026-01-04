@@ -1,30 +1,53 @@
 package io.github.libzeal.zeal.values.collection;
 
+import io.github.libzeal.zeal.values.api.sequence.RepeatableSequenceValueBuilder.RepeatableSequenceOperations;
+import io.github.libzeal.zeal.values.collection.BaseCollectionValue.CollectionSequenceOperations;
+
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
-import java.util.function.Predicate;
 
 import static java.util.stream.Collectors.toList;
 
-public abstract class BaseCollectionValue<T, C extends Collection<T>, E extends BaseCollectionValue<T, C, E>>
-        extends BaseIterableValue<T, C, E> {
+public abstract class BaseCollectionValue<
+            T,
+            C extends Collection<T>,
+            O extends CollectionSequenceOperations<T, C>,
+            E extends BaseCollectionValue<T, C, O, E>>
+        extends BaseIterableValue<T, C, O, E> {
 
-    protected BaseCollectionValue(final C subject, final String name) {
-        super(subject, name);
+    protected BaseCollectionValue(final C subject, final String name, final O ops) {
+        super(subject, name, ops);
     }
 
-    @Override
-    protected long findSize(final C subject) {
-        return subject.size();
-    }
+    protected static class CollectionSequenceOperations<T, I extends Collection<T>>
+        extends IterableSequenceOperations<T, I> implements RepeatableSequenceOperations<T, I> {
 
-    @Override
-    protected boolean findIsEmpty(final C subject) {
-        return subject.isEmpty();
-    }
+        @Override
+        public List<T> findAllIn(final I haystack, final Collection<T> needles) {
+            return haystack.stream()
+                .filter(needles::contains)
+                .collect(toList());
+        }
 
-    @Override
-    protected Predicate<T> findContains(final C haystack) {
-        return haystack::contains;
+        @Override
+        public int size(final I haystack) {
+            return haystack.size();
+        }
+
+        @Override
+        public boolean isEmpty(final I haystack) {
+            return haystack.isEmpty();
+        }
+
+        @Override
+        public boolean includes(final I haystack, final T needle) {
+            return haystack.contains(needle);
+        }
+
+        @Override
+        public int occurrences(final I haystack, final T needle) {
+            return Collections.frequency(haystack, needle);
+        }
     }
 }

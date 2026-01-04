@@ -12,7 +12,6 @@ import io.github.libzeal.zeal.values.api.BaseObjectValue;
  *
  * @author Justin Albano
  * @see BaseObjectValue
- * @since 0.2.0
  */
 public abstract class BoxedWholeNumberValue<T extends Number, E extends BaseObjectValue<T, E>>
     extends BoxedNumberValue<T, E> {

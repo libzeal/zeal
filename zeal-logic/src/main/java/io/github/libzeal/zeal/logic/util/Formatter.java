@@ -9,7 +9,6 @@ import static java.util.stream.Collectors.toList;
  * A utility class containing methods that format values.
  *
  * @author Justin Albano
- * @since 0.2.1
  */
 public class Formatter {
 
