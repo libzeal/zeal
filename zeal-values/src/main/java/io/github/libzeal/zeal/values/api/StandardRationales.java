@@ -60,33 +60,33 @@ public class StandardRationales {
             return name;
         }
 
-        public static String nameWithValue(final String name, final Object value) {
+        public static String withValue(final String name, final Object value) {
             return name + "[" + stringify(value) + "]";
         }
 
-        public static String nameWithValues(final String name, final Collection<Object> values) {
+        public static String withValues(final String name, final Collection<Object> values) {
             return name + values;
         }
 
-        public static String nameWithValues(final String name, final Object... values) {
+        public static String withValues(final String name, final Object... values) {
             return name + Arrays.asList(values);
         }
 
-        public static String nameWithPairs(final String name, final Object key, final Object value) {
+        public static String withPairs(final String name, final Object key, final Object value) {
             return name + "[" + key + "=" + stringify(value) + "]";
         }
 
-        public static String nameWithPairs(final String name, final Object key1, final Object value1, final Object key2, final Object value2) {
+        public static String withPairs(final String name, final Object key1, final Object value1, final Object key2, final Object value2) {
             return name + "[" + key1 + "=" + stringify(value1) + ", " + key2 + "=" + stringify(value2) + "]";
         }
     }
 
     public static <T> String includes(final T value) {
-        return Names.nameWithValue("includes", value);
+        return Names.withValue("includes", value);
     }
 
     public static <T> String excludes(final T value) {
-        return Names.nameWithValue("excludes", value);
+        return Names.withValue("excludes", value);
     }
 
     public static <T> String needleInHaystackHint(final int index, final T element) {

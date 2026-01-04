@@ -14,6 +14,7 @@ import io.github.libzeal.zeal.values.config.Configuration;
 import java.util.Collection;
 import java.util.List;
 
+import static io.github.libzeal.zeal.values.api.StandardRationales.Names.withValue;
 import static java.util.stream.Collectors.toList;
 
 public class SequenceValueBuilder {
@@ -61,35 +62,35 @@ public class SequenceValueBuilder {
 
     public static <T, S> ValueBuilder<S> doesNotHaveLengthOf(final int length, final SequenceOperations<T, S> ops) {
         return SimpleValueBuilder.notNullable((S s) -> ops.size(s) != length)
-            .name("doesNotHaveLengthOf[" + length + "]")
+            .name(withValue("doesNotHaveLengthOf", length))
             .expected(Operators.NE.display(LENGTH, length))
             .actual(actualLength(ops));
     }
 
     public static <T, S> ValueBuilder<S> isShorterThan(final int length, final SequenceOperations<T, S> ops) {
         return SimpleValueBuilder.notNullable((S s) -> ops.size(s) < length)
-            .name("isShorterThan[" + length + "]")
+            .name(withValue("isShorterThan", length))
             .expected(Operators.LT.display(LENGTH, length))
             .actual(actualLength(ops));
     }
 
     public static <T, S> ValueBuilder<S> isShorterThanOrEqualTo(final int length, final SequenceOperations<T, S> ops) {
         return SimpleValueBuilder.notNullable((S s) -> ops.size(s) <= length)
-            .name("isShorterThanOrEqualTo[" + length + "]")
+            .name(withValue("isShorterThanOrEqualTo", length))
             .expected(Operators.LTE.display(LENGTH, length))
             .actual(actualLength(ops));
     }
 
     public static <T, S> ValueBuilder<S> isLongerThan(final int length, final SequenceOperations<T, S> ops) {
         return SimpleValueBuilder.notNullable((S s) -> ops.size(s) > length)
-            .name("isLongerThan[" + length + "]")
+            .name(withValue("isLongerThan", length))
             .expected(Operators.GT.display(LENGTH, length))
             .actual(actualLength(ops));
     }
 
     public static <T, S> ValueBuilder<S> isLongerThanOrEqualTo(final int length, final SequenceOperations<T, S> ops) {
         return SimpleValueBuilder.notNullable((S s) -> ops.size(s) >= length)
-            .name("isLongerThanOrEqualTo[" + length + "]")
+            .name(withValue("isLongerThanOrEqualTo", length))
             .expected(Operators.GTE.display(LENGTH, length))
             .actual(actualLength(ops));
     }

@@ -2,6 +2,7 @@ package io.github.libzeal.zeal.values.api.sequence;
 
 import io.github.libzeal.zeal.logic.util.Formatter;
 import io.github.libzeal.zeal.values.api.StandardRationales;
+import io.github.libzeal.zeal.values.api.StandardRationales.Names;
 import io.github.libzeal.zeal.values.api.ValueBuilder;
 import io.github.libzeal.zeal.values.api.cache.CachedValueBuilder;
 import io.github.libzeal.zeal.values.api.cache.SequenceCaches;
@@ -11,6 +12,7 @@ import io.github.libzeal.zeal.values.api.sequence.SequenceValueBuilder.SequenceO
 import java.util.Objects;
 
 import static io.github.libzeal.zeal.logic.util.Formatter.stringify;
+import static io.github.libzeal.zeal.values.api.StandardRationales.Names.*;
 
 public class OrderedSequenceValueBuilder {
 
@@ -32,7 +34,7 @@ public class OrderedSequenceValueBuilder {
                 return SimpleCacheResult.of(Objects.equals(desired, found))
                     .withCache(SequenceCaches.element(found));
             })
-            .name("hasAtIndex[desired=" + desiredName + ", index=" + index + "]")
+            .name(withPairs("hasAtIndex", "desired", desiredName, "index", index))
             .expected(desiredName)
             .actual(context ->
                 context.cache().value().getOrElseGet(
@@ -57,7 +59,7 @@ public class OrderedSequenceValueBuilder {
                 return SimpleCacheResult.of(!Objects.equals(desired, found))
                     .withCache(SequenceCaches.element(found));
             })
-            .name("doesNotHaveAtIndex[desired=" + desiredName + ", index=" + index + "]")
+            .name(withPairs("doesNotHaveAtIndex", "desired", desiredName, "index", index))
             .expected("not[" + desiredName + "]")
             .actual(context ->
                 context.cache().value().getOrElseGet(
@@ -77,7 +79,7 @@ public class OrderedSequenceValueBuilder {
                 return SimpleCacheResult.of(Objects.equals(desired, found))
                     .withCache(SequenceCaches.element(found));
             })
-            .name("startsWith[" + desiredName + "]")
+            .name(withValue("startsWith", desiredName))
             .expected(desiredName)
             .actual(context ->
                 context.cache().value().getOrElseGet(Formatter::stringify, () -> "Value is empty")
@@ -98,7 +100,7 @@ public class OrderedSequenceValueBuilder {
                 return SimpleCacheResult.of(desired == null || !Objects.equals(desired, found))
                     .withCache(SequenceCaches.element(found));
             })
-            .name("doesNotStartWith[" + desiredName + "]")
+            .name(withValue("doesNotStartWith", desiredName))
             .expected("not[" + desiredName + "]")
             .actual(context ->
                 context.cache().value().getOrElseGet(Formatter::stringify, () -> "Value is empty")
@@ -119,7 +121,7 @@ public class OrderedSequenceValueBuilder {
                 return SimpleCacheResult.of(Objects.equals(desired, found))
                     .withCache(SequenceCaches.element(found));
             })
-            .name("endsWith[" + desiredName + "]")
+            .name(withValue("endsWith", desiredName))
             .expected(desiredName)
             .actual(context ->
                 context.cache().value().getOrElseGet(Formatter::stringify, () -> "Value is empty")
@@ -140,7 +142,7 @@ public class OrderedSequenceValueBuilder {
                 return SimpleCacheResult.of(desired == null || !Objects.equals(desired, found))
                     .withCache(SequenceCaches.element(found));
             })
-            .name("doesNotEndWith[" + desiredName + "]")
+            .name(withValue("doesNotEndWith", desiredName))
             .expected("not[" + desiredName + "]")
             .actual(context ->
                 context.cache().value().getOrElseGet(Formatter::stringify, () -> "Value is empty")

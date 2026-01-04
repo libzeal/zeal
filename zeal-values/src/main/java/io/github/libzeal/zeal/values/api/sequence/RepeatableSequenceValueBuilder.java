@@ -7,6 +7,7 @@ import io.github.libzeal.zeal.values.api.cache.SimpleCacheResult;
 import io.github.libzeal.zeal.values.api.sequence.SequenceValueBuilder.SequenceOperations;
 
 import static io.github.libzeal.zeal.logic.util.Formatter.stringify;
+import static io.github.libzeal.zeal.values.api.StandardRationales.Names.withPairs;
 
 public class RepeatableSequenceValueBuilder {
 
@@ -21,7 +22,7 @@ public class RepeatableSequenceValueBuilder {
                 return SimpleCacheResult.of(count == times)
                     .withCache(SequenceCaches.count(count));
             })
-            .name("includesExactly[desired=" + desiredAsString + ", times=" + times + "]")
+            .name(withPairs("includesExactly", "desired", desiredAsString, "times", times))
             .expected("found '" + desiredAsString + "' " + times + " " + timesSuffix(times))
             .actual(context ->
                 "found '" + desiredAsString + "' " + context.cache().value() + " " + timesSuffix(context.cache().value())
@@ -48,7 +49,7 @@ public class RepeatableSequenceValueBuilder {
                 return SimpleCacheResult.of(count > times)
                     .withCache(SequenceCaches.count(count));
             })
-            .name("includesMoreThan[desired=" + desiredAsString + ", times=" + times + "]")
+            .name(withPairs("includesMoreThan", "desired", desiredAsString, "times", times))
             .expected("found '" + desiredAsString + "' more than " + times + " " + timesSuffix(times))
             .actual(context ->
                 "found '" + desiredAsString + "' " + context.cache().value() + " " + timesSuffix(context.cache().value())
@@ -71,7 +72,7 @@ public class RepeatableSequenceValueBuilder {
                 return SimpleCacheResult.of(count >= times)
                     .withCache(SequenceCaches.count(count));
             })
-            .name("includesMoreThanOrEqualTo[desired=" + desiredAsString + ", times=" + times + "]")
+            .name(withPairs("includesMoreThanOrEqualTo", "desired", desiredAsString, "times", times))
             .expected("found '" + desiredAsString + "' more than or equal to " + times + " " + timesSuffix(times))
             .actual(context ->
                 "found '" + desiredAsString + "' " + context.cache().value() + " " + timesSuffix(context.cache().value())
@@ -94,7 +95,7 @@ public class RepeatableSequenceValueBuilder {
                 return SimpleCacheResult.of(count < times)
                     .withCache(SequenceCaches.count(count));
             })
-            .name("includesLessThan[desired=" + desiredAsString + ", times=" + times + "]")
+            .name(withPairs("includesLessThan", "desired", desiredAsString, "times", times))
             .expected("found '" + desiredAsString + "' less than " + times + " " + timesSuffix(times))
             .actual(context ->
                 "found '" + desiredAsString + "' " + context.cache().value() + " " + timesSuffix(context.cache().value())
@@ -117,7 +118,7 @@ public class RepeatableSequenceValueBuilder {
                 return SimpleCacheResult.of(count <= times)
                     .withCache(SequenceCaches.count(count));
             })
-            .name("includesLessThanOrEqualTo[desired=" + desiredAsString + ", times=" + times + "]")
+            .name(withPairs("includesLessThanOrEqualTo", "desired", desiredAsString, "times", times))
             .expected("found '" + desiredAsString + "' less than or equal to " + times + " " + timesSuffix(times))
             .actual(context ->
                 "found '" + desiredAsString + "' " + context.cache().value() + " " + timesSuffix(context.cache().value())
