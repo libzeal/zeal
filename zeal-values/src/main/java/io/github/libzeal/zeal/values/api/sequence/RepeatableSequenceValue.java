@@ -1,7 +1,5 @@
 package io.github.libzeal.zeal.values.api.sequence;
 
-import io.github.libzeal.zeal.values.api.BaseObjectValue;
-
 import java.util.List;
 import java.util.Set;
 
@@ -12,15 +10,13 @@ import java.util.Set;
  *
  * @param <T>
  *     The type of the elements in the sequence.
- * @param <S>
- *     The type of the sequence.
  * @param <V>
  *     The type of the value. This type is used to maintain the correct return
  *     type for fluent interfaces, allowing for method chaining.
  *
  * @author Justin Albano
  */
-public interface RepeatableSequenceValue<T, S, V extends BaseObjectValue<S, V>> {
+public interface RepeatableSequenceValue<T, V extends RepeatableSequenceValue<T, V>> {
 
     /**
      * Checks that the desired element occurs the desired number of times in the

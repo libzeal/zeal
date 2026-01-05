@@ -1,6 +1,7 @@
 package io.github.libzeal.zeal.values.core;
 
 import io.github.libzeal.zeal.values.api.BaseObjectValue;
+import io.github.libzeal.zeal.values.api.StandardRationales.Operators;
 import io.github.libzeal.zeal.values.api.sequence.InspectableSequenceValue;
 import io.github.libzeal.zeal.values.api.sequence.OrderedSequenceValue;
 import io.github.libzeal.zeal.values.api.sequence.RepeatableSequenceValue;
@@ -25,12 +26,12 @@ import static java.util.stream.Collectors.toList;
 public class StringValue extends BaseObjectValue<String, StringValue>
     implements
         SizedSequenceValue<String, StringValue>,
-        InspectableSequenceValue<Character, String, StringValue>,
-        OrderedSequenceValue<Character, String, StringValue>,
-        RepeatableSequenceValue<Character, String, StringValue> {
+        InspectableSequenceValue<Character, StringValue>,
+        OrderedSequenceValue<Character, StringValue>,
+        RepeatableSequenceValue<Character, StringValue> {
 
-    private static final String EQUALS_OPERATOR = "=";
-    private static final String NOT_EQUALS_OPERATOR = "!=";
+    private static final String EQUALS_OPERATOR = Operators.EQ.symbol();
+    private static final String NOT_EQUALS_OPERATOR = Operators.NE.symbol();
     private static final String INDEX_OF_PREFIX = "indexOf";
     private static final String LAST_INDEX_OF_PREFIX = "lastIndexOf";
 

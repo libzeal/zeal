@@ -1,21 +1,17 @@
 package io.github.libzeal.zeal.values.api.sequence;
 
-import io.github.libzeal.zeal.values.api.BaseObjectValue;
-
 /**
  * A value representing a sequence of ordered elements.
  *
  * @param <T>
  *     The type of the elements in the sequence.
- * @param <S>
- *     The type of the sequence.
  * @param <V>
  *     The type of the value. This type is used to maintain the correct return
  *     type for fluent interfaces, allowing for method chaining.
  *
  * @author Justin Albano
  */
-public interface OrderedSequenceValue<T, S, V extends BaseObjectValue<S, V>> {
+public interface OrderedSequenceValue<T, V extends OrderedSequenceValue<T, V>> {
 
     /**
      * Checks that the desired element occurs at the desired index.

@@ -1,8 +1,6 @@
 package io.github.libzeal.zeal.values.api.sequence;
 
-import io.github.libzeal.zeal.values.api.BaseObjectValue;
-
-public interface SizedSequenceValue<T, V extends BaseObjectValue<T, V>> {
+public interface SizedSequenceValue<T, V extends SizedSequenceValue<T, V>> {
 
     V isEmpty();
     V isNotEmpty();

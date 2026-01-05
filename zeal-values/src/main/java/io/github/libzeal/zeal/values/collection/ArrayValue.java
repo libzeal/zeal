@@ -14,9 +14,9 @@ import static java.util.stream.Collectors.toList;
 
 public class ArrayValue<T> extends BaseObjectValue<T[], ArrayValue<T>> implements
     SizedSequenceValue<T[], ArrayValue<T>>,
-    InspectableSequenceValue<T, T[], ArrayValue<T>>,
-    OrderedSequenceValue<T, T[], ArrayValue<T>>,
-    RepeatableSequenceValue<T, T[], ArrayValue<T>> {
+    InspectableSequenceValue<T, ArrayValue<T>>,
+    OrderedSequenceValue<T, ArrayValue<T>>,
+    RepeatableSequenceValue<T, ArrayValue<T>> {
 
     private final ArraySequenceOperations<T> operations = new ArraySequenceOperations<>();
 

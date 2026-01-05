@@ -31,6 +31,10 @@ public class StandardRationales {
             return op;
         }
 
+        public String symbol() {
+            return op;
+        }
+
         public String display(final String a, final String b) {
             return a + SPACE + op + SPACE + b;
         }

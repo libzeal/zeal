@@ -1,10 +1,8 @@
 package io.github.libzeal.zeal.values.api.sequence;
 
-import io.github.libzeal.zeal.values.api.BaseObjectValue;
-
 import java.util.Collection;
 
-public interface InspectableSequenceValue<T, S, V extends BaseObjectValue<S, V>> {
+public interface InspectableSequenceValue<T, V extends InspectableSequenceValue<T, V>> {
 
     V includes(T desired);
     V includesAll(Collection<T> desired);

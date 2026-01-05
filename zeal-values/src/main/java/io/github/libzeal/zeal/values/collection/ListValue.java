@@ -9,12 +9,14 @@ import io.github.libzeal.zeal.values.api.sequence.builder.RepeatableSequenceValu
 import io.github.libzeal.zeal.values.api.sequence.builder.RepeatableSequenceValueBuilder.RepeatableSequenceOperations;
 import io.github.libzeal.zeal.values.collection.ListValue.ListSequenceOperations;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import static java.util.stream.Collectors.toList;
+
 public class ListValue<T> extends BaseCollectionValue<T, List<T>, ListSequenceOperations<T>, ListValue<T>>
-    implements OrderedSequenceValue<T, List<T>, ListValue<T>>,
-        RepeatableSequenceValue<T, List<T>, ListValue<T>> {
+    implements OrderedSequenceValue<T, ListValue<T>> {
 
     public ListValue(final List<T> subject) {
         super(subject, "List value", new ListSequenceOperations<>());
@@ -106,8 +108,7 @@ public class ListValue<T> extends BaseCollectionValue<T, List<T>, ListSequenceOp
 //    }
 
     public static final class ListSequenceOperations<T>
-        extends CollectionSequenceOperations<T, List<T>>
-        implements OrderedSequenceOperations<T, List<T>>, RepeatableSequenceOperations<T, List<T>> {
+        implements CollectionSequenceOperations<T, List<T>>, OrderedSequenceOperations<T, List<T>> {
 
         @Override
         public Element<T> lastElement(final List<T> haystack, final T desired) {
@@ -150,6 +151,28 @@ public class ListValue<T> extends BaseCollectionValue<T, List<T>, ListSequenceOp
         @Override
         public int occurrences(final List<T> haystack, final T needle) {
             return Collections.frequency(haystack, needle);
+        }
+
+        @Override
+        public List<T> findAllIn(final List<T> haystack, final Collection<T> needles) {
+            return haystack.stream()
+                .filter(needles::contains)
+                .collect(toList());
+        }
+
+        @Override
+        public boolean includes(final List<T> haystack, final T needle) {
+            return haystack.contains(needle);
+        }
+
+        @Override
+        public int size(final List<T> haystack) {
+            return haystack.size();
+        }
+
+        @Override
+        public boolean isEmpty(final List<T> haystack) {
+            return haystack.isEmpty();
         }
     }
 }
