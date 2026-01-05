@@ -35,9 +35,9 @@ final class ObjectConditions {
     public static <T> Condition<T> exactly(final Object desired) {
 
         final ComputableRationale<T> generator = new SimpleComputableRationale<>(
-            (s, passed) -> stringify(desired),
-            (s, passed) -> stringify(s),
-            (s, passed) -> exactlyHint(desired)
+            context -> stringify(desired),
+            context -> stringify(context.subject()),
+            context -> exactlyHint(desired)
         );
 
         return subject -> new ComputedExpression<>(
@@ -59,9 +59,9 @@ final class ObjectConditions {
     public static <T> Condition<T> equalTo(final Object desired) {
 
         final ComputableRationale<T> generator = new SimpleComputableRationale<>(
-            (s, passed) -> stringify(desired),
-            (s, passed) -> stringify(s),
-            (s, passed) -> equalToHint(desired)
+            context -> stringify(desired),
+            context -> stringify(context.subject()),
+            context -> equalToHint(desired)
         );
 
         return subject -> new ComputedExpression<>(

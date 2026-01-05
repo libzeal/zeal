@@ -14,7 +14,6 @@ import java.util.Optional;
  * evaluations.
  *
  * @author Justin Albano
- * @since 0.2.1
  */
 public class CollectingTraverserAction implements TraverserAction {
 

@@ -13,7 +13,6 @@ import static java.util.Objects.requireNonNull;
  * An evaluation that results from a terminal expression.
  *
  * @author Justin Albano
- * @since 0.2.1
  */
 public class EvaluatedTerminalEvaluation implements TerminalEvaluation {
 

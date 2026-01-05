@@ -22,7 +22,6 @@ import static java.util.Objects.requireNonNull;
  * is true or skipped), the expression evaluates to false.
  *
  * @author Justin Albano
- * @since 0.2.1
  */
 public class NotExpression implements Expression {
 

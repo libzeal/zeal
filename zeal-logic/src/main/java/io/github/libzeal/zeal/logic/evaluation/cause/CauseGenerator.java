@@ -7,7 +7,6 @@ import io.github.libzeal.zeal.logic.evaluation.Evaluation;
  * refer to the evaluation (a circular creation if deferral is not available).
  *
  * @author Justin Albano
- * @since 0.2.1
  */
 @FunctionalInterface
 public interface CauseGenerator {

@@ -4,7 +4,6 @@ package io.github.libzeal.zeal.logic.evaluation.cause;
  * An exception denoting that the maximum depth of the chain has been exceeded.
  *
  * @author Justin Albano
- * @since 0.2.1
  */
 public class MaximumDepthExceededException extends RuntimeException {
 

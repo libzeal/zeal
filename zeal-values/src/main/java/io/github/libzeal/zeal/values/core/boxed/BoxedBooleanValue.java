@@ -1,6 +1,6 @@
 package io.github.libzeal.zeal.values.core.boxed;
 
-import io.github.libzeal.zeal.values.api.ObjectValue;
+import io.github.libzeal.zeal.values.api.BaseObjectValue;
 
 /**
  * An expression used to evaluate {@link Boolean} instances.
@@ -8,9 +8,8 @@ import io.github.libzeal.zeal.values.api.ObjectValue;
  * Note: Many of the predicates of this expression require unboxing, resulting in some performance loss.
  *
  * @author Justin Albano
- * @since 0.2.0
  */
-public class BoxedBooleanValue extends ObjectValue<Boolean, BoxedBooleanValue> {
+public class BoxedBooleanValue extends BaseObjectValue<Boolean, BoxedBooleanValue> {
 
     /**
      * Creates a new expression.
@@ -32,7 +31,7 @@ public class BoxedBooleanValue extends ObjectValue<Boolean, BoxedBooleanValue> {
             expression(Boolean::booleanValue)
                 .name("isTrue")
                 .expected("true")
-                .actual((s, passed) -> String.valueOf(s))
+                .actual(context -> String.valueOf(context.subject()))
         );
     }
 
@@ -46,7 +45,7 @@ public class BoxedBooleanValue extends ObjectValue<Boolean, BoxedBooleanValue> {
             expression(b -> !b)
                 .name("isFalse")
                 .expected("false")
-                .actual((s, passed) -> String.valueOf(s))
+                .actual(context -> String.valueOf(context.subject()))
         );
     }
 }

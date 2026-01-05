@@ -12,7 +12,6 @@ import io.github.libzeal.zeal.logic.Expression;
  *         The type of the subject.
  *
  * @author Justin Albano
- * @since 0.2.0
  */
 public interface UnaryExpression<S> extends Expression {
 

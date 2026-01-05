@@ -13,7 +13,6 @@ import static java.util.Objects.requireNonNull;
  *     The type of the subject.
  *
  * @author Justin Albano
- * @since 0.2.0
  */
 public class SimpleComputableRationale<T> implements ComputableRationale<T> {
 
@@ -57,11 +56,11 @@ public class SimpleComputableRationale<T> implements ComputableRationale<T> {
     }
 
     @Override
-    public Rationale compute(final T subject, boolean passed) {
+    public Rationale compute(final ComputableRationaleContext<T> context) {
 
-        final String generatedExpected = expected.compute(subject, passed);
-        final String generatedActual = actual.compute(subject, passed);
-        final String generatedHint = hint == null ? null : hint.compute(subject, passed);
+        final String generatedExpected = expected.compute(context);
+        final String generatedActual = actual.compute(context);
+        final String generatedHint = hint == null ? null : hint.compute(context);
 
         return new SimpleRationale(generatedExpected, generatedActual, generatedHint);
     }

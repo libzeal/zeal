@@ -1,23 +1,42 @@
 package io.github.libzeal.zeal.values.core;
 
-import io.github.libzeal.zeal.logic.unary.future.rationale.ComputableField;
-import io.github.libzeal.zeal.values.api.ObjectValue;
+import io.github.libzeal.zeal.values.api.BaseObjectValue;
+import io.github.libzeal.zeal.values.api.StandardRationales.Operators;
+import io.github.libzeal.zeal.values.api.sequence.InspectableSequenceValue;
+import io.github.libzeal.zeal.values.api.sequence.OrderedSequenceValue;
+import io.github.libzeal.zeal.values.api.sequence.RepeatableSequenceValue;
+import io.github.libzeal.zeal.values.api.sequence.SizedSequenceValue;
+import io.github.libzeal.zeal.values.api.sequence.builder.*;
+import io.github.libzeal.zeal.values.api.sequence.builder.InspectableSequenceValueBuilder.InspectableSequenceOperations;
+import io.github.libzeal.zeal.values.api.sequence.builder.OrderedSequenceValueBuilder.OrderedSequenceOperations;
+import io.github.libzeal.zeal.values.api.sequence.builder.RepeatableSequenceValueBuilder.RepeatableSequenceOperations;
+import io.github.libzeal.zeal.values.api.sequence.builder.SizedSequenceValueBuilder.SizedSequenceOperations;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+
+import static java.util.stream.Collectors.toList;
 
 /**
- * An expression used to evaluate {@link String} instances.
+ * A value used to evaluate {@link String} instances.
  *
  * @author Justin Albano
- * @since 0.2.0
  */
-public class StringValue extends ObjectValue<String, StringValue> {
+public class StringValue extends BaseObjectValue<String, StringValue>
+    implements
+        SizedSequenceValue<String, StringValue>,
+        InspectableSequenceValue<Character, StringValue>,
+        OrderedSequenceValue<Character, StringValue>,
+        RepeatableSequenceValue<Character, StringValue> {
 
-    private static final String EQUALS_OPERATOR = ":=";
-    private static final String NOT_EQUALS_OPERATOR = "!=";
-    private static final String LENGTH_EQUAL_PREFIX = "length " + EQUALS_OPERATOR + " ";
-    private static final String OCCURS = "occurs";
+    private static final String EQUALS_OPERATOR = Operators.EQ.symbol();
+    private static final String NOT_EQUALS_OPERATOR = Operators.NE.symbol();
     private static final String INDEX_OF_PREFIX = "indexOf";
     private static final String LAST_INDEX_OF_PREFIX = "lastIndexOf";
-    private static final String OCCURRENCES_PREFIX = "occurrences";
+
+    private final StringOperations operations;
+    private final StringOnStringOperations charSequenceOperations = new StringOnStringOperations();
 
     /**
      * Creates a new expression.
@@ -25,44 +44,22 @@ public class StringValue extends ObjectValue<String, StringValue> {
      * @param subject
      *     The subject of the expression.
      */
-    public StringValue(String subject) {
+    public StringValue(final String subject) {
         super(subject, "String value");
+        this.operations = new StringOperations();
     }
 
-    /**
-     * Adds a predicate to the expression that checks if the subject is empty (has a length of {@code 0}).
-     *
-     * @return This expression (fluent interface).
-     *
-     * @see String#isEmpty()
-     */
+    @Override
     public StringValue isEmpty() {
         return append(
-            expression(String::isEmpty)
-                .name("isEmpty")
-                .expected("true")
-                .actual(isPredicatedPassed())
+            SizedSequenceValueBuilder.isEmpty(operations)
         );
     }
 
-    private static ComputableField<String> isPredicatedPassed() {
-        return (o, passed) -> passed ? "true" : "false";
-    }
-
-    /**
-     * Adds a predicate to the expression that checks if the subject is not empty (has a length greater than
-     * {@code 0}).
-     *
-     * @return This expression (fluent interface).
-     *
-     * @see String#isEmpty()
-     */
+    @Override
     public StringValue isNotEmpty() {
         return append(
-            expression(s -> !s.isEmpty())
-                .name("isNotEmpty")
-                .expected("true")
-                .actual(isPredicatedPassed())
+            SizedSequenceValueBuilder.isNotEmpty(operations)
         );
     }
 
@@ -76,7 +73,7 @@ public class StringValue extends ObjectValue<String, StringValue> {
             expression(s -> s.trim().isEmpty())
                 .name("isBlank")
                 .expected("true")
-                .actual(isPredicatedPassed())
+                .actual(context -> context.ifPassedOrElse("true", "false"))
         );
     }
 
@@ -90,380 +87,236 @@ public class StringValue extends ObjectValue<String, StringValue> {
             expression(s -> !s.trim().isEmpty())
                 .name("isNotBlank")
                 .expected("true")
-                .actual(isPredicatedPassed())
+                .actual(context -> context.ifPassedOrElse("true", "false"))
         );
     }
 
-    /**
-     * Adds a predicate to the expression that checks if the length of the subject is equal to the supplied length.
-     *
-     * @param length
-     *     The desired length of the subject.
-     *
-     * @return This expression (fluent interface).
-     */
-    public StringValue hasLengthOf(final long length) {
+    @Override
+    public StringValue hasLengthOf(final int length) {
         return append(
-            expression(s -> s.length() == length)
-                .name("hasLengthOf[" + length + "]")
-                .expected(LENGTH_EQUAL_PREFIX + length)
-                .actual((s, passed) -> LENGTH_EQUAL_PREFIX + s.length())
+            SizedSequenceValueBuilder.hasLengthOf(length, operations)
         );
     }
 
-    /**
-     * Adds a predicate to the expression that checks if the length of the subject is longer than the supplied length.
-     *
-     * @param length
-     *     The desired minimum length of the subject (exclusive).
-     *
-     * @return This expression (fluent interface).
-     */
-    public StringValue isLongerThan(final long length) {
+    @Override
+    public StringValue doesNotHaveLengthOf(final int length) {
         return append(
-            expression(s -> s.length() > length)
-                .name("isLongerThan[" + length + "]")
-                .expected("length > " + length)
-                .actual((value, passed) -> LENGTH_EQUAL_PREFIX + value.length())
+            SizedSequenceValueBuilder.doesNotHaveLengthOf(length, operations)
         );
     }
 
-    /**
-     * Adds a predicate to the expression that checks if the length of the subject is longer than or equal to the
-     * supplied length.
-     *
-     * @param length
-     *     The desired minimum length of the subject (inclusive).
-     *
-     * @return This expression (fluent interface).
-     */
-    public StringValue isLongerThanOrEqualTo(long length) {
+    @Override
+    public StringValue isShorterThan(final int length) {
         return append(
-            expression(s -> s.length() >= length)
-                .name("isLongerThanOrEqualTo[" + length + "]")
-                .expected("length >= " + length)
-                .actual((value, passed) -> LENGTH_EQUAL_PREFIX + value.length())
+            SizedSequenceValueBuilder.isShorterThan(length, operations)
         );
     }
 
-    /**
-     * Adds a predicate to the expression that checks if the length of the subject is shorter than the supplied length.
-     *
-     * @param length
-     *     The desired maximum length of the subject (exclusive).
-     *
-     * @return This expression (fluent interface).
-     */
-    public StringValue isShorterThan(long length) {
+    @Override
+    public StringValue isShorterThanOrEqualTo(final int length) {
         return append(
-            expression(s -> s.length() < length)
-                .name("isShorterThan[" + length + "]")
-                .expected("length < " + length)
-                .actual((value, passed) -> LENGTH_EQUAL_PREFIX + value.length())
+            SizedSequenceValueBuilder.isShorterThanOrEqualTo(length, operations)
         );
     }
 
-    /**
-     * Adds a predicate to the expression that checks if the length of the subject is shorter than or equal to the
-     * supplied length.
-     *
-     * @param length
-     *     The desired maximum length of the subject (inclusive).
-     *
-     * @return This expression (fluent interface).
-     */
-    public StringValue isShorterThanOrEqualTo(long length) {
+    @Override
+    public StringValue isLongerThan(final int length) {
         return append(
-            expression(s -> s.length() <= length)
-                .name("isShorterThanOrEqualTo[" + length + "]")
-                .expected("length <= " + length)
-                .actual((value, passed) -> LENGTH_EQUAL_PREFIX + value.length())
+            SizedSequenceValueBuilder.isLongerThan(length, operations)
         );
     }
 
-    /**
-     * Adds a predicate to the expression that checks if the subject contains the supplied character.
-     *
-     * @param c
-     *     The character to ensure is included in the subject.
-     *
-     * @return This expression (fluent interface).
-     */
-    public StringValue includes(final char c) {
+    @Override
+    public StringValue isLongerThanOrEqualTo(final int length) {
         return append(
-            expression(s -> s.indexOf(c) != -1)
-                .name(includesName(c))
-                .expected(includesName(c))
-                .actual((s, passed) -> passed ? includesName(c) : excludesName(c))
-                .hint((s, passed) -> needleInHaystackHint(s, c))
+            SizedSequenceValueBuilder.isLongerThanOrEqualTo(length, operations)
         );
     }
 
-    private static String includesName(final char c) {
-        return "includes[" + c + "]";
-    }
-
-    private static String excludesName(final char c) {
-        return "excludes[" + c + "]";
-    }
-
-    static String needleInHaystackHint(String s, char c) {
-
-        final int index = s.indexOf(c);
-
-        if (index != -1) {
-            return "'" + c + "' found at index " + index;
-        }
-        else {
-            return "String does not include '" + c + "'";
-        }
-    }
-
-    /**
-     * Adds a predicate to the expression that checks if the subject contains the supplied sequence.
-     *
-     * @param sequence
-     *     The sequence to ensure is included in the subject.
-     *
-     * @return This expression (fluent interface).
-     */
-    public StringValue includes(final CharSequence sequence) {
+    @Override
+    public StringValue includes(final Character desired) {
         return append(
-            expression(s -> s.contains(sequence))
-                .name(includesName(sequence))
-                .expected(includesName(sequence))
-                .actual((s, passed) -> passed ? includesName(sequence) : excludesName(sequence))
-                .hint((s, passed) -> needleInHaystackHint(s, sequence))
+            OrderedSequenceValueBuilder.includes(desired, operations)
         );
     }
 
-    private static String includesName(final CharSequence c) {
-        return "includes[" + c + "]";
-    }
-
-    private static String excludesName(final CharSequence c) {
-        return "excludes[" + c + "]";
-    }
-
-    static String needleInHaystackHint(String s, CharSequence sequence) {
-
-        final int index = s.indexOf(sequence.toString());
-
-        if (index != -1) {
-            return "\"" + sequence + "\" found at index " + index;
-        }
-        else {
-            return "String does not include \"" + sequence + "\"";
-        }
-    }
-
-    /**
-     * Adds a predicate to the expression that checks if the subject does not contain the supplied character.
-     *
-     * @param c
-     *     The character to ensure is excluded from the subject.
-     *
-     * @return This expression (fluent interface).
-     */
-    public StringValue excludes(final char c) {
+    public StringValue includes(final CharSequence desired) {
         return append(
-            expression(s -> s.indexOf(c) == -1)
-                .name(excludesName(c))
-                .expected(excludesName(c))
-                .actual((s, passed) -> passed ? excludesName(c) : includesName(c))
-                .hint((s, passed) -> needleInHaystackHint(s, c))
+            OrderedSequenceValueBuilder.includes(desired, charSequenceOperations)
         );
     }
 
-    /**
-     * Adds a predicate to the expression that checks if the subject does not contain the supplied sequence.
-     *
-     * @param sequence
-     *     The sequence to ensure is excluded from the subject.
-     *
-     * @return This expression (fluent interface).
-     */
-    public StringValue excludes(final CharSequence sequence) {
+    @Override
+    public StringValue includesAll(final Collection<Character> desired) {
         return append(
-            expression(s -> !s.contains(sequence))
-                .name(excludesName(sequence))
-                .expected(excludesName(sequence))
-                .actual((s, passed) -> passed ? excludesName(sequence) : includesName(sequence))
-                .hint((s, passed) -> needleInHaystackHint(s, sequence))
+            InspectableSequenceValueBuilder.includesAll(desired, operations)
         );
     }
 
-    /**
-     * Adds a predicate to the expression that checks if number of times subject contains the supplied character is
-     * equal to the supplied argument.
-     *
-     * @param c
-     *     The character to match.
-     * @param times
-     *     The expected number of occurrences.
-     *
-     * @return This expression (fluent interface).
-     */
-    public StringValue occursName(final char c, final long times) {
+    @Override
+    public StringValue includesAllOf(final Character... desired) {
+        return includesAll(Arrays.asList(desired));
+    }
+
+    @Override
+    public StringValue includesAny(final Collection<Character> desired) {
         return append(
-            expression(s -> characterCount(s, c) == times)
-                .name(occursName(c, times, EQUALS_OPERATOR))
-                .expected(OCCURRENCES_PREFIX + " " + EQUALS_OPERATOR + " " + times)
-                .actual((value, passed) -> OCCURRENCES_PREFIX + " " + EQUALS_OPERATOR + " " + characterCount(value, c))
+            InspectableSequenceValueBuilder.includesAny(desired, operations)
         );
     }
 
-    private static long characterCount(final String s, final char c) {
-        return s.chars()
-            .filter(ch -> ch == c)
-            .count();
+    @Override
+    public StringValue includesAnyOf(final Character... desired) {
+        return includesAny(Arrays.asList(desired));
     }
 
-    private static String occursName(final char c, final long times, final String operator) {
-        return OCCURS + "[" + c + "] " + operator + " " + times;
-    }
-
-    /**
-     * Adds a predicate to the expression that checks if number of times subject contains the supplied character is
-     * greater than the supplied argument.
-     *
-     * @param c
-     *     The character to match.
-     * @param times
-     *     The expected minimum number of occurrences (exclusive).
-     *
-     * @return This expression (fluent interface).
-     */
-    public StringValue occursMoreThan(final char c, final long times) {
+    @Override
+    public StringValue includesExactly(final Character desired, final long times) {
         return append(
-            expression(s -> characterCount(s, c) > times)
-                .name(occursName(c, times, ">"))
-                .expected(OCCURRENCES_PREFIX + " > " + times)
-                .actual((value, passed) -> OCCURRENCES_PREFIX + " " + EQUALS_OPERATOR + " " + characterCount(value, c))
+            RepeatableSequenceValueBuilder.includesExactly(desired, times, operations)
         );
     }
 
-    /**
-     * Adds a predicate to the expression that checks if number of times subject contains the supplied character is
-     * greater than or equal to the supplied argument.
-     *
-     * @param c
-     *     The character to match.
-     * @param times
-     *     The expected minimum number of occurrences (inclusive).
-     *
-     * @return This expression (fluent interface).
-     */
-    public StringValue occursMoreThanOrEqualTo(final char c, final long times) {
+    @Override
+    public StringValue includesMoreThan(final Character desired, final long times) {
         return append(
-            expression(s -> characterCount(s, c) >= times)
-                .name(occursName(c, times, ">="))
-                .expected(OCCURRENCES_PREFIX + " >= " + times)
-                .actual((value, passed) -> OCCURRENCES_PREFIX + " " + EQUALS_OPERATOR + " " + characterCount(value, c))
+            RepeatableSequenceValueBuilder.includesMoreThan(desired, times, operations)
         );
     }
 
-    /**
-     * Adds a predicate to the expression that checks if number of times subject contains the supplied character is less
-     * than the supplied argument.
-     *
-     * @param c
-     *     The character to match.
-     * @param times
-     *     The expected maximum number of occurrences (exclusive).
-     *
-     * @return This expression (fluent interface).
-     */
-    public StringValue occursLessThan(final char c, final long times) {
+    @Override
+    public StringValue includesMoreThanOrEqualTo(final Character desired, final long times) {
         return append(
-            expression(s -> characterCount(s, c) < times)
-                .name(occursName(c, times, "<"))
-                .expected(OCCURRENCES_PREFIX + " < " + times)
-                .actual((value, passed) -> OCCURRENCES_PREFIX + " " + EQUALS_OPERATOR + " " + characterCount(value, c))
+            RepeatableSequenceValueBuilder.includesMoreThanOrEqualTo(desired, times, operations)
         );
     }
 
-    /**
-     * Adds a predicate to the expression that checks if number of times subject contains the supplied character is less
-     * than or equal to the supplied argument.
-     *
-     * @param c
-     *     The character to match.
-     * @param times
-     *     The expected maximum number of occurrences (inclusive).
-     *
-     * @return This expression (fluent interface).
-     */
-    public StringValue occursLessThanOrEqualTo(final char c, final long times) {
+    @Override
+    public StringValue includesLessThan(final Character desired, final long times) {
         return append(
-            expression(s -> characterCount(s, c) <= times)
-                .name(occursName(c, times, "<="))
-                .expected(OCCURRENCES_PREFIX + " <= " + times)
-                .actual((value, passed) -> OCCURRENCES_PREFIX + " " + EQUALS_OPERATOR + " " + characterCount(value, c))
+            RepeatableSequenceValueBuilder.includesLessThan(desired, times, operations)
         );
     }
 
-    /**
-     * Adds a predicate to the expression that checks if the subject starts with the supplied prefix.
-     *
-     * @param prefix
-     *     The desired prefix.
-     *
-     * @return This expression (fluent interface).
-     */
-    public StringValue startsWith(final String prefix) {
+    @Override
+    public StringValue includesLessThanOrEqualTo(final Character desired, final long times) {
         return append(
-            expression(s -> s.startsWith(prefix))
-                .name("startsWith[" + prefix + "]")
-                .expected("startsWith[" + prefix + "]")
+            RepeatableSequenceValueBuilder.includesLessThanOrEqualTo(desired, times, operations)
         );
     }
 
-    /**
-     * Adds a predicate to the expression that checks if the subject does not start with the supplied prefix.
-     *
-     * @param prefix
-     *     The prefix to ensure the subject does not have.
-     *
-     * @return This expression (fluent interface).
-     */
-    public StringValue doesNotStartWith(final String prefix) {
+    @Override
+    public StringValue excludes(final Character desired) {
         return append(
-            expression(s -> !s.startsWith(prefix))
-                .name("doesNotStartWith[" + prefix + "]")
-                .expected("not[startsWith[" + prefix + "]]")
+            OrderedSequenceValueBuilder.excludes(desired, operations)
         );
     }
 
-    /**
-     * Adds a predicate to the expression that checks if the subject ends with the supplied suffix.
-     *
-     * @param suffix
-     *     The desired suffix.
-     *
-     * @return This expression (fluent interface).
-     */
-    public StringValue endsWith(final String suffix) {
+    public StringValue excludes(final CharSequence desired) {
         return append(
-            expression(s -> s.endsWith(suffix))
-                .name("endsWith[" + suffix + "]")
-                .expected("endsWith[" + suffix + "]")
+            OrderedSequenceValueBuilder.excludes(desired, charSequenceOperations)
         );
     }
 
-    /**
-     * Adds a predicate to the expression that checks if the subject does not end with the supplied suffix.
-     *
-     * @param suffix
-     *     The suffix to ensure the subject does not have.
-     *
-     * @return This expression (fluent interface).
-     */
-    public StringValue doesNotEndWith(final String suffix) {
+    @Override
+    public StringValue excludesAll(final Collection<Character> desired) {
         return append(
-            expression(s -> !s.endsWith(suffix))
-                .name("doesNotEndWith[" + suffix + "]")
-                .expected("not[endsWith[" + suffix + "]]")
+            InspectableSequenceValueBuilder.excludesAll(desired, operations)
+        );
+    }
+
+    @Override
+    public StringValue excludesAllOf(final Character... desired) {
+        return excludesAll(Arrays.asList(desired));
+    }
+
+    @Override
+    public StringValue excludesAny(final Collection<Character> desired) {
+        return append(
+            InspectableSequenceValueBuilder.excludesAny(desired, operations)
+        );
+    }
+
+    @Override
+    public StringValue excludesAnyOf(final Character... desired) {
+        return excludesAny(Arrays.asList(desired));
+    }
+
+    @Override
+    public StringValue hasAtIndex(final Character desired, final int index) {
+        return append(
+            OrderedSequenceValueBuilder.hasAtIndex(desired, index, operations)
+        );
+    }
+
+    public StringValue hasAtIndex(final CharSequence desired, final int index) {
+        return append(
+            OrderedSequenceValueBuilder.hasAtIndex(desired, index, charSequenceOperations)
+        );
+    }
+
+    @Override
+    public StringValue doesNotHaveAtIndex(final Character desired, final int index) {
+        return append(
+            OrderedSequenceValueBuilder.doesNotHaveAtIndex(desired, index, operations)
+        );
+    }
+
+    public StringValue doesNotHaveAtIndex(final CharSequence desired, final int index) {
+        return append(
+            OrderedSequenceValueBuilder.doesNotHaveAtIndex(desired, index, charSequenceOperations)
+        );
+    }
+
+    @Override
+    public StringValue startsWith(final Character desired) {
+        return append(
+            OrderedSequenceValueBuilder.startsWith(desired, operations)
+        );
+    }
+
+    public StringValue startsWith(final CharSequence desired) {
+        return append(
+            OrderedSequenceValueBuilder.startsWith(desired, charSequenceOperations)
+        );
+    }
+
+    @Override
+    public StringValue doesNotStartWith(final Character desired) {
+        return append(
+            OrderedSequenceValueBuilder.doesNotStartWith(desired, operations)
+        );
+    }
+
+    public StringValue doesNotStartWith(final CharSequence desired) {
+        return append(
+            OrderedSequenceValueBuilder.doesNotStartWith(desired, charSequenceOperations)
+        );
+    }
+
+    @Override
+    public StringValue endsWith(final Character desired) {
+        return append(
+            OrderedSequenceValueBuilder.endsWith(desired, operations)
+        );
+    }
+
+    public StringValue endsWith(final CharSequence desired) {
+        return append(
+            OrderedSequenceValueBuilder.endsWith(desired, charSequenceOperations)
+        );
+    }
+
+    @Override
+    public StringValue doesNotEndWith(final Character desired) {
+        return append(
+            OrderedSequenceValueBuilder.doesNotEndWith(desired, operations)
+        );
+    }
+
+    public StringValue doesNotEndWith(final CharSequence desired) {
+        return append(
+            OrderedSequenceValueBuilder.doesNotEndWith(desired, charSequenceOperations)
         );
     }
 
@@ -516,47 +369,8 @@ public class StringValue extends ObjectValue<String, StringValue> {
     }
 
     /**
-     * Adds a predicate to the expression that checks if the first index of the supplied needle in the subject matches
-     * the supplied index.
-     *
-     * @param needle
-     *     The needle to look for in the subject.
-     * @param index
-     *     The expected first index.
-     *
-     * @return This expression (fluent interface).
-     */
-    public StringValue hasAtIndex(final char needle, final int index) {
-        return append(
-            expression(s -> s.indexOf(needle) == index)
-                .name(INDEX_OF_PREFIX + "[" + needle + "] " + EQUALS_OPERATOR + " " + index)
-                .expected(index)
-                .actual((s, passed) -> String.valueOf(s.indexOf(needle)))
-        );
-    }
-
-    /**
-     * Adds a predicate to the expression that checks if the first index of the supplied needle in the subject matches
-     * the supplied index.
-     *
-     * @param needle
-     *     The needle to look for in the subject.
-     * @param index
-     *     The expected first index.
-     *
-     * @return This expression (fluent interface).
-     */
-    public StringValue hasAtIndex(final String needle, final int index) {
-        return append(
-            expression(s -> s.indexOf(needle) == index)
-                .name(INDEX_OF_PREFIX + "[" + needle + "] " + EQUALS_OPERATOR + " " + index)
-                .expected(index)
-                .actual((s, passed) -> String.valueOf(s.indexOf(needle)))
-        );
-    }
-
-    /**
-     * Adds a predicate to the expression that checks if the first index of the supplied needle in the subject does not
+     * Adds a predicate to the expression that checks if the first index of the
+     * supplied needle in the subject does not
      * match the supplied index.
      *
      * @param needle
@@ -570,13 +384,14 @@ public class StringValue extends ObjectValue<String, StringValue> {
         return append(
             expression(s -> s.indexOf(needle) != index)
                 .name(INDEX_OF_PREFIX + "[" + needle + "] " + NOT_EQUALS_OPERATOR + " " + index)
-                .expected((s, passed) -> "not[" + index + "]")
-                .actual((s, passed) -> String.valueOf(s.indexOf(needle)))
+                .expected(context -> "not[" + index + "]")
+                .actual(context -> String.valueOf(context.subject().indexOf(needle)))
         );
     }
 
     /**
-     * Adds a predicate to the expression that checks if the first index of the supplied needle in the subject does not
+     * Adds a predicate to the expression that checks if the first index of the
+     * supplied needle in the subject does not
      * match the supplied index.
      *
      * @param needle
@@ -590,13 +405,14 @@ public class StringValue extends ObjectValue<String, StringValue> {
         return append(
             expression(s -> s.indexOf(needle) != index)
                 .name(INDEX_OF_PREFIX + "[" + needle + "] " + NOT_EQUALS_OPERATOR + " " + index)
-                .expected((s, passed) -> "not[" + index + "]")
-                .actual((s, passed) -> String.valueOf(s.indexOf(needle)))
+                .expected(context -> "not[" + index + "]")
+                .actual(context -> String.valueOf(context.subject().indexOf(needle)))
         );
     }
 
     /**
-     * Adds a predicate to the expression that checks if the last index of the supplied needle in the subject matches
+     * Adds a predicate to the expression that checks if the last index of the
+     * supplied needle in the subject matches
      * the supplied index.
      *
      * @param needle
@@ -611,12 +427,13 @@ public class StringValue extends ObjectValue<String, StringValue> {
             expression(s -> s.lastIndexOf(needle) == index)
                 .name(LAST_INDEX_OF_PREFIX + "[" + needle + "] " + EQUALS_OPERATOR + " " + index)
                 .expected(index)
-                .actual((s, passed) -> String.valueOf(s.lastIndexOf(needle)))
+                .actual(context -> String.valueOf(context.subject().lastIndexOf(needle)))
         );
     }
 
     /**
-     * Adds a predicate to the expression that checks if the last index of the supplied needle in the subject matches
+     * Adds a predicate to the expression that checks if the last index of the
+     * supplied needle in the subject matches
      * the supplied index.
      *
      * @param needle
@@ -631,12 +448,13 @@ public class StringValue extends ObjectValue<String, StringValue> {
             expression(s -> s.lastIndexOf(needle) == index)
                 .name(LAST_INDEX_OF_PREFIX + "[" + needle + "] " + EQUALS_OPERATOR + " " + index)
                 .expected(index)
-                .actual((s, passed) -> String.valueOf(s.lastIndexOf(needle)))
+                .actual(context -> String.valueOf(context.subject().lastIndexOf(needle)))
         );
     }
 
     /**
-     * Adds a predicate to the expression that checks if the last index of the supplied needle in the subject does not
+     * Adds a predicate to the expression that checks if the last index of the
+     * supplied needle in the subject does not
      * match the supplied index.
      *
      * @param needle
@@ -650,13 +468,14 @@ public class StringValue extends ObjectValue<String, StringValue> {
         return append(
             expression(s -> s.lastIndexOf(needle) != index)
                 .name(LAST_INDEX_OF_PREFIX + "[" + needle + "] " + NOT_EQUALS_OPERATOR + " " + index)
-                .expected((s, passed) -> "not[" + index + "]")
-                .actual((s, passed) -> String.valueOf(s.lastIndexOf(needle)))
+                .expected(context -> "not[" + index + "]")
+                .actual(context -> String.valueOf(context.subject().lastIndexOf(needle)))
         );
     }
 
     /**
-     * Adds a predicate to the expression that checks if the last index of the supplied needle in the subject does not
+     * Adds a predicate to the expression that checks if the last index of the
+     * supplied needle in the subject does not
      * match the supplied index.
      *
      * @param needle
@@ -670,8 +489,180 @@ public class StringValue extends ObjectValue<String, StringValue> {
         return append(
             expression(s -> s.lastIndexOf(needle) != index)
                 .name(LAST_INDEX_OF_PREFIX + "[" + needle + "] " + NOT_EQUALS_OPERATOR + " " + index)
-                .expected((s, passed) -> "not[" + index + "]")
-                .actual((s, passed) -> String.valueOf(s.lastIndexOf(needle)))
+                .expected(context -> "not[" + index + "]")
+                .actual(context -> String.valueOf(context.subject().lastIndexOf(needle)))
         );
+    }
+
+    protected static final class StringOperations implements
+        SizedSequenceOperations<String>,
+        InspectableSequenceOperations<Character, String>,
+        RepeatableSequenceOperations<Character, String>,
+        OrderedSequenceOperations<Character, String> {
+
+        @Override
+        public Element<Character> lastElement(final String haystack, final Character desired) {
+
+            if (haystack.isEmpty()) {
+                return Element.missing();
+            }
+            else {
+                return Element.found(haystack.charAt(haystack.length() - 1));
+            }
+        }
+
+        @Override
+        public Element<Character> firstElement(final String haystack, final Character desired) {
+
+            if (haystack.isEmpty()) {
+                return Element.missing();
+            }
+            else {
+                return Element.found(haystack.charAt(0));
+            }
+        }
+
+        @Override
+        public Element<Character> atIndex(final String haystack, final int index, final Character desired) {
+
+            if (index < haystack.length()) {
+                return Element.found(haystack.charAt(index));
+            }
+            else {
+                return Element.missing();
+            }
+        }
+
+        @Override
+        public int indexOf(final String haystack, final Character needle) {
+
+            if (needle == null) {
+                return -1;
+            }
+            else {
+                return haystack.indexOf(needle);
+            }
+        }
+
+        @Override
+        public int occurrences(final String haystack, final Character needle) {
+
+            if (needle == null) {
+                return 0;
+            }
+
+            int count = 0;
+
+            for (int i = 0; i < haystack.length(); i++) {
+                if (haystack.charAt(i) == needle) {
+                    count++;
+                }
+            }
+
+            return count;
+        }
+
+        @Override
+        public List<Character> findAllIn(final String haystack, final Collection<Character> needles) {
+            return needles.stream()
+                .filter(c -> haystack.indexOf(c) != -1)
+                .collect(toList());
+        }
+
+        @Override
+        public int size(final String haystack) {
+            return haystack.length();
+        }
+
+        @Override
+        public boolean isEmpty(final String haystack) {
+            return haystack.isEmpty();
+        }
+
+        @Override
+        public boolean includes(final String haystack, final Character needle) {
+            return haystack.indexOf(needle) >= 0;
+        }
+    }
+
+    protected static final class StringOnStringOperations implements
+        SizedSequenceOperations<String>,
+        InspectableSequenceOperations<CharSequence, String>,
+        OrderedSequenceOperations<CharSequence, String> {
+
+        @Override
+        public Element<CharSequence> lastElement(final String haystack, final CharSequence desired) {
+
+            final int length = desired.length();
+
+            if (haystack.isEmpty()) {
+                return Element.missing();
+            }
+            else if (length > haystack.length()) {
+                return Element.found(haystack);
+            }
+            else {
+                return Element.found(haystack.substring(haystack.length() - length));
+            }
+        }
+
+        @Override
+        public Element<CharSequence> atIndex(final String haystack, final int index, final CharSequence desired) {
+
+            final int length = desired.length();
+
+            if (haystack.isEmpty() || index >= haystack.length()) {
+                return Element.missing();
+            }
+            else if ((index + length) > haystack.length()) {
+                return Element.found(haystack.substring(index));
+            }
+            else {
+                return Element.found(haystack.substring(index, length));
+            }
+        }
+
+        @Override
+        public int indexOf(final String haystack, final CharSequence needle) {
+            return haystack.indexOf(String.valueOf(needle));
+        }
+
+        @Override
+        public Element<CharSequence> firstElement(final String haystack, final CharSequence desired) {
+
+            final int length = desired.length();
+
+            if (haystack.isEmpty()) {
+                return Element.missing();
+            }
+            else if (length > haystack.length()) {
+                return Element.found(haystack);
+            }
+            else {
+                return Element.found(haystack.substring(0, length));
+            }
+        }
+
+        @Override
+        public List<CharSequence> findAllIn(final String haystack, final Collection<CharSequence> needles) {
+            return needles.stream()
+                .filter(haystack::contains)
+                .collect(toList());
+        }
+
+        @Override
+        public int size(final String haystack) {
+            return haystack.length();
+        }
+
+        @Override
+        public boolean isEmpty(final String haystack) {
+            return haystack.isEmpty();
+        }
+
+        @Override
+        public boolean includes(final String haystack, final CharSequence needle) {
+            return haystack.contains(needle);
+        }
     }
 }

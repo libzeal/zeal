@@ -17,7 +17,6 @@ import static java.util.Objects.requireNonNull;
  * as an expression.
  *
  * @author Justin Albano
- * @since 0.5.0
  */
 public class BooleanExpression implements Expression {
 

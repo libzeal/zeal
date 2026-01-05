@@ -5,11 +5,11 @@ import io.github.libzeal.zeal.logic.evaluation.Result;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
 import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
 import io.github.libzeal.zeal.logic.unary.future.rationale.ComputableRationale;
+import io.github.libzeal.zeal.logic.unary.future.rationale.ComputableRationaleContext;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
@@ -37,7 +37,7 @@ class ComputedExpressionTest {
         final ComputableRationale<Object> generator = mock(ComputableRationale.class);
         final Rationale rationale = new SimpleRationale(EXPECTED, ACTUAL, HINT);
 
-        doReturn(rationale).when(generator).compute(any(), anyBoolean());
+        doReturn(rationale).when(generator).compute(any(ComputableRationaleContext.class));
 
         return generator;
     }

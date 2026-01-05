@@ -1,6 +1,7 @@
 package io.github.libzeal.zeal.logic.unary;
 
 import io.github.libzeal.zeal.logic.rationale.Rationale;
+import io.github.libzeal.zeal.logic.unary.future.rationale.ComputableRationaleContext;
 import io.github.libzeal.zeal.logic.unary.future.rationale.SimpleComputableRationale;
 import org.junit.jupiter.api.Test;
 
@@ -16,7 +17,7 @@ class SimpleComputableRationaleTest {
     void givenNullExpected_whenConstruct_thenExceptionThrown() {
         assertThrows(
             NullPointerException.class,
-            () -> new SimpleComputableRationale<>(null, (s, p) -> ACTUAL, (s, p) -> HINT)
+            () -> new SimpleComputableRationale<>(null, context -> ACTUAL, context -> HINT)
         );
     }
 
@@ -24,14 +25,14 @@ class SimpleComputableRationaleTest {
     void givenNullActual_whenConstruct_thenExceptionThrown() {
         assertThrows(
             NullPointerException.class,
-            () -> new SimpleComputableRationale<>((s, p) -> EXPECTED, null, (s, p) -> HINT)
+            () -> new SimpleComputableRationale<>(context -> EXPECTED, null, context -> HINT)
         );
     }
 
     @Test
     void givenNullHint_whenConstruct_thenExceptionNotThrown() {
         assertDoesNotThrow(
-            () -> new SimpleComputableRationale<>((s, p) -> EXPECTED, (s, p) -> ACTUAL, null)
+            () -> new SimpleComputableRationale<>(context -> EXPECTED, context -> ACTUAL, null)
         );
     }
 
@@ -39,9 +40,9 @@ class SimpleComputableRationaleTest {
     void givenExpectedActualAndHint_whenGenerate_thenAllFieldsCorrect() {
 
         final Object subject = new Object();
-        final SimpleComputableRationale<Object> generator = new SimpleComputableRationale<>((s, p) -> EXPECTED,
-            (s, p) -> ACTUAL, (s, p) -> HINT);
-        final Rationale generated = generator.compute(subject, true);
+        final SimpleComputableRationale<Object> generator = new SimpleComputableRationale<>(context -> EXPECTED,
+            context -> ACTUAL, context -> HINT);
+        final Rationale generated = generator.compute(new ComputableRationaleContext<>(subject, true));
 
         assertEquals(EXPECTED, generated.expected());
         assertEquals(ACTUAL, generated.actual());
@@ -53,9 +54,9 @@ class SimpleComputableRationaleTest {
     void givenExpectedActualButNoHint_whenGenerate_thenAllFieldsCorrect() {
 
         final Object subject = new Object();
-        final SimpleComputableRationale<Object> generator = new SimpleComputableRationale<>((s, p) -> EXPECTED,
-            (s, p) -> ACTUAL, null);
-        final Rationale generated = generator.compute(subject, true);
+        final SimpleComputableRationale<Object> generator = new SimpleComputableRationale<>(context -> EXPECTED,
+            context -> ACTUAL, null);
+        final Rationale generated = generator.compute(new ComputableRationaleContext<>(subject, true));
 
         assertEquals(EXPECTED, generated.expected());
         assertEquals(ACTUAL, generated.actual());

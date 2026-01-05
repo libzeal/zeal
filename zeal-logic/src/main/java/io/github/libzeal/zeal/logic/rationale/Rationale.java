@@ -18,7 +18,6 @@ import java.util.Optional;
  * Hints are provided for evaluations that fail for a common reason or are very particular about the expected value.
  *
  * @author Justin Albano
- * @since 0.2.0
  */
 public interface Rationale {
 

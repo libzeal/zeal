@@ -11,7 +11,6 @@ import io.github.libzeal.zeal.logic.unary.future.ComputableExpression;
  *     The type of the subject.
  *
  * @author Justin Albano
- * @since 0.2.1
  */
 @FunctionalInterface
 public interface Condition<T> extends ComputableExpression<T> {

@@ -12,7 +12,6 @@ import java.time.Duration;
  * state).
  *
  * @author Justin Albano
- * @since 0.2.0
  */
 public interface Evaluation {
 

@@ -12,7 +12,6 @@ import static java.util.Objects.requireNonNull;
  * evaluated, such as its depth within the evaluation tree.
  *
  * @author Justin Albano
- * @since 0.2.1
  */
 class SimpleFormatterContext {
 

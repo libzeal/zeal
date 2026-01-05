@@ -18,7 +18,6 @@ import static java.util.Objects.requireNonNull;
  * view of the evaluation.
  *
  * @author Justin Albano
- * @since 0.2.1
  */
 public class SimpleFormatter implements Formatter {
 

@@ -15,7 +15,6 @@ import static java.util.Objects.requireNonNull;
  * A compound expression where all sub-expression must be pass for the compound expression to pass.
  *
  * @author Justin Albano
- * @since 0.2.1
  */
 public class AndExpression implements CompoundExpression {
 

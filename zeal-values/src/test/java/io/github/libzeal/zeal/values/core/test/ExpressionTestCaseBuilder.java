@@ -1,7 +1,7 @@
 package io.github.libzeal.zeal.values.core.test;
 
 import io.github.libzeal.zeal.logic.evaluation.Result;
-import io.github.libzeal.zeal.values.api.ObjectValue;
+import io.github.libzeal.zeal.values.api.BaseObjectValue;
 import org.junit.jupiter.params.provider.Arguments;
 
 import java.util.ArrayList;
@@ -10,11 +10,11 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-public class ExpressionTestCaseBuilder<T, E extends ObjectValue<T, E>> {
+public class ExpressionTestCaseBuilder<T, E extends BaseObjectValue<T, E>> {
 
     private final List<Arguments> arguments;
 
-    public static <A, B extends ObjectValue<A, B>> ExpressionTestCaseBuilder<A, B> newBuilder() {
+    public static <A, B extends BaseObjectValue<A, B>> ExpressionTestCaseBuilder<A, B> newBuilder() {
         return new ExpressionTestCaseBuilder<>();
     }
 
@@ -34,7 +34,7 @@ public class ExpressionTestCaseBuilder<T, E extends ObjectValue<T, E>> {
         return arguments.stream();
     }
 
-    public static class ArgumentBuilder<T, E extends ObjectValue<T, E>> {
+    public static class ArgumentBuilder<T, E extends BaseObjectValue<T, E>> {
 
         private final ExpressionTestCaseBuilder<T, E> testCaseBuilder;
         private final BiFunction<E, T, E> modifier;

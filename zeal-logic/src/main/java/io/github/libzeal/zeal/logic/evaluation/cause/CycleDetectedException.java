@@ -4,7 +4,6 @@ package io.github.libzeal.zeal.logic.evaluation.cause;
  * An exception denoting that a cycle in a chain has been detected.
  *
  * @author Justin Albano
- * @since 0.2.1
  */
 public class CycleDetectedException extends RuntimeException {
 

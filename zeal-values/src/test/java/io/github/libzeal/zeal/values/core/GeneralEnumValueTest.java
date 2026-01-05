@@ -3,11 +3,11 @@ package io.github.libzeal.zeal.values.core;
 import io.github.libzeal.zeal.values.core.test.MockEnum;
 
 @SuppressWarnings("java:S2187")
-class GeneralEnumValueTest extends EnumValueTest<MockEnum> {
+class GeneralEnumValueTest extends BaseEnumValueTest<MockEnum> {
 
     @Override
-    protected GeneralEnumValue<MockEnum> expression(MockEnum value) {
-        return new GeneralEnumValue<>(value);
+    protected EnumValue<MockEnum> expression(MockEnum value) {
+        return new EnumValue<>(value);
     }
 
     @Override

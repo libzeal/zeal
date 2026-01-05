@@ -6,6 +6,7 @@ import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.evaluation.Result;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
 import io.github.libzeal.zeal.logic.unary.future.rationale.ComputableRationale;
+import io.github.libzeal.zeal.logic.unary.future.rationale.ComputableRationaleContext;
 import io.github.libzeal.zeal.logic.util.StopWatch;
 
 import java.time.Duration;
@@ -20,7 +21,6 @@ import static java.util.Objects.requireNonNull;
  *     The type of the subject.
  *
  * @author Justin Albano
- * @since 0.2.1
  */
 public class ComputedExpression<T> implements Expression {
 
@@ -65,7 +65,8 @@ public class ComputedExpression<T> implements Expression {
         final boolean passed = predicate.test(subject);
         final Duration elapsedTime = stopWatch.stop();
 
-        final Rationale rationale = computableRationale.compute(subject, passed);
+        final ComputableRationaleContext<T> context = new ComputableRationaleContext<>(subject, passed);
+        final Rationale rationale = computableRationale.compute(context);
         final Result result = Result.from(passed);
 
         return EvaluatedTerminalEvaluation.of(result, name, rationale, elapsedTime);

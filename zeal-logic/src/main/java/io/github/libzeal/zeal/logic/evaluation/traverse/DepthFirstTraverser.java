@@ -8,7 +8,6 @@ import io.github.libzeal.zeal.logic.evaluation.TerminalEvaluation;
  * An entity that traverses the evaluation tree.
  *
  * @author Justin Albano
- * @since 0.2.1
  */
 public class DepthFirstTraverser implements Traverser {
 

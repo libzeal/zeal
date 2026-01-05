@@ -6,7 +6,6 @@ import java.util.function.Predicate;
  * A set of common conditions.
  *
  * @author Justin Albano
- * @since 0.2.1
  */
 public final class Conditions {
 

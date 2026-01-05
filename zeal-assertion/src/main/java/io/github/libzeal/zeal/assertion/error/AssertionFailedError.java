@@ -4,7 +4,6 @@ package io.github.libzeal.zeal.assertion.error;
  * Exception thrown when an assertion fails.
  *
  * @author Justin Albano
- * @since 0.2.0
  */
 public class AssertionFailedError extends AssertionError {
 
