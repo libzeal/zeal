@@ -3,12 +3,12 @@ package io.github.libzeal.zeal.logic;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.evaluation.Result;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
+import io.github.libzeal.zeal.logic.test.TestExpressions;
 import org.junit.jupiter.api.Test;
 
 import static io.github.libzeal.zeal.logic.test.Assertions.assertDepthFirstTraversalIsTerminal;
 import static io.github.libzeal.zeal.logic.test.Assertions.assertRationaleEquals;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
 
 class ExpressionsTest {
 
@@ -57,14 +57,14 @@ class ExpressionsTest {
     void givenNullWrappedExpression_whenNot_thenExceptionThrown() {
         assertThrows(
             NullPointerException.class,
-            () -> Expressions.not((Expression) null)
+            () -> Expressions.not(null)
         );
     }
 
     @Test
     void givenValidWrappedExpression_whenNot_thenCorrectExpressionReturned() {
 
-        final Expression wrappedExpression = mock(Expression.class);
+        final Expression wrappedExpression = TestExpressions.tautology();
         final NotExpression expression = Expressions.not(wrappedExpression);
 
         assertNotNull(expression);
@@ -82,7 +82,7 @@ class ExpressionsTest {
     @Test
     void givenValidWrappedExpressions_whenAnd_thenCorrectExpressionReturned() {
 
-        final Expression wrappedExpression = mock(Expression.class);
+        final Expression wrappedExpression = TestExpressions.expression(Result.TRUE);
         final AndExpression expression = Expressions.and(wrappedExpression);
 
         assertNotNull(expression);
@@ -100,7 +100,7 @@ class ExpressionsTest {
     @Test
     void givenValidWrappedExpressions_whenOr_thenCorrectExpressionReturned() {
 
-        final Expression wrappedExpression = mock(Expression.class);
+        final Expression wrappedExpression = TestExpressions.tautology();
         final OrExpression expression = Expressions.or(wrappedExpression);
 
         assertNotNull(expression);
@@ -118,7 +118,7 @@ class ExpressionsTest {
     @Test
     void givenValidWrappedExpressions_whenNand_thenCorrectExpressionReturned() {
 
-        final Expression wrappedExpression = mock(Expression.class);
+        final Expression wrappedExpression = TestExpressions.tautology();
         final Expression expression = Expressions.nand(wrappedExpression);
 
         assertNotNull(expression);
@@ -136,7 +136,7 @@ class ExpressionsTest {
     @Test
     void givenValidWrappedExpressions_whenNor_thenCorrectExpressionReturned() {
 
-        final Expression wrappedExpression = mock(Expression.class);
+        final Expression wrappedExpression = TestExpressions.tautology();
         final Expression expression = Expressions.nor(wrappedExpression);
 
         assertNotNull(expression);

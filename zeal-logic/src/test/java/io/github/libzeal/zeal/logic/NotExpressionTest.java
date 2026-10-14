@@ -5,6 +5,7 @@ import io.github.libzeal.zeal.logic.evaluation.cause.Cause;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.evaluation.Result;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
+import io.github.libzeal.zeal.logic.test.TestExpressions;
 import org.junit.jupiter.api.Test;
 
 import static io.github.libzeal.zeal.logic.NotExpression.*;
@@ -68,7 +69,7 @@ class NotExpressionTest {
     private static Expression skippedEvaluation() {
 
         final Cause cause = mock(Cause.class);
-        final Expression skippedExpression = mock(Expression.class);
+        final Expression skippedExpression = TestExpressions.tautology();
 
         doReturn(new SkippedTerminalEvaluation("foo", e -> cause)).when(skippedExpression).evaluate();
 

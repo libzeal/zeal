@@ -1,17 +1,19 @@
 package io.github.libzeal.zeal.logic;
 
-import io.github.libzeal.zeal.logic.evaluation.cause.Cause;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
+import io.github.libzeal.zeal.logic.unary.UnaryExpression;
+import io.github.libzeal.zeal.logic.unary.future.ComputedExpression;
 
 /**
  * An expression that can be evaluated.
  *
  * @author Justin Albano
  */
-@FunctionalInterface
-public interface Expression {
+public sealed interface Expression
+        permits BooleanExpression, Tautology, Contradiction, NotExpression,
+            CompoundExpression, UnaryExpression, ComputedExpression {
 
-    static final String DEFAULT_NAME = "(unnamed)";
+    String DEFAULT_NAME = "(unnamed)";
 
     /**
      * Obtains the name of the expression.

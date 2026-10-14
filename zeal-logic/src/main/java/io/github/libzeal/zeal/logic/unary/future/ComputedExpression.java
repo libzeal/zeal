@@ -22,7 +22,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @author Justin Albano
  */
-public class ComputedExpression<T> implements Expression {
+public final class ComputedExpression<T> implements Expression {
 
     private final String name;
     private final T subject;

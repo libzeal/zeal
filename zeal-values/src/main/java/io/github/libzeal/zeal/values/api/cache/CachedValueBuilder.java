@@ -6,6 +6,7 @@ import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.evaluation.Result;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
 import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
+import io.github.libzeal.zeal.logic.unary.UnaryExpression;
 import io.github.libzeal.zeal.logic.unary.future.ComputableExpression;
 import io.github.libzeal.zeal.logic.util.StopWatch;
 import io.github.libzeal.zeal.values.api.ValueBuilder;
@@ -138,83 +139,65 @@ public class CachedValueBuilder<T, C> implements ValueBuilder<T> {
         return new CachedComputableExpression<>(name, test, computableRationale);
     }
 
-    private static class CachedComputableExpression<T, C> implements ComputableExpression<T> {
+    private record CachedComputableExpression<T, C>(String name,
+                                                    CacheablePredicate<T, C> predicate,
+                                                    CachedComputableRationale<T, C> computableRationale) implements ComputableExpression<T> {
 
-        private final String name;
-        private final CacheablePredicate<T, C> predicate;
-        private final CachedComputableRationale<T, C> computableRationale;
+            private CachedComputableExpression {
+                requireNonNull(name);
+                requireNonNull(predicate);
+                requireNonNull(computableRationale);
+            }
 
-        public CachedComputableExpression(final String name, final CacheablePredicate<T, C> predicate,
-                                          final CachedComputableRationale<T, C> computableRationale) {
-            this.name = requireNonNull(name);
-            this.predicate = requireNonNull(predicate);
-            this.computableRationale = requireNonNull(computableRationale);
+            @Override
+            public Expression compute(T subject) {
+                return new CachedExpression<>(name, subject, predicate, computableRationale);
+            }
         }
 
-        @Override
-        public Expression compute(T subject) {
-            return new CachedExpression<>(name, subject, predicate, computableRationale);
-        }
-    }
+    private record CachedExpression<T, C>(String name, T subject,
+                                          CacheablePredicate<T, C> predicate,
+                                          CachedComputableRationale<T, C> computableRationale) implements UnaryExpression<T> {
 
-    private static class CachedExpression<T, C> implements Expression {
+            private CachedExpression {
+                requireNonNull(name);
+                requireNonNull(predicate);
+                requireNonNull(computableRationale);
+            }
 
-        private final String name;
-        private final T subject;
-        private final CacheablePredicate<T, C> predicate;
-        private final CachedComputableRationale<T, C> computableRationale;
+            @Override
+            public Evaluation evaluate() {
 
-        public CachedExpression(final String name, final T subject, final CacheablePredicate<T, C> predicate,
-                                final CachedComputableRationale<T, C> computableRationale) {
-            this.name = requireNonNull(name);
-            this.subject = subject;
-            this.predicate = requireNonNull(predicate);
-            this.computableRationale = requireNonNull(computableRationale);
-        }
+                final StopWatch stopWatch = StopWatch.started();
+                final CacheableResult<C> predicateResult = predicate.apply(subject);
+                final boolean passed = predicateResult.passed();
+                final C cache = predicateResult.cache();
+                final Duration elapsedTime = stopWatch.stop();
+                final CachedComputableRationaleContext<T, C> context = new CachedComputableRationaleContext<>(subject, passed, cache);
 
-        @Override
-        public String name() {
-            return name;
-        }
+                final Rationale rationale = computableRationale.compute(context);
+                final Result result = Result.from(passed);
 
-        @Override
-        public Evaluation evaluate() {
-
-            final StopWatch stopWatch = StopWatch.started();
-            final CacheableResult<C> predicateResult = predicate.apply(subject);
-            final boolean passed = predicateResult.passed();
-            final C cache = predicateResult.cache();
-            final Duration elapsedTime = stopWatch.stop();
-            final CachedComputableRationaleContext<T, C> context = new CachedComputableRationaleContext<>(subject, passed, cache);
-
-            final Rationale rationale = computableRationale.compute(context);
-            final Result result = Result.from(passed);
-
-            return EvaluatedTerminalEvaluation.of(result, name, rationale, elapsedTime);
-        }
-    }
-
-    private static class CachedComputableRationale<T, C> {
-
-        private final CachedComputableField<T, C> expected;
-        private final CachedComputableField<T, C> actual;
-        private final CachedComputableField<T, C> hint;
-
-        public CachedComputableRationale(final CachedComputableField<T, C> expected,
-                                         final CachedComputableField<T, C> actual,
-                                         final CachedComputableField<T, C> hint) {
-            this.expected = requireNonNull(expected);
-            this.actual = requireNonNull(actual);
-            this.hint = hint;
+                return EvaluatedTerminalEvaluation.of(result, name, rationale, elapsedTime);
+            }
         }
 
-        public Rationale compute(final CachedComputableRationaleContext<T, C> context) {
+    private record CachedComputableRationale<T, C>(
+        CachedComputableField<T, C> expected,
+        CachedComputableField<T, C> actual, CachedComputableField<T, C> hint) {
 
-            final String generatedExpected = expected.compute(context);
-            final String generatedActual = actual.compute(context);
-            final String generatedHint = hint == null ? null : hint.compute(context);
+            private CachedComputableRationale {
+                requireNonNull(expected);
+                requireNonNull(actual);
+            }
 
-            return new SimpleRationale(generatedExpected, generatedActual, generatedHint);
+            public Rationale compute(final CachedComputableRationaleContext<T, C> context) {
+
+                final String generatedExpected = expected.compute(context);
+                final String generatedActual = actual.compute(context);
+                final String generatedHint = hint == null ? null : hint.compute(context);
+
+                return new SimpleRationale(generatedExpected, generatedActual, generatedHint);
+            }
         }
-    }
 }
