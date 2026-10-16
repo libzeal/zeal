@@ -18,7 +18,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @author Justin Albano
  */
-public class BooleanExpression implements Expression {
+public final class BooleanExpression implements Expression {
 
     private final String name;
     private final BooleanSupplier predicate;

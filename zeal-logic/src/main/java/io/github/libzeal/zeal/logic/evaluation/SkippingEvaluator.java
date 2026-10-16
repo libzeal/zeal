@@ -12,28 +12,22 @@ import java.util.stream.Collectors;
 public class SkippingEvaluator {
 
     public Evaluation skip(final Expression expression, final Cause cause) {
+        return switch (expression) {
+            case NotExpression(String name, Expression wrapped) -> {
+                final Evaluation wrappedEvaluation = skip(wrapped, cause);
 
-        if (expression instanceof NotExpression) {
+                yield new SkippedCompoundEvaluation(name, e -> cause,
+                    Collections.singletonList(wrappedEvaluation));
+            }
+            case final CompoundExpression compoundExpression -> {
+                final List<Evaluation> evaluations = compoundExpression.children()
+                    .stream()
+                    .map(child -> skip(child, cause))
+                    .collect(Collectors.toList());
 
-            final NotExpression notExpression = (NotExpression) expression;
-            final Expression wrapped = notExpression.wrapped();
-            final Evaluation wrappedEvaluation = skip(wrapped, cause);
-
-            return new SkippedCompoundEvaluation(expression.name(), e -> cause,
-                Collections.singletonList(wrappedEvaluation));
-        }
-        else if (expression instanceof CompoundExpression) {
-            final CompoundExpression compoundExpression = (CompoundExpression) expression;
-
-            final List<Evaluation> evaluations = compoundExpression.children()
-                .stream()
-                .map(child -> skip(child, cause))
-                .collect(Collectors.toList());
-
-            return new SkippedCompoundEvaluation(expression.name(), e -> cause, evaluations);
-        }
-        else {
-            return new SkippedTerminalEvaluation(expression.name(), e -> cause);
-        }
+                yield new SkippedCompoundEvaluation(expression.name(), e -> cause, evaluations);
+            }
+            default -> new SkippedTerminalEvaluation(expression.name(), e -> cause);
+        };
     }
 }

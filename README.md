@@ -12,14 +12,14 @@ The Maven dependency is:
 <dependency>
     <groupId>io.github.libzeal</groupId>
     <artifactId>zeal-assertion</artifactId>
-    <version>0.2.0</version>
+    <version>0.4.0</version>
 </dependency>
 ```
 
 The Gradle dependency is:
 
 ```groovy
-implementation 'io.github.libzeal:zeal-assertion:0.2.0'
+implementation 'io.github.libzeal:zeal-assertion:0.4.0'
 ```
 
 ## Using It
@@ -46,7 +46,7 @@ require(expression);
 
 ## Goals
 1. **Simple**: Expressions and evaluators clearly document developer's intent.
-2. **Portable**: Written in Java 8, OSGi compliant, and under 100 KB
+2. **Portable**: Written in JDK 21 and under 100 KB
 3. **Independent**: No external dependencies
 4. **Extensible**: Provides expressions for common types, but makes creating new expressions easy
 

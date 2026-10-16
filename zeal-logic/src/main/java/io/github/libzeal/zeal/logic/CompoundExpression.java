@@ -7,7 +7,8 @@ import java.util.List;
  *
  * @author Justin Albano
  */
-public interface CompoundExpression extends Expression {
+public sealed interface CompoundExpression extends Expression
+        permits AndExpression, OrExpression {
 
     /**
      * Appends the supplied expression to this compound expression.

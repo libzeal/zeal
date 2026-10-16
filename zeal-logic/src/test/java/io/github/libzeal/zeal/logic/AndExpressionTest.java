@@ -1,12 +1,11 @@
 package io.github.libzeal.zeal.logic;
 
-import io.github.libzeal.zeal.logic.evaluation.cause.Cause;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.evaluation.Result;
 import io.github.libzeal.zeal.logic.evaluation.cause.CauseGenerator;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
 import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
-import io.github.libzeal.zeal.logic.test.Expressions;
+import io.github.libzeal.zeal.logic.test.TestExpressions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -128,7 +127,7 @@ class AndExpressionTest {
     @Test
     void givenOnePassingExpressionAppended_whenEvaluate_thenEvaluationIsCorrect() {
 
-        final Expression subExpression = Expressions.expression(Result.TRUE);
+        final Expression subExpression = TestExpressions.expression(Result.TRUE);
 
         expression.append(subExpression);
 
@@ -145,7 +144,7 @@ class AndExpressionTest {
     @Test
     void givenOneFailingExpressionAppended_whenEvaluate_thenEvaluationIsCorrect() {
 
-        final Expression subExpression = Expressions.expression(Result.FALSE);
+        final Expression subExpression = TestExpressions.expression(Result.FALSE);
 
         expression.append(subExpression);
 
@@ -162,7 +161,7 @@ class AndExpressionTest {
     @Test
     void givenOneSkippedExpressionAppended_whenEvaluate_thenEvaluationIsCorrect() {
 
-        final Expression subExpression = Expressions.expression(Result.SKIPPED);
+        final Expression subExpression = TestExpressions.expression(Result.SKIPPED);
 
         expression.append(subExpression);
 
@@ -177,8 +176,8 @@ class AndExpressionTest {
     @Test
     void givenOneFailingExpressionPrependedBeforePassingExpression_whenEvaluate_thenEvaluationIsCorrect() {
 
-        final Expression passingSubExpression = Expressions.expression(Result.TRUE);
-        final Expression failingSubExpression = Expressions.expression(Result.FALSE);
+        final Expression passingSubExpression = TestExpressions.expression(Result.TRUE);
+        final Expression failingSubExpression = TestExpressions.expression(Result.FALSE);
 
         expression.append(passingSubExpression);
         expression.prepend(failingSubExpression);
@@ -205,8 +204,8 @@ class AndExpressionTest {
     @Test
     void givenOnePassingExpressionPrependedBeforeFailingExpression_whenEvaluate_thenEvaluationIsCorrect() {
 
-        final Expression passingSubExpression = Expressions.expression(Result.TRUE);
-        final Expression failingSubExpression = Expressions.expression(Result.FALSE);
+        final Expression passingSubExpression = TestExpressions.expression(Result.TRUE);
+        final Expression failingSubExpression = TestExpressions.expression(Result.FALSE);
 
         expression.append(failingSubExpression);
         expression.prepend(passingSubExpression);
@@ -222,15 +221,11 @@ class AndExpressionTest {
         assertIsNotSkipped(failingSubExpression);
     }
 
-    private static Cause rootCause() {
-        return mock(Cause.class);
-    }
-
     @Test
     void givenSelfRootCause_whenEvaluate_thenRootCauseIsCorrect() {
 
         final Expression subExpression =
-            Expressions.expressionWithRootCause(Result.FALSE, CauseGenerator.self())
+            TestExpressions.expressionWithRootCause(Result.FALSE, CauseGenerator.self())
                 ;
 
         expression.append(subExpression);

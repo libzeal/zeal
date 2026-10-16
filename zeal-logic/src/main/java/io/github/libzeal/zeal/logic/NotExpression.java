@@ -18,12 +18,14 @@ import static java.util.Objects.requireNonNull;
 /**
  * An expression that negates a wrapped expression (a logical <em>not</em>).
  * <p>
- * This expression evaluates to true if and only if the wrapped expression is false; otherwise (the wrapped expression
- * is true or skipped), the expression evaluates to false.
+ * This expression evaluates to true if and only if the wrapped expression is
+ * false; otherwise (the wrapped expression is true or skipped), the expression
+ * evaluates to false.
  *
  * @author Justin Albano
  */
-public class NotExpression implements Expression {
+public record NotExpression(String name,
+                            Expression wrapped) implements Expression {
 
     /**
      * The actual value for the rationale if the wrapped expression is true.
@@ -45,21 +47,20 @@ public class NotExpression implements Expression {
      */
     public static final String DEFAULT_NAME = "NOT";
 
-    private final String name;
-    private final Expression wrapped;
-
     /**
      * Creates a new expression that negates the supplied expression.
      *
+     * @param name
+     *     The name of the expression.
      * @param wrapped
      *     The expression to negate.
      *
      * @throws NullPointerException
-     *     The supplied wrapped expression is {@code null}.
+     *     The supplied name or wrapped expression is {@code null}.
      */
-    public NotExpression(final String name, final Expression wrapped) {
-        this.name = name;
-        this.wrapped = requireNonNull(wrapped);
+    public NotExpression {
+        requireNonNull(name);
+        requireNonNull(wrapped);
     }
 
     /**
@@ -128,14 +129,5 @@ public class NotExpression implements Expression {
         else {
             return ACTUAL_VALUE_WRAPPED_SKIPPED;
         }
-    }
-
-    @Override
-    public String name() {
-        return name;
-    }
-
-    public Expression wrapped() {
-        return wrapped;
     }
 }

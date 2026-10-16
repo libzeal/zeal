@@ -2,19 +2,16 @@ package io.github.libzeal.zeal.logic;
 
 import io.github.libzeal.zeal.logic.evaluation.EvaluatedTerminalEvaluation;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
-import io.github.libzeal.zeal.logic.evaluation.Result;
-import io.github.libzeal.zeal.logic.evaluation.cause.Cause;
-import io.github.libzeal.zeal.logic.rationale.Rationale;
 import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
 
 import java.time.Duration;
 
 /**
- * An expression that is always true.
+ * ` An expression that is always true.
  *
  * @author Justin Albano
  */
-class Tautology implements Expression {
+final class Tautology implements Expression {
 
     static final String NAME = "Tautology";
     private static final String TRUE = "true";

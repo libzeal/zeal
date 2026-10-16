@@ -1,12 +1,11 @@
 package io.github.libzeal.zeal.logic;
 
-import io.github.libzeal.zeal.logic.evaluation.cause.Cause;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.evaluation.Result;
 import io.github.libzeal.zeal.logic.evaluation.cause.CauseGenerator;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
 import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
-import io.github.libzeal.zeal.logic.test.Expressions;
+import io.github.libzeal.zeal.logic.test.TestExpressions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -128,7 +127,7 @@ class OrExpressionTest {
     @Test
     void givenOnePassingExpressionAppended_whenEvaluate_thenEvaluationIsCorrect() {
 
-        final Expression subPredicate = Expressions.expression(Result.TRUE);
+        final Expression subPredicate = TestExpressions.tautology();
 
         expression.append(subPredicate);
 
@@ -145,7 +144,7 @@ class OrExpressionTest {
     @Test
     void givenOneFailingExpressionAppended_whenEvaluate_thenEvaluationIsCorrect() {
 
-        final Expression subPredicate = Expressions.expression(Result.FALSE);
+        final Expression subPredicate = TestExpressions.expression(Result.FALSE);
 
         expression.append(subPredicate);
 
@@ -162,7 +161,7 @@ class OrExpressionTest {
     @Test
     void givenOneSkippedExpressionAppended_whenEvaluate_thenEvaluationIsCorrect() {
 
-        final Expression subPredicate = Expressions.expression(Result.SKIPPED);
+        final Expression subPredicate = TestExpressions.expression(Result.SKIPPED);
 
         expression.append(subPredicate);
 
@@ -176,8 +175,8 @@ class OrExpressionTest {
     @Test
     void givenOneFailingPredicatePrependedBeforePassingPredicate_whenEvaluate_thenEvaluationIsCorrect() {
 
-        final Expression passingSubPredicate = Expressions.expression(Result.TRUE);
-        final Expression failingSubPredicate = Expressions.expression(Result.FALSE);
+        final Expression passingSubPredicate = TestExpressions.expression(Result.TRUE);
+        final Expression failingSubPredicate = TestExpressions.expression(Result.FALSE);
 
         expression.append(passingSubPredicate);
         expression.prepend(failingSubPredicate);
@@ -204,8 +203,8 @@ class OrExpressionTest {
     @Test
     void givenOnePassingPredicatePrependedBeforeFailingPredicate_whenEvaluate_thenEvaluationIsCorrect() {
 
-        final Expression passingSubPredicate = Expressions.expression(Result.TRUE);
-        final Expression failingSubPredicate = Expressions.expression(Result.FALSE);
+        final Expression passingSubPredicate = TestExpressions.expression(Result.TRUE);
+        final Expression failingSubPredicate = TestExpressions.expression(Result.FALSE);
 
         expression.append(failingSubPredicate);
         expression.prepend(passingSubPredicate);
@@ -221,15 +220,11 @@ class OrExpressionTest {
         assertIsSkipped(failingSubPredicate);
     }
 
-    private static Cause rootCause() {
-        return mock(Cause.class);
-    }
-
     @Test
     void givenSelfRootCause_whenEvaluate_thenRootCauseIsCorrect() {
 
         final Expression subExpression =
-            Expressions.expressionWithRootCause(Result.FALSE, CauseGenerator.self())
+            TestExpressions.expressionWithRootCause(Result.FALSE, CauseGenerator.self())
                 ;
 
         expression.append(subExpression);

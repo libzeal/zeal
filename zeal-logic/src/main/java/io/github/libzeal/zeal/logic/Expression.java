@@ -1,6 +1,5 @@
 package io.github.libzeal.zeal.logic;
 
-import io.github.libzeal.zeal.logic.evaluation.cause.Cause;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 
 /**
@@ -8,10 +7,9 @@ import io.github.libzeal.zeal.logic.evaluation.Evaluation;
  *
  * @author Justin Albano
  */
-@FunctionalInterface
 public interface Expression {
 
-    static final String DEFAULT_NAME = "(unnamed)";
+    String DEFAULT_NAME = "(unnamed)";
 
     /**
      * Obtains the name of the expression.

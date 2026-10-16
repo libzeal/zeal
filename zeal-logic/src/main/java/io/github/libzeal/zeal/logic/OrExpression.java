@@ -12,15 +12,15 @@ import static io.github.libzeal.zeal.logic.util.ArgumentValidator.requireDoesNot
 import static java.util.Objects.requireNonNull;
 
 /**
- * A compound expression where at least one sub-expression must be pass for the compound expression to pass.
+ * A compound expression where at least one sub-expression must be pass for the
+ * compound expression to pass.
  *
  * @author Justin Albano
  */
-public class OrExpression implements CompoundExpression {
+public record OrExpression(String name,
+                           List<Expression> children) implements CompoundExpression {
 
     static final String DEFAULT_NAME = "OR";
-    private final String name;
-    private final List<Expression> children;
 
     /**
      * Creates a new disjunctive expression.
@@ -31,11 +31,12 @@ public class OrExpression implements CompoundExpression {
      *     The expressions used initialize to the compound expression.
      *
      * @throws NullPointerException
-     *     The supplied name is {@code null} or the children contains a {@code null} value.
+     *     The supplied name is {@code null} or the children contains a
+     *     {@code null} value.
      */
-    public OrExpression(String name, List<Expression> children) {
-        this.name = requireNonNull(name);
-        this.children = requireDoesNotContainNulls(children);
+    public OrExpression {
+        requireNonNull(name);
+        requireDoesNotContainNulls(children);
     }
 
     /**
@@ -47,7 +48,8 @@ public class OrExpression implements CompoundExpression {
      * @return A disjunctive expression with a default name.
      *
      * @throws NullPointerException
-     *     The supplied name is {@code null} or the children contains a {@code null} value.
+     *     The supplied name is {@code null} or the children contains a
+     *     {@code null} value.
      */
     public static OrExpression unnamed(final List<Expression> children) {
         return new OrExpression(DEFAULT_NAME, children);
@@ -62,14 +64,16 @@ public class OrExpression implements CompoundExpression {
      * @return A disjunctive expression with a default name.
      *
      * @throws NullPointerException
-     *     The supplied name is {@code null} or the children contains a {@code null} value.
+     *     The supplied name is {@code null} or the children contains a
+     *     {@code null} value.
      */
     public static OrExpression unnamed(final Expression... children) {
         return new OrExpression(DEFAULT_NAME, Arrays.asList(children));
     }
 
     /**
-     * Creates a new disjunctive expression with an empty default sub-expression list.
+     * Creates a new disjunctive expression with an empty default sub-expression
+     * list.
      *
      * @param name
      *     The name of the expression.
@@ -82,23 +86,13 @@ public class OrExpression implements CompoundExpression {
     }
 
     @Override
-    public String name() {
-        return name;
-    }
-
-    @Override
     public void append(Expression predicate) {
         this.children.add(predicate);
     }
 
     @Override
     public void prepend(Expression predicate) {
-        this.children.add(0, predicate);
-    }
-
-    @Override
-    public List<Expression> children() {
-        return children;
+        this.children.addFirst(predicate);
     }
 
     @Override
