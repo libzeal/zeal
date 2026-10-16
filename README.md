@@ -122,7 +122,8 @@ The [convention](https://stackoverflow.com/q/3881/2403253) is to throw an NPE if
 `null` when it is expected to be not `null`. Therefore, `require` will throw an NPE if the subject of the expression is `null`. A `PreconditionFailedException` (which is a subclass of 
 `IllegalArgumentException`) will be thrown when an expression is evaluated to false in all other cases.
 
-> **Note**: The JDK throws an NPE for `Objects.requireNonNull()` and this has become the convention. There 
+> [!NOTE]
+> The JDK throws an NPE for `Objects.requireNonNull()` and this has become the convention. There 
 > is controversy about whether an NPE or `IllegalArgumentException` should be thrown. The convention of an NPE is 
 > used by default and an option is provided for throwing another exception on `null` (see `Requirement.
 > thatThrowsOnNull` below).
