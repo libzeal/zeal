@@ -13,7 +13,7 @@ import io.github.libzeal.zeal.logic.Expression;
  *
  * @author Justin Albano
  */
-public non-sealed interface UnaryExpression<S> extends Expression {
+public interface UnaryExpression<S> extends Expression {
 
     /**
      * Obtains the subject of the expression.
