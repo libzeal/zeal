@@ -1,7 +1,7 @@
 package io.github.libzeal.zeal.values.collection;
 
 import io.github.libzeal.zeal.logic.unary.future.rationale.ComputableField;
-import io.github.libzeal.zeal.values.api.BaseValue;
+import io.github.libzeal.zeal.values.sdk.BaseValue;
 
 import java.util.Iterator;
 

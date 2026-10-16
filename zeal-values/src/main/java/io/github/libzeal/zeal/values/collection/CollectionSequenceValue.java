@@ -1,8 +1,8 @@
 package io.github.libzeal.zeal.values.collection;
 
-import io.github.libzeal.zeal.values.api.sequence.InspectableSequenceValue;
-import io.github.libzeal.zeal.values.api.sequence.RepeatableSequenceValue;
-import io.github.libzeal.zeal.values.api.sequence.SizedSequenceValue;
+import io.github.libzeal.zeal.values.sdk.sequence.InspectableSequenceValue;
+import io.github.libzeal.zeal.values.sdk.sequence.RepeatableSequenceValue;
+import io.github.libzeal.zeal.values.sdk.sequence.SizedSequenceValue;
 
 import java.util.Collection;
 

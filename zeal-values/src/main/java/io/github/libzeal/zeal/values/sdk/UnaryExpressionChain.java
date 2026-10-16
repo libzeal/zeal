@@ -1,4 +1,4 @@
-package io.github.libzeal.zeal.values.api;
+package io.github.libzeal.zeal.values.sdk;
 
 import io.github.libzeal.zeal.logic.AndExpression;
 import io.github.libzeal.zeal.logic.Expression;

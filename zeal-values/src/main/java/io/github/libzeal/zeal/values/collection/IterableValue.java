@@ -1,15 +1,15 @@
 package io.github.libzeal.zeal.values.collection;
 
-import io.github.libzeal.zeal.values.api.BaseValue;
-import io.github.libzeal.zeal.values.api.sequence.InspectableSequenceValue;
-import io.github.libzeal.zeal.values.api.sequence.RepeatableSequenceValue;
-import io.github.libzeal.zeal.values.api.sequence.SizedSequenceValue;
-import io.github.libzeal.zeal.values.api.sequence.InspectableSequenceExpressions;
-import io.github.libzeal.zeal.values.api.sequence.InspectableSequenceExpressions.InspectableSequenceOperations;
-import io.github.libzeal.zeal.values.api.sequence.RepeatableSequenceExpressions;
-import io.github.libzeal.zeal.values.api.sequence.RepeatableSequenceExpressions.RepeatableSequenceOperations;
-import io.github.libzeal.zeal.values.api.sequence.SizedSequenceExpressions;
-import io.github.libzeal.zeal.values.api.sequence.SizedSequenceExpressions.SizedSequenceOperations;
+import io.github.libzeal.zeal.values.sdk.BaseValue;
+import io.github.libzeal.zeal.values.sdk.sequence.InspectableSequenceValue;
+import io.github.libzeal.zeal.values.sdk.sequence.RepeatableSequenceValue;
+import io.github.libzeal.zeal.values.sdk.sequence.SizedSequenceValue;
+import io.github.libzeal.zeal.values.sdk.sequence.InspectableSequenceExpressions;
+import io.github.libzeal.zeal.values.sdk.sequence.InspectableSequenceExpressions.InspectableSequenceOperations;
+import io.github.libzeal.zeal.values.sdk.sequence.RepeatableSequenceExpressions;
+import io.github.libzeal.zeal.values.sdk.sequence.RepeatableSequenceExpressions.RepeatableSequenceOperations;
+import io.github.libzeal.zeal.values.sdk.sequence.SizedSequenceExpressions;
+import io.github.libzeal.zeal.values.sdk.sequence.SizedSequenceExpressions.SizedSequenceOperations;
 
 import java.util.Arrays;
 import java.util.Collection;

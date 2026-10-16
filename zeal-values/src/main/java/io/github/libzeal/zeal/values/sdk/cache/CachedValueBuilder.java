@@ -1,4 +1,4 @@
-package io.github.libzeal.zeal.values.api.cache;
+package io.github.libzeal.zeal.values.sdk.cache;
 
 import io.github.libzeal.zeal.logic.Expression;
 import io.github.libzeal.zeal.logic.evaluation.EvaluatedTerminalEvaluation;
@@ -9,7 +9,7 @@ import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
 import io.github.libzeal.zeal.logic.unary.UnaryExpression;
 import io.github.libzeal.zeal.logic.unary.future.ComputableExpression;
 import io.github.libzeal.zeal.logic.util.StopWatch;
-import io.github.libzeal.zeal.values.api.ValueBuilder;
+import io.github.libzeal.zeal.values.sdk.ValueBuilder;
 
 import java.time.Duration;
 

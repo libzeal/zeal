@@ -1,12 +1,12 @@
-package io.github.libzeal.zeal.values.api;
+package io.github.libzeal.zeal.values.sdk;
 
 import io.github.libzeal.zeal.logic.unary.condition.Condition;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.unary.future.ComputableExpression;
 import io.github.libzeal.zeal.logic.unary.UnaryExpression;
 import io.github.libzeal.zeal.logic.unary.future.rationale.ComputableField;
-import io.github.libzeal.zeal.values.api.cache.CacheablePredicate;
-import io.github.libzeal.zeal.values.api.cache.CachedValueBuilder;
+import io.github.libzeal.zeal.values.sdk.cache.CacheablePredicate;
+import io.github.libzeal.zeal.values.sdk.cache.CachedValueBuilder;
 
 import java.util.Comparator;
 import java.util.Objects;

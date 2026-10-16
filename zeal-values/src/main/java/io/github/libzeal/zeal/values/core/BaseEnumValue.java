@@ -1,6 +1,6 @@
 package io.github.libzeal.zeal.values.core;
 
-import io.github.libzeal.zeal.values.api.BaseValue;
+import io.github.libzeal.zeal.values.sdk.BaseValue;
 
 /**
  * The abstract base class for all Enum-based expressions.

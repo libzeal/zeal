@@ -1,4 +1,4 @@
-package io.github.libzeal.zeal.values.api;
+package io.github.libzeal.zeal.values.sdk;
 
 import io.github.libzeal.zeal.logic.unary.condition.Condition;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
@@ -23,7 +23,7 @@ import java.util.stream.Stream;
 import static io.github.libzeal.zeal.logic.evaluation.Result.*;
 import static io.github.libzeal.zeal.logic.evaluation.Result.FALSE;
 import static io.github.libzeal.zeal.logic.evaluation.Result.TRUE;
-import static io.github.libzeal.zeal.values.api.BaseValue.*;
+import static io.github.libzeal.zeal.values.sdk.BaseValue.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 

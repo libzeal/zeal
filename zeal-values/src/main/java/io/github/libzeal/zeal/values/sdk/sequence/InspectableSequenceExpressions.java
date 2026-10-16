@@ -1,11 +1,11 @@
-package io.github.libzeal.zeal.values.api.sequence;
+package io.github.libzeal.zeal.values.sdk.sequence;
 
 import io.github.libzeal.zeal.logic.unary.future.ComputableExpression;
 import io.github.libzeal.zeal.logic.util.Formatter;
-import io.github.libzeal.zeal.values.api.SimpleValueBuilder;
-import io.github.libzeal.zeal.values.api.StandardRationales;
-import io.github.libzeal.zeal.values.api.cache.CachedValueBuilder;
-import io.github.libzeal.zeal.values.api.cache.SimpleCacheResult;
+import io.github.libzeal.zeal.values.sdk.SimpleValueBuilder;
+import io.github.libzeal.zeal.values.sdk.StandardRationales;
+import io.github.libzeal.zeal.values.sdk.cache.CachedValueBuilder;
+import io.github.libzeal.zeal.values.sdk.cache.SimpleCacheResult;
 import io.github.libzeal.zeal.values.config.Configuration;
 
 import java.util.Collection;

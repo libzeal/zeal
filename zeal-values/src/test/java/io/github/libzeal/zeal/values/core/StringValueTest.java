@@ -1,7 +1,7 @@
 package io.github.libzeal.zeal.values.core;
 
-import io.github.libzeal.zeal.values.api.BasedObjectValueTest;
-import io.github.libzeal.zeal.values.api.StandardRationales;
+import io.github.libzeal.zeal.values.sdk.BasedObjectValueTest;
+import io.github.libzeal.zeal.values.sdk.StandardRationales;
 import io.github.libzeal.zeal.values.core.test.ExpressionTestCaseBuilder;
 
 import static io.github.libzeal.zeal.logic.evaluation.Result.FALSE;

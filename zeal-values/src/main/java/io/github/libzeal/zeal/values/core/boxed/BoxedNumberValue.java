@@ -1,8 +1,8 @@
 package io.github.libzeal.zeal.values.core.boxed;
 
 import io.github.libzeal.zeal.logic.util.Formatter;
-import io.github.libzeal.zeal.values.api.BaseValue;
-import io.github.libzeal.zeal.values.api.SimpleValueBuilder;
+import io.github.libzeal.zeal.values.sdk.BaseValue;
+import io.github.libzeal.zeal.values.sdk.SimpleValueBuilder;
 
 import java.util.function.Predicate;
 

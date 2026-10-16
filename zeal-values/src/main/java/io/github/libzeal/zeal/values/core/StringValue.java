@@ -1,12 +1,12 @@
 package io.github.libzeal.zeal.values.core;
 
-import io.github.libzeal.zeal.values.api.BaseValue;
-import io.github.libzeal.zeal.values.api.StandardRationales.Operators;
-import io.github.libzeal.zeal.values.api.sequence.*;
-import io.github.libzeal.zeal.values.api.sequence.InspectableSequenceExpressions.InspectableSequenceOperations;
-import io.github.libzeal.zeal.values.api.sequence.OrderedSequenceExpressions.OrderedSequenceOperations;
-import io.github.libzeal.zeal.values.api.sequence.RepeatableSequenceExpressions.RepeatableSequenceOperations;
-import io.github.libzeal.zeal.values.api.sequence.SizedSequenceExpressions.SizedSequenceOperations;
+import io.github.libzeal.zeal.values.sdk.BaseValue;
+import io.github.libzeal.zeal.values.sdk.StandardRationales.Operators;
+import io.github.libzeal.zeal.values.sdk.sequence.*;
+import io.github.libzeal.zeal.values.sdk.sequence.InspectableSequenceExpressions.InspectableSequenceOperations;
+import io.github.libzeal.zeal.values.sdk.sequence.OrderedSequenceExpressions.OrderedSequenceOperations;
+import io.github.libzeal.zeal.values.sdk.sequence.RepeatableSequenceExpressions.RepeatableSequenceOperations;
+import io.github.libzeal.zeal.values.sdk.sequence.SizedSequenceExpressions.SizedSequenceOperations;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -22,9 +22,9 @@ import static java.util.stream.Collectors.toList;
 public class StringValue extends BaseValue<String, StringValue>
     implements
         SizedSequenceValue<String, StringValue>,
-        InspectableSequenceValue<Character, StringValue>,
-        OrderedSequenceValue<Character, StringValue>,
-        RepeatableSequenceValue<Character, StringValue> {
+    InspectableSequenceValue<Character, StringValue>,
+    OrderedSequenceValue<Character, StringValue>,
+    RepeatableSequenceValue<Character, StringValue> {
 
     private static final String EQUALS_OPERATOR = Operators.EQ.symbol();
     private static final String NOT_EQUALS_OPERATOR = Operators.NE.symbol();

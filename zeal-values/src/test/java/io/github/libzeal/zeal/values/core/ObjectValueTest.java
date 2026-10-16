@@ -1,6 +1,6 @@
 package io.github.libzeal.zeal.values.core;
 
-import io.github.libzeal.zeal.values.api.BasedObjectValueTest;
+import io.github.libzeal.zeal.values.sdk.BasedObjectValueTest;
 
 @SuppressWarnings("java:S2187")
 class ObjectValueTest extends BasedObjectValueTest<Object, ObjectValue<Object>> {

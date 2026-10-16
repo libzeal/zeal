@@ -1,4 +1,4 @@
-package io.github.libzeal.zeal.values.api.sequence;
+package io.github.libzeal.zeal.values.sdk.sequence;
 
 public interface SizedSequenceValue<T, V extends SizedSequenceValue<T, V>> {
 

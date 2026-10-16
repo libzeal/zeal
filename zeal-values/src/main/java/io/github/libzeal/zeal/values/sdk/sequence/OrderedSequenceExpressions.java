@@ -1,14 +1,14 @@
-package io.github.libzeal.zeal.values.api.sequence;
+package io.github.libzeal.zeal.values.sdk.sequence;
 
 import io.github.libzeal.zeal.logic.unary.future.ComputableExpression;
 import io.github.libzeal.zeal.logic.util.Formatter;
-import io.github.libzeal.zeal.values.api.StandardRationales;
-import io.github.libzeal.zeal.values.api.cache.CachedValueBuilder;
-import io.github.libzeal.zeal.values.api.cache.SimpleCacheResult;
+import io.github.libzeal.zeal.values.sdk.StandardRationales;
+import io.github.libzeal.zeal.values.sdk.cache.CachedValueBuilder;
+import io.github.libzeal.zeal.values.sdk.cache.SimpleCacheResult;
 
 import static io.github.libzeal.zeal.logic.util.Formatter.stringify;
-import static io.github.libzeal.zeal.values.api.StandardRationales.Names.withPairs;
-import static io.github.libzeal.zeal.values.api.StandardRationales.Names.withValue;
+import static io.github.libzeal.zeal.values.sdk.StandardRationales.Names.withPairs;
+import static io.github.libzeal.zeal.values.sdk.StandardRationales.Names.withValue;
 
 public class OrderedSequenceExpressions {
 

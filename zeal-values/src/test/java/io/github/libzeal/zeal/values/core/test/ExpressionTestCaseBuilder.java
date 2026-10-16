@@ -1,7 +1,7 @@
 package io.github.libzeal.zeal.values.core.test;
 
 import io.github.libzeal.zeal.logic.evaluation.Result;
-import io.github.libzeal.zeal.values.api.BaseValue;
+import io.github.libzeal.zeal.values.sdk.BaseValue;
 import org.junit.jupiter.params.provider.Arguments;
 
 import java.util.ArrayList;

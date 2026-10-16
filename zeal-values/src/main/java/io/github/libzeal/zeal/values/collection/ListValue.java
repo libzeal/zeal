@@ -1,11 +1,11 @@
 package io.github.libzeal.zeal.values.collection;
 
-import io.github.libzeal.zeal.values.api.BaseValue;
-import io.github.libzeal.zeal.values.api.sequence.*;
-import io.github.libzeal.zeal.values.api.sequence.InspectableSequenceExpressions.InspectableSequenceOperations;
-import io.github.libzeal.zeal.values.api.sequence.OrderedSequenceExpressions.OrderedSequenceOperations;
-import io.github.libzeal.zeal.values.api.sequence.RepeatableSequenceExpressions.RepeatableSequenceOperations;
-import io.github.libzeal.zeal.values.api.sequence.SizedSequenceExpressions.SizedSequenceOperations;
+import io.github.libzeal.zeal.values.sdk.BaseValue;
+import io.github.libzeal.zeal.values.sdk.sequence.*;
+import io.github.libzeal.zeal.values.sdk.sequence.InspectableSequenceExpressions.InspectableSequenceOperations;
+import io.github.libzeal.zeal.values.sdk.sequence.OrderedSequenceExpressions.OrderedSequenceOperations;
+import io.github.libzeal.zeal.values.sdk.sequence.RepeatableSequenceExpressions.RepeatableSequenceOperations;
+import io.github.libzeal.zeal.values.sdk.sequence.SizedSequenceExpressions.SizedSequenceOperations;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -16,7 +16,7 @@ import static java.util.stream.Collectors.toList;
 
 public class ListValue<T> extends BaseValue<List<T>, ListValue<T>>
     implements CollectionSequenceValue<T, List<T>, ListValue<T>>,
-        OrderedSequenceValue<T, ListValue<T>> {
+    OrderedSequenceValue<T, ListValue<T>> {
 
     private final ListSequenceOperations<T> operations;
 

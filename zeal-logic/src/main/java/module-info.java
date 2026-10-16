@@ -10,4 +10,5 @@ module zeal.logic {
     exports io.github.libzeal.zeal.logic.unary.condition;
     exports io.github.libzeal.zeal.logic.unary.future;
     exports io.github.libzeal.zeal.logic.unary.future.rationale;
+    exports io.github.libzeal.zeal.logic.util;
 }

@@ -1,4 +1,4 @@
-package io.github.libzeal.zeal.values.api.sequence;
+package io.github.libzeal.zeal.values.sdk.sequence;
 
 import java.util.Collection;
 

@@ -1,11 +1,11 @@
-package io.github.libzeal.zeal.values.api.sequence;
+package io.github.libzeal.zeal.values.sdk.sequence;
 
 import io.github.libzeal.zeal.logic.unary.future.ComputableExpression;
 import io.github.libzeal.zeal.logic.unary.future.rationale.ComputableField;
-import io.github.libzeal.zeal.values.api.SimpleValueBuilder;
-import io.github.libzeal.zeal.values.api.StandardRationales.Operators;
+import io.github.libzeal.zeal.values.sdk.SimpleValueBuilder;
+import io.github.libzeal.zeal.values.sdk.StandardRationales.Operators;
 
-import static io.github.libzeal.zeal.values.api.StandardRationales.Names.withValue;
+import static io.github.libzeal.zeal.values.sdk.StandardRationales.Names.withValue;
 
 public class SizedSequenceExpressions {
     

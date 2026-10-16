@@ -1,4 +1,4 @@
-package io.github.libzeal.zeal.values.api;
+package io.github.libzeal.zeal.values.sdk;
 
 import java.util.Arrays;
 import java.util.Collection;

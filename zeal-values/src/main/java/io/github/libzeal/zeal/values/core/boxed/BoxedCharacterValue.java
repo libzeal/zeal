@@ -1,6 +1,6 @@
 package io.github.libzeal.zeal.values.core.boxed;
 
-import io.github.libzeal.zeal.values.api.BaseValue;
+import io.github.libzeal.zeal.values.sdk.BaseValue;
 
 /**
  * An expression used to evaluate {@link Character} instances.

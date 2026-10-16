@@ -1,4 +1,4 @@
-package io.github.libzeal.zeal.values.api.cache;
+package io.github.libzeal.zeal.values.sdk.cache;
 
 import java.util.function.Function;
 
