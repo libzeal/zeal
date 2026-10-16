@@ -1,6 +1,6 @@
 package io.github.libzeal.zeal.values.core;
 
-import io.github.libzeal.zeal.values.api.BaseObjectValue;
+import io.github.libzeal.zeal.values.api.BaseValue;
 
 /**
  * An expression used to evaluate {@link Object} instances.
@@ -10,7 +10,7 @@ import io.github.libzeal.zeal.values.api.BaseObjectValue;
  *
  * @author Justin Albano
  */
-public final class ObjectValue<T> extends BaseObjectValue<T, ObjectValue<T>> {
+public final class ObjectValue<T> extends BaseValue<T, ObjectValue<T>> {
 
     /**
      * Creates a new expression for the supplied subject.

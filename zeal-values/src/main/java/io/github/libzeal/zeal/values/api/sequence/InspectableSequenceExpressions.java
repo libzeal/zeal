@@ -1,11 +1,10 @@
-package io.github.libzeal.zeal.values.api.sequence.builder;
+package io.github.libzeal.zeal.values.api.sequence;
 
+import io.github.libzeal.zeal.logic.unary.future.ComputableExpression;
 import io.github.libzeal.zeal.logic.util.Formatter;
 import io.github.libzeal.zeal.values.api.SimpleValueBuilder;
 import io.github.libzeal.zeal.values.api.StandardRationales;
-import io.github.libzeal.zeal.values.api.ValueBuilder;
 import io.github.libzeal.zeal.values.api.cache.CachedValueBuilder;
-import io.github.libzeal.zeal.values.api.sequence.SequenceCaches;
 import io.github.libzeal.zeal.values.api.cache.SimpleCacheResult;
 import io.github.libzeal.zeal.values.config.Configuration;
 
@@ -14,7 +13,7 @@ import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 
-public class InspectableSequenceValueBuilder {
+public class InspectableSequenceExpressions {
 
     public interface InspectableSequenceOperations<T, S> {
 
@@ -23,14 +22,15 @@ public class InspectableSequenceValueBuilder {
         boolean includes(S haystack, T needle);
     }
 
-    public static <T, S> ValueBuilder<S> includes(final T desired, final InspectableSequenceOperations<T, S> ops) {
+    public static <T, S> ComputableExpression<S> includes(final T desired, final InspectableSequenceOperations<T, S> ops) {
         return SimpleValueBuilder.notNullable((S s) -> ops.includes(s, desired))
             .name(StandardRationales.includes(desired))
             .expected(StandardRationales.includes(desired))
-            .actual(context -> context.passed() ? StandardRationales.includes(desired) : StandardRationales.excludes(desired));
+            .actual(context -> context.passed() ? StandardRationales.includes(desired) : StandardRationales.excludes(desired))
+            .build();
     }
 
-    public static <T, S> ValueBuilder<S> includesAll(final Collection<T> desired,
+    public static <T, S> ComputableExpression<S> includesAll(final Collection<T> desired,
                                                      final InspectableSequenceOperations<T, S> ops) {
 
         return CachedValueBuilder.of((S s) -> {
@@ -68,10 +68,11 @@ public class InspectableSequenceValueBuilder {
                         }
                     }
                 }
-            );
+            )
+            .build();
     }
 
-    public static <T, S> ValueBuilder<S> includesAny(final Collection<T> desired, final InspectableSequenceOperations<T, S> ops) {
+    public static <T, S> ComputableExpression<S> includesAny(final Collection<T> desired, final InspectableSequenceOperations<T, S> ops) {
 
         return CachedValueBuilder.of((S s) -> {
 
@@ -113,7 +114,8 @@ public class InspectableSequenceValueBuilder {
                         }
                     }
                 }
-            );
+            )
+            .build();
     }
 
     private static <T> List<String> computeMissing(final Collection<T> desired, final List<T> found) {
@@ -133,14 +135,15 @@ public class InspectableSequenceValueBuilder {
         return missing;
     }
 
-    public static <T, S> ValueBuilder<S> excludes(final T desired, final InspectableSequenceOperations<T, S> ops) {
+    public static <T, S> ComputableExpression<S> excludes(final T desired, final InspectableSequenceOperations<T, S> ops) {
         return SimpleValueBuilder.notNullable((S s) -> !ops.includes(s, desired))
             .name(StandardRationales.excludes(desired))
             .expected(StandardRationales.excludes(desired))
-            .actual(context -> context.passed() ? StandardRationales.excludes(desired) : StandardRationales.includes(desired));
+            .actual(context -> context.passed() ? StandardRationales.excludes(desired) : StandardRationales.includes(desired))
+            .build();
     }
 
-    public static <T, S> ValueBuilder<S> excludesAll(final Collection<T> desired, final InspectableSequenceOperations<T, S> ops) {
+    public static <T, S> ComputableExpression<S> excludesAll(final Collection<T> desired, final InspectableSequenceOperations<T, S> ops) {
         return CachedValueBuilder.of((S s) -> {
 
                 if (desired == null) {
@@ -180,10 +183,11 @@ public class InspectableSequenceValueBuilder {
                         }
                     }
                 }
-            );
+            )
+            .build();
     }
 
-    public static <T, S> ValueBuilder<S> excludesAny(final Collection<T> desired, final InspectableSequenceOperations<T, S> ops) {
+    public static <T, S> ComputableExpression<S> excludesAny(final Collection<T> desired, final InspectableSequenceOperations<T, S> ops) {
         return CachedValueBuilder.of((S s) -> {
 
                 if (desired == null) {
@@ -224,6 +228,7 @@ public class InspectableSequenceValueBuilder {
                         }
                     }
                 }
-            );
+            )
+            .build();
     }
 }

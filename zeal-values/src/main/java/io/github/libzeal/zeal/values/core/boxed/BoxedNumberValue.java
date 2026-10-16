@@ -1,7 +1,7 @@
 package io.github.libzeal.zeal.values.core.boxed;
 
 import io.github.libzeal.zeal.logic.util.Formatter;
-import io.github.libzeal.zeal.values.api.BaseObjectValue;
+import io.github.libzeal.zeal.values.api.BaseValue;
 import io.github.libzeal.zeal.values.api.SimpleValueBuilder;
 
 import java.util.function.Predicate;
@@ -15,9 +15,9 @@ import java.util.function.Predicate;
  *     The type of the subclass.
  *
  * @author Justin Albano
- * @see BaseObjectValue
+ * @see BaseValue
  */
-public abstract class BoxedNumberValue<T extends Number, E extends BaseObjectValue<T, E>> extends BaseObjectValue<T, E> {
+public abstract class BoxedNumberValue<T extends Number, E extends BaseValue<T, E>> extends BaseValue<T, E> {
 
     private static final String CANNOT_COMPARE_TO_NULL = "Always fail: cannot compare to subject to (null)";
 
@@ -64,7 +64,7 @@ public abstract class BoxedNumberValue<T extends Number, E extends BaseObjectVal
             builder.expected(expectedValue);
         }
 
-        return append(builder);
+        return append(builder.build());
     }
 
     /**
@@ -184,6 +184,7 @@ public abstract class BoxedNumberValue<T extends Number, E extends BaseObjectVal
             expression(t -> eq(t, max()))
                 .name("isMax")
                 .expected(String.valueOf(max()))
+                .build()
         );
     }
 
@@ -197,6 +198,7 @@ public abstract class BoxedNumberValue<T extends Number, E extends BaseObjectVal
             expression(t -> eq(t, min()))
                 .name("isMin")
                 .expected(String.valueOf(min()))
+                .build()
         );
     }
 
@@ -210,6 +212,7 @@ public abstract class BoxedNumberValue<T extends Number, E extends BaseObjectVal
             expression(t -> eq(t, zero()))
                 .name("isZero")
                 .expected(String.valueOf(zero()))
+                .build()
         );
     }
 
@@ -223,6 +226,7 @@ public abstract class BoxedNumberValue<T extends Number, E extends BaseObjectVal
             expression(t -> !eq(t, zero()))
                 .name("isNotZero")
                 .expected("not[" + zero() + "]")
+                .build()
         );
     }
 
@@ -236,6 +240,7 @@ public abstract class BoxedNumberValue<T extends Number, E extends BaseObjectVal
             expression(t -> gt(t, zero()))
                 .name("isPositive")
                 .expected("> " + zero())
+                .build()
         );
     }
 
@@ -249,6 +254,7 @@ public abstract class BoxedNumberValue<T extends Number, E extends BaseObjectVal
             expression(t -> lte(t, zero()))
                 .name("isNotPositive")
                 .expected("<= " + zero())
+                .build()
         );
     }
 
@@ -262,6 +268,7 @@ public abstract class BoxedNumberValue<T extends Number, E extends BaseObjectVal
             expression(t -> lt(t, zero()))
                 .name("isNegative")
                 .expected("< " + zero())
+                .build()
         );
     }
 
@@ -275,6 +282,7 @@ public abstract class BoxedNumberValue<T extends Number, E extends BaseObjectVal
             expression(t -> gte(t, zero()))
                 .name("isNotNegative")
                 .expected(">= " + zero())
+                .build()
         );
     }
 

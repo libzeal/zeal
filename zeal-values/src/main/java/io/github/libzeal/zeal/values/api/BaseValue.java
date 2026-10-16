@@ -32,17 +32,17 @@ import static java.util.Objects.requireNonNull;
  *     The type of the subclass. This type is an example of the
  *     <a href="https://stackoverflow.com/q/4173254/2403253">Curiously Recurring Template Pattern (CRTP)</a>
  *     . This type allows for the fluent interface methods of this class to return the subtype object, rather than
- *     {@link BaseObjectValue}. If {@link BaseObjectValue} were returned from the fluent interface methods,
+ *     {@link BaseValue}. If {@link BaseValue} were returned from the fluent interface methods,
  *     then the subclass type would be lost, resulting in the methods available on the subtype to no longer be available
- *     as methods from {@link BaseObjectValue} are called. For example, if a {@code StringExpression} (extending
+ *     as methods from {@link BaseValue} are called. For example, if a {@code StringExpression} (extending
  *     this class) had a method called {@code includesCharacter(char)}, the following would cause an error:
  *     <pre><code>new StringExpression("foo").isNotNull().includeCharacter('c');</code></pre>
- *     Since the {@code isNotNull()} method would return a {@link BaseObjectValue} object, rather than a
+ *     Since the {@code isNotNull()} method would return a {@link BaseValue} object, rather than a
  *     {@code StringExpression}, thus hiding the {@code includesCharacter(char)} method of {@code  StringExpression}.
  *
  * @author Justin Albano
  */
-public abstract class BaseObjectValue<T, E extends BaseObjectValue<T, E>> implements UnaryExpression<T> {
+public abstract class BaseValue<T, E extends BaseValue<T, E>> implements UnaryExpression<T> {
 
     private static final String PREDICATE_SATISFIED = "Predicate satisfied";
     private static final String PREDICATE_UNSATISFIED = "Predicate unsatisfied";
@@ -65,7 +65,7 @@ public abstract class BaseObjectValue<T, E extends BaseObjectValue<T, E>> implem
      * @param subject
      *     The subject of the expression.
      */
-    protected BaseObjectValue(T subject) {
+    protected BaseValue(final T subject) {
         this(subject, "Object[" + stringify(subject) + "] value");
     }
 
@@ -77,38 +77,26 @@ public abstract class BaseObjectValue<T, E extends BaseObjectValue<T, E>> implem
      * @param name
      *     The name of the expression.
      */
-    protected BaseObjectValue(T subject, String name) {
+    protected BaseValue(final T subject, final String name) {
         this.name = requireNonNull(name) + ": " + stringify(subject);
         this.subject = subject;
         this.children = new UnaryExpressionChain<>();
     }
 
     @SuppressWarnings("unchecked")
-    private E append(final Condition<T> expression) {
+    protected final E append(final ComputableExpression<T> expression) {
 
         children.append(expression);
 
-        return (E) BaseObjectValue.this;
+        return (E) this;
     }
 
     @SuppressWarnings("unchecked")
-    protected final E append(final ValueBuilder<T> builder) {
-
-        final ComputableExpression<T> expression = builder.build();
-
-        children.append(expression);
-
-        return (E) BaseObjectValue.this;
-    }
-
-    @SuppressWarnings("unchecked")
-    private E prepend(final ValueBuilder<T> builder) {
-
-        final ComputableExpression<T> expression = builder.build();
+    protected final E prepend(final ComputableExpression<T> expression) {
 
         children.prepend(expression);
 
-        return (E) BaseObjectValue.this;
+        return (E) this;
     }
 
     @Override
@@ -186,6 +174,7 @@ public abstract class BaseObjectValue<T, E extends BaseObjectValue<T, E>> implem
             nullableExpression(Objects::isNull)
                 .name("isNull")
                 .expected("(null)")
+                .build()
         );
     }
 
@@ -218,6 +207,7 @@ public abstract class BaseObjectValue<T, E extends BaseObjectValue<T, E>> implem
             nullableExpression(Objects::nonNull)
                 .name("isNotNull")
                 .expected("not[(null)]")
+                .build()
         );
     }
 
@@ -247,7 +237,7 @@ public abstract class BaseObjectValue<T, E extends BaseObjectValue<T, E>> implem
         }
 
         return append(
-            builder.actual(context -> context.subject().getClass().toString())
+            builder.actual(context -> context.subject().getClass().toString()).build()
         );
     }
 
@@ -275,7 +265,7 @@ public abstract class BaseObjectValue<T, E extends BaseObjectValue<T, E>> implem
         }
 
         return append(
-            builder.actual(context -> context.subject().getClass().toString())
+            builder.actual(context -> context.subject().getClass().toString()).build()
         );
     }
 
@@ -311,7 +301,7 @@ public abstract class BaseObjectValue<T, E extends BaseObjectValue<T, E>> implem
         }
 
         return append(
-            builder.actual(context -> context.subject().getClass().toString())
+            builder.actual(context -> context.subject().getClass().toString()).build()
         );
     }
 
@@ -348,7 +338,7 @@ public abstract class BaseObjectValue<T, E extends BaseObjectValue<T, E>> implem
         }
 
         return append(
-            builder.actual(context -> context.subject().getClass().toString())
+            builder.actual(context -> context.subject().getClass().toString()).build()
         );
     }
 
@@ -394,6 +384,7 @@ public abstract class BaseObjectValue<T, E extends BaseObjectValue<T, E>> implem
                 .name("isNotExactly[" + stringify(other) + "]")
                 .expected("not[" + stringify(other) + "]")
                 .hint("Actual should not be identical to " + other + " (using !=)")
+                .build()
         );
     }
 
@@ -413,6 +404,7 @@ public abstract class BaseObjectValue<T, E extends BaseObjectValue<T, E>> implem
                     .name("is[condition: (null)]")
                     .expected(ALWAYS_FAIL_CANNOT_CHECK_TO_NULL_CONDITION)
                     .hint(CANNOT_CHECK_USING_NULL_CONDITION)
+                    .build()
             );
         }
         else {
@@ -463,6 +455,7 @@ public abstract class BaseObjectValue<T, E extends BaseObjectValue<T, E>> implem
             comparableEquals(other, comparator)
                 .name("isEqualTo[" + stringify(other) + ", comparator: " + stringify(comparator) + "]")
                 .expected(stringify(other))
+                .build()
         );
     }
 
@@ -501,6 +494,7 @@ public abstract class BaseObjectValue<T, E extends BaseObjectValue<T, E>> implem
                 .name("isNotEqualTo[" + stringify(other) + "]")
                 .expected("not[" + stringify(other) + "]")
                 .hint("Actual should be equal to " + other + " (using !subject.equals(" + other + "))")
+                .build()
         );
     }
 
@@ -525,6 +519,7 @@ public abstract class BaseObjectValue<T, E extends BaseObjectValue<T, E>> implem
             comparableNotEquals(other, comparator)
                 .name("isNotEqualTo[" + stringify(other) + ", comparator: " + stringify(comparator) + "]")
                 .expected(stringify(other))
+                .build()
         );
     }
 
@@ -560,6 +555,7 @@ public abstract class BaseObjectValue<T, E extends BaseObjectValue<T, E>> implem
                 .name("hashCode == " + hashCode)
                 .expected(hashCode)
                 .actual(hashCodeSupplier())
+                .build()
         );
     }
 
@@ -588,6 +584,7 @@ public abstract class BaseObjectValue<T, E extends BaseObjectValue<T, E>> implem
                 .name("hashCode != " + hashCode)
                 .expected("not[" + hashCode + "]")
                 .actual(hashCodeSupplier())
+                .build()
         );
     }
 
@@ -612,6 +609,7 @@ public abstract class BaseObjectValue<T, E extends BaseObjectValue<T, E>> implem
                 .name("toString().equals(" + expected + ")")
                 .expected(expected)
                 .hint("Subject's toString() value should equal " + expected + " (using subject.toString().equals(" + expected + "))")
+                .build()
         );
     }
 
@@ -636,6 +634,7 @@ public abstract class BaseObjectValue<T, E extends BaseObjectValue<T, E>> implem
                 .name("not[toString().equals(" + expected + ")]")
                 .expected("not[" + expected + "]")
                 .hint("Subject's toString() value should not equal " + expected + " (using !subject.toString().equals(" + expected + "))")
+                .build()
         );
     }
 
@@ -653,6 +652,7 @@ public abstract class BaseObjectValue<T, E extends BaseObjectValue<T, E>> implem
                 .name("predicate")
                 .expected(PREDICATE_SATISFIED)
                 .actual(context -> context.ifPassedOrElse(PREDICATE_SATISFIED, PREDICATE_UNSATISFIED))
+                .build()
         );
     }
 
@@ -670,6 +670,7 @@ public abstract class BaseObjectValue<T, E extends BaseObjectValue<T, E>> implem
                 .name("not[predicate]")
                 .expected(PREDICATE_UNSATISFIED)
                 .actual(context -> context.ifPassedOrElse(PREDICATE_UNSATISFIED, PREDICATE_SATISFIED))
+                .build()
         );
     }
 }

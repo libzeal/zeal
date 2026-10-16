@@ -1,4 +1,4 @@
-package io.github.libzeal.zeal.values.api.sequence.builder;
+package io.github.libzeal.zeal.values.api.sequence;
 
 import java.util.Objects;
 import java.util.function.Function;

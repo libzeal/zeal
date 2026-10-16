@@ -1,16 +1,15 @@
-package io.github.libzeal.zeal.values.api.sequence.builder;
+package io.github.libzeal.zeal.values.api.sequence;
 
-import io.github.libzeal.zeal.values.api.ValueBuilder;
+import io.github.libzeal.zeal.logic.unary.future.ComputableExpression;
 import io.github.libzeal.zeal.values.api.cache.CachedValueBuilder;
-import io.github.libzeal.zeal.values.api.sequence.SequenceCaches;
 import io.github.libzeal.zeal.values.api.cache.SimpleCacheResult;
 
 import static io.github.libzeal.zeal.logic.util.Formatter.stringify;
 import static io.github.libzeal.zeal.values.api.StandardRationales.Names.withPairs;
 
-public class RepeatableSequenceValueBuilder {
+public class RepeatableSequenceExpressions {
 
-    public static <T, S> ValueBuilder<S> includesExactly(final T desired, final long times, final RepeatableSequenceOperations<T, S> ops) {
+    public static <T, S> ComputableExpression<S> includesExactly(final T desired, final long times, final RepeatableSequenceOperations<T, S> ops) {
 
         final String desiredAsString = stringify(desired);
 
@@ -30,14 +29,15 @@ public class RepeatableSequenceValueBuilder {
                 context.cache().value() == 0 ?
                     "Desired value not found in array" :
                     "Desired value was found, but " + context.cache().value() + " " + timesSuffix(context.cache().value())
-            );
+            )
+            .build();
     }
 
     private static String timesSuffix(final long times) {
         return times == 1 ? "time" : "times";
     }
 
-    public static <T, S> ValueBuilder<S> includesMoreThan(final T desired, final long times, final RepeatableSequenceOperations<T, S> ops) {
+    public static <T, S> ComputableExpression<S> includesMoreThan(final T desired, final long times, final RepeatableSequenceOperations<T, S> ops) {
 
         final String desiredAsString = stringify(desired);
 
@@ -57,10 +57,11 @@ public class RepeatableSequenceValueBuilder {
                 context.cache().value() == 0 ?
                     "Desired value not found in array" :
                     "Desired value was found, but " + context.cache().value() + " " + timesSuffix(context.cache().value())
-            );
+            )
+            .build();
     }
 
-    public static <T, S> ValueBuilder<S> includesMoreThanOrEqualTo(final T desired, final long times, final RepeatableSequenceOperations<T, S> ops) {
+    public static <T, S> ComputableExpression<S> includesMoreThanOrEqualTo(final T desired, final long times, final RepeatableSequenceOperations<T, S> ops) {
 
         final String desiredAsString = stringify(desired);
 
@@ -80,10 +81,11 @@ public class RepeatableSequenceValueBuilder {
                 context.cache().value() == 0 ?
                     "Desired value not found in array" :
                     "Desired value was found, but " + context.cache().value() + " " + timesSuffix(context.cache().value())
-            );
+            )
+            .build();
     }
 
-    public static <T, S> ValueBuilder<S> includesLessThan(final T desired, final long times, final RepeatableSequenceOperations<T, S> ops) {
+    public static <T, S> ComputableExpression<S> includesLessThan(final T desired, final long times, final RepeatableSequenceOperations<T, S> ops) {
 
         final String desiredAsString = stringify(desired);
 
@@ -103,10 +105,11 @@ public class RepeatableSequenceValueBuilder {
                 context.cache().value() == 0 ?
                     "Desired value not found in array" :
                     "Desired value was found, but " + context.cache().value() + " " + timesSuffix(context.cache().value())
-            );
+            )
+            .build();
     }
 
-    public static <T, S> ValueBuilder<S> includesLessThanOrEqualTo(final T desired, final long times, final RepeatableSequenceOperations<T, S> ops) {
+    public static <T, S> ComputableExpression<S> includesLessThanOrEqualTo(final T desired, final long times, final RepeatableSequenceOperations<T, S> ops) {
 
         final String desiredAsString = stringify(desired);
 
@@ -126,7 +129,8 @@ public class RepeatableSequenceValueBuilder {
                 context.cache().value() == 0 ?
                     "Desired value not found in array" :
                     "Desired value was found, but " + context.cache().value() + " " + timesSuffix(context.cache().value())
-            );
+            )
+            .build();
     }
 
     public interface RepeatableSequenceOperations<T, S> {

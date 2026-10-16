@@ -37,6 +37,7 @@ public class BoxedDoubleValue extends BoxedNumberValue<Double, BoxedDoubleValue>
             expression(d -> Math.abs(d - value) <= delta)
                 .name("isEqualTo[" + value + " +/- " + delta + "]")
                 .expected(value + " +/- " + delta)
+                .build()
         );
     }
 
@@ -50,6 +51,7 @@ public class BoxedDoubleValue extends BoxedNumberValue<Double, BoxedDoubleValue>
             expression(Double::isFinite)
                 .name("isFinite")
                 .expected("finite")
+                .build()
         );
     }
 
@@ -63,6 +65,7 @@ public class BoxedDoubleValue extends BoxedNumberValue<Double, BoxedDoubleValue>
             expression(l -> l.isInfinite())
                 .name("isInfinite")
                 .expected("infinite")
+                .build()
         );
     }
 
@@ -76,6 +79,7 @@ public class BoxedDoubleValue extends BoxedNumberValue<Double, BoxedDoubleValue>
             expression(l -> l.isNaN())
                 .name("isNaN")
                 .expected("NaN")
+                .build()
         );
     }
 

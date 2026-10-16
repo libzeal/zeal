@@ -1,6 +1,6 @@
 package io.github.libzeal.zeal.values.core;
 
-import io.github.libzeal.zeal.values.api.BaseObjectValue;
+import io.github.libzeal.zeal.values.api.BaseValue;
 
 /**
  * The abstract base class for all Enum-based expressions.
@@ -12,14 +12,14 @@ import io.github.libzeal.zeal.values.api.BaseObjectValue;
  * @param <B>
  *     The type of the subclass. This type is an example of the
  *     <a href="https://stackoverflow.com/q/4173254/2403253">Curiously Recurring Template Pattern (CRTP)</a>. For more
- *     information, see {@link BaseObjectValue}.
+ *     information, see {@link BaseValue}.
  *
  * @author Justin Albano
- * @see BaseObjectValue
+ * @see BaseValue
  * @see Enum
  */
 public abstract class BaseEnumValue<T extends Enum<T>, B extends BaseEnumValue<T, B>>
-    extends BaseObjectValue<T, B> {
+    extends BaseValue<T, B> {
 
     /**
      * Creates an object expression with the supplied subject. This constructor uses a default name for the expression.
@@ -57,6 +57,7 @@ public abstract class BaseEnumValue<T extends Enum<T>, B extends BaseEnumValue<T
                 .name("ordinalIs[" + ordinal + "]")
                 .expected(ordinal)
                 .actual(context -> String.valueOf(context.subject().ordinal()))
+                .build()
         );
     }
 
@@ -74,6 +75,7 @@ public abstract class BaseEnumValue<T extends Enum<T>, B extends BaseEnumValue<T
                 .name("not[ordinalIs[" + ordinal + "]]")
                 .expected(context -> "not[" + ordinal + "]")
                 .actual(context -> String.valueOf(context.subject().ordinal()))
+                .build()
         );
     }
 
@@ -91,6 +93,7 @@ public abstract class BaseEnumValue<T extends Enum<T>, B extends BaseEnumValue<T
                 .name("nameIs[" + name + "]")
                 .expected(name)
                 .actual(context -> context.subject().name())
+                .build()
         );
     }
 
@@ -108,6 +111,7 @@ public abstract class BaseEnumValue<T extends Enum<T>, B extends BaseEnumValue<T
                 .name("not[nameIs[" + name + "]]")
                 .expected("not[" + name + "]")
                 .actual(context -> context.subject().name())
+                .build()
         );
     }
 
@@ -126,6 +130,7 @@ public abstract class BaseEnumValue<T extends Enum<T>, B extends BaseEnumValue<T
                 .name("caseInsensitiveNameIs[" + name + "]")
                 .expected("caseInsensitive[" + name + "]")
                 .actual(context -> context.subject().name())
+                .build()
         );
     }
 
@@ -144,6 +149,7 @@ public abstract class BaseEnumValue<T extends Enum<T>, B extends BaseEnumValue<T
                 .name("not[caseInsensitiveNameIs[" + name + "]]")
                 .expected("not[caseInsensitive[" + name + "]]")
                 .actual(context -> context.subject().name())
+                .build()
         );
     }
 }

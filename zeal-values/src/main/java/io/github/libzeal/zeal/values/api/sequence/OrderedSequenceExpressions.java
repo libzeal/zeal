@@ -1,17 +1,16 @@
-package io.github.libzeal.zeal.values.api.sequence.builder;
+package io.github.libzeal.zeal.values.api.sequence;
 
+import io.github.libzeal.zeal.logic.unary.future.ComputableExpression;
 import io.github.libzeal.zeal.logic.util.Formatter;
 import io.github.libzeal.zeal.values.api.StandardRationales;
-import io.github.libzeal.zeal.values.api.ValueBuilder;
 import io.github.libzeal.zeal.values.api.cache.CachedValueBuilder;
 import io.github.libzeal.zeal.values.api.cache.SimpleCacheResult;
-import io.github.libzeal.zeal.values.api.sequence.SequenceCaches;
 
 import static io.github.libzeal.zeal.logic.util.Formatter.stringify;
 import static io.github.libzeal.zeal.values.api.StandardRationales.Names.withPairs;
 import static io.github.libzeal.zeal.values.api.StandardRationales.Names.withValue;
 
-public class OrderedSequenceValueBuilder {
+public class OrderedSequenceExpressions {
 
     public interface OrderedSequenceOperations<T, S> {
         Element<T> lastElement(S haystack, T desired);
@@ -20,7 +19,7 @@ public class OrderedSequenceValueBuilder {
         Element<T> firstElement(S haystack, T desired);
     }
 
-    public static <T, S> ValueBuilder<S> hasAtIndex(final T desired, final int index, final OrderedSequenceOperations<T, S> ops) {
+    public static <T, S> ComputableExpression<S> hasAtIndex(final T desired, final int index, final OrderedSequenceOperations<T, S> ops) {
 
         final String desiredName = stringify(desired);
 
@@ -42,10 +41,11 @@ public class OrderedSequenceValueBuilder {
                 context.cache().value().isPresentOrElse(
                     "Index " + index + " is out of bounds",
                     "Index " + index + " is within bounds, but the desired element was not found there"
-                ));
+                ))
+            .build();
     }
 
-    public static <T, S> ValueBuilder<S> doesNotHaveAtIndex(final T desired, final int index, final OrderedSequenceOperations<T, S> ops) {
+    public static <T, S> ComputableExpression<S> doesNotHaveAtIndex(final T desired, final int index, final OrderedSequenceOperations<T, S> ops) {
 
         final String desiredName = stringify(desired);
 
@@ -62,10 +62,11 @@ public class OrderedSequenceValueBuilder {
                 context.cache().value().ifPresentOrElseGet(
                     Formatter::stringify,
                     () -> "Index " + index + " is out of bounds"
-                ));
+                ))
+            .build();
     }
 
-    public static <T, S> ValueBuilder<S> startsWith(final T desired, final OrderedSequenceOperations<T, S> ops) {
+    public static <T, S> ComputableExpression<S> startsWith(final T desired, final OrderedSequenceOperations<T, S> ops) {
 
         final String desiredName = stringify(desired);
 
@@ -83,10 +84,11 @@ public class OrderedSequenceValueBuilder {
             )
             .hint(context ->
                 context.cache().value().isPresentOrElse("Value has at least one element, but the first element is not " + desiredName, "Value is empty")
-            );
+            )
+            .build();
     }
 
-    public static <T, S> ValueBuilder<S> doesNotStartWith(final T desired, final OrderedSequenceOperations<T, S> ops) {
+    public static <T, S> ComputableExpression<S> doesNotStartWith(final T desired, final OrderedSequenceOperations<T, S> ops) {
 
         final String desiredName = stringify(desired);
 
@@ -104,10 +106,11 @@ public class OrderedSequenceValueBuilder {
             )
             .hint(context ->
                 "The first element is " + desiredName
-            );
+            )
+            .build();
     }
 
-    public static <T, S> ValueBuilder<S> endsWith(final T desired, final OrderedSequenceOperations<T, S> ops) {
+    public static <T, S> ComputableExpression<S> endsWith(final T desired, final OrderedSequenceOperations<T, S> ops) {
 
         final String desiredName = stringify(desired);
 
@@ -125,10 +128,11 @@ public class OrderedSequenceValueBuilder {
             )
             .hint(context ->
                 context.cache().value().isPresentOrElse("Value has at least one element, but the last element is not " + desiredName, "Value is empty")
-            );
+            )
+            .build();
     }
 
-    public static <T, S> ValueBuilder<S> doesNotEndWith(final T desired, final OrderedSequenceOperations<T, S> ops) {
+    public static <T, S> ComputableExpression<S> doesNotEndWith(final T desired, final OrderedSequenceOperations<T, S> ops) {
 
         final String desiredName = stringify(desired);
 
@@ -146,10 +150,11 @@ public class OrderedSequenceValueBuilder {
             )
             .hint(context ->
                 "The last element is " + desiredName
-            );
+            )
+            .build();
     }
 
-    public static <T, S> ValueBuilder<S> includes(final T desired, final OrderedSequenceOperations<T, S> ops) {
+    public static <T, S> ComputableExpression<S> includes(final T desired, final OrderedSequenceOperations<T, S> ops) {
         return CachedValueBuilder.of((S s) -> {
 
                 final int index = ops.indexOf(s, desired);
@@ -160,10 +165,11 @@ public class OrderedSequenceValueBuilder {
             .name(StandardRationales.includes(desired))
             .expected(StandardRationales.includes(desired))
             .actual(context -> context.passed() ? StandardRationales.includes(desired) : StandardRationales.excludes(desired))
-            .hint(context -> StandardRationales.needleInHaystackHint(context.cache().value(), desired));
+            .hint(context -> StandardRationales.needleInHaystackHint(context.cache().value(), desired))
+            .build();
     }
 
-    public static <T, S> ValueBuilder<S> excludes(final T desired, final OrderedSequenceOperations<T, S> ops) {
+    public static <T, S> ComputableExpression<S> excludes(final T desired, final OrderedSequenceOperations<T, S> ops) {
         return CachedValueBuilder.of((S s) -> {
 
                 final int index = ops.indexOf(s, desired);
@@ -174,6 +180,7 @@ public class OrderedSequenceValueBuilder {
             .name(StandardRationales.excludes(desired))
             .expected(StandardRationales.excludes(desired))
             .actual(context -> context.passed() ? StandardRationales.excludes(desired) : StandardRationales.includes(desired))
-            .hint(context -> StandardRationales.needleInHaystackHint(context.cache().value(), desired));
+            .hint(context -> StandardRationales.needleInHaystackHint(context.cache().value(), desired))
+            .build();
     }
 }

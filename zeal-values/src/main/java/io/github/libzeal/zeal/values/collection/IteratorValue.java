@@ -1,11 +1,11 @@
 package io.github.libzeal.zeal.values.collection;
 
 import io.github.libzeal.zeal.logic.unary.future.rationale.ComputableField;
-import io.github.libzeal.zeal.values.api.BaseObjectValue;
+import io.github.libzeal.zeal.values.api.BaseValue;
 
 import java.util.Iterator;
 
-public class IteratorValue<T> extends BaseObjectValue<Iterator<T>, IteratorValue<T>> {
+public class IteratorValue<T> extends BaseValue<Iterator<T>, IteratorValue<T>> {
 
     public IteratorValue(final Iterator<T> subject) {
         super(subject, "Iterator value");
@@ -14,9 +14,10 @@ public class IteratorValue<T> extends BaseObjectValue<Iterator<T>, IteratorValue
     public IteratorValue<T> hasNext() {
         return append(
                 expression(Iterator::hasNext)
-                        .name(hasNextName())
-                        .expected(hasNextName())
-                        .actual(hasNextActual())
+                    .name(hasNextName())
+                    .expected(hasNextName())
+                    .actual(hasNextActual())
+                    .build()
         );
     }
 
@@ -35,9 +36,10 @@ public class IteratorValue<T> extends BaseObjectValue<Iterator<T>, IteratorValue
     public IteratorValue<T> doesNotHaveNext() {
         return append(
                 expression(s -> !s.hasNext())
-                        .name(doesNotHaveNextName())
-                        .expected(doesNotHaveNextName())
-                        .actual(hasNextActual())
+                    .name(doesNotHaveNextName())
+                    .expected(doesNotHaveNextName())
+                    .actual(hasNextActual())
+                    .build()
         );
     }
 }
