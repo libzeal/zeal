@@ -6,6 +6,8 @@ import static io.github.libzeal.zeal.values.core.boxed.BoxedNumberExpressions.no
 
 class BoxedWholeNumberExpressions {
 
+    private BoxedWholeNumberExpressions() {}
+
     public static <T extends Number> ComputableExpression<T> isEven() {
         return notNullExpression((T l) -> l.longValue() % 2 == 0)
             .name("isEven")

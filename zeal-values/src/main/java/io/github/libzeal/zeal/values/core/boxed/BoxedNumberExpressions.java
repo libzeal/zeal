@@ -10,6 +10,8 @@ class BoxedNumberExpressions {
 
     private static final String CANNOT_COMPARE_TO_NULL = "Always fail: cannot compare to subject to (null)";
 
+    private BoxedNumberExpressions() {}
+
     public static <T extends Number> ComputableExpression<T> isLessThan(
         final T value, final BoxedNumberOperations<T> operations) {
 
