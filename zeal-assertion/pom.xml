@@ -22,6 +22,10 @@
             <artifactId>zeal-logic</artifactId>
         </dependency>
         <dependency>
+            <groupId>io.github.libzeal</groupId>
+            <artifactId>zeal-values</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
             <scope>test</scope>

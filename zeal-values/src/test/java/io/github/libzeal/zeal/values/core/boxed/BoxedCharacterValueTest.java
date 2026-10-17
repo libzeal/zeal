@@ -1,12 +1,12 @@
 package io.github.libzeal.zeal.values.core.boxed;
 
-import io.github.libzeal.zeal.values.api.BasedObjectValueTest;
+import io.github.libzeal.zeal.values.sdk.BaseValueTest;
 import io.github.libzeal.zeal.values.core.test.ExpressionTestCaseBuilder;
 
 import static io.github.libzeal.zeal.logic.evaluation.Result.FALSE;
 import static io.github.libzeal.zeal.logic.evaluation.Result.TRUE;
 
-public class BoxedCharacterValueTest extends BasedObjectValueTest<Character,
+public class BoxedCharacterValueTest extends BaseValueTest<Character,
         BoxedCharacterValue> {
 
     @Override

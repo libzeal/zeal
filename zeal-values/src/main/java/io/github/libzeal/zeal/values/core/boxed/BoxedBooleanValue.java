@@ -1,6 +1,6 @@
 package io.github.libzeal.zeal.values.core.boxed;
 
-import io.github.libzeal.zeal.values.api.BaseObjectValue;
+import io.github.libzeal.zeal.values.sdk.BaseValue;
 
 /**
  * An expression used to evaluate {@link Boolean} instances.
@@ -9,7 +9,7 @@ import io.github.libzeal.zeal.values.api.BaseObjectValue;
  *
  * @author Justin Albano
  */
-public class BoxedBooleanValue extends BaseObjectValue<Boolean, BoxedBooleanValue> {
+public class BoxedBooleanValue extends BaseValue<Boolean, BoxedBooleanValue> {
 
     /**
      * Creates a new expression.
@@ -32,6 +32,7 @@ public class BoxedBooleanValue extends BaseObjectValue<Boolean, BoxedBooleanValu
                 .name("isTrue")
                 .expected("true")
                 .actual(context -> String.valueOf(context.subject()))
+                .build()
         );
     }
 
@@ -46,6 +47,7 @@ public class BoxedBooleanValue extends BaseObjectValue<Boolean, BoxedBooleanValu
                 .name("isFalse")
                 .expected("false")
                 .actual(context -> String.valueOf(context.subject()))
+                .build()
         );
     }
 }

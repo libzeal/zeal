@@ -1,11 +1,12 @@
 package io.github.libzeal.zeal.values.core.boxed;
 
 import io.github.libzeal.zeal.values.core.test.ExpressionTestCaseBuilder;
+import io.github.libzeal.zeal.values.sdk.BaseValue;
 
 import static io.github.libzeal.zeal.logic.evaluation.Result.FALSE;
 import static io.github.libzeal.zeal.logic.evaluation.Result.TRUE;
 
-public abstract class BoxedWholeNumberValueTest<T extends Number, E extends BoxedWholeNumberValue<T, E>>
+public abstract class BoxedWholeNumberValueTest<T extends Number, E extends BaseValue<T, E> & BoxedWholeNumberValue<T, E>>
     extends BoxedNumberValueTest<T, E> {
 
     @Override
