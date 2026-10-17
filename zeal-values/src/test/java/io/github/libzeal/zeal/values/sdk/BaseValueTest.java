@@ -1,12 +1,13 @@
 package io.github.libzeal.zeal.values.sdk;
 
-import io.github.libzeal.zeal.logic.unary.condition.Condition;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
-import io.github.libzeal.zeal.logic.evaluation.traverse.CollectingTraverserAction;
 import io.github.libzeal.zeal.logic.evaluation.Result;
+import io.github.libzeal.zeal.logic.evaluation.traverse.CollectingTraverserAction;
 import io.github.libzeal.zeal.logic.evaluation.traverse.DepthFirstTraverser;
 import io.github.libzeal.zeal.logic.evaluation.traverse.Traverser;
+import io.github.libzeal.zeal.logic.unary.condition.Condition;
 import io.github.libzeal.zeal.logic.util.Formatter;
+import io.github.libzeal.zeal.values.core.ObjectValue;
 import io.github.libzeal.zeal.values.core.test.EvaluatedExpressionAssertion;
 import io.github.libzeal.zeal.values.core.test.ExpressionTestCaseBuilder;
 import org.junit.jupiter.api.Test;
@@ -21,9 +22,6 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static io.github.libzeal.zeal.logic.evaluation.Result.*;
-import static io.github.libzeal.zeal.logic.evaluation.Result.FALSE;
-import static io.github.libzeal.zeal.logic.evaluation.Result.TRUE;
-import static io.github.libzeal.zeal.values.sdk.BaseValue.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -58,7 +56,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  *     </code></pre>
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public abstract class BasedObjectValueTest<T, E extends BaseValue<T, E>> {
+public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
 
     private final Comparator<T> equalComparator = (a, b) -> 0;
     private final Comparator<T> lessThanComparator = (a, b) -> -1;
@@ -396,9 +394,9 @@ public abstract class BasedObjectValueTest<T, E extends BaseValue<T, E>> {
                 .subject(subject)
                 .expectedState(FALSE)
                 .expectedName("is[condition: (null)]")
-                .expectedExpected((expression, value) -> ALWAYS_FAIL_CANNOT_CHECK_TO_NULL_CONDITION)
+                .expectedExpected((expression, value) -> StandardMessages.ALWAYS_FAIL_CANNOT_CHECK_TO_NULL_CONDITION)
                 .expectedActual(subject.toString())
-                .expectedHint(CANNOT_CHECK_USING_NULL_CONDITION)
+                .expectedHint(StandardMessages.CANNOT_CHECK_USING_NULL_CONDITION)
                 .addTest()
             .newTest((expression, value) -> expression.is(trueCondition))
                 .subject(subject)
@@ -421,7 +419,7 @@ public abstract class BasedObjectValueTest<T, E extends BaseValue<T, E>> {
         final T value1 = exampleValue1();
         final T value2 = exampleValue2();
 
-        builder.newTest(BaseValue::isEqualTo)
+        builder.newTest(ObjectValue::isEqualTo)
                 .subject(value1)
                 .expectedState(TRUE)
                 .expectedName(value -> "isEqualTo[" + value1 + "]")
@@ -455,7 +453,7 @@ public abstract class BasedObjectValueTest<T, E extends BaseValue<T, E>> {
                 .expectedName(value -> "isEqualTo[" + value1 + ", comparator: (null)]")
                 .expectedExpected((expression, value) -> value1.toString())
                 .expectedActual((expression, value) -> value.toString())
-                .expectedHint(CANNOT_COMPARE_USING_NULL_COMPARATOR)
+                .expectedHint(StandardMessages.CANNOT_COMPARE_USING_NULL_COMPARATOR)
                 .addTest()
             .newTest((e, s) -> e.isEqualTo(value1, equalComparator))
                 .subject(value2)
@@ -499,7 +497,7 @@ public abstract class BasedObjectValueTest<T, E extends BaseValue<T, E>> {
                 .expectedName(value -> "isNotEqualTo[" + value1 + ", comparator: (null)]")
                 .expectedExpected((expression, value) -> value1.toString())
                 .expectedActual((expression, value) -> value.toString())
-                .expectedHint(CANNOT_COMPARE_USING_NULL_COMPARATOR)
+                .expectedHint(StandardMessages.CANNOT_COMPARE_USING_NULL_COMPARATOR)
                 .addTest()
             .newTest((e, s) -> e.isNotEqualTo(value1, equalComparator))
                 .subject(value2)
@@ -535,7 +533,7 @@ public abstract class BasedObjectValueTest<T, E extends BaseValue<T, E>> {
         final T value1 = exampleValue1();
         final T value2 = exampleValue2();
 
-        builder.newTest(BaseValue::isNotEqualTo)
+        builder.newTest(ObjectValue::isNotEqualTo)
                 .subject(value1)
                 .expectedState(FALSE)
                 .expectedName(value -> "isNotEqualTo[" + value + "]")

@@ -2,13 +2,13 @@ package io.github.libzeal.zeal.values.core.boxed;
 
 import io.github.libzeal.zeal.logic.util.Formatter;
 import io.github.libzeal.zeal.values.core.test.ExpressionTestCaseBuilder;
-import io.github.libzeal.zeal.values.sdk.BasedObjectValueTest;
+import io.github.libzeal.zeal.values.sdk.BaseValueTest;
 
 import static io.github.libzeal.zeal.logic.evaluation.Result.FALSE;
 import static io.github.libzeal.zeal.logic.evaluation.Result.TRUE;
 
 public abstract class BoxedNumberValueTest<T extends Number, E extends BoxedNumberValue<T, E>>
-    extends BasedObjectValueTest<T, E> {
+    extends BaseValueTest<T, E> {
 
     @Override
     protected final void extendTestCases(ExpressionTestCaseBuilder<T, E> builder) {

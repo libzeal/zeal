@@ -1,5 +1,8 @@
 package io.github.libzeal.zeal.values.core.boxed;
 
+import io.github.libzeal.zeal.values.core.boxed.BoxedNumberExpressions.BoxedNumberOperations;
+import io.github.libzeal.zeal.values.sdk.BaseValue;
+
 /**
  * An expression used to evaluate {@link Float} instances.
  * <p>
@@ -7,7 +10,10 @@ package io.github.libzeal.zeal.values.core.boxed;
  *
  * @author Justin Albano
  */
-public class BoxedFloatValue extends BoxedNumberValue<Float, BoxedFloatValue> {
+public class BoxedFloatValue extends BaseValue<Float, BoxedFloatValue>
+        implements BoxedNumberValue<Float, BoxedFloatValue> {
+
+    private final BoxedFloatOperations operations;
 
     /**
      * Creates a new expression.
@@ -17,6 +23,7 @@ public class BoxedFloatValue extends BoxedNumberValue<Float, BoxedFloatValue> {
      */
     public BoxedFloatValue(final Float subject) {
         super(subject, "Float value");
+        this.operations = new BoxedFloatOperations();
     }
 
     /**
@@ -84,42 +91,129 @@ public class BoxedFloatValue extends BoxedNumberValue<Float, BoxedFloatValue> {
     }
 
     @Override
-    protected Float zero() {
-        return 0.0f;
+    public BoxedFloatValue isLessThan(final Float value) {
+        return append(
+            BoxedNumberExpressions.isLessThan(value, operations)
+        );
     }
 
     @Override
-    protected Float min() {
-        return Float.MIN_VALUE;
+    public BoxedFloatValue isGreaterThan(final Float value) {
+        return append(
+            BoxedNumberExpressions.isGreaterThan(value, operations)
+        );
     }
 
     @Override
-    protected Float max() {
-        return Float.MAX_VALUE;
+    public BoxedFloatValue isLessThanOrEqualTo(final Float value) {
+        return append(
+            BoxedNumberExpressions.isLessThanOrEqualTo(value, operations)
+        );
     }
 
     @Override
-    protected boolean eq(final Float a, final Float b) {
-        return a.equals(b);
+    public BoxedFloatValue isGreaterThanOrEqualTo(final Float value) {
+        return append(
+            BoxedNumberExpressions.isGreaterThanOrEqualTo(value, operations)
+        );
     }
 
     @Override
-    protected boolean lt(final Float a, final Float b) {
-        return a < b;
+    public BoxedFloatValue isMaxValue() {
+        return append(
+            BoxedNumberExpressions.isMaxValue(operations)
+        );
     }
 
     @Override
-    protected boolean gt(final Float a, final Float b) {
-        return a > b;
+    public BoxedFloatValue isMinValue() {
+        return append(
+            BoxedNumberExpressions.isMinValue(operations)
+        );
     }
 
     @Override
-    protected boolean gte(final Float a, final Float b) {
-        return a >= b;
+    public BoxedFloatValue isZero() {
+        return append(
+            BoxedNumberExpressions.isZero(operations)
+        );
     }
 
     @Override
-    protected boolean lte(final Float a, final Float b) {
-        return a <= b;
+    public BoxedFloatValue isNotZero() {
+        return append(
+            BoxedNumberExpressions.isNotZero(operations)
+        );
+    }
+
+    @Override
+    public BoxedFloatValue isPositive() {
+        return append(
+            BoxedNumberExpressions.isPositive(operations)
+        );
+    }
+
+    @Override
+    public BoxedFloatValue isNotPositive() {
+        return append(
+            BoxedNumberExpressions.isNotPositive(operations)
+        );
+    }
+
+    @Override
+    public BoxedFloatValue isNegative() {
+        return append(
+            BoxedNumberExpressions.isNegative(operations)
+        );
+    }
+
+    @Override
+    public BoxedFloatValue isNotNegative() {
+        return append(
+            BoxedNumberExpressions.isNotNegative(operations)
+        );
+    }
+
+    private static final class BoxedFloatOperations implements BoxedNumberOperations<Float> {
+
+        @Override
+        public Float zero() {
+            return 0.0f;
+        }
+
+        @Override
+        public Float min() {
+            return Float.MIN_VALUE;
+        }
+
+        @Override
+        public Float max() {
+            return Float.MAX_VALUE;
+        }
+
+        @Override
+        public boolean eq(final Float a, final Float b) {
+            return a.equals(b);
+        }
+
+        @Override
+        public boolean lt(final Float a, final Float b) {
+            return a < b;
+        }
+
+        @Override
+        public boolean gt(final Float a, final Float b) {
+            return a > b;
+        }
+
+        @Override
+        public boolean gte(final Float a, final Float b) {
+            return a >= b;
+        }
+
+        @Override
+        public boolean lte(final Float a, final Float b) {
+            return a <= b;
+        }
     }
 }

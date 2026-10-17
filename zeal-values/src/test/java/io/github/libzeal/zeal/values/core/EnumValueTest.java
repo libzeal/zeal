@@ -1,16 +1,16 @@
 package io.github.libzeal.zeal.values.core;
 
-import io.github.libzeal.zeal.values.sdk.BasedObjectValueTest;
+import io.github.libzeal.zeal.values.sdk.BaseValueTest;
 import io.github.libzeal.zeal.values.core.test.ExpressionTestCaseBuilder;
 
 import static io.github.libzeal.zeal.logic.evaluation.Result.FALSE;
 import static io.github.libzeal.zeal.logic.evaluation.Result.TRUE;
 
 @SuppressWarnings("java:S2187")
-abstract class BaseEnumValueTest<T extends Enum<T>> extends BasedObjectValueTest<T, EnumValue<T>> {
+abstract class EnumValueTest<T extends Enum<T>> extends BaseValueTest<T, SimpleEnumValue<T>> {
     
     @Override
-    protected void extendTestCases(ExpressionTestCaseBuilder<T, EnumValue<T>> builder) {
+    protected void extendTestCases(ExpressionTestCaseBuilder<T, SimpleEnumValue<T>> builder) {
         ordinalIsTestCases(builder);
         ordinalIsNotTestCases(builder);
         nameIsTestCases(builder);
@@ -19,7 +19,7 @@ abstract class BaseEnumValueTest<T extends Enum<T>> extends BasedObjectValueTest
         caseInsensitiveNameIsNotTestCases(builder);
     }
 
-    private void ordinalIsTestCases(ExpressionTestCaseBuilder<T, EnumValue<T>> builder) {
+    private void ordinalIsTestCases(ExpressionTestCaseBuilder<T, SimpleEnumValue<T>> builder) {
 
         T value1 = exampleValue1();
         T value2 = exampleValue2();
@@ -40,7 +40,7 @@ abstract class BaseEnumValueTest<T extends Enum<T>> extends BasedObjectValueTest
                 .addTest();
     }
 
-    private void ordinalIsNotTestCases(ExpressionTestCaseBuilder<T, EnumValue<T>> builder) {
+    private void ordinalIsNotTestCases(ExpressionTestCaseBuilder<T, SimpleEnumValue<T>> builder) {
 
         T value1 = exampleValue1();
         T value2 = exampleValue2();
@@ -61,7 +61,7 @@ abstract class BaseEnumValueTest<T extends Enum<T>> extends BasedObjectValueTest
                 .addTest();
     }
 
-    private void nameIsTestCases(ExpressionTestCaseBuilder<T, EnumValue<T>> builder) {
+    private void nameIsTestCases(ExpressionTestCaseBuilder<T, SimpleEnumValue<T>> builder) {
 
         T value1 = exampleValue1();
         T value2 = exampleValue2();
@@ -82,7 +82,7 @@ abstract class BaseEnumValueTest<T extends Enum<T>> extends BasedObjectValueTest
                 .addTest();
     }
 
-    private void nameIsNotTestCases(ExpressionTestCaseBuilder<T, EnumValue<T>> builder) {
+    private void nameIsNotTestCases(ExpressionTestCaseBuilder<T, SimpleEnumValue<T>> builder) {
 
         T value1 = exampleValue1();
         T value2 = exampleValue2();
@@ -103,7 +103,7 @@ abstract class BaseEnumValueTest<T extends Enum<T>> extends BasedObjectValueTest
                 .addTest();
     }
 
-    private void caseInsensitiveNameIsTestCases(ExpressionTestCaseBuilder<T, EnumValue<T>> builder) {
+    private void caseInsensitiveNameIsTestCases(ExpressionTestCaseBuilder<T, SimpleEnumValue<T>> builder) {
 
         T value1 = exampleValue1();
         T value2 = exampleValue2();
@@ -132,7 +132,7 @@ abstract class BaseEnumValueTest<T extends Enum<T>> extends BasedObjectValueTest
     }
 
     private void caseInsensitiveNameIsNotTestCases(ExpressionTestCaseBuilder<T,
-            EnumValue<T>> builder) {
+        SimpleEnumValue<T>> builder) {
 
         T value1 = exampleValue1();
         T value2 = exampleValue2();

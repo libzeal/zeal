@@ -1,20 +1,21 @@
 package io.github.libzeal.zeal.values.core.test;
 
 import io.github.libzeal.zeal.logic.evaluation.Result;
-import io.github.libzeal.zeal.values.sdk.BaseValue;
+import io.github.libzeal.zeal.values.core.ObjectValue;
 import org.junit.jupiter.params.provider.Arguments;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-public class ExpressionTestCaseBuilder<T, E extends BaseValue<T, E>> {
+public class ExpressionTestCaseBuilder<T, E extends ObjectValue<T, E>> {
 
     private final List<Arguments> arguments;
 
-    public static <A, B extends BaseValue<A, B>> ExpressionTestCaseBuilder<A, B> newBuilder() {
+    public static <A, B extends ObjectValue<A, B>> ExpressionTestCaseBuilder<A, B> newBuilder() {
         return new ExpressionTestCaseBuilder<>();
     }
 
@@ -34,7 +35,7 @@ public class ExpressionTestCaseBuilder<T, E extends BaseValue<T, E>> {
         return arguments.stream();
     }
 
-    public static class ArgumentBuilder<T, E extends BaseValue<T, E>> {
+    public static class ArgumentBuilder<T, E extends ObjectValue<T, E>> {
 
         private final ExpressionTestCaseBuilder<T, E> testCaseBuilder;
         private final BiFunction<E, T, E> modifier;
@@ -103,13 +104,10 @@ public class ExpressionTestCaseBuilder<T, E extends BaseValue<T, E>> {
         }
 
         private String testCaseName() {
-
-            if (testCaseName == null) {
-                return name.apply(value) + ": (value: " + value + ")";
-            }
-            else {
-                return testCaseName;
-            }
+            return Objects.requireNonNullElseGet(
+                testCaseName,
+                () -> name.apply(value) + ": (value: " + value + ")"
+            );
         }
 
         private Arguments toArguments() {
