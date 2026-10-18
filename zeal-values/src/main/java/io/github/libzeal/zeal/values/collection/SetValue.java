@@ -2,24 +2,21 @@ package io.github.libzeal.zeal.values.collection;
 
 import io.github.libzeal.zeal.values.sdk.BaseValue;
 import io.github.libzeal.zeal.values.sdk.sequence.InspectableSequenceExpressions;
-import io.github.libzeal.zeal.values.sdk.sequence.InspectableSequenceExpressions.InspectableSequenceOperations;
 import io.github.libzeal.zeal.values.sdk.sequence.RepeatableSequenceExpressions;
-import io.github.libzeal.zeal.values.sdk.sequence.RepeatableSequenceExpressions.RepeatableSequenceOperations;
 import io.github.libzeal.zeal.values.sdk.sequence.SizedSequenceExpressions;
-import io.github.libzeal.zeal.values.sdk.sequence.SizedSequenceExpressions.SizedSequenceOperations;
 
 import java.util.*;
 
 import static java.util.stream.Collectors.toList;
 
 public class SetValue<T> extends BaseValue<Set<T>, SetValue<T>>
-    implements CollectionSequenceValue<T, Set<T>, SetValue<T>>{
+    implements CollectionValue<T, Set<T>, SetValue<T>> {
 
-    private final SetSequenceOperations<T> operations;
+    private final SetOperations<T> operations;
 
     public SetValue(final Set<T> subject) {
         super(subject, "Set value");
-        this.operations = new SetSequenceOperations<>();
+        this.operations = new SetOperations<>();
     }
 
     // TODO Optimize these to short circuit, since Sets have unique values
@@ -181,10 +178,8 @@ public class SetValue<T> extends BaseValue<Set<T>, SetValue<T>>
         return excludesAny(Arrays.asList(desired));
     }
 
-    public static final class SetSequenceOperations<T>
-        implements SizedSequenceOperations<Set<T>>,
-        InspectableSequenceOperations<T, Set<T>>,
-        RepeatableSequenceOperations<T, Set<T>> {
+    private static final class SetOperations<T>
+        implements CollectionOperations<T, Set<T>> {
 
         @Override
         public int occurrences(final Set<T> haystack, final T needle) {

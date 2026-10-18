@@ -20,7 +20,7 @@ public class ArrayValue<T> extends BaseValue<T[], ArrayValue<T>> implements
     OrderedSequenceValue<T, ArrayValue<T>>,
     RepeatableSequenceValue<T, ArrayValue<T>> {
 
-    private final ArraySequenceOperations<T> operations = new ArraySequenceOperations<>();
+    private final ArrayOperations<T> operations = new ArrayOperations<>();
 
     public ArrayValue(final T[] subject) {
         super(subject, "Array value");
@@ -225,7 +225,7 @@ public class ArrayValue<T> extends BaseValue<T[], ArrayValue<T>> implements
         );
     }
 
-    protected static final class ArraySequenceOperations<T>
+    private static final class ArrayOperations<T>
         implements
             SizedSequenceOperations<T[]>,
             InspectableSequenceOperations<T, T[]>,

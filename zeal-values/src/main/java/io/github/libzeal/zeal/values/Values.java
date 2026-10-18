@@ -161,8 +161,8 @@ public class Values {
         return new IterableValue<>(value);
     }
 
-    public static <T> CollectionValue<T> value(final Collection<T> value) {
-        return new CollectionValue<>(value);
+    public static <T> SimpleCollectionValue<T> value(final Collection<T> value) {
+        return new SimpleCollectionValue<>(value);
     }
 
     public static <T> ListValue<T> value(final List<T> value) {

@@ -2,10 +2,7 @@ package io.github.libzeal.zeal.values.collection;
 
 import io.github.libzeal.zeal.values.sdk.BaseValue;
 import io.github.libzeal.zeal.values.sdk.sequence.*;
-import io.github.libzeal.zeal.values.sdk.sequence.InspectableSequenceExpressions.InspectableSequenceOperations;
 import io.github.libzeal.zeal.values.sdk.sequence.OrderedSequenceExpressions.OrderedSequenceOperations;
-import io.github.libzeal.zeal.values.sdk.sequence.RepeatableSequenceExpressions.RepeatableSequenceOperations;
-import io.github.libzeal.zeal.values.sdk.sequence.SizedSequenceExpressions.SizedSequenceOperations;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -15,14 +12,14 @@ import java.util.List;
 import static java.util.stream.Collectors.toList;
 
 public class ListValue<T> extends BaseValue<List<T>, ListValue<T>>
-    implements CollectionSequenceValue<T, List<T>, ListValue<T>>,
+    implements CollectionValue<T, List<T>, ListValue<T>>,
     OrderedSequenceValue<T, ListValue<T>> {
 
-    private final ListSequenceOperations<T> operations;
+    private final ListOperations<T> operations;
 
     public ListValue(final List<T> subject) {
         super(subject, "List value");
-        this.operations = new ListSequenceOperations<>();
+        this.operations = new ListOperations<>();
     }
 
     @Override
@@ -232,10 +229,8 @@ public class ListValue<T> extends BaseValue<List<T>, ListValue<T>>
         return excludesAny(Arrays.asList(desired));
     }
 
-    public static final class ListSequenceOperations<T>
-        implements SizedSequenceOperations<List<T>>,
-            InspectableSequenceOperations<T, List<T>>,
-            RepeatableSequenceOperations<T, List<T>>,
+    private static final class ListOperations<T>
+        implements CollectionOperations<T, List<T>>,
             OrderedSequenceOperations<T, List<T>> {
 
         @Override
