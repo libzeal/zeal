@@ -1,7 +1,6 @@
 module zeal.values {
 
     requires zeal.logic;
-    requires java.desktop;
 
     exports io.github.libzeal.zeal.values;
     exports io.github.libzeal.zeal.values.collection;

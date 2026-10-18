@@ -110,9 +110,7 @@ public class EvaluatedTerminalEvaluation implements TerminalEvaluation {
     public boolean equals(final Object o) {
 
         if (this == o) return true;
-        if (!(o instanceof EvaluatedTerminalEvaluation)) return false;
-
-        final EvaluatedTerminalEvaluation that = (EvaluatedTerminalEvaluation) o;
+        if (!(o instanceof final EvaluatedTerminalEvaluation that)) return false;
 
         return result == that.result &&
             Objects.equals(name, that.name) &&

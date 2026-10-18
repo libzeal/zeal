@@ -77,7 +77,7 @@ class RequirementTest {
     static final class ExceptionThrownArgumentsProvider implements ArgumentsProvider {
 
         @Override
-        public Stream<? extends Arguments> provideArguments(final ExtensionContext extensionContext) throws Exception {
+        public Stream<? extends Arguments> provideArguments(final ExtensionContext extensionContext) {
             return Stream.of(
                 Arguments.of(
                     new ExceptionTestCaseData(

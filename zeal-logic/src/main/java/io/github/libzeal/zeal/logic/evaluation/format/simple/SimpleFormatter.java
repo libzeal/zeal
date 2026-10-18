@@ -58,31 +58,28 @@ public class SimpleFormatter implements Formatter {
         return builder.toString().trim();
     }
 
-    private static final class FormattingTraverser implements TraverserAction {
+    private record FormattingTraverser(Evaluation evaluation,
+                                       StringBuilder builder,
+                                       ComponentFormatter<Evaluation> evaluationFormatter) implements TraverserAction {
 
-        private final Evaluation evaluation;
-        private final StringBuilder builder;
-        private final ComponentFormatter<Evaluation> evaluationFormatter;
+            private FormattingTraverser {
+                requireNonNull(evaluation);
+                requireNonNull(builder);
+                requireNonNull(evaluationFormatter);
+            }
 
-        public FormattingTraverser(final Evaluation evaluation, final StringBuilder builder,
-                                   final ComponentFormatter<Evaluation> evaluationFormatter) {
-            this.evaluation = requireNonNull(evaluation);
-            this.builder = requireNonNull(builder);
-            this.evaluationFormatter = requireNonNull(evaluationFormatter);
+            @Override
+            public void on(final Evaluation evaluation, final TraversalContext context) {
+
+                final SimpleFormatterContext componentContext = createContext(context);
+                final String formattedText = evaluationFormatter.format(evaluation, componentContext);
+
+                builder.append(formattedText)
+                    .append("\n");
+            }
+
+            private SimpleFormatterContext createContext(final TraversalContext context) {
+                return new SimpleFormatterContext(evaluation.cause(), context.depth());
+            }
         }
-
-        @Override
-        public void on(final Evaluation evaluation, final TraversalContext context) {
-
-            final SimpleFormatterContext componentContext = createContext(context);
-            final String formattedText = evaluationFormatter.format(evaluation, componentContext);
-
-            builder.append(formattedText)
-                .append("\n");
-        }
-
-        private SimpleFormatterContext createContext(final TraversalContext context) {
-            return new SimpleFormatterContext(evaluation.cause(), context.depth());
-        }
-    }
 }

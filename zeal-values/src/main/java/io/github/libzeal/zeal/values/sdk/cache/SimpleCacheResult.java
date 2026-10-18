@@ -2,14 +2,11 @@ package io.github.libzeal.zeal.values.sdk.cache;
 
 import static java.util.Objects.requireNonNull;
 
-public final class SimpleCacheResult<C> implements CacheableResult<C> {
+public record SimpleCacheResult<C>(boolean passed,
+                                   C cache) implements CacheableResult<C> {
 
-    private final boolean passed;
-    private final C cache;
-
-    public SimpleCacheResult(final boolean passed, final C cache) {
-        this.passed = passed;
-        this.cache = requireNonNull(cache);
+    public SimpleCacheResult {
+        requireNonNull(cache);
     }
 
     public static SimpleCacheResultBuilder of(final boolean passed) {
@@ -22,16 +19,6 @@ public final class SimpleCacheResult<C> implements CacheableResult<C> {
 
     public static SimpleCacheResultBuilder ofFailed() {
         return new SimpleCacheResultBuilder(false);
-    }
-
-    @Override
-    public boolean passed() {
-        return passed;
-    }
-
-    @Override
-    public C cache() {
-        return cache;
     }
 
     public final static class SimpleCacheResultBuilder {

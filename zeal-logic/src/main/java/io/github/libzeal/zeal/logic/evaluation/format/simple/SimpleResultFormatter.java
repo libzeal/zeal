@@ -7,13 +7,10 @@ class SimpleResultFormatter implements ComponentFormatter<Result> {
     @Override
     public String format(final Result result, final SimpleFormatterContext context) {
 
-        switch (result) {
-            case TRUE:
-                return "[T]";
-            case FALSE:
-                return "[F]";
-            default:
-                return "[ ]";
-        }
+        return switch (result) {
+            case TRUE -> "[T]";
+            case FALSE -> "[F]";
+            default -> "[ ]";
+        };
     }
 }

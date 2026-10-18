@@ -105,7 +105,7 @@ public class InspectableSequenceExpressions {
                                 .value()
                                 .stream()
                                 .map(Formatter::stringify)
-                                .collect(toList());
+                                .toList();
 
                             return "At least one desired element found in subject: " + found;
                         }
@@ -177,7 +177,7 @@ public class InspectableSequenceExpressions {
                                 .value()
                                 .stream()
                                 .map(Formatter::stringify)
-                                .collect(toList());
+                                .toList();
 
                             return "At least one desired element found in subject: " + found;
                         }
@@ -218,7 +218,7 @@ public class InspectableSequenceExpressions {
                                 .value()
                                 .stream()
                                 .map(Formatter::stringify)
-                                .collect(toList());
+                                .toList();
 
                             return "The following desired elements were found: " + found;
 

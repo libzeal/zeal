@@ -3,8 +3,6 @@ package io.github.libzeal.zeal.logic.evaluation.format.simple;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.evaluation.cause.Cause;
 
-import java.util.Objects;
-
 import static java.util.Objects.requireNonNull;
 
 /**

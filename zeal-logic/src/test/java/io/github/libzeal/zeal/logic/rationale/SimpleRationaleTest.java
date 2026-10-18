@@ -89,7 +89,7 @@ class SimpleRationaleTest {
 
         Rationale a = new SimpleRationale(expected, actual, hint);
 
-        assertNotEquals(a, new Object());
+        assertNotEquals(new Object(), a);
     }
 
     @Test

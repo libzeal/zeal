@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import java.time.Duration;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 class TerminalEvaluationTest {
@@ -133,7 +132,7 @@ class TerminalEvaluationTest {
 
         final EvaluatedTerminalEvaluation evaluation1 = EvaluatedTerminalEvaluation.ofTrue(name, mock(Rationale.class), Duration.ofMillis(7));
 
-        assertNotEquals(evaluation1, new Object());
+        assertNotEquals(new Object(), evaluation1);
     }
 
     @Test

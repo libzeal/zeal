@@ -1,7 +1,7 @@
 module zeal.assertion {
 
-    requires zeal.logic;
-    requires zeal.values;
+    requires transitive zeal.logic;
+    requires transitive zeal.values;
 
     exports io.github.libzeal.zeal.assertion;
     exports io.github.libzeal.zeal.assertion.error;

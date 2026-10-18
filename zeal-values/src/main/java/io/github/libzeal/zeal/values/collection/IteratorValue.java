@@ -7,6 +7,9 @@ import java.util.Iterator;
 
 public class IteratorValue<T> extends BaseValue<Iterator<T>, IteratorValue<T>> {
 
+    private static final String HAS_NEXT_NAME = "hasNext";
+    private static final String NOT_HAS_NEXT_NAME = "not[hasNext]";
+
     public IteratorValue(final Iterator<T> subject) {
         super(subject, "Iterator value");
     }
@@ -14,30 +17,22 @@ public class IteratorValue<T> extends BaseValue<Iterator<T>, IteratorValue<T>> {
     public IteratorValue<T> hasNext() {
         return append(
                 expression(Iterator::hasNext)
-                    .name(hasNextName())
-                    .expected(hasNextName())
+                    .name(HAS_NEXT_NAME)
+                    .expected(HAS_NEXT_NAME)
                     .actual(hasNextActual())
                     .build()
         );
     }
 
-    private static String hasNextName() {
-        return "hasNext";
-    }
-
     private static <T> ComputableField<Iterator<T>> hasNextActual() {
-        return context -> context.ifPassedOrElse(hasNextName(), doesNotHaveNextName());
-    }
-
-    private static String doesNotHaveNextName() {
-        return "not[hasNext]";
+        return context -> context.ifPassedOrElse(HAS_NEXT_NAME, NOT_HAS_NEXT_NAME);
     }
 
     public IteratorValue<T> doesNotHaveNext() {
         return append(
                 expression(s -> !s.hasNext())
-                    .name(doesNotHaveNextName())
-                    .expected(doesNotHaveNextName())
+                    .name(NOT_HAS_NEXT_NAME)
+                    .expected(NOT_HAS_NEXT_NAME)
                     .actual(hasNextActual())
                     .build()
         );

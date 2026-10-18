@@ -347,7 +347,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
                 .expectedExpected(value1.toString())
                 .expectedActual((expression, value) -> value.toString())
                 .addTest()
-            .newTest((expression, value) -> expression.isExactly((T) null))
+            .newTest((expression, value) -> expression.isExactly(null))
                 .subject(null)
                 .expectedState(TRUE)
                 .expectedName("isExactly[(null)]")
@@ -458,9 +458,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
             .newTest((e, s) -> e.isEqualTo(value1, equalComparator))
                 .subject(value2)
                 .expectedState(TRUE)
-                .expectedName(value -> {
-                    return "isEqualTo[" + value1 + ", comparator: " + Formatter.stringify(equalComparator) + "]";
-                })
+                .expectedName(value -> "isEqualTo[" + value1 + ", comparator: " + Formatter.stringify(equalComparator) + "]")
                 .expectedExpected((expression, value) -> value1.toString())
                 .expectedActual((expression, value) -> value.toString())
                 .addTest()
@@ -478,9 +476,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
             .newTest((e, s) -> e.isEqualTo(value1, greaterThanComparator))
                 .subject(value2)
                 .expectedState(FALSE)
-                .expectedName(value -> {
-                    return "isEqualTo[" + value1 + ", comparator: " + Formatter.stringify(greaterThanComparator) + "]";
-                })
+                .expectedName(value -> "isEqualTo[" + value1 + ", comparator: " + Formatter.stringify(greaterThanComparator) + "]")
                 .expectedExpected((expression, value) -> value1.toString())
                 .expectedActual((expression, value) -> value.toString())
                 .addTest();
@@ -502,27 +498,21 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
             .newTest((e, s) -> e.isNotEqualTo(value1, equalComparator))
                 .subject(value2)
                 .expectedState(FALSE)
-                .expectedName(value -> {
-                    return "isNotEqualTo[" + value1 + ", comparator: " + Formatter.stringify(equalComparator) + "]";
-                })
+                .expectedName(value -> "isNotEqualTo[" + value1 + ", comparator: " + Formatter.stringify(equalComparator) + "]")
                 .expectedExpected((expression, value) -> value1.toString())
                 .expectedActual((expression, value) -> value.toString())
                 .addTest()
             .newTest((e, s) -> e.isNotEqualTo(value1, lessThanComparator))
                 .subject(value2)
                 .expectedState(TRUE)
-                .expectedName(value -> {
-                    return "isNotEqualTo[" + value1 + ", comparator: " + Formatter.stringify(lessThanComparator) + "]";
-                })
+                .expectedName(value -> "isNotEqualTo[" + value1 + ", comparator: " + Formatter.stringify(lessThanComparator) + "]")
                 .expectedExpected((expression, value) -> value1.toString())
                 .expectedActual((expression, value) -> value.toString())
                 .addTest()
             .newTest((e, s) -> e.isNotEqualTo(value1, greaterThanComparator))
                 .subject(value2)
                 .expectedState(TRUE)
-                .expectedName(value -> {
-                    return "isNotEqualTo[" + value1 + ", comparator: " + Formatter.stringify(greaterThanComparator) + "]";
-                })
+                .expectedName(value -> "isNotEqualTo[" + value1 + ", comparator: " + Formatter.stringify(greaterThanComparator) + "]")
                 .expectedExpected((expression, value) -> value1.toString())
                 .expectedActual((expression, value) -> value.toString())
                 .addTest();

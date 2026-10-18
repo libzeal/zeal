@@ -1,9 +1,6 @@
 package io.github.libzeal.zeal.logic.unary.future.rationale;
 
 import io.github.libzeal.zeal.logic.rationale.Rationale;
-import io.github.libzeal.zeal.logic.util.Formatter;
-
-import static java.util.Objects.requireNonNull;
 
 /**
  * A formatter that consumes a subject and provides a string representation. This interface is intended to be used to

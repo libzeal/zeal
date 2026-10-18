@@ -34,7 +34,7 @@ class CollectingTraverserActionTest {
         final List<Evaluation> found = action.found();
 
         assertEquals(1, found.size());
-        assertEquals(evaluation, found.get(0));
+        assertEquals(evaluation, found.getFirst());
     }
 
     @Test
@@ -85,7 +85,7 @@ class CollectingTraverserActionTest {
         final List<Evaluation> children = action.children();
 
         assertEquals(1, children.size());
-        assertEquals(evaluation2, children.get(0));
+        assertEquals(evaluation2, children.getFirst());
     }
 
     @Test

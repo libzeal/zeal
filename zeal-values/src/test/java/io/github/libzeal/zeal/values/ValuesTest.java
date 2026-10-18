@@ -51,7 +51,7 @@ class ValuesTest {
     @Test
     void givenValidValue_whenValueBoxedInteger_thenExpressionReturned() {
 
-        final UnaryExpression<?> expression = Values.value(Integer.valueOf(1));
+        final UnaryExpression<?> expression = Values.value(1);
 
         assertNotNull(expression);
     }
@@ -91,7 +91,7 @@ class ValuesTest {
     @Test
     void givenValidValue_whenValueBoxedByte_thenExpressionReturned() {
 
-        final UnaryExpression<?> expression = Values.value(Byte.valueOf((byte) 0x01));
+        final UnaryExpression<?> expression = Values.value((byte) 0x01);
 
         assertNotNull(expression);
     }
@@ -99,7 +99,7 @@ class ValuesTest {
     @Test
     void givenValidValue_whenValueBoxedCharacter_thenExpressionReturned() {
 
-        final UnaryExpression<?> expression = Values.value(Character.valueOf('c'));
+        final UnaryExpression<?> expression = Values.value('c');
 
         assertNotNull(expression);
     }

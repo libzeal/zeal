@@ -2,8 +2,6 @@ package io.github.libzeal.zeal.logic.evaluation.format.simple;
 
 import java.time.Duration;
 
-import static java.util.Objects.requireNonNull;
-
 class SimpleDurationFormatter implements ComponentFormatter<Duration> {
 
     @Override
@@ -22,11 +20,11 @@ class SimpleDurationFormatter implements ComponentFormatter<Duration> {
         final long minutesPart = elapsedTime.toMinutes() - (hoursPart * 60);
         final long secondsPart = (elapsedTime.toMillis() / 1000) - (hoursPart * 3600) - (minutesPart * 60);
         final long millisPart =
-            elapsedTime.toMillis() - (hoursPart * 3600_000l) - (minutesPart * 60_000l) - (secondsPart * 1000);
-        final long remainingNanos = elapsedTime.toNanos() - (hoursPart * 3600_000_000_000l) - (minutesPart * 60_000_000_000l) - (secondsPart * 1000_000_000l) - (millisPart * 1000_000l);
+            elapsedTime.toMillis() - (hoursPart * 3600_000L) - (minutesPart * 60_000L) - (secondsPart * 1000);
+        final long remainingNanos = elapsedTime.toNanos() - (hoursPart * 3600_000_000_000L) - (minutesPart * 60_000_000_000L) - (secondsPart * 1000_000_000L) - (millisPart * 1000_000L);
         final long microsPart = remainingNanos / 1000;
         final long nanosPart =
-            elapsedTime.toNanos() - (hoursPart * 3600_000_000_000l) - (minutesPart * 60_000_000_000l) - (secondsPart * 1000_000_000l) - (millisPart * 1000_000l) - (microsPart * 1000);
+            elapsedTime.toNanos() - (hoursPart * 3600_000_000_000L) - (minutesPart * 60_000_000_000L) - (secondsPart * 1000_000_000L) - (millisPart * 1000_000L) - (microsPart * 1000);
 
         if (hoursPart > 0) {
             builder.append(hoursPart)

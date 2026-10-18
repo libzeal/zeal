@@ -18,6 +18,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class SimpleFormatterTest {
 
+    private static final String EVALUATION_HEADING = "Evaluation:\n";
+    private static final String ROOT_CAUSE_HEADING = "Root Cause:\n";
     private SimpleFormatter formatter;
 
     @BeforeEach
@@ -41,16 +43,12 @@ class SimpleFormatterTest {
         final Rationale rationale = new SimpleRationale("someExpected", "someActual", "someHint");
         final Evaluation evaluation = EvaluatedTerminalEvaluation.ofTrue(name, rationale, elapsedTime);
 
-        final String expected = evaluationHeading() +
+        final String expected = EVALUATION_HEADING +
             "[T] " + name + " (" + elapsedTime.toMillis() + "ms)  <---[ Root Cause ]";
 
         final String result = formatter.format(evaluation);
 
         assertEquals(expected, result);
-    }
-
-    private static String evaluationHeading() {
-        return "Evaluation:\n";
     }
 
     @Test
@@ -59,7 +57,7 @@ class SimpleFormatterTest {
         final String name = "foo";
         final Evaluation evaluation = new SkippedTerminalEvaluation(name, CauseGenerator.self());
 
-        final String expected = evaluationHeading() +
+        final String expected = EVALUATION_HEADING +
             "\\[ \\] " + name + " \\(.+\\)  <---\\[ Root Cause \\]";
 
         final String result = formatter.format(evaluation);
@@ -76,23 +74,19 @@ class SimpleFormatterTest {
         final Evaluation evaluation = EvaluatedTerminalEvaluation.ofFalse(name, rationale, elapsedTime);
 
         final String expected =
-            rootCauseHeading() +
+            ROOT_CAUSE_HEADING +
             "Expression : " + name + "\n" +
             "Expected   : " + rationale.expected() + "\n" +
             "Actual     : " + rationale.actual() + "\n" +
             "Hint       : " + rationale.hint().orElse("") + "\n" +
             "Chain      : " + name + "\n" +
             "\n" +
-            evaluationHeading() +
+                EVALUATION_HEADING +
             "[F] " + name + " (" + elapsedTime.toMillis() + "ms)  <---[ Root Cause ]";
 
         final String result = formatter.format(evaluation);
 
         assertEquals(expected, result);
-    }
-
-    private static String rootCauseHeading() {
-        return "Root Cause:\n";
     }
 
     @Test
@@ -114,14 +108,14 @@ class SimpleFormatterTest {
         );
 
         final String expected =
-            rootCauseHeading() +
+            ROOT_CAUSE_HEADING +
                 "Expression : " + childEvaluation.name() + "\n" +
                 "Expected   : " + childRationale.expected() + "\n" +
                 "Actual     : " + childRationale.actual() + "\n" +
                 "Hint       : " + childRationale.hint().orElse("") + "\n" +
                 "Chain      : " + parentEvaluation.name() + " -> " + childEvaluation.name() + "\n" +
                 "\n" +
-                evaluationHeading() +
+                EVALUATION_HEADING +
                 "[F] " + parentEvaluation.name() + " (" + parentElapsedTime.toMillis() + "ms)\n" +
                 "    [F] " + childEvaluation.name() + " (" + childElapsedTime.toMillis() + "ms)  <---[ Root Cause ]";
 
@@ -149,7 +143,7 @@ class SimpleFormatterTest {
         );
 
         final String expected =
-            rootCauseHeading() +
+            ROOT_CAUSE_HEADING +
                 "Expression : " + childEvaluation.name() + "\n" +
                 "Expected   : " + childRationale.expected() + "\n" +
                 "Actual     : " + childRationale.actual() + "\n" +
@@ -157,7 +151,7 @@ class SimpleFormatterTest {
                 "Chain      : " + parentEvaluation.name() + " -> " + childEvaluation.name() + "\n" +
                 "Notes      : " + SimpleRootCauseFormatter.TRUE_ROOT_CAUSE_NOTE + "\n" +
                 "\n" +
-                evaluationHeading() +
+                EVALUATION_HEADING +
                 "[F] " + parentEvaluation.name() + " (" + parentElapsedTime.toMillis() + "ms)\n" +
                 "    [T] " + childEvaluation.name() + " (" + childElapsedTime.toMillis() + "ms)  <---[ Root Cause ]";
 

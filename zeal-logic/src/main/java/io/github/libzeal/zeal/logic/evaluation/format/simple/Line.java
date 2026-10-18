@@ -35,9 +35,7 @@ class Line {
 
         final StringBuilder indent = new StringBuilder();
 
-        for (int i = 0; i < level; i++) {
-            indent.append(String.format(indentationFormat, " "));
-        }
+        indent.repeat(String.format(indentationFormat, " "), Math.max(0, level));
 
         return indent.toString();
     }

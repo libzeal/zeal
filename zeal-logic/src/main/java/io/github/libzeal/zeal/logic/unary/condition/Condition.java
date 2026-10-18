@@ -1,6 +1,5 @@
 package io.github.libzeal.zeal.logic.unary.condition;
 
-import io.github.libzeal.zeal.logic.Expression;
 import io.github.libzeal.zeal.logic.Expressions;
 import io.github.libzeal.zeal.logic.unary.future.ComputableExpression;
 

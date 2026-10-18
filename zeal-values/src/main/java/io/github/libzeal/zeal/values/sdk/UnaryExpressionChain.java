@@ -32,7 +32,7 @@ class UnaryExpressionChain<T> {
 
     public UnaryExpressionChain<T> prepend(final ComputableExpression<T> computable) {
 
-        expressions.add(0, computable);
+        expressions.addFirst(computable);
 
         return this;
     }

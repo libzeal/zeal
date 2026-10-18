@@ -112,7 +112,7 @@ public class RootCauseChain implements Iterable<Cause> {
      * @return The last element in the chain.
      */
     Cause last() {
-        return chain.get(chain.size() - 1);
+        return chain.getLast();
     }
 
     /**
