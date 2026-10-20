@@ -81,17 +81,17 @@ public record OrExpression(String name,
      * @throws NullPointerException
      *     The supplied name is {@code null}.
      */
-    public OrExpression(String name) {
+    public OrExpression(final String name) {
         this(name, new ArrayList<>(1));
     }
 
     @Override
-    public void append(Expression predicate) {
+    public void append(final Expression predicate) {
         this.children.add(predicate);
     }
 
     @Override
-    public void prepend(Expression predicate) {
+    public void prepend(final Expression predicate) {
         this.children.addFirst(predicate);
     }
 

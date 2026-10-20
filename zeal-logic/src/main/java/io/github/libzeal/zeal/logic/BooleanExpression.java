@@ -49,7 +49,7 @@ public final class BooleanExpression implements Expression {
      *         The supplied predicate is {@code null}.
      */
     public BooleanExpression(final BooleanSupplier predicate) {
-        this("(unnamed)", predicate);
+        this(DEFAULT_NAME, predicate);
     }
 
     @Override

@@ -1,9 +1,9 @@
 package io.github.libzeal.zeal.logic;
 
-import io.github.libzeal.zeal.logic.evaluation.cause.Cause;
 import io.github.libzeal.zeal.logic.evaluation.EvaluatedCompoundEvaluation;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.evaluation.Result;
+import io.github.libzeal.zeal.logic.evaluation.cause.Cause;
 import io.github.libzeal.zeal.logic.evaluation.cause.CauseGenerator;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
 import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
@@ -22,6 +22,11 @@ import static java.util.Objects.requireNonNull;
  * false; otherwise (the wrapped expression is true or skipped), the expression
  * evaluates to false.
  *
+ * @param name
+ *     The name of the expression.
+ * @param wrapped
+ *     The expression to negate.
+ *
  * @author Justin Albano
  */
 public record NotExpression(String name,
@@ -30,22 +35,22 @@ public record NotExpression(String name,
     /**
      * The actual value for the rationale if the wrapped expression is true.
      */
-    public static final String ACTUAL_VALUE_WRAPPED_TRUE = "Wrapped: true";
+    static final String ACTUAL_VALUE_WRAPPED_TRUE = "Wrapped: true";
 
     /**
      * The actual value for the rationale if the wrapped expression is false.
      */
-    public static final String ACTUAL_VALUE_WRAPPED_FALSE = "Wrapped: false";
+    static final String ACTUAL_VALUE_WRAPPED_FALSE = "Wrapped: false";
 
     /**
      * The actual value for the rationale if the wrapped expression is skip.
      */
-    public static final String ACTUAL_VALUE_WRAPPED_SKIPPED = "Wrapped: skipped";
+    static final String ACTUAL_VALUE_WRAPPED_SKIPPED = "Wrapped: skipped";
 
     /**
      * The default name of a negated expression.
      */
-    public static final String DEFAULT_NAME = "NOT";
+    static final String DEFAULT_NAME = "NOT";
 
     /**
      * Creates a new expression that negates the supplied expression.
@@ -68,6 +73,9 @@ public record NotExpression(String name,
      *
      * @param wrapped
      *     The expression to negate.
+     *
+     * @return A negated expression that evaluates to the negative of the
+     * supplied expression.
      *
      * @throws NullPointerException
      *     The supplied wrapped expression is {@code null}.
