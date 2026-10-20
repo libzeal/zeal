@@ -1,12 +1,12 @@
 package io.github.libzeal.zeal.values.sdk.sequence;
 
-import io.github.libzeal.zeal.logic.unary.future.ComputableExpression;
 import io.github.libzeal.zeal.logic.format.Formatter;
+import io.github.libzeal.zeal.logic.unary.cache.CachedResult;
+import io.github.libzeal.zeal.logic.unary.future.ComputableExpression;
+import io.github.libzeal.zeal.values.config.Configuration;
+import io.github.libzeal.zeal.values.sdk.CachedValueBuilder;
 import io.github.libzeal.zeal.values.sdk.SimpleValueBuilder;
 import io.github.libzeal.zeal.values.sdk.StandardRationales;
-import io.github.libzeal.zeal.values.sdk.CachedValueBuilder;
-import io.github.libzeal.zeal.logic.unary.cache.SimpleCacheResult;
-import io.github.libzeal.zeal.values.config.Configuration;
 
 import java.util.Collection;
 import java.util.List;
@@ -36,14 +36,14 @@ public class InspectableSequenceExpressions {
         return CachedValueBuilder.of((S s) -> {
 
                 if (desired == null) {
-                    return SimpleCacheResult.ofPassed()
-                        .withCache(SequenceCaches.<T>nonFound());
+                    return CachedResult.ofPassed()
+                        .withCache(List.<T>of());
                 }
 
                 final List<T> found = ops.findAllIn(s, desired);
 
-                return SimpleCacheResult.of(desired.size() == found.size())
-                    .withCache(SequenceCaches.found(found));
+                return CachedResult.of(desired.size() == found.size())
+                    .withCache(found);
             })
             .name("includesAll")
             .expected("All desired elements in subject")
@@ -62,7 +62,7 @@ public class InspectableSequenceExpressions {
                             return "All desired elements found in subject";
                         }
                         else {
-                            final List<String> missing = computeMissing(desired, context.cache().value());
+                            final List<String> missing = computeMissing(desired, context.cached());
 
                             return "The following desired elements were not found: " + missing;
                         }
@@ -77,14 +77,14 @@ public class InspectableSequenceExpressions {
         return CachedValueBuilder.of((S s) -> {
 
                 if (desired == null) {
-                    return SimpleCacheResult.ofPassed()
-                        .withCache(SequenceCaches.<T>nonFound());
+                    return CachedResult.ofPassed()
+                        .withCache(List.<T>of());
                 }
 
                 final List<T> found = ops.findAllIn(s, desired);
 
-                return SimpleCacheResult.of(!found.isEmpty())
-                    .withCache(SequenceCaches.found(found));
+                return CachedResult.of(!found.isEmpty())
+                    .withCache(found);
             })
             .name("includesAny")
             .expected("Any desired elements in subject")
@@ -101,8 +101,7 @@ public class InspectableSequenceExpressions {
                     else {
                         if (context.passed()) {
 
-                            final List<String> found = context.cache()
-                                .value()
+                            final List<String> found = context.cached()
                                 .stream()
                                 .map(Formatter::stringify)
                                 .toList();
@@ -147,14 +146,14 @@ public class InspectableSequenceExpressions {
         return CachedValueBuilder.of((S s) -> {
 
                 if (desired == null) {
-                    return SimpleCacheResult.ofPassed()
-                        .withCache(SequenceCaches.<T>nonFound());
+                    return CachedResult.ofPassed()
+                        .withCache(List.<T>of());
                 }
 
                 final List<T> found = ops.findAllIn(s, desired);
 
-                return SimpleCacheResult.of(found.isEmpty())
-                    .withCache(SequenceCaches.found(found));
+                return CachedResult.of(found.isEmpty())
+                    .withCache(found);
             })
             .name("excludesAll")
             .expected("All desired elements missing in subject")
@@ -173,8 +172,7 @@ public class InspectableSequenceExpressions {
                             return "All of the desired elements are missing in subject";
                         }
                         else {
-                            final List<String> found = context.cache()
-                                .value()
+                            final List<String> found = context.cached()
                                 .stream()
                                 .map(Formatter::stringify)
                                 .toList();
@@ -191,14 +189,14 @@ public class InspectableSequenceExpressions {
         return CachedValueBuilder.of((S s) -> {
 
                 if (desired == null) {
-                    return SimpleCacheResult.ofPassed()
-                        .withCache(SequenceCaches.<T>nonFound());
+                    return CachedResult.ofPassed()
+                        .withCache(List.<T>of());
                 }
 
                 final List<T> found = ops.findAllIn(s, desired);
 
-                return SimpleCacheResult.of(desired.size() < found.size())
-                    .withCache(SequenceCaches.found(found));
+                return CachedResult.of(desired.size() < found.size())
+                    .withCache(found);
             })
             .name("includesAll")
             .expected("At least one desired element missing in subject")
@@ -214,8 +212,7 @@ public class InspectableSequenceExpressions {
                     }
                     else {
                         if (context.passed()) {
-                            final List<String> found = context.cache()
-                                .value()
+                            final List<String> found = context.cached()
                                 .stream()
                                 .map(Formatter::stringify)
                                 .toList();

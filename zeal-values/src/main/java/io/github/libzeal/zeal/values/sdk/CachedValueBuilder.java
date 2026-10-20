@@ -1,5 +1,6 @@
 package io.github.libzeal.zeal.values.sdk;
 
+import io.github.libzeal.zeal.logic.format.Formatter;
 import io.github.libzeal.zeal.logic.unary.cache.*;
 import io.github.libzeal.zeal.logic.unary.future.ComputableExpression;
 
@@ -7,9 +8,9 @@ public class CachedValueBuilder<T, C> implements ValueBuilder<T> {
 
     private final CacheablePredicate<T, C> predicate;
     private String name = "<unnamed>";
-    private CachedComputableField<T, C> expected = context -> "<not set>";
-    private CachedComputableField<T, C> actual = CachedComputableRationaleContext::stringifiedSubject;
-    private CachedComputableField<T, C> hint = null;
+    private CachedField<T, C> expected = context -> "<not set>";
+    private CachedField<T, C> actual = context -> Formatter.stringify(context.subject());
+    private CachedField<T, C> hint = null;
 
     public static <T, C> CachedValueBuilder<T, C> of(final CacheablePredicate<T, C> predicate) {
         return new CachedValueBuilder<>(predicate);
@@ -40,7 +41,7 @@ public class CachedValueBuilder<T, C> implements ValueBuilder<T> {
      *
      * @return This builder (fluent interface).
      */
-    public CachedValueBuilder<T, C> expected(final CachedComputableField<T, C> expected) {
+    public CachedValueBuilder<T, C> expected(final CachedField<T, C> expected) {
         this.expected = expected;
         return this;
     }
@@ -77,7 +78,7 @@ public class CachedValueBuilder<T, C> implements ValueBuilder<T> {
      *
      * @return This builder (fluent interface).
      */
-    public CachedValueBuilder<T, C> actual(final CachedComputableField<T, C> actual) {
+    public CachedValueBuilder<T, C> actual(final CachedField<T, C> actual) {
         this.actual = actual;
         return this;
     }
@@ -102,7 +103,7 @@ public class CachedValueBuilder<T, C> implements ValueBuilder<T> {
      *
      * @return This builder (fluent interface).
      */
-    public CachedValueBuilder<T, C> hint(final CachedComputableField<T, C> hint) {
+    public CachedValueBuilder<T, C> hint(final CachedField<T, C> hint) {
         this.hint = hint;
         return this;
     }
@@ -121,10 +122,7 @@ public class CachedValueBuilder<T, C> implements ValueBuilder<T> {
 
     @Override
     public ComputableExpression<T> build() {
-
-        final CachedComputableRationale<T, C> computableRationale = new CachedComputableRationale<>(expected, actual, hint);
-
-        return new CachedComputableExpression<>(name, predicate, computableRationale);
+        return subject -> new CachedExpression<>(name, subject, predicate, expected, actual, hint);
     }
 
 }
