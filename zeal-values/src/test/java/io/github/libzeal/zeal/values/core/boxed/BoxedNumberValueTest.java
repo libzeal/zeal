@@ -1,6 +1,6 @@
 package io.github.libzeal.zeal.values.core.boxed;
 
-import io.github.libzeal.zeal.logic.util.Formatter;
+import io.github.libzeal.zeal.logic.format.Formatter;
 import io.github.libzeal.zeal.values.core.test.ExpressionTestCaseBuilder;
 import io.github.libzeal.zeal.values.sdk.BaseValueTest;
 

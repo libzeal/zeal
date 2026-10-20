@@ -1,6 +1,6 @@
 package io.github.libzeal.zeal.logic.unary.future.rationale;
 
-import io.github.libzeal.zeal.logic.util.Formatter;
+import io.github.libzeal.zeal.logic.format.Formatter;
 
 import java.util.function.Supplier;
 

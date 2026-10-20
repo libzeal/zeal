@@ -1,4 +1,4 @@
-package io.github.libzeal.zeal.values.sdk.cache;
+package io.github.libzeal.zeal.logic.unary.cache;
 
 public interface CacheableResult<C> {
 

@@ -5,7 +5,7 @@ import io.github.libzeal.zeal.logic.unary.*;
 import io.github.libzeal.zeal.logic.unary.future.rationale.ComputableField;
 import io.github.libzeal.zeal.logic.unary.future.rationale.ComputableRationale;
 import io.github.libzeal.zeal.logic.unary.future.rationale.SimpleComputableRationale;
-import io.github.libzeal.zeal.logic.util.Formatter;
+import io.github.libzeal.zeal.logic.format.Formatter;
 
 import java.util.function.Predicate;
 

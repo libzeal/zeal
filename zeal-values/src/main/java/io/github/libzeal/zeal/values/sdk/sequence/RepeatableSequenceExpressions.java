@@ -1,10 +1,10 @@
 package io.github.libzeal.zeal.values.sdk.sequence;
 
 import io.github.libzeal.zeal.logic.unary.future.ComputableExpression;
-import io.github.libzeal.zeal.values.sdk.cache.CachedValueBuilder;
-import io.github.libzeal.zeal.values.sdk.cache.SimpleCacheResult;
+import io.github.libzeal.zeal.values.sdk.CachedValueBuilder;
+import io.github.libzeal.zeal.logic.unary.cache.SimpleCacheResult;
 
-import static io.github.libzeal.zeal.logic.util.Formatter.stringify;
+import static io.github.libzeal.zeal.logic.format.Formatter.stringify;
 import static io.github.libzeal.zeal.values.sdk.StandardRationales.Names.withPairs;
 
 public class RepeatableSequenceExpressions {

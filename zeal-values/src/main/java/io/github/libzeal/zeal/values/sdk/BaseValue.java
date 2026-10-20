@@ -6,8 +6,7 @@ import io.github.libzeal.zeal.logic.unary.condition.Condition;
 import io.github.libzeal.zeal.logic.unary.future.ComputableExpression;
 import io.github.libzeal.zeal.logic.unary.future.rationale.ComputableField;
 import io.github.libzeal.zeal.values.core.ObjectValue;
-import io.github.libzeal.zeal.values.sdk.cache.CacheablePredicate;
-import io.github.libzeal.zeal.values.sdk.cache.CachedValueBuilder;
+import io.github.libzeal.zeal.logic.unary.cache.CacheablePredicate;
 
 import java.util.Comparator;
 import java.util.Objects;
@@ -15,7 +14,7 @@ import java.util.function.Predicate;
 
 import static io.github.libzeal.zeal.logic.unary.condition.Conditions.equalTo;
 import static io.github.libzeal.zeal.logic.unary.condition.Conditions.exactly;
-import static io.github.libzeal.zeal.logic.util.Formatter.stringify;
+import static io.github.libzeal.zeal.logic.format.Formatter.stringify;
 import static io.github.libzeal.zeal.values.sdk.StandardMessages.PREDICATE_SATISFIED;
 import static io.github.libzeal.zeal.values.sdk.StandardMessages.PREDICATE_UNSATISFIED;
 import static java.util.Objects.requireNonNull;

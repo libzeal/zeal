@@ -1,4 +1,4 @@
-package io.github.libzeal.zeal.logic.util;
+package io.github.libzeal.zeal.logic.format;
 
 import java.util.Collection;
 import java.util.List;

@@ -1,7 +1,7 @@
 package io.github.libzeal.zeal.values.core.boxed;
 
 import io.github.libzeal.zeal.logic.unary.future.ComputableExpression;
-import io.github.libzeal.zeal.logic.util.Formatter;
+import io.github.libzeal.zeal.logic.format.Formatter;
 import io.github.libzeal.zeal.values.sdk.SimpleValueBuilder;
 
 import java.util.function.Predicate;

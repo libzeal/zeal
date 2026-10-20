@@ -16,7 +16,7 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import static io.github.libzeal.zeal.logic.unary.condition.Condition.DEFAULT_NAME;
-import static io.github.libzeal.zeal.logic.util.Formatter.stringify;
+import static io.github.libzeal.zeal.logic.format.Formatter.stringify;
 import static java.util.Objects.requireNonNull;
 
 final class ObjectConditions {

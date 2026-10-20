@@ -3,7 +3,7 @@ package io.github.libzeal.zeal.values.sdk;
 import java.util.Arrays;
 import java.util.Collection;
 
-import static io.github.libzeal.zeal.logic.util.Formatter.stringify;
+import static io.github.libzeal.zeal.logic.format.Formatter.stringify;
 
 public class StandardRationales {
 

@@ -6,7 +6,7 @@ import io.github.libzeal.zeal.logic.evaluation.traverse.CollectingTraverserActio
 import io.github.libzeal.zeal.logic.evaluation.traverse.DepthFirstTraverser;
 import io.github.libzeal.zeal.logic.evaluation.traverse.Traverser;
 import io.github.libzeal.zeal.logic.unary.condition.Condition;
-import io.github.libzeal.zeal.logic.util.Formatter;
+import io.github.libzeal.zeal.logic.format.Formatter;
 import io.github.libzeal.zeal.values.core.ObjectValue;
 import io.github.libzeal.zeal.values.core.test.EvaluatedExpressionAssertion;
 import io.github.libzeal.zeal.values.core.test.ExpressionTestCaseBuilder;
