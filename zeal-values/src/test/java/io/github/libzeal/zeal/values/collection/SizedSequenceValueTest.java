@@ -7,18 +7,6 @@ import org.junit.jupiter.api.Test;
 import static io.github.libzeal.zeal.logic.evaluation.Result.FALSE;
 import static io.github.libzeal.zeal.logic.evaluation.Result.TRUE;
 
-/**
- * Test cases for values that implement {@link SizedSequenceValue}: checks of
- * the size of a sequence.
- * <p>
- * A value's test class implements this interface (along with the contracts for the other sequence interfaces the value
- * implements) to run these test cases against the value.
- *
- * @param <S>
- *     The type of the subject.
- * @param <E>
- *     The type of the value under test.
- */
 interface SizedSequenceValueTest<S, E extends ObjectValue<S, E> & SizedSequenceValue<?, E>>
     extends SequenceValueContract<S, E> {
 

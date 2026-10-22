@@ -13,18 +13,6 @@ import java.util.function.Predicate;
 
 import static java.util.Objects.requireNonNull;
 
-/**
- * An expression that observes a value from its subject and passes if that observed value satisfies a condition. The
- * rationale is computed after the test, from the subject, the observed value, and whether the test passed.
- * <p>
- * Unless the expression is nullable, a {@code null} subject fails without being observed (the observed value is
- * {@code null}).
- *
- * @param <T>
- *     The type of the subject.
- * @param <O>
- *     The type of the observed value.
- */
 public record PredicateExpression<T, O>(
         String name,
         T subject,
@@ -62,16 +50,6 @@ public record PredicateExpression<T, O>(
         return EvaluatedTerminalEvaluation.of(Result.from(passed), name, rationale, elapsedTime);
     }
 
-    /**
-     * Everything a rationale field can draw on once the test has run.
-     *
-     * @param subject
-     *     The subject of the expression.
-     * @param observed
-     *     The value observed from the subject and tested by the condition.
-     * @param passed
-     *     Whether the observed value satisfied the condition.
-     */
     public record Context<T, O>(T subject, O observed, boolean passed) {
 
         public <A> A ifPassedOrElse(final A ifPassed, final A orElse) {
@@ -79,9 +57,6 @@ public record PredicateExpression<T, O>(
         }
     }
 
-    /**
-     * A part of the rationale (expected, actual, or hint) computed from the context of an evaluation.
-     */
     @FunctionalInterface
     public interface Field<T, O> {
         String compute(Context<T, O> context);

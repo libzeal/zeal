@@ -9,18 +9,6 @@ import java.util.List;
 import static io.github.libzeal.zeal.logic.evaluation.Result.FALSE;
 import static io.github.libzeal.zeal.logic.evaluation.Result.TRUE;
 
-/**
- * Test cases for values that implement {@link InspectableSequenceValue}: checks of
- * whether a sequence includes or excludes elements.
- * <p>
- * A value's test class implements this interface (along with the contracts for the other sequence interfaces the value
- * implements) to run these test cases against the value.
- *
- * @param <S>
- *     The type of the subject.
- * @param <E>
- *     The type of the value under test.
- */
 interface InspectableSequenceValueTest<S, E extends ObjectValue<S, E> & InspectableSequenceValue<String, E>>
     extends SequenceValueContract<S, E> {
 

@@ -8,18 +8,6 @@ import java.util.function.Predicate;
 
 import static java.util.Objects.requireNonNull;
 
-/**
- * Builds {@link PredicateExpression}s.
- * <p>
- * Use {@link #of(Predicate)} when the condition tests the subject itself, or {@link #observing(Function)} when the
- * condition tests a value derived from the subject (such as its size), so that the value is computed once and is
- * available to the rationale as {@link PredicateExpression.Context#observed()}.
- *
- * @param <T>
- *     The type of the subject.
- * @param <O>
- *     The type of the observed value.
- */
 public final class ExpressionBuilder<T, O> {
 
     private final Function<T, O> observe;
@@ -43,9 +31,6 @@ public final class ExpressionBuilder<T, O> {
         return new Observing<>(observe);
     }
 
-    /**
-     * Passes {@code null} subjects to the observation and condition instead of failing them automatically.
-     */
     public ExpressionBuilder<T, O> nullable() {
         this.nullable = true;
         return this;
@@ -99,9 +84,6 @@ public final class ExpressionBuilder<T, O> {
             hint);
     }
 
-    /**
-     * The first step of {@link #observing(Function)}: the observation is known, but not yet the condition.
-     */
     public record Observing<T, O>(Function<T, O> observe) {
 
         public Observing {

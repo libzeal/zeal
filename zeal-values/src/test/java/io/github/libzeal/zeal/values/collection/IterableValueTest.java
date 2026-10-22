@@ -36,9 +36,6 @@ class IterableValueTest extends BaseValueTest<Iterable<String>, IterableValue<St
         return iterableOf(elements);
     }
 
-    /**
-     * Creates an iterable that is not a collection, so that the value cannot rely on collection methods.
-     */
     private static Iterable<String> iterableOf(final String... elements) {
         final List<String> list = List.of(elements);
         return list::iterator;

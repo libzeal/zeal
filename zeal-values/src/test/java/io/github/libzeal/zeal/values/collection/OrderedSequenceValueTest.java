@@ -7,18 +7,6 @@ import org.junit.jupiter.api.Test;
 import static io.github.libzeal.zeal.logic.evaluation.Result.FALSE;
 import static io.github.libzeal.zeal.logic.evaluation.Result.TRUE;
 
-/**
- * Test cases for values that implement {@link OrderedSequenceValue}: checks of
- * the positions of elements in an ordered sequence.
- * <p>
- * A value's test class implements this interface (along with the contracts for the other sequence interfaces the value
- * implements) to run these test cases against the value.
- *
- * @param <S>
- *     The type of the subject.
- * @param <E>
- *     The type of the value under test.
- */
 interface OrderedSequenceValueTest<S, E extends ObjectValue<S, E> & OrderedSequenceValue<String, E>>
     extends SequenceValueContract<S, E> {
 
