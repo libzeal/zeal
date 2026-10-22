@@ -1,8 +1,8 @@
 package io.github.libzeal.zeal.values.core.boxed;
 
-import io.github.libzeal.zeal.logic.unary.future.ComputableExpression;
+import io.github.libzeal.zeal.logic.unary.ComputableExpression;
 import io.github.libzeal.zeal.logic.format.Formatter;
-import io.github.libzeal.zeal.values.sdk.SimpleValueBuilder;
+import io.github.libzeal.zeal.logic.unary.ExpressionBuilder;
 
 import java.util.function.Predicate;
 
@@ -28,7 +28,7 @@ class BoxedNumberExpressions {
         final String expectedValue,
         final Predicate<T> longPredicate) {
 
-        final SimpleValueBuilder<T> builder = SimpleValueBuilder.notNullable(longPredicate)
+        final ExpressionBuilder<T, T> builder = ExpressionBuilder.of(longPredicate)
             .name(name);
 
         if (value == null) {
@@ -82,9 +82,9 @@ class BoxedNumberExpressions {
             .build();
     }
 
-    static <T extends Number> SimpleValueBuilder<T> notNullExpression(
+    static <T extends Number> ExpressionBuilder<T, T> notNullExpression(
         final Predicate<T> test) {
-        return SimpleValueBuilder.notNullable(test);
+        return ExpressionBuilder.of(test);
     }
 
     public static <T extends Number> ComputableExpression<T> isMinValue(

@@ -27,7 +27,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
     protected abstract T nonNullValueA();
     protected abstract T nonNullValueB();
 
-    protected ValueTestCaseBuilder<T, E> newTestCase() {
+    public ValueTestCaseBuilder<T, E> newTestCase() {
         return ValueTestCaseBuilder.forValue(this::expression);
     }
 

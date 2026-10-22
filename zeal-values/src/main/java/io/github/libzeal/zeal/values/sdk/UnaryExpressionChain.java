@@ -3,7 +3,7 @@ package io.github.libzeal.zeal.values.sdk;
 import io.github.libzeal.zeal.logic.AndExpression;
 import io.github.libzeal.zeal.logic.Expression;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
-import io.github.libzeal.zeal.logic.unary.future.ComputableExpression;
+import io.github.libzeal.zeal.logic.unary.ComputableExpression;
 
 import java.util.ArrayList;
 import java.util.List;

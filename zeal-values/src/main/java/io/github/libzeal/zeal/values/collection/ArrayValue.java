@@ -198,6 +198,20 @@ public class ArrayValue<T> extends BaseValue<T[], ArrayValue<T>> implements
     }
 
     @Override
+    public ArrayValue<T> lastIndexOfIs(final T desired, final int index) {
+        return append(
+            OrderedSequenceExpressions.lastIndexOfIs(desired, index, operations)
+        );
+    }
+
+    @Override
+    public ArrayValue<T> lastIndexOfIsNot(final T desired, final int index) {
+        return append(
+            OrderedSequenceExpressions.lastIndexOfIsNot(desired, index, operations)
+        );
+    }
+
+    @Override
     public ArrayValue<T> startsWith(final T desired) {
         return append(
             OrderedSequenceExpressions.startsWith(desired, operations)
@@ -231,6 +245,18 @@ public class ArrayValue<T> extends BaseValue<T[], ArrayValue<T>> implements
             InspectableSequenceOperations<T, T[]>,
             OrderedSequenceOperations<T, T[]>,
             RepeatableSequenceOperations<T, T[]> {
+
+        @Override
+        public int lastIndexOf(final T[] haystack, final T needle) {
+
+            for (int index = haystack.length - 1; index >= 0; index--) {
+                if (Objects.equals(haystack[index], needle)) {
+                    return index;
+                }
+            }
+
+            return -1;
+        }
 
         @Override
         public int indexOf(final T[] haystack, final T needle) {
@@ -283,7 +309,7 @@ public class ArrayValue<T> extends BaseValue<T[], ArrayValue<T>> implements
         @Override
         public Element<T> atIndex(final T[] haystack, final int index, final T desired) {
 
-            if (index > 0 && index < haystack.length) {
+            if (index >= 0 && index < haystack.length) {
                 return Element.found(haystack[index]);
             }
             else {
@@ -294,11 +320,6 @@ public class ArrayValue<T> extends BaseValue<T[], ArrayValue<T>> implements
         @Override
         public int size(final T[] haystack) {
             return haystack.length;
-        }
-
-        @Override
-        public boolean isEmpty(final T[] haystack) {
-            return haystack.length == 0;
         }
 
         @Override

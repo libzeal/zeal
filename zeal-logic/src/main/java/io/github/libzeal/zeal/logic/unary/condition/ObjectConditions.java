@@ -4,9 +4,8 @@ import io.github.libzeal.zeal.logic.AndExpression;
 import io.github.libzeal.zeal.logic.Expression;
 import io.github.libzeal.zeal.logic.Expressions;
 import io.github.libzeal.zeal.logic.OrExpression;
-import io.github.libzeal.zeal.logic.unary.future.rationale.ComputableRationale;
-import io.github.libzeal.zeal.logic.unary.future.rationale.SimpleComputableRationale;
-import io.github.libzeal.zeal.logic.unary.future.ComputedExpression;
+import io.github.libzeal.zeal.logic.unary.ComputableExpression;
+import io.github.libzeal.zeal.logic.unary.ExpressionBuilder;
 
 import java.util.List;
 import java.util.Objects;
@@ -25,27 +24,31 @@ final class ObjectConditions {
     }
 
     public static <T> Condition<T> of(final String name, final Predicate<T> predicate) {
-        return new SimpleCondition<>(name, predicate);
+
+        final ComputableExpression<T> expression = ExpressionBuilder.of(predicate)
+            .nullable()
+            .name(name)
+            .expected("satisfied")
+            .actual(context -> context.ifPassedOrElse("satisfied", "unsatisfied"))
+            .build();
+
+        return expression::compute;
     }
 
     public static <T> Condition<T> of(final Predicate<T> predicate) {
-        return new SimpleCondition<>(DEFAULT_NAME, predicate);
+        return of(DEFAULT_NAME, predicate);
     }
 
     public static <T> Condition<T> exactly(final Object desired) {
 
-        final ComputableRationale<T> generator = new SimpleComputableRationale<>(
-            context -> stringify(desired),
-            context -> stringify(context.subject()),
-            context -> exactlyHint(desired)
-        );
+        final ComputableExpression<T> expression = ExpressionBuilder.of((T o) -> o == desired)
+            .nullable()
+            .name(exactlyName(desired))
+            .expected(stringify(desired))
+            .hint(exactlyHint(desired))
+            .build();
 
-        return subject -> new ComputedExpression<>(
-            exactlyName(desired),
-            subject,
-            o -> o == desired,
-            generator
-        );
+        return expression::compute;
     }
 
     static <T> String exactlyName(final T desired) {
@@ -58,18 +61,14 @@ final class ObjectConditions {
 
     public static <T> Condition<T> equalTo(final Object desired) {
 
-        final ComputableRationale<T> generator = new SimpleComputableRationale<>(
-            context -> stringify(desired),
-            context -> stringify(context.subject()),
-            context -> equalToHint(desired)
-        );
+        final ComputableExpression<T> expression = ExpressionBuilder.of((T o) -> Objects.equals(o, desired))
+            .nullable()
+            .name(equalToName(desired))
+            .expected(stringify(desired))
+            .hint(equalToHint(desired))
+            .build();
 
-        return subject -> new ComputedExpression<>(
-            equalToName(desired),
-            subject,
-            o -> Objects.equals(o, desired),
-            generator
-        );
+        return expression::compute;
     }
 
     static <T> String equalToName(final T desired) {

@@ -3,7 +3,7 @@ package io.github.libzeal.zeal.values.core;
 import io.github.libzeal.zeal.logic.Expression;
 import io.github.libzeal.zeal.logic.unary.UnaryExpression;
 import io.github.libzeal.zeal.logic.unary.condition.Condition;
-import io.github.libzeal.zeal.values.sdk.SimpleValueBuilder;
+import io.github.libzeal.zeal.logic.unary.ExpressionBuilder;
 import io.github.libzeal.zeal.values.sdk.StandardMessages;
 
 import java.util.Comparator;
@@ -221,14 +221,14 @@ public interface ObjectValue<T, E extends ObjectValue<T, E>>
      */
     E isEqualTo(T other, Comparator<T> comparator);
 
-    default SimpleValueBuilder<T> comparableEquals(T other, Comparator<T> comparator) {
+    default ExpressionBuilder<T, T> comparableEquals(T other, Comparator<T> comparator) {
 
         if (comparator == null) {
-            return SimpleValueBuilder.nullable((T s) -> false)
+            return ExpressionBuilder.of((T s) -> false).nullable()
                 .hint(StandardMessages.CANNOT_COMPARE_USING_NULL_COMPARATOR);
         }
         else {
-            return SimpleValueBuilder.nullable((T s) -> comparator.compare(s, other) == 0);
+            return ExpressionBuilder.of((T s) -> comparator.compare(s, other) == 0).nullable();
         }
     }
 
@@ -275,14 +275,14 @@ public interface ObjectValue<T, E extends ObjectValue<T, E>>
      */
     E isNotEqualTo(T other, Comparator<T> comparator);
 
-    default SimpleValueBuilder<T> comparableNotEquals(T other, Comparator<T> comparator) {
+    default ExpressionBuilder<T, T> comparableNotEquals(T other, Comparator<T> comparator) {
 
         if (comparator == null) {
-            return SimpleValueBuilder.nullable((T s) -> false)
+            return ExpressionBuilder.of((T s) -> false).nullable()
                 .hint(StandardMessages.CANNOT_COMPARE_USING_NULL_COMPARATOR);
         }
         else {
-            return SimpleValueBuilder.nullable((T s) -> comparator.compare(s, other) != 0);
+            return ExpressionBuilder.of((T s) -> comparator.compare(s, other) != 0).nullable();
         }
     }
 

@@ -1,6 +1,6 @@
 package io.github.libzeal.zeal.values.collection;
 
-import io.github.libzeal.zeal.logic.unary.future.rationale.ComputableField;
+import io.github.libzeal.zeal.logic.unary.PredicateExpression.Field;
 import io.github.libzeal.zeal.values.sdk.BaseValue;
 
 import java.util.Iterator;
@@ -16,7 +16,8 @@ public class IteratorValue<T> extends BaseValue<Iterator<T>, IteratorValue<T>> {
 
     public IteratorValue<T> hasNext() {
         return append(
-                expression(Iterator::hasNext)
+                observing(Iterator::hasNext)
+                    .passesIf(hasNext -> hasNext)
                     .name(HAS_NEXT_NAME)
                     .expected(HAS_NEXT_NAME)
                     .actual(hasNextActual())
@@ -24,13 +25,14 @@ public class IteratorValue<T> extends BaseValue<Iterator<T>, IteratorValue<T>> {
         );
     }
 
-    private static <T> ComputableField<Iterator<T>> hasNextActual() {
-        return context -> context.ifPassedOrElse(HAS_NEXT_NAME, NOT_HAS_NEXT_NAME);
+    private static <T> Field<Iterator<T>, Boolean> hasNextActual() {
+        return context -> Boolean.TRUE.equals(context.observed()) ? HAS_NEXT_NAME : NOT_HAS_NEXT_NAME;
     }
 
     public IteratorValue<T> doesNotHaveNext() {
         return append(
-                expression(s -> !s.hasNext())
+                observing(Iterator::hasNext)
+                    .passesIf(hasNext -> !hasNext)
                     .name(NOT_HAS_NEXT_NAME)
                     .expected(NOT_HAS_NEXT_NAME)
                     .actual(hasNextActual())

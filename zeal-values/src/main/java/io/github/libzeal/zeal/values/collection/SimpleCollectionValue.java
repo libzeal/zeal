@@ -184,19 +184,14 @@ public class SimpleCollectionValue<T> extends BaseValue<Collection<T>, SimpleCol
 
         @Override
         public List<T> findAllIn(final Collection<T> haystack, final Collection<T> needles) {
-            return haystack.stream()
-                .filter(needles::contains)
+            return needles.stream()
+                .filter(haystack::contains)
                 .collect(toList());
         }
 
         @Override
         public int size(final Collection<T> haystack) {
             return haystack.size();
-        }
-
-        @Override
-        public boolean isEmpty(final Collection<T> haystack) {
-            return haystack.isEmpty();
         }
 
         @Override

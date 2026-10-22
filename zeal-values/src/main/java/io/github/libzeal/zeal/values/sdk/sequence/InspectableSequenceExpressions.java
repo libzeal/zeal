@@ -1,11 +1,9 @@
 package io.github.libzeal.zeal.values.sdk.sequence;
 
 import io.github.libzeal.zeal.logic.format.Formatter;
-import io.github.libzeal.zeal.logic.unary.cache.CachedResult;
-import io.github.libzeal.zeal.logic.unary.future.ComputableExpression;
+import io.github.libzeal.zeal.logic.unary.ComputableExpression;
+import io.github.libzeal.zeal.logic.unary.ExpressionBuilder;
 import io.github.libzeal.zeal.values.config.Configuration;
-import io.github.libzeal.zeal.values.sdk.CachedValueBuilder;
-import io.github.libzeal.zeal.values.sdk.SimpleValueBuilder;
 import io.github.libzeal.zeal.values.sdk.StandardRationales;
 
 import java.util.Collection;
@@ -15,6 +13,8 @@ import static java.util.stream.Collectors.toList;
 
 public class InspectableSequenceExpressions {
 
+    private static final String NULL_DESIRED_HINT = "Desired elements is (null), which passes by default";
+
     public interface InspectableSequenceOperations<T, S> {
 
         List<T> findAllIn(S haystack, Collection<T> needles);
@@ -23,7 +23,7 @@ public class InspectableSequenceExpressions {
     }
 
     public static <T, S> ComputableExpression<S> includes(final T desired, final InspectableSequenceOperations<T, S> ops) {
-        return SimpleValueBuilder.notNullable((S s) -> ops.includes(s, desired))
+        return ExpressionBuilder.of((S s) -> ops.includes(s, desired))
             .name(StandardRationales.includes(desired))
             .expected(StandardRationales.includes(desired))
             .actual(context -> context.passed() ? StandardRationales.includes(desired) : StandardRationales.excludes(desired))
@@ -33,18 +33,13 @@ public class InspectableSequenceExpressions {
     public static <T, S> ComputableExpression<S> includesAll(final Collection<T> desired,
                                                      final InspectableSequenceOperations<T, S> ops) {
 
-        return CachedValueBuilder.of((S s) -> {
+        if (desired == null) {
+            return passesForNullDesired("includesAll", "All desired elements in subject",
+                "All desired elements in subject");
+        }
 
-                if (desired == null) {
-                    return CachedResult.ofPassed()
-                        .withCache(List.<T>of());
-                }
-
-                final List<T> found = ops.findAllIn(s, desired);
-
-                return CachedResult.of(desired.size() == found.size())
-                    .withCache(found);
-            })
+        return ExpressionBuilder.observing((S s) -> ops.findAllIn(s, desired))
+            .passesIf(found -> found.size() == desired.size())
             .name("includesAll")
             .expected("All desired elements in subject")
             .actual(context ->
@@ -53,39 +48,22 @@ public class InspectableSequenceExpressions {
                     "At least one desired element missing in subject"
             )
             .hint(context ->
-                {
-                    if (desired == null) {
-                        return "Desired elements is (null), which passes by default";
-                    }
-                    else {
-                        if (context.passed()) {
-                            return "All desired elements found in subject";
-                        }
-                        else {
-                            final List<String> missing = computeMissing(desired, context.cached());
-
-                            return "The following desired elements were not found: " + missing;
-                        }
-                    }
-                }
+                context.passed() ?
+                    "All desired elements found in subject" :
+                    "The following desired elements were not found: " + computeMissing(desired, context.observed())
             )
             .build();
     }
 
     public static <T, S> ComputableExpression<S> includesAny(final Collection<T> desired, final InspectableSequenceOperations<T, S> ops) {
 
-        return CachedValueBuilder.of((S s) -> {
+        if (desired == null) {
+            return passesForNullDesired("includesAny", "Any desired elements in subject",
+                "At least one desired element found in subject");
+        }
 
-                if (desired == null) {
-                    return CachedResult.ofPassed()
-                        .withCache(List.<T>of());
-                }
-
-                final List<T> found = ops.findAllIn(s, desired);
-
-                return CachedResult.of(!found.isEmpty())
-                    .withCache(found);
-            })
+        return ExpressionBuilder.observing((S s) -> ops.findAllIn(s, desired))
+            .passesIf(found -> !found.isEmpty())
             .name("includesAny")
             .expected("Any desired elements in subject")
             .actual(context ->
@@ -94,26 +72,21 @@ public class InspectableSequenceExpressions {
                     "All desired elements missing in subject"
             )
             .hint(context ->
-                {
-                    if (desired == null) {
-                        return "Desired elements is (null), which passes by default";
-                    }
-                    else {
-                        if (context.passed()) {
-
-                            final List<String> found = context.cached()
-                                .stream()
-                                .map(Formatter::stringify)
-                                .toList();
-
-                            return "At least one desired element found in subject: " + found;
-                        }
-                        else {
-                            return "All of the desired elements are missing in subject";
-                        }
-                    }
-                }
+                context.passed() ?
+                    "At least one desired element found in subject: " + stringifyAll(context.observed()) :
+                    "All of the desired elements are missing in subject"
             )
+            .build();
+    }
+
+    private static <T, S> ComputableExpression<S> passesForNullDesired(final String name, final String expected,
+                                                                      final String actual) {
+        return ExpressionBuilder.of((S s) -> true)
+            .nullable()
+            .name(name)
+            .expected(expected)
+            .actual(actual)
+            .hint(NULL_DESIRED_HINT)
             .build();
     }
 
@@ -134,8 +107,14 @@ public class InspectableSequenceExpressions {
         return missing;
     }
 
+    private static <T> List<String> stringifyAll(final List<T> elements) {
+        return elements.stream()
+            .map(Formatter::stringify)
+            .toList();
+    }
+
     public static <T, S> ComputableExpression<S> excludes(final T desired, final InspectableSequenceOperations<T, S> ops) {
-        return SimpleValueBuilder.notNullable((S s) -> !ops.includes(s, desired))
+        return ExpressionBuilder.of((S s) -> !ops.includes(s, desired))
             .name(StandardRationales.excludes(desired))
             .expected(StandardRationales.excludes(desired))
             .actual(context -> context.passed() ? StandardRationales.excludes(desired) : StandardRationales.includes(desired))
@@ -143,18 +122,14 @@ public class InspectableSequenceExpressions {
     }
 
     public static <T, S> ComputableExpression<S> excludesAll(final Collection<T> desired, final InspectableSequenceOperations<T, S> ops) {
-        return CachedValueBuilder.of((S s) -> {
 
-                if (desired == null) {
-                    return CachedResult.ofPassed()
-                        .withCache(List.<T>of());
-                }
+        if (desired == null) {
+            return passesForNullDesired("excludesAll", "All desired elements missing in subject",
+                "All desired elements missing in subject");
+        }
 
-                final List<T> found = ops.findAllIn(s, desired);
-
-                return CachedResult.of(found.isEmpty())
-                    .withCache(found);
-            })
+        return ExpressionBuilder.observing((S s) -> ops.findAllIn(s, desired))
+            .passesIf(List::isEmpty)
             .name("excludesAll")
             .expected("All desired elements missing in subject")
             .actual(context ->
@@ -163,42 +138,23 @@ public class InspectableSequenceExpressions {
                     "At least one desired element found in subject"
             )
             .hint(context ->
-                {
-                    if (desired == null) {
-                        return "Desired elements is (null), which passes by default";
-                    }
-                    else {
-                        if (context.passed()) {
-                            return "All of the desired elements are missing in subject";
-                        }
-                        else {
-                            final List<String> found = context.cached()
-                                .stream()
-                                .map(Formatter::stringify)
-                                .toList();
-
-                            return "At least one desired element found in subject: " + found;
-                        }
-                    }
-                }
+                context.passed() ?
+                    "All of the desired elements are missing in subject" :
+                    "At least one desired element found in subject: " + stringifyAll(context.observed())
             )
             .build();
     }
 
     public static <T, S> ComputableExpression<S> excludesAny(final Collection<T> desired, final InspectableSequenceOperations<T, S> ops) {
-        return CachedValueBuilder.of((S s) -> {
 
-                if (desired == null) {
-                    return CachedResult.ofPassed()
-                        .withCache(List.<T>of());
-                }
+        if (desired == null) {
+            return passesForNullDesired("excludesAny", "At least one desired element missing in subject",
+                "At least one desired element missing in subject");
+        }
 
-                final List<T> found = ops.findAllIn(s, desired);
-
-                return CachedResult.of(desired.size() < found.size())
-                    .withCache(found);
-            })
-            .name("includesAll")
+        return ExpressionBuilder.observing((S s) -> ops.findAllIn(s, desired))
+            .passesIf(found -> found.size() < desired.size())
+            .name("excludesAny")
             .expected("At least one desired element missing in subject")
             .actual(context ->
                 context.passed() ?
@@ -206,25 +162,9 @@ public class InspectableSequenceExpressions {
                     "All desired elements found in subject"
             )
             .hint(context ->
-                {
-                    if (desired == null) {
-                        return "Desired elements is (null), which passes by default";
-                    }
-                    else {
-                        if (context.passed()) {
-                            final List<String> found = context.cached()
-                                .stream()
-                                .map(Formatter::stringify)
-                                .toList();
-
-                            return "The following desired elements were found: " + found;
-
-                        }
-                        else {
-                            return "All desired elements found in subject";
-                        }
-                    }
-                }
+                context.passed() ?
+                    "The following desired elements were found: " + stringifyAll(context.observed()) :
+                    "All desired elements found in subject"
             )
             .build();
     }

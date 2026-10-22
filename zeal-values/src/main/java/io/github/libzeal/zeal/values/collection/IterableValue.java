@@ -15,7 +15,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.StreamSupport;
 
 import static java.util.stream.Collectors.toList;
 
@@ -196,8 +195,8 @@ public final class IterableValue<T> extends
 
         @Override
         public List<T> findAllIn(final I haystack, final Collection<T> needles) {
-            return StreamSupport.stream(haystack.spliterator(), false)
-                .filter(needles::contains)
+            return needles.stream()
+                .filter(needle -> includes(haystack, needle))
                 .collect(toList());
         }
 
@@ -212,11 +211,6 @@ public final class IterableValue<T> extends
 
             return count;
 
-        }
-
-        @Override
-        public boolean isEmpty(final I haystack) {
-            return haystack.iterator().hasNext();
         }
 
         @Override

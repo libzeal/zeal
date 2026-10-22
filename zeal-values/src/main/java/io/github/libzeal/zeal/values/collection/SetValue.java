@@ -188,8 +188,8 @@ public class SetValue<T> extends BaseValue<Set<T>, SetValue<T>>
 
         @Override
         public List<T> findAllIn(final Set<T> haystack, final Collection<T> needles) {
-            return haystack.stream()
-                .filter(needles::contains)
+            return needles.stream()
+                .filter(haystack::contains)
                 .collect(toList());
         }
 
@@ -201,11 +201,6 @@ public class SetValue<T> extends BaseValue<Set<T>, SetValue<T>>
         @Override
         public int size(final Set<T> haystack) {
             return haystack.size();
-        }
-
-        @Override
-        public boolean isEmpty(final Set<T> haystack) {
-            return haystack.isEmpty();
         }
     }
 }

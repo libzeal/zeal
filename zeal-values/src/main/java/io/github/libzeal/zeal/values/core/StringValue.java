@@ -1,7 +1,6 @@
 package io.github.libzeal.zeal.values.core;
 
 import io.github.libzeal.zeal.values.sdk.BaseValue;
-import io.github.libzeal.zeal.values.sdk.StandardRationales.Operators;
 import io.github.libzeal.zeal.values.sdk.sequence.*;
 import io.github.libzeal.zeal.values.sdk.sequence.InspectableSequenceExpressions.InspectableSequenceOperations;
 import io.github.libzeal.zeal.values.sdk.sequence.OrderedSequenceExpressions.OrderedSequenceOperations;
@@ -25,11 +24,6 @@ public class StringValue extends BaseValue<String, StringValue>
     InspectableSequenceValue<Character, StringValue>,
     OrderedSequenceValue<Character, StringValue>,
     RepeatableSequenceValue<Character, StringValue> {
-
-    private static final String EQUALS_OPERATOR = Operators.EQ.symbol();
-    private static final String NOT_EQUALS_OPERATOR = Operators.NE.symbol();
-    private static final String INDEX_OF_PREFIX = "indexOf";
-    private static final String LAST_INDEX_OF_PREFIX = "lastIndexOf";
 
     private final StringOperations operations;
     private final StringOnStringOperations charSequenceOperations = new StringOnStringOperations();
@@ -267,6 +261,32 @@ public class StringValue extends BaseValue<String, StringValue>
     }
 
     @Override
+    public StringValue lastIndexOfIs(final Character desired, final int index) {
+        return append(
+            OrderedSequenceExpressions.lastIndexOfIs(desired, index, operations)
+        );
+    }
+
+    public StringValue lastIndexOfIs(final CharSequence desired, final int index) {
+        return append(
+            OrderedSequenceExpressions.lastIndexOfIs(desired, index, charSequenceOperations)
+        );
+    }
+
+    @Override
+    public StringValue lastIndexOfIsNot(final Character desired, final int index) {
+        return append(
+            OrderedSequenceExpressions.lastIndexOfIsNot(desired, index, operations)
+        );
+    }
+
+    public StringValue lastIndexOfIsNot(final CharSequence desired, final int index) {
+        return append(
+            OrderedSequenceExpressions.lastIndexOfIsNot(desired, index, charSequenceOperations)
+        );
+    }
+
+    @Override
     public StringValue startsWith(final Character desired) {
         return append(
             OrderedSequenceExpressions.startsWith(desired, operations)
@@ -370,50 +390,6 @@ public class StringValue extends BaseValue<String, StringValue>
     }
 
     /**
-     * Adds a predicate to the expression that checks if the first index of the
-     * supplied needle in the subject does not
-     * match the supplied index.
-     *
-     * @param needle
-     *     The needle to look for in the subject.
-     * @param index
-     *     The index expected not to match.
-     *
-     * @return This expression (fluent interface).
-     */
-    public StringValue doesNotHaveAtIndex(final char needle, final int index) {
-        return append(
-            expression(s -> s.indexOf(needle) != index)
-                .name(INDEX_OF_PREFIX + "[" + needle + "] " + NOT_EQUALS_OPERATOR + " " + index)
-                .expected(context -> "not[" + index + "]")
-                .actual(context -> String.valueOf(context.subject().indexOf(needle)))
-                .build()
-        );
-    }
-
-    /**
-     * Adds a predicate to the expression that checks if the first index of the
-     * supplied needle in the subject does not
-     * match the supplied index.
-     *
-     * @param needle
-     *     The needle to look for in the subject.
-     * @param index
-     *     The index expected not to match.
-     *
-     * @return This expression (fluent interface).
-     */
-    public StringValue doesNotHaveAtIndex(final String needle, final int index) {
-        return append(
-            expression(s -> s.indexOf(needle) != index)
-                .name(INDEX_OF_PREFIX + "[" + needle + "] " + NOT_EQUALS_OPERATOR + " " + index)
-                .expected(context -> "not[" + index + "]")
-                .actual(context -> String.valueOf(context.subject().indexOf(needle)))
-                .build()
-        );
-    }
-
-    /**
      * Adds a predicate to the expression that checks if the last index of the
      * supplied needle in the subject matches
      * the supplied index.
@@ -426,13 +402,7 @@ public class StringValue extends BaseValue<String, StringValue>
      * @return This expression (fluent interface).
      */
     public StringValue hasAtLastIndex(final char needle, final int index) {
-        return append(
-            expression(s -> s.lastIndexOf(needle) == index)
-                .name(LAST_INDEX_OF_PREFIX + "[" + needle + "] " + EQUALS_OPERATOR + " " + index)
-                .expected(index)
-                .actual(context -> String.valueOf(context.subject().lastIndexOf(needle)))
-                .build()
-        );
+        return lastIndexOfIs((Character) needle, index);
     }
 
     /**
@@ -448,13 +418,7 @@ public class StringValue extends BaseValue<String, StringValue>
      * @return This expression (fluent interface).
      */
     public StringValue hasAtLastIndex(final String needle, final int index) {
-        return append(
-            expression(s -> s.lastIndexOf(needle) == index)
-                .name(LAST_INDEX_OF_PREFIX + "[" + needle + "] " + EQUALS_OPERATOR + " " + index)
-                .expected(index)
-                .actual(context -> String.valueOf(context.subject().lastIndexOf(needle)))
-                .build()
-        );
+        return lastIndexOfIs((CharSequence) needle, index);
     }
 
     /**
@@ -470,13 +434,7 @@ public class StringValue extends BaseValue<String, StringValue>
      * @return This expression (fluent interface).
      */
     public StringValue doesNotHaveAtLastIndex(final char needle, final int index) {
-        return append(
-            expression(s -> s.lastIndexOf(needle) != index)
-                .name(LAST_INDEX_OF_PREFIX + "[" + needle + "] " + NOT_EQUALS_OPERATOR + " " + index)
-                .expected(context -> "not[" + index + "]")
-                .actual(context -> String.valueOf(context.subject().lastIndexOf(needle)))
-                .build()
-        );
+        return lastIndexOfIsNot((Character) needle, index);
     }
 
     /**
@@ -492,13 +450,7 @@ public class StringValue extends BaseValue<String, StringValue>
      * @return This expression (fluent interface).
      */
     public StringValue doesNotHaveAtLastIndex(final String needle, final int index) {
-        return append(
-            expression(s -> s.lastIndexOf(needle) != index)
-                .name(LAST_INDEX_OF_PREFIX + "[" + needle + "] " + NOT_EQUALS_OPERATOR + " " + index)
-                .expected(context -> "not[" + index + "]")
-                .actual(context -> String.valueOf(context.subject().lastIndexOf(needle)))
-                .build()
-        );
+        return lastIndexOfIsNot((CharSequence) needle, index);
     }
 
     protected static final class StringOperations implements
@@ -532,7 +484,7 @@ public class StringValue extends BaseValue<String, StringValue>
         @Override
         public Element<Character> atIndex(final String haystack, final int index, final Character desired) {
 
-            if (index < haystack.length()) {
+            if (index >= 0 && index < haystack.length()) {
                 return Element.found(haystack.charAt(index));
             }
             else {
@@ -548,6 +500,17 @@ public class StringValue extends BaseValue<String, StringValue>
             }
             else {
                 return haystack.indexOf(needle);
+            }
+        }
+
+        @Override
+        public int lastIndexOf(final String haystack, final Character needle) {
+
+            if (needle == null) {
+                return -1;
+            }
+            else {
+                return haystack.lastIndexOf(needle);
             }
         }
 
@@ -582,11 +545,6 @@ public class StringValue extends BaseValue<String, StringValue>
         }
 
         @Override
-        public boolean isEmpty(final String haystack) {
-            return haystack.isEmpty();
-        }
-
-        @Override
         public boolean includes(final String haystack, final Character needle) {
             return haystack.indexOf(needle) >= 0;
         }
@@ -618,20 +576,25 @@ public class StringValue extends BaseValue<String, StringValue>
 
             final int length = desired.length();
 
-            if (haystack.isEmpty() || index >= haystack.length()) {
+            if (index < 0 || index >= haystack.length()) {
                 return Element.missing();
             }
             else if ((index + length) > haystack.length()) {
                 return Element.found(haystack.substring(index));
             }
             else {
-                return Element.found(haystack.substring(index, length));
+                return Element.found(haystack.substring(index, index + length));
             }
         }
 
         @Override
         public int indexOf(final String haystack, final CharSequence needle) {
             return haystack.indexOf(String.valueOf(needle));
+        }
+
+        @Override
+        public int lastIndexOf(final String haystack, final CharSequence needle) {
+            return haystack.lastIndexOf(String.valueOf(needle));
         }
 
         @Override
@@ -660,11 +623,6 @@ public class StringValue extends BaseValue<String, StringValue>
         @Override
         public int size(final String haystack) {
             return haystack.length();
-        }
-
-        @Override
-        public boolean isEmpty(final String haystack) {
-            return haystack.isEmpty();
         }
 
         @Override

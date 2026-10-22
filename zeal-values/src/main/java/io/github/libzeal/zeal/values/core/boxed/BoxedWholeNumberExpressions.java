@@ -1,6 +1,6 @@
 package io.github.libzeal.zeal.values.core.boxed;
 
-import io.github.libzeal.zeal.logic.unary.future.ComputableExpression;
+import io.github.libzeal.zeal.logic.unary.ComputableExpression;
 
 import static io.github.libzeal.zeal.values.core.boxed.BoxedNumberExpressions.notNullExpression;
 

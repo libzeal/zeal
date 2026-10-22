@@ -53,10 +53,10 @@ public abstract class EnumValue<T extends Enum<T>, B extends EnumValue<T, B>>
      */
     public B ordinalIs(final int ordinal) {
         return append(
-            expression(s -> s.ordinal() == ordinal)
+            observing(Enum::ordinal)
+                .passesIf(o -> o == ordinal)
                 .name("ordinalIs[" + ordinal + "]")
                 .expected(ordinal)
-                .actual(context -> String.valueOf(context.subject().ordinal()))
                 .build()
         );
     }
@@ -71,10 +71,10 @@ public abstract class EnumValue<T extends Enum<T>, B extends EnumValue<T, B>>
      */
     public B ordinalIsNot(final int ordinal) {
         return append(
-            expression(s -> s.ordinal() != ordinal)
+            observing(Enum::ordinal)
+                .passesIf(o -> o != ordinal)
                 .name("not[ordinalIs[" + ordinal + "]]")
                 .expected(context -> "not[" + ordinal + "]")
-                .actual(context -> String.valueOf(context.subject().ordinal()))
                 .build()
         );
     }
@@ -89,10 +89,10 @@ public abstract class EnumValue<T extends Enum<T>, B extends EnumValue<T, B>>
      */
     public B nameIs(final String name) {
         return append(
-            expression(s -> s.name().equals(name))
+            observing(Enum::name)
+                .passesIf(n -> n.equals(name))
                 .name("nameIs[" + name + "]")
                 .expected(name)
-                .actual(context -> context.subject().name())
                 .build()
         );
     }
@@ -107,10 +107,10 @@ public abstract class EnumValue<T extends Enum<T>, B extends EnumValue<T, B>>
      */
     public B nameIsNot(final String name) {
         return append(
-            expression(s -> !s.name().equals(name))
+            observing(Enum::name)
+                .passesIf(n -> !n.equals(name))
                 .name("not[nameIs[" + name + "]]")
                 .expected("not[" + name + "]")
-                .actual(context -> context.subject().name())
                 .build()
         );
     }
@@ -126,10 +126,10 @@ public abstract class EnumValue<T extends Enum<T>, B extends EnumValue<T, B>>
      */
     public B caseInsensitiveNameIs(final String name) {
         return append(
-            expression(s -> s.name().equalsIgnoreCase(name))
+            observing(Enum::name)
+                .passesIf(n -> n.equalsIgnoreCase(name))
                 .name("caseInsensitiveNameIs[" + name + "]")
                 .expected("caseInsensitive[" + name + "]")
-                .actual(context -> context.subject().name())
                 .build()
         );
     }
@@ -145,10 +145,10 @@ public abstract class EnumValue<T extends Enum<T>, B extends EnumValue<T, B>>
      */
     public B caseInsensitiveNameIsNot(final String name) {
         return append(
-            expression(s -> !s.name().equalsIgnoreCase(name))
+            observing(Enum::name)
+                .passesIf(n -> !n.equalsIgnoreCase(name))
                 .name("not[caseInsensitiveNameIs[" + name + "]]")
                 .expected("not[caseInsensitive[" + name + "]]")
-                .actual(context -> context.subject().name())
                 .build()
         );
     }

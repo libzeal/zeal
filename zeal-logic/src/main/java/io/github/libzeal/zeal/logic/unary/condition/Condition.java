@@ -1,7 +1,7 @@
 package io.github.libzeal.zeal.logic.unary.condition;
 
 import io.github.libzeal.zeal.logic.Expressions;
-import io.github.libzeal.zeal.logic.unary.future.ComputableExpression;
+import io.github.libzeal.zeal.logic.unary.ComputableExpression;
 
 /**
  * An object that creates an expression based on a subject.

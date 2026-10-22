@@ -2,14 +2,15 @@ package io.github.libzeal.zeal.values.sdk;
 
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.unary.UnaryExpression;
+import io.github.libzeal.zeal.logic.unary.ComputableExpression;
+import io.github.libzeal.zeal.logic.unary.ExpressionBuilder;
+import io.github.libzeal.zeal.logic.unary.ExpressionBuilder.Observing;
 import io.github.libzeal.zeal.logic.unary.condition.Condition;
-import io.github.libzeal.zeal.logic.unary.future.ComputableExpression;
-import io.github.libzeal.zeal.logic.unary.future.rationale.ComputableField;
 import io.github.libzeal.zeal.values.core.ObjectValue;
-import io.github.libzeal.zeal.logic.unary.cache.CacheablePredicate;
 
 import java.util.Comparator;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static io.github.libzeal.zeal.logic.unary.condition.Conditions.equalTo;
@@ -128,8 +129,8 @@ public abstract class BaseValue<T, E extends BaseValue<T, E>> implements UnaryEx
      * @throws NullPointerException
      *     The supplied test was {@code null}.
      */
-    protected final SimpleValueBuilder<T> expression(final Predicate<T> test) {
-        return SimpleValueBuilder.notNullable(test);
+    protected final ExpressionBuilder<T, T> expression(final Predicate<T> test) {
+        return ExpressionBuilder.of(test);
     }
 
     /**
@@ -149,25 +150,33 @@ public abstract class BaseValue<T, E extends BaseValue<T, E>> implements UnaryEx
      * @throws NullPointerException
      *     The supplied test was {@code null}.
      */
-    protected final SimpleValueBuilder<T> nullableExpression(final Predicate<T> test) {
-        return SimpleValueBuilder.nullable(test);
+    protected final ExpressionBuilder<T, T> nullableExpression(final Predicate<T> test) {
+        return ExpressionBuilder.of(test).nullable();
     }
 
     /**
-     * Creates a builder for a new cachable expression.
+     * Creates a builder for a new expression that tests a value observed from
+     * the subject (such as its size), rather than the subject itself. The
+     * observed value is computed once and is available to the rationale.
      *
-     * @param predicate
-     *     The predicate (test) for the evaluation. The supplied predicate can
-     *     assume that the subject will never be {@code null} (a {@code null}
-     *     check will be performed before the predicate is evaluated.
+     * @param observe
+     *     The function that observes the tested value from the subject. The
+     *     supplied function can assume that the subject will never be
+     *     {@code null} (a {@code null} check will be performed before the
+     *     function is applied).
      *
-     * @return The evaluation builder.
+     * @return The first step of the expression builder, which accepts the
+     * condition for the observed value.
      *
      * @throws NullPointerException
-     *     The supplied test was {@code null}.
+     *     The supplied function was {@code null}.
      */
-    protected final <C> CachedValueBuilder<T, C> cachableExpression(final CacheablePredicate<T, C> predicate) {
-        return CachedValueBuilder.of(predicate);
+    protected final <O> Observing<T, O> observing(final Function<T, O> observe) {
+        return ExpressionBuilder.observing(observe);
+    }
+
+    private ExpressionBuilder<T, Class<?>> typeExpression(final Predicate<Class<?>> condition) {
+        return ExpressionBuilder.<T, Class<?>>observing(Object::getClass).passesIf(condition);
     }
 
     @Override
@@ -193,7 +202,7 @@ public abstract class BaseValue<T, E extends BaseValue<T, E>> implements UnaryEx
     @Override
     public E isType(final Class<?> type) {
 
-        final SimpleValueBuilder<T> builder = expression(s -> s.getClass().equals(type));
+        final ExpressionBuilder<T, Class<?>> builder = typeExpression(c -> c.equals(type));
 
         if (type == null) {
             builder.name("isType[(null)]")
@@ -207,14 +216,14 @@ public abstract class BaseValue<T, E extends BaseValue<T, E>> implements UnaryEx
         }
 
         return append(
-            builder.actual(context -> context.subject().getClass().toString()).build()
+            builder.build()
         );
     }
 
     @Override
     public E isNotType(final Class<?> type) {
 
-        final SimpleValueBuilder<T> builder = expression(o -> type != null && !o.getClass().equals(type));
+        final ExpressionBuilder<T, Class<?>> builder = typeExpression(c -> type != null && !c.equals(type));
 
         if (type == null) {
             builder.name("isNotType[(null)]")
@@ -228,14 +237,14 @@ public abstract class BaseValue<T, E extends BaseValue<T, E>> implements UnaryEx
         }
 
         return append(
-            builder.actual(context -> context.subject().getClass().toString()).build()
+            builder.build()
         );
     }
 
     @Override
     public E isInstanceOf(final Class<?> type) {
 
-        final SimpleValueBuilder<T> builder = expression(s -> type != null && type.isAssignableFrom(s.getClass()));
+        final ExpressionBuilder<T, Class<?>> builder = typeExpression(c -> type != null && type.isAssignableFrom(c));
 
         if (type == null) {
             builder.name("isInstanceOf[(null)]")
@@ -249,14 +258,14 @@ public abstract class BaseValue<T, E extends BaseValue<T, E>> implements UnaryEx
         }
 
         return append(
-            builder.actual(context -> context.subject().getClass().toString()).build()
+            builder.build()
         );
     }
 
     @Override
     public E isNotInstanceOf(final Class<?> type) {
 
-        final SimpleValueBuilder<T> builder = expression(s -> type != null && !type.isAssignableFrom(s.getClass()));
+        final ExpressionBuilder<T, Class<?>> builder = typeExpression(c -> type != null && !type.isAssignableFrom(c));
 
         if (type == null) {
             builder.name("isNotInstanceOf[(null)]")
@@ -270,7 +279,7 @@ public abstract class BaseValue<T, E extends BaseValue<T, E>> implements UnaryEx
         }
 
         return append(
-            builder.actual(context -> context.subject().getClass().toString()).build()
+            builder.build()
         );
     }
 
@@ -346,25 +355,21 @@ public abstract class BaseValue<T, E extends BaseValue<T, E>> implements UnaryEx
     @Override
     public E hashCodeIs(final int hashCode) {
         return append(
-            expression(s -> s.hashCode() == hashCode)
+            observing(Object::hashCode)
+                .passesIf(h -> h == hashCode)
                 .name("hashCode == " + hashCode)
                 .expected(hashCode)
-                .actual(hashCodeSupplier())
                 .build()
         );
-    }
-
-    private static <T> ComputableField<T> hashCodeSupplier() {
-        return context -> String.valueOf(context.subject().hashCode());
     }
 
     @Override
     public E hashCodeIsNot(final int hashCode) {
         return append(
-            expression(s -> s.hashCode() != hashCode)
+            observing(Object::hashCode)
+                .passesIf(h -> h != hashCode)
                 .name("hashCode != " + hashCode)
                 .expected("not[" + hashCode + "]")
-                .actual(hashCodeSupplier())
                 .build()
         );
     }

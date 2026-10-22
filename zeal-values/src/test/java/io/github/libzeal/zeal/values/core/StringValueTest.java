@@ -980,6 +980,54 @@ class StringValueTest extends BaseValueTest<String, StringValue> {
             .run();
     }
 
+    @Test
+    void givenMultiCharacterNeedleAfterFirstIndex_whenHasAtIndexString_thenTrue() {
+        newTestCase()
+            .subject("abc")
+            .expression(value -> value.hasAtIndex("bc", 1))
+            .result(TRUE)
+            .name("hasAtIndex[desired=bc, index=1]")
+            .expected("bc")
+            .actual("bc")
+            .run();
+    }
+
+    @Test
+    void givenMultiCharacterNeedleAtIndexPastNeedleLength_whenHasAtIndexString_thenTrue() {
+        newTestCase()
+            .subject("abcabc")
+            .expression(value -> value.hasAtIndex("bc", 4))
+            .result(TRUE)
+            .name("hasAtIndex[desired=bc, index=4]")
+            .expected("bc")
+            .actual("bc")
+            .run();
+    }
+
+    @Test
+    void givenNegativeIndex_whenHasAtIndexChar_thenFalse() {
+        newTestCase()
+            .subject("cba")
+            .expression(value -> value.hasAtIndex('c', -1))
+            .result(FALSE)
+            .name("hasAtIndex[desired=c, index=-1]")
+            .expected("c")
+            .actual("Index -1 is out of bounds")
+            .run();
+    }
+
+    @Test
+    void givenNegativeIndex_whenHasAtIndexString_thenFalse() {
+        newTestCase()
+            .subject("cba")
+            .expression(value -> value.hasAtIndex("c", -1))
+            .result(FALSE)
+            .name("hasAtIndex[desired=c, index=-1]")
+            .expected("c")
+            .actual("Index -1 is out of bounds")
+            .run();
+    }
+
     // ---- doesNotHaveAtIndex ----
 
     @Test
@@ -988,9 +1036,9 @@ class StringValueTest extends BaseValueTest<String, StringValue> {
             .subject("abc")
             .expression(value -> value.doesNotHaveAtIndex('c', 0))
             .result(TRUE)
-            .name("indexOf[c] != 0")
-            .expected("not[0]")
-            .actual("2")
+            .name("doesNotHaveAtIndex[desired=c, index=0]")
+            .expected("not[c]")
+            .actual("a")
             .run();
     }
 
@@ -1000,9 +1048,9 @@ class StringValueTest extends BaseValueTest<String, StringValue> {
             .subject("cba")
             .expression(value -> value.doesNotHaveAtIndex('c', 0))
             .result(FALSE)
-            .name("indexOf[c] != 0")
-            .expected("not[0]")
-            .actual("0")
+            .name("doesNotHaveAtIndex[desired=c, index=0]")
+            .expected("not[c]")
+            .actual("c")
             .run();
     }
 
@@ -1012,21 +1060,33 @@ class StringValueTest extends BaseValueTest<String, StringValue> {
             .subject("cba")
             .expression(value -> value.doesNotHaveAtIndex('z', 0))
             .result(TRUE)
-            .name("indexOf[z] != 0")
-            .expected("not[0]")
-            .actual("-1")
+            .name("doesNotHaveAtIndex[desired=z, index=0]")
+            .expected("not[z]")
+            .actual("c")
             .run();
     }
 
     @Test
-    void givenLetterAtIndexAndLater_whenDoesNotHaveAtIndexChar_thenFalse() {
+    void givenLetterAtIndexAndEarlier_whenDoesNotHaveAtIndexChar_thenFalse() {
         newTestCase()
-            .subject("cabc")
-            .expression(value -> value.doesNotHaveAtIndex('c', 0))
+            .subject("cbc")
+            .expression(value -> value.doesNotHaveAtIndex('c', 2))
             .result(FALSE)
-            .name("indexOf[c] != 0")
-            .expected("not[0]")
-            .actual("0")
+            .name("doesNotHaveAtIndex[desired=c, index=2]")
+            .expected("not[c]")
+            .actual("c")
+            .run();
+    }
+
+    @Test
+    void givenIndexOutOfBounds_whenDoesNotHaveAtIndexChar_thenTrue() {
+        newTestCase()
+            .subject("cba")
+            .expression(value -> value.doesNotHaveAtIndex('c', 3))
+            .result(TRUE)
+            .name("doesNotHaveAtIndex[desired=c, index=3]")
+            .expected("not[c]")
+            .actual("Index 3 is out of bounds")
             .run();
     }
 
@@ -1036,9 +1096,9 @@ class StringValueTest extends BaseValueTest<String, StringValue> {
             .subject("abc")
             .expression(value -> value.doesNotHaveAtIndex("c", 0))
             .result(TRUE)
-            .name("indexOf[c] != 0")
-            .expected("not[0]")
-            .actual("2")
+            .name("doesNotHaveAtIndex[desired=c, index=0]")
+            .expected("not[c]")
+            .actual("a")
             .run();
     }
 
@@ -1048,9 +1108,9 @@ class StringValueTest extends BaseValueTest<String, StringValue> {
             .subject("cba")
             .expression(value -> value.doesNotHaveAtIndex("c", 0))
             .result(FALSE)
-            .name("indexOf[c] != 0")
-            .expected("not[0]")
-            .actual("0")
+            .name("doesNotHaveAtIndex[desired=c, index=0]")
+            .expected("not[c]")
+            .actual("c")
             .run();
     }
 
@@ -1060,21 +1120,33 @@ class StringValueTest extends BaseValueTest<String, StringValue> {
             .subject("cba")
             .expression(value -> value.doesNotHaveAtIndex("z", 0))
             .result(TRUE)
-            .name("indexOf[z] != 0")
-            .expected("not[0]")
-            .actual("-1")
+            .name("doesNotHaveAtIndex[desired=z, index=0]")
+            .expected("not[z]")
+            .actual("c")
             .run();
     }
 
     @Test
-    void givenLetterAtIndexAndLater_whenDoesNotHaveAtIndexString_thenFalse() {
+    void givenLetterAtIndexAndEarlier_whenDoesNotHaveAtIndexString_thenFalse() {
         newTestCase()
-            .subject("cabc")
-            .expression(value -> value.doesNotHaveAtIndex("c", 0))
+            .subject("cbc")
+            .expression(value -> value.doesNotHaveAtIndex("c", 2))
             .result(FALSE)
-            .name("indexOf[c] != 0")
-            .expected("not[0]")
-            .actual("0")
+            .name("doesNotHaveAtIndex[desired=c, index=2]")
+            .expected("not[c]")
+            .actual("c")
+            .run();
+    }
+
+    @Test
+    void givenMultiCharacterNeedleAfterFirstIndex_whenDoesNotHaveAtIndexString_thenFalse() {
+        newTestCase()
+            .subject("abc")
+            .expression(value -> value.doesNotHaveAtIndex("bc", 1))
+            .result(FALSE)
+            .name("doesNotHaveAtIndex[desired=bc, index=1]")
+            .expected("not[bc]")
+            .actual("bc")
             .run();
     }
 
@@ -1271,6 +1343,106 @@ class StringValueTest extends BaseValueTest<String, StringValue> {
             .name("lastIndexOf[c] != 0")
             .expected("not[0]")
             .actual("3")
+            .run();
+    }
+
+    // ---- lastIndexOfIs ----
+
+    @Test
+    void givenLastOccurrenceAtIndex_whenLastIndexOfIsCharacter_thenTrue() {
+        newTestCase()
+            .subject("cabc")
+            .expression(value -> value.lastIndexOfIs((Character) 'c', 3))
+            .result(TRUE)
+            .name("lastIndexOf[c] = 3")
+            .expected("3")
+            .actual("3")
+            .run();
+    }
+
+    @Test
+    void givenMissingLetter_whenLastIndexOfIsCharacter_thenFalse() {
+        newTestCase()
+            .subject("cba")
+            .expression(value -> value.lastIndexOfIs((Character) 'z', 0))
+            .result(FALSE)
+            .name("lastIndexOf[z] = 0")
+            .expected("0")
+            .actual("-1")
+            .run();
+    }
+
+    @Test
+    void givenLastOccurrenceAtIndex_whenLastIndexOfIsCharSequence_thenTrue() {
+        newTestCase()
+            .subject("abcabc")
+            .expression(value -> value.lastIndexOfIs((CharSequence) "bc", 4))
+            .result(TRUE)
+            .name("lastIndexOf[bc] = 4")
+            .expected("4")
+            .actual("4")
+            .run();
+    }
+
+    @Test
+    void givenOnlyEarlierOccurrenceAtIndex_whenLastIndexOfIsCharSequence_thenFalse() {
+        newTestCase()
+            .subject("abcabc")
+            .expression(value -> value.lastIndexOfIs((CharSequence) "bc", 1))
+            .result(FALSE)
+            .name("lastIndexOf[bc] = 1")
+            .expected("1")
+            .actual("4")
+            .run();
+    }
+
+    // ---- lastIndexOfIsNot ----
+
+    @Test
+    void givenLastOccurrenceElsewhere_whenLastIndexOfIsNotCharacter_thenTrue() {
+        newTestCase()
+            .subject("cabc")
+            .expression(value -> value.lastIndexOfIsNot((Character) 'c', 0))
+            .result(TRUE)
+            .name("lastIndexOf[c] != 0")
+            .expected("not[0]")
+            .actual("3")
+            .run();
+    }
+
+    @Test
+    void givenLastOccurrenceAtIndex_whenLastIndexOfIsNotCharacter_thenFalse() {
+        newTestCase()
+            .subject("cabc")
+            .expression(value -> value.lastIndexOfIsNot((Character) 'c', 3))
+            .result(FALSE)
+            .name("lastIndexOf[c] != 3")
+            .expected("not[3]")
+            .actual("3")
+            .run();
+    }
+
+    @Test
+    void givenLastOccurrenceElsewhere_whenLastIndexOfIsNotCharSequence_thenTrue() {
+        newTestCase()
+            .subject("abcabc")
+            .expression(value -> value.lastIndexOfIsNot((CharSequence) "bc", 1))
+            .result(TRUE)
+            .name("lastIndexOf[bc] != 1")
+            .expected("not[1]")
+            .actual("4")
+            .run();
+    }
+
+    @Test
+    void givenLastOccurrenceAtIndex_whenLastIndexOfIsNotCharSequence_thenFalse() {
+        newTestCase()
+            .subject("abcabc")
+            .expression(value -> value.lastIndexOfIsNot((CharSequence) "bc", 4))
+            .result(FALSE)
+            .name("lastIndexOf[bc] != 4")
+            .expected("not[4]")
+            .actual("4")
             .run();
     }
 }

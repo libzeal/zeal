@@ -99,13 +99,19 @@ public class ListValue<T> extends BaseValue<List<T>, ListValue<T>>
         );
     }
 
-//    public ListValue<T> lastIndexOfIs(final T desired, final int index) {
-//
-//    }
-//
-//    public ListValue<T> lastIndexOfIsNot(final T desired, final int index) {
-//
-//    }
+    @Override
+    public ListValue<T> lastIndexOfIs(final T desired, final int index) {
+        return append(
+            OrderedSequenceExpressions.lastIndexOfIs(desired, index, operations)
+        );
+    }
+
+    @Override
+    public ListValue<T> lastIndexOfIsNot(final T desired, final int index) {
+        return append(
+            OrderedSequenceExpressions.lastIndexOfIsNot(desired, index, operations)
+        );
+    }
 
     @Override
     public ListValue<T> isEmpty() {
@@ -247,7 +253,7 @@ public class ListValue<T> extends BaseValue<List<T>, ListValue<T>>
         @Override
         public Element<T> atIndex(final List<T> haystack, final int index, final T desired) {
 
-            if (index < haystack.size()) {
+            if (index >= 0 && index < haystack.size()) {
                 return Element.found(haystack.get(index));
             }
             else {
@@ -258,6 +264,11 @@ public class ListValue<T> extends BaseValue<List<T>, ListValue<T>>
         @Override
         public int indexOf(final List<T> haystack, final T needle) {
             return haystack.indexOf(needle);
+        }
+
+        @Override
+        public int lastIndexOf(final List<T> haystack, final T needle) {
+            return haystack.lastIndexOf(needle);
         }
 
         @Override
@@ -278,8 +289,8 @@ public class ListValue<T> extends BaseValue<List<T>, ListValue<T>>
 
         @Override
         public List<T> findAllIn(final List<T> haystack, final Collection<T> needles) {
-            return haystack.stream()
-                .filter(needles::contains)
+            return needles.stream()
+                .filter(haystack::contains)
                 .collect(toList());
         }
 
@@ -291,11 +302,6 @@ public class ListValue<T> extends BaseValue<List<T>, ListValue<T>>
         @Override
         public int size(final List<T> haystack) {
             return haystack.size();
-        }
-
-        @Override
-        public boolean isEmpty(final List<T> haystack) {
-            return haystack.isEmpty();
         }
     }
 }

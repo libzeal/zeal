@@ -1,8 +1,7 @@
 package io.github.libzeal.zeal.values.sdk.sequence;
 
-import io.github.libzeal.zeal.logic.unary.cache.CachedResult;
-import io.github.libzeal.zeal.logic.unary.future.ComputableExpression;
-import io.github.libzeal.zeal.values.sdk.CachedValueBuilder;
+import io.github.libzeal.zeal.logic.unary.ComputableExpression;
+import io.github.libzeal.zeal.logic.unary.ExpressionBuilder;
 
 import static io.github.libzeal.zeal.logic.format.Formatter.stringify;
 import static io.github.libzeal.zeal.values.sdk.StandardRationales.Names.withPairs;
@@ -13,22 +12,17 @@ public class RepeatableSequenceExpressions {
 
         final String desiredAsString = stringify(desired);
 
-        return CachedValueBuilder.of((S s) -> {
-
-                final long count = ops.occurrences(s, desired);
-
-                return CachedResult.of(count == times)
-                    .withCache(count);
-            })
+        return ExpressionBuilder.observing((S s) -> ops.occurrences(s, desired))
+            .passesIf(count -> count == times)
             .name(withPairs("includesExactly", "desired", desiredAsString, "times", times))
             .expected("found '" + desiredAsString + "' " + times + " " + timesSuffix(times))
             .actual(context ->
-                "found '" + desiredAsString + "' " + context.cached() + " " + timesSuffix(context.cached())
+                "found '" + desiredAsString + "' " + context.observed() + " " + timesSuffix(context.observed())
             )
             .hint(context ->
-                context.cached() == 0 ?
-                    "Desired value not found in array" :
-                    "Desired value was found, but " + context.cached() + " " + timesSuffix(context.cached())
+                context.observed() == 0 ?
+                    "Desired value not found in subject" :
+                    "Desired value was found, but " + context.observed() + " " + timesSuffix(context.observed())
             )
             .build();
     }
@@ -41,22 +35,17 @@ public class RepeatableSequenceExpressions {
 
         final String desiredAsString = stringify(desired);
 
-        return CachedValueBuilder.of((S s) -> {
-
-                final long count = ops.occurrences(s, desired);
-
-                return CachedResult.of(count > times)
-                    .withCache(count);
-            })
+        return ExpressionBuilder.observing((S s) -> ops.occurrences(s, desired))
+            .passesIf(count -> count > times)
             .name(withPairs("includesMoreThan", "desired", desiredAsString, "times", times))
             .expected("found '" + desiredAsString + "' more than " + times + " " + timesSuffix(times))
             .actual(context ->
-                "found '" + desiredAsString + "' " + context.cached() + " " + timesSuffix(context.cached())
+                "found '" + desiredAsString + "' " + context.observed() + " " + timesSuffix(context.observed())
             )
             .hint(context ->
-                context.cached() == 0 ?
-                    "Desired value not found in array" :
-                    "Desired value was found, but " + context.cached() + " " + timesSuffix(context.cached())
+                context.observed() == 0 ?
+                    "Desired value not found in subject" :
+                    "Desired value was found, but " + context.observed() + " " + timesSuffix(context.observed())
             )
             .build();
     }
@@ -65,22 +54,17 @@ public class RepeatableSequenceExpressions {
 
         final String desiredAsString = stringify(desired);
 
-        return CachedValueBuilder.of((S s) -> {
-
-                final long count = ops.occurrences(s, desired);
-
-                return CachedResult.of(count >= times)
-                    .withCache(count);
-            })
+        return ExpressionBuilder.observing((S s) -> ops.occurrences(s, desired))
+            .passesIf(count -> count >= times)
             .name(withPairs("includesMoreThanOrEqualTo", "desired", desiredAsString, "times", times))
             .expected("found '" + desiredAsString + "' more than or equal to " + times + " " + timesSuffix(times))
             .actual(context ->
-                "found '" + desiredAsString + "' " + context.cached() + " " + timesSuffix(context.cached())
+                "found '" + desiredAsString + "' " + context.observed() + " " + timesSuffix(context.observed())
             )
             .hint(context ->
-                context.cached() == 0 ?
-                    "Desired value not found in array" :
-                    "Desired value was found, but " + context.cached() + " " + timesSuffix(context.cached())
+                context.observed() == 0 ?
+                    "Desired value not found in subject" :
+                    "Desired value was found, but " + context.observed() + " " + timesSuffix(context.observed())
             )
             .build();
     }
@@ -89,22 +73,17 @@ public class RepeatableSequenceExpressions {
 
         final String desiredAsString = stringify(desired);
 
-        return CachedValueBuilder.of((S s) -> {
-
-                final long count = ops.occurrences(s, desired);
-
-                return CachedResult.of(count < times)
-                    .withCache(count);
-            })
+        return ExpressionBuilder.observing((S s) -> ops.occurrences(s, desired))
+            .passesIf(count -> count < times)
             .name(withPairs("includesLessThan", "desired", desiredAsString, "times", times))
             .expected("found '" + desiredAsString + "' less than " + times + " " + timesSuffix(times))
             .actual(context ->
-                "found '" + desiredAsString + "' " + context.cached() + " " + timesSuffix(context.cached())
+                "found '" + desiredAsString + "' " + context.observed() + " " + timesSuffix(context.observed())
             )
             .hint(context ->
-                context.cached() == 0 ?
-                    "Desired value not found in array" :
-                    "Desired value was found, but " + context.cached() + " " + timesSuffix(context.cached())
+                context.observed() == 0 ?
+                    "Desired value not found in subject" :
+                    "Desired value was found, but " + context.observed() + " " + timesSuffix(context.observed())
             )
             .build();
     }
@@ -113,22 +92,17 @@ public class RepeatableSequenceExpressions {
 
         final String desiredAsString = stringify(desired);
 
-        return CachedValueBuilder.of((S s) -> {
-
-                final long count = ops.occurrences(s, desired);
-
-                return CachedResult.of(count <= times)
-                    .withCache(count);
-            })
+        return ExpressionBuilder.observing((S s) -> ops.occurrences(s, desired))
+            .passesIf(count -> count <= times)
             .name(withPairs("includesLessThanOrEqualTo", "desired", desiredAsString, "times", times))
             .expected("found '" + desiredAsString + "' less than or equal to " + times + " " + timesSuffix(times))
             .actual(context ->
-                "found '" + desiredAsString + "' " + context.cached() + " " + timesSuffix(context.cached())
+                "found '" + desiredAsString + "' " + context.observed() + " " + timesSuffix(context.observed())
             )
             .hint(context ->
-                context.cached() == 0 ?
-                    "Desired value not found in array" :
-                    "Desired value was found, but " + context.cached() + " " + timesSuffix(context.cached())
+                context.observed() == 0 ?
+                    "Desired value not found in subject" :
+                    "Desired value was found, but " + context.observed() + " " + timesSuffix(context.observed())
             )
             .build();
     }
