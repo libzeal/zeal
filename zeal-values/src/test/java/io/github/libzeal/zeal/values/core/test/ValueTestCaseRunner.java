@@ -13,7 +13,7 @@ public class ValueTestCaseRunner {
             final ValueTestCase<S, V> testCase) {
 
         final V expression = testCase.expressionFactory().apply(testCase.subject());
-        final V returned = testCase.apply().apply(expression, testCase.subject());
+        final V returned = testCase.apply().apply(expression);
 
         assertNotNull(returned);
         assertEquals(expression.getClass(), returned.getClass());
@@ -21,7 +21,7 @@ public class ValueTestCaseRunner {
         final Evaluation evaluation = expression.evaluate();
         final Evaluation terminal = terminalOf(evaluation);
 
-        final var assertion = new EvaluatedExpressionAssertion<>(terminal);
+        final var assertion = new ValueAssertion<>(terminal);
 
         assertion.assertStateIs(testCase.expectedResult());
         assertion.assertNameIs(testCase.expectedName());

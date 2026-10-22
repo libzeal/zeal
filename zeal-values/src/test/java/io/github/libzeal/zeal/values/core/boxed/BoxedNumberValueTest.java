@@ -35,8 +35,8 @@ public abstract class BoxedNumberValueTest<T extends Number, E extends BoxedNumb
 
     private void isEqualToTestCases(final ExpressionTestCaseBuilder<T, E> builder) {
 
-        final T value1 = exampleValue1();
-        final T value2 = exampleValue2();
+        final T value1 = nonNullValueA();
+        final T value2 = nonNullValueB();
 
         builder.newTest((expression, value) -> expression.isEqualTo(value1))
                 .subject(value1)
@@ -56,8 +56,8 @@ public abstract class BoxedNumberValueTest<T extends Number, E extends BoxedNumb
 
     private void isNotEqualToTestCases(final ExpressionTestCaseBuilder<T, E> builder) {
 
-        final T value1 = exampleValue1();
-        final T value2 = exampleValue2();
+        final T value1 = nonNullValueA();
+        final T value2 = nonNullValueB();
 
         builder.newTest((expression, value) -> expression.isNotEqualTo(value1))
                 .subject(value1)
@@ -526,12 +526,12 @@ public abstract class BoxedNumberValueTest<T extends Number, E extends BoxedNumb
     }
 
     @Override
-    protected T exampleValue1() {
+    protected T nonNullValueA() {
         return exampleZeroValue();
     }
 
     @Override
-    protected T exampleValue2() {
+    protected T nonNullValueB() {
         return examplePositiveValue();
     }
 

@@ -11,12 +11,12 @@ class SimpleEnumValueTest extends EnumValueTest<MockEnum> {
     }
 
     @Override
-    protected MockEnum exampleValue1() {
+    protected MockEnum nonNullValueA() {
         return MockEnum.YES;
     }
 
     @Override
-    protected MockEnum exampleValue2() {
+    protected MockEnum nonNullValueB() {
         return MockEnum.NO;
     }
 }

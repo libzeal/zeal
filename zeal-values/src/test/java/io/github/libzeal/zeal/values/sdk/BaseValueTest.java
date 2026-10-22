@@ -6,10 +6,10 @@ import io.github.libzeal.zeal.logic.evaluation.traverse.CollectingTraverserActio
 import io.github.libzeal.zeal.logic.evaluation.traverse.DepthFirstTraverser;
 import io.github.libzeal.zeal.logic.evaluation.traverse.Traverser;
 import io.github.libzeal.zeal.logic.unary.condition.Condition;
-import io.github.libzeal.zeal.logic.format.Formatter;
 import io.github.libzeal.zeal.values.core.ObjectValue;
-import io.github.libzeal.zeal.values.core.test.EvaluatedExpressionAssertion;
 import io.github.libzeal.zeal.values.core.test.ExpressionTestCaseBuilder;
+import io.github.libzeal.zeal.values.core.test.ValueAssertion;
+import io.github.libzeal.zeal.values.core.test.ValueTestCaseBuilder;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -21,56 +21,40 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import static io.github.libzeal.zeal.logic.evaluation.Result.*;
+import static io.github.libzeal.zeal.logic.evaluation.Result.FALSE;
+import static io.github.libzeal.zeal.logic.evaluation.Result.TRUE;
+import static io.github.libzeal.zeal.values.sdk.StandardMessages.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-/**
- * A base class designed to be extended by test fixtures used to test custom expressions.
- * <p>
- * For example:
- * <pre><code>
- * public class StringExpressionCheck extends ObjectExpressionTest<String, StringExpression> {
- *
- *    {@literal @}Override
- *     protected void extendTestCases(ExpressionTestCaseBuilder<T, E> builder) {
- *         builder.newTest((expression, value) -> expression.isEmpty())
- *             .value("foo")
- *             .expectedState(FAILED)
- *             .expectedName("isEmpty")
- *             .expectedExpectedValue("true")
- *             .expectedActualValue("false")
- *             .addTest();
- *     }
- * }
- * </code></pre>
- * @param <T>
- *     The type of the subject.
- * @param <E>
- *     The type of the expression under test. This type is an example of the
- *     <a href="https://stackoverflow.com/q/4173254/2403253">Curiously Recurring Template Pattern (CRTP)</a>.
- *     This type allows for the fluent interface methods of this class to return the subtype object, rather than
- *     {@link BaseValue}. For example:
- *     <pre><code>
- *         public class StringExpressionCheck extends ObjectExpressionTest<String, StringExpression> { //...
- *     </code></pre>
- */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
+
+    protected abstract E expression(T value);
+    protected abstract T nonNullValueA();
+    protected abstract T nonNullValueB();
+
+    protected ValueTestCaseBuilder<T, E> newTestCase() {
+        return ValueTestCaseBuilder.forValue(this::expression);
+    }
+
+    private static final class UnrelatedClass {}
+
+    private Class<?> otherClass() {
+        return UnrelatedClass.class;
+    }
 
     private final Comparator<T> equalComparator = (a, b) -> 0;
     private final Comparator<T> lessThanComparator = (a, b) -> -1;
     private final Comparator<T> greaterThanComparator = (a, b) -> 1;
 
-    protected abstract E expression(T value);
-
     @Test
     final void givenNoEvaluations_whenConstruct_thenCorrectEvaluation() {
 
-        final T value = exampleValue1();
+        final T value = nonNullValueA();
         final E expression = expression(value);
         final Evaluation evaluation = expression.evaluate();
-        final EvaluatedExpressionAssertion<?> assertion = new EvaluatedExpressionAssertion<>(evaluation);
+        final ValueAssertion<?> assertion = new ValueAssertion<>(evaluation);
 
         assertEquals(value, expression.subject());
         assertion.assertStateIs(TRUE);
@@ -94,15 +78,749 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
         final Evaluation first = collector.get(1).orElse(null);
         final Evaluation second = collector.get(2).orElse(null);
 
-        EvaluatedExpressionAssertion<?> firstAssertion = new EvaluatedExpressionAssertion<>(first);
-        EvaluatedExpressionAssertion<?> secondAssertion = new EvaluatedExpressionAssertion<>(second);
+        ValueAssertion<?> firstAssertion = new ValueAssertion<>(first);
+        ValueAssertion<?> secondAssertion = new ValueAssertion<>(second);
 
         assertNotNull(first);
         assertNotNull(second);
         firstAssertion.assertStateIs(FALSE);
         firstAssertion.assertNameIs("isNotNull");
-        secondAssertion.assertStateIs(SKIPPED);
+        secondAssertion.assertStateIs(Result.SKIPPED);
     }
+
+    // ---- nullity ----
+
+    @Test
+    void givenNull_whenIsNull_thenTrue() {
+        newTestCase()
+            .subject(null)
+            .expression(ObjectValue::isNull)
+            .result(TRUE)
+            .name("isNull")
+            .expected("(null)")
+            .actual("(null)")
+            .run();
+    }
+
+    @Test
+    void givenNonNull_whenIsNull_thenFalse() {
+        newTestCase()
+            .subject(nonNullValueA())
+            .expression(ObjectValue::isNull)
+            .result(FALSE)
+            .name("isNull")
+            .expected("(null)")
+            .actual(String.valueOf(nonNullValueA()))
+            .run();
+    }
+
+    @Test
+    void givenNull_whenIsNotNull_thenFalse() {
+        newTestCase()
+            .subject(null)
+            .expression(ObjectValue::isNotNull)
+            .result(FALSE)
+            .name("isNotNull")
+            .expected("not[(null)]")
+            .actual("(null)")
+            .run();
+    }
+
+    @Test
+    void givenNonNull_whenIsNotNull_thenTrue() {
+        newTestCase()
+            .subject(nonNullValueA())
+            .expression(ObjectValue::isNotNull)
+            .result(TRUE)
+            .name("isNotNull")
+            .expected("not[(null)]")
+            .actual(String.valueOf(nonNullValueA()))
+            .run();
+    }
+
+    // ---- type ----
+
+    @Test
+    void givenMatchingClass_whenIsType_thenTrue() {
+        T v = nonNullValueA();
+        newTestCase()
+            .subject(v)
+            .expression(value -> value.isType(v.getClass()))
+            .result(TRUE)
+            .name("isType[" + v.getClass() + "]")
+            .expected(v.getClass().toString())
+            .actual(v.getClass().toString())
+            .run();
+    }
+
+    @Test
+    void givenDifferentClass_whenIsType_thenFalse() {
+        T v = nonNullValueA();
+        newTestCase()
+            .subject(v)
+            .expression(value -> value.isType(otherClass()))
+            .result(FALSE)
+            .name("isType[" + otherClass() + "]")
+            .expected(otherClass().toString())
+            .actual(v.getClass().toString())
+            .run();
+    }
+
+    @Test
+    void givenNullClass_whenIsType_thenFalse() {
+        T v = nonNullValueA();
+        newTestCase()
+            .subject(v)
+            .expression(value -> value.isType(null))
+            .result(FALSE)
+            .name("isType[(null)]")
+            .expected("Always fail: cannot compare to (null) type")
+            .actual(v.getClass().toString())
+            .run();
+    }
+
+    @Test
+    void givenMatchingClass_whenIsNotType_thenFalse() {
+        T v = nonNullValueA();
+        newTestCase()
+            .subject(v)
+            .expression(value -> value.isNotType(v.getClass()))
+            .result(FALSE)
+            .name("isNotType[" + v.getClass() + "]")
+            .expected("not[" + v.getClass() + "]")
+            .actual(v.getClass().toString())
+            .run();
+    }
+
+    @Test
+    void givenDifferentClass_whenIsNotType_thenTrue() {
+        T v = nonNullValueA();
+        newTestCase()
+            .subject(v)
+            .expression(value -> value.isNotType(otherClass()))
+            .result(TRUE)
+            .name("isNotType[" + otherClass() + "]")
+            .expected("not[" + otherClass() + "]")
+            .actual(v.getClass().toString())
+            .run();
+    }
+
+    @Test
+    void givenNullClass_whenIsNotType_thenFalse() {
+        T v = nonNullValueA();
+        newTestCase()
+            .subject(v)
+            .expression(value -> value.isNotType(null))
+            .result(FALSE)
+            .name("isNotType[(null)]")
+            .expected("Always fail: cannot compare to (null) type")
+            .actual(v.getClass().toString())
+            .run();
+    }
+
+    @Test
+    void givenMatchingClass_whenIsInstanceOf_thenTrue() {
+        T v = nonNullValueA();
+        newTestCase()
+            .subject(v)
+            .expression(value -> value.isInstanceOf(v.getClass()))
+            .result(TRUE)
+            .name("isInstanceOf[" + v.getClass() + "]")
+            .expected("instanceof[" + v.getClass() + "]")
+            .actual(v.getClass().toString())
+            .run();
+    }
+
+    @Test
+    void givenObjectClass_whenIsInstanceOf_thenTrue() {
+        T v = nonNullValueA();
+        newTestCase()
+            .subject(v)
+            .expression(value -> value.isInstanceOf(Object.class))
+            .result(TRUE)
+            .name("isInstanceOf[" + Object.class + "]")
+            .expected("instanceof[" + Object.class + "]")
+            .actual(v.getClass().toString())
+            .run();
+    }
+
+    @Test
+    void givenDifferentClass_whenIsInstanceOf_thenFalse() {
+        T v = nonNullValueA();
+        newTestCase()
+            .subject(v)
+            .expression(value -> value.isInstanceOf(otherClass()))
+            .result(FALSE)
+            .name("isInstanceOf[" + otherClass() + "]")
+            .expected("instanceof[" + otherClass() + "]")
+            .actual(v.getClass().toString())
+            .run();
+    }
+
+    @Test
+    void givenNullClass_whenIsInstanceOf_thenFalse() {
+        T v = nonNullValueA();
+        newTestCase()
+            .subject(v)
+            .expression(value -> value.isInstanceOf(null))
+            .result(FALSE)
+            .name("isInstanceOf[(null)]")
+            .expected("Always fail: cannot compare to (null) type")
+            .actual(v.getClass().toString())
+            .run();
+    }
+
+    @Test
+    void givenMatchingClass_whenIsNotInstanceOf_thenFalse() {
+        T v = nonNullValueA();
+        newTestCase()
+            .subject(v)
+            .expression(value -> value.isNotInstanceOf(v.getClass()))
+            .result(FALSE)
+            .name("isNotInstanceOf[" + v.getClass() + "]")
+            .expected("not[instanceof[" + v.getClass() + "]]")
+            .actual(v.getClass().toString())
+            .run();
+    }
+
+    @Test
+    void givenObjectClass_whenIsNotInstanceOf_thenFalse() {
+        T v = nonNullValueA();
+        newTestCase()
+            .subject(v)
+            .expression(value -> value.isNotInstanceOf(Object.class))
+            .result(FALSE)
+            .name("isNotInstanceOf[" + Object.class + "]")
+            .expected("not[instanceof[" + Object.class + "]]")
+            .actual(v.getClass().toString())
+            .run();
+    }
+
+    @Test
+    void givenDifferentClass_whenIsNotInstanceOf_thenTrue() {
+        T v = nonNullValueA();
+        newTestCase()
+            .subject(v)
+            .expression(value -> value.isNotInstanceOf(otherClass()))
+            .result(TRUE)
+            .name("isNotInstanceOf[" + otherClass() + "]")
+            .expected("not[instanceof[" + otherClass() + "]]")
+            .actual(v.getClass().toString())
+            .run();
+    }
+
+    @Test
+    void givenNullClass_whenIsNotInstanceOf_thenFalse() {
+        T v = nonNullValueA();
+        newTestCase()
+            .subject(v)
+            .expression(value -> value.isNotInstanceOf(null))
+            .result(FALSE)
+            .name("isNotInstanceOf[(null)]")
+            .expected("Always fail: cannot compare to (null) type")
+            .actual(v.getClass().toString())
+            .run();
+    }
+
+    // ---- exactly / equal ----
+
+    @Test
+    void givenSameValue_whenIsExactly_thenTrue() {
+        T v = nonNullValueA();
+        newTestCase()
+            .subject(v)
+            .expression(value -> value.isExactly(v))
+            .result(TRUE)
+            .name("isExactly[" + v + "]")
+            .expected(v.toString())
+            .actual(v.toString())
+            .run();
+    }
+
+    @Test
+    void givenDifferentValue_whenIsExactly_thenFalse() {
+        T a = nonNullValueA();
+        T b = nonNullValueB();
+        newTestCase()
+            .subject(b)
+            .expression(value -> value.isExactly(a))
+            .result(FALSE)
+            .name("isExactly[" + a + "]")
+            .expected(a.toString())
+            .actual(b.toString())
+            .run();
+    }
+
+    @Test
+    void givenNull_whenIsExactlyNull_thenTrue() {
+        newTestCase()
+            .subject(null)
+            .expression(value -> value.isExactly(null))
+            .result(TRUE)
+            .name("isExactly[(null)]")
+            .expected("(null)")
+            .actual("(null)")
+            .run();
+    }
+
+    @Test
+    void givenSameValue_whenIsNotExactly_thenFalse() {
+        T v = nonNullValueA();
+        newTestCase()
+            .subject(v)
+            .expression(value -> value.isNotExactly(v))
+            .result(FALSE)
+            .name("isNotExactly[" + v + "]")
+            .expected("not[" + v + "]")
+            .actual(v.toString())
+            .run();
+    }
+
+    @Test
+    void givenDifferentValue_whenIsNotExactly_thenTrue() {
+        T a = nonNullValueA();
+        T b = nonNullValueB();
+        newTestCase()
+            .subject(b)
+            .expression(value -> value.isNotExactly(a))
+            .result(TRUE)
+            .name("isNotExactly[" + a + "]")
+            .expected("not[" + a + "]")
+            .actual(b.toString())
+            .run();
+    }
+
+    @Test
+    void givenNull_whenIsNotExactlyNull_thenFalse() {
+        newTestCase()
+            .subject(null)
+            .expression(value -> value.isNotExactly(null))
+            .result(FALSE)
+            .name("isNotExactly[(null)]")
+            .expected("not[(null)]")
+            .actual("(null)")
+            .run();
+    }
+
+    @Test
+    void givenSameValue_whenIsEqualTo_thenTrue() {
+        T v = nonNullValueA();
+        newTestCase()
+            .subject(v)
+            .expression(value -> value.isEqualTo(v))
+            .result(TRUE)
+            .name("isEqualTo[" + v + "]")
+            .expected(v.toString())
+            .actual(v.toString())
+            .run();
+    }
+
+    @Test
+    void givenDifferentValue_whenIsEqualTo_thenFalse() {
+        T a = nonNullValueA();
+        T b = nonNullValueB();
+        newTestCase()
+            .subject(b)
+            .expression(value -> value.isEqualTo(a))
+            .result(FALSE)
+            .name("isEqualTo[" + a + "]")
+            .expected(a.toString())
+            .actual(b.toString())
+            .run();
+    }
+
+    @Test
+    void givenNull_whenIsEqualToNull_thenTrue() {
+        newTestCase()
+            .subject(null)
+            .expression(value -> value.isEqualTo(null))
+            .result(TRUE)
+            .name("isEqualTo[(null)]")
+            .expected("(null)")
+            .actual("(null)")
+            .run();
+    }
+
+    // ---- condition ----
+
+    @Test
+    void givenNullCondition_whenIs_thenFalse() {
+        T v = nonNullValueA();
+        newTestCase()
+            .subject(v)
+            .expression(value -> value.is(null))
+            .result(FALSE)
+            .name("is[condition: (null)]")
+            .expected(ALWAYS_FAIL_CANNOT_CHECK_TO_NULL_CONDITION)
+            .actual(v.toString())
+            .hint(CANNOT_CHECK_USING_NULL_CONDITION)
+            .run();
+    }
+
+    @Test
+    void givenTautology_whenIs_thenTrue() {
+        T v = nonNullValueA();
+        Condition<T> cond = Condition.tautology();
+        newTestCase()
+            .subject(v)
+            .expression(value -> value.is(cond))
+            .result(TRUE)
+            .name(cond.compute(v).name())
+            .expected("true")
+            .actual("true")
+            .run();
+    }
+
+    @Test
+    void givenContradiction_whenIs_thenFalse() {
+        T v = nonNullValueA();
+        Condition<T> cond = Condition.contradiction();
+        newTestCase()
+            .subject(v)
+            .expression(value -> value.is(cond))
+            .result(FALSE)
+            .name(cond.compute(v).name())
+            .expected("false")
+            .actual("false")
+            .run();
+    }
+
+    // ---- hashCode ----
+
+    @Test
+    void givenMatchingHash_whenHashCodeIs_thenTrue() {
+        T v = nonNullValueA();
+        newTestCase()
+            .subject(v)
+            .expression(value -> value.hashCodeIs(v.hashCode()))
+            .result(TRUE)
+            .name("hashCode == " + v.hashCode())
+            .expected(String.valueOf(v.hashCode()))
+            .actual(String.valueOf(v.hashCode()))
+            .run();
+    }
+
+    @Test
+    void givenDifferentHash_whenHashCodeIs_thenFalse() {
+        T a = nonNullValueA();
+        T b = nonNullValueB();
+        newTestCase()
+            .subject(b)
+            .expression(value -> value.hashCodeIs(a.hashCode()))
+            .result(FALSE)
+            .name("hashCode == " + a.hashCode())
+            .expected(String.valueOf(a.hashCode()))
+            .actual(String.valueOf(b.hashCode()))
+            .run();
+    }
+
+    @Test
+    void givenMatchingHash_whenHashCodeIsNot_thenFalse() {
+        T v = nonNullValueA();
+        newTestCase()
+            .subject(v)
+            .expression(value -> value.hashCodeIsNot(v.hashCode()))
+            .result(FALSE)
+            .name("hashCode != " + v.hashCode())
+            .expected("not[" + v.hashCode() + "]")
+            .actual(String.valueOf(v.hashCode()))
+            .run();
+    }
+
+    @Test
+    void givenDifferentHash_whenHashCodeIsNot_thenTrue() {
+        T a = nonNullValueA();
+        T b = nonNullValueB();
+        newTestCase()
+            .subject(b)
+            .expression(value -> value.hashCodeIsNot(a.hashCode()))
+            .result(TRUE)
+            .name("hashCode != " + a.hashCode())
+            .expected("not[" + a.hashCode() + "]")
+            .actual(String.valueOf(b.hashCode()))
+            .run();
+    }
+
+    // ---- toString ----
+
+    @Test
+    void givenMatchingToString_whenToStringIs_thenTrue() {
+        T v = nonNullValueA();
+        newTestCase()
+            .subject(v)
+            .expression(value -> value.toStringIs(v.toString()))
+            .result(TRUE)
+            .name("toString().equals(" + v + ")")
+            .expected(v.toString())
+            .actual(v.toString())
+            .run();
+    }
+
+    @Test
+    void givenDifferentToString_whenToStringIs_thenFalse() {
+        T a = nonNullValueA();
+        T b = nonNullValueB();
+        newTestCase()
+            .subject(b)
+            .expression(value -> value.toStringIs(a.toString()))
+            .result(FALSE)
+            .name("toString().equals(" + a + ")")
+            .expected(a.toString())
+            .actual(b.toString())
+            .run();
+    }
+
+    @Test
+    void givenMatchingToString_whenToStringIsNot_thenFalse() {
+        T v = nonNullValueA();
+        newTestCase()
+            .subject(v)
+            .expression(value -> value.toStringIsNot(v.toString()))
+            .result(FALSE)
+            .name("not[toString().equals(" + v + ")]")
+            .expected("not[" + v + "]")
+            .actual(v.toString())
+            .run();
+    }
+
+    @Test
+    void givenDifferentToString_whenToStringIsNot_thenTrue() {
+        T a = nonNullValueA();
+        T b = nonNullValueB();
+        newTestCase()
+            .subject(b)
+            .expression(value -> value.toStringIsNot(a.toString()))
+            .result(TRUE)
+            .name("not[toString().equals(" + a + ")]")
+            .expected("not[" + a + "]")
+            .actual(b.toString())
+            .run();
+    }
+
+    // ---- predicate ----
+
+    @Test
+    void givenAlwaysTrue_whenSatisfies_thenTrue() {
+        newTestCase()
+            .subject(nonNullValueA())
+            .expression(value -> value.satisfies(o -> true))
+            .result(TRUE)
+            .name("predicate")
+            .expected("Predicate satisfied")
+            .actual("Predicate satisfied")
+            .run();
+    }
+
+    @Test
+    void givenAlwaysFalse_whenSatisfies_thenFalse() {
+        newTestCase()
+            .subject(nonNullValueA())
+            .expression(value -> value.satisfies(o -> false))
+            .result(FALSE)
+            .name("predicate")
+            .expected("Predicate satisfied")
+            .actual("Predicate unsatisfied")
+            .run();
+    }
+
+    // ---- comparator ----
+
+    @Test
+    void givenNullComparator_whenIsEqualTo_thenFalse() {
+        T a = nonNullValueA();
+        T b = nonNullValueB();
+        newTestCase()
+            .subject(b)
+            .expression(value -> value.isEqualTo(a, null))
+            .result(FALSE)
+            .name("isEqualTo[" + a + ", comparator: (null)]")
+            .expected(a.toString())
+            .actual(b.toString())
+            .hint(CANNOT_COMPARE_USING_NULL_COMPARATOR)
+            .run();
+    }
+
+    @Test
+    void givenEqualComparator_whenIsEqualTo_thenTrue() {
+        T a = nonNullValueA();
+        T b = nonNullValueB();
+        newTestCase()
+            .subject(b)
+            .expression(value -> value.isEqualTo(a, equalComparator))
+            .result(TRUE)
+            .name("isEqualTo[" + a + ", comparator: " + equalComparator + "]")
+            .expected(a.toString())
+            .actual(b.toString())
+            .run();
+    }
+
+// ---- isNotEqualTo ----
+
+@Test
+void givenSame_whenIsNotEqualTo_thenFalse() {
+    T v = nonNullValueA();
+    newTestCase()
+        .subject(v)
+        .expression(value -> value.isNotEqualTo(v))
+        .result(FALSE)
+        .name("isNotEqualTo[" + v + "]")
+        .expected("not[" + v + "]")
+        .actual(v.toString())
+        .run();
+    }
+
+    @Test
+    void givenDifferent_whenIsNotEqualTo_thenTrue() {
+        T a = nonNullValueA();
+        T b = nonNullValueB();
+        newTestCase()
+            .subject(b)
+            .expression(value -> value.isNotEqualTo(a))
+            .result(TRUE)
+            .name("isNotEqualTo[" + a + "]")
+            .expected("not[" + a + "]")
+            .actual(b.toString())
+            .run();
+    }
+
+    // ---- comparator not-equal ----
+
+    @Test
+    void givenNullComparator_whenIsNotEqualTo_thenFalse() {
+        T a = nonNullValueA();
+        T b = nonNullValueB();
+        newTestCase()
+            .subject(b)
+            .expression(value -> value.isNotEqualTo(a, null))
+            .result(FALSE)
+            .name("isNotEqualTo[" + a + ", comparator: (null)]")
+            .expected(a.toString())
+            .actual(b.toString())
+            .hint(CANNOT_COMPARE_USING_NULL_COMPARATOR)
+            .run();
+    }
+
+    @Test
+    void givenEqualComparator_whenIsNotEqualTo_thenFalse() {
+        T a = nonNullValueA();
+        T b = nonNullValueB();
+        newTestCase()
+            .subject(b)
+            .expression(value -> value.isNotEqualTo(a, equalComparator))
+            .result(FALSE)
+            .name("isNotEqualTo[" + a + ", comparator: " + equalComparator + "]")
+            .expected(a.toString())
+            .actual(b.toString())
+            .run();
+    }
+
+    @Test
+    void givenLessThanComparator_whenIsNotEqualTo_thenTrue() {
+        T a = nonNullValueA();
+        T b = nonNullValueB();
+        newTestCase()
+            .subject(b)
+            .expression(value -> value.isNotEqualTo(a, lessThanComparator))
+            .result(TRUE)
+            .name("isNotEqualTo[" + a + ", comparator: " + lessThanComparator + "]")
+            .expected(a.toString())
+            .actual(b.toString())
+            .run();
+    }
+
+    @Test
+    void givenGreaterThanComparator_whenIsNotEqualTo_thenTrue() {
+        T a = nonNullValueA();
+        T b = nonNullValueB();
+        newTestCase()
+            .subject(b)
+            .expression(value -> value.isNotEqualTo(a, greaterThanComparator))
+            .result(TRUE)
+            .name("isNotEqualTo[" + a + ", comparator: " + greaterThanComparator + "]")
+            .expected(a.toString())
+            .actual(b.toString())
+            .run();
+    }
+
+    // ---- doesNotSatisfy ----
+
+    @Test
+    void givenAlwaysTrue_whenDoesNotSatisfy_thenFalse() {
+        newTestCase()
+            .subject(nonNullValueA())
+            .expression(value -> value.doesNotSatisfy(o -> true))
+            .result(FALSE)
+            .name("not[predicate]")
+            .expected("Predicate unsatisfied")
+            .actual("Predicate satisfied")
+            .run();
+    }
+
+    @Test
+    void givenAlwaysFalse_whenDoesNotSatisfy_thenTrue() {
+        newTestCase()
+            .subject(nonNullValueA())
+            .expression(value -> value.doesNotSatisfy(o -> false))
+            .result(TRUE)
+            .name("not[predicate]")
+            .expected("Predicate unsatisfied")
+            .actual("Predicate unsatisfied")
+            .run();
+    }
+
+    @Test
+    void givenNull_whenIsNotEqualToNull_thenFalse() {
+        newTestCase()
+            .subject(null)
+            .expression(value -> value.isNotEqualTo(null))
+            .result(FALSE)
+            .name("isNotEqualTo[(null)]")
+            .expected("not[(null)]")
+            .actual("(null)")
+            .run();
+    }
+
+    @Test
+    void givenLessThanComparator_whenIsEqualTo_thenFalse() {
+        T a = nonNullValueA();
+        T b = nonNullValueB();
+        newTestCase()
+            .subject(b)
+            .expression(value -> value.isEqualTo(a, lessThanComparator))
+            .result(FALSE)
+            .name("isEqualTo[" + a + ", comparator: " + lessThanComparator + "]")
+            .expected(a.toString())
+            .actual(b.toString())
+            .run();
+    }
+
+    @Test
+    void givenGreaterThanComparator_whenIsEqualTo_thenFalse() {
+        T a = nonNullValueA();
+        T b = nonNullValueB();
+        newTestCase()
+            .subject(b)
+            .expression(value -> value.isEqualTo(a, greaterThanComparator))
+            .result(FALSE)
+            .name("isEqualTo[" + a + ", comparator: " + greaterThanComparator + "]")
+            .expected(a.toString())
+            .actual(b.toString())
+            .run();
+    }
+
+    @Test
+    void givenAlwaysTrue_whenDoesNotSatisfy_thenFalse_nameCheck() {
+        newTestCase()
+            .subject(nonNullValueA())
+            .expression(value -> value.doesNotSatisfy(o -> true))
+            .result(FALSE)
+            .name("not[predicate]")
+            .expected("Predicate unsatisfied")
+            .actual("Predicate satisfied")
+            .run();
+    }
+
+
 
     @ParameterizedTest(name = "{0}")
     @MethodSource("testCaseStream")
@@ -130,7 +848,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
         traverser.traverse(eval, collector);
 
         final Evaluation first = collector.get(1).orElse(null);
-        final EvaluatedExpressionAssertion<?> firstEvaluation = new EvaluatedExpressionAssertion<>(first);
+        final ValueAssertion<?> firstEvaluation = new ValueAssertion<>(first);
 
         assertNotNull(first);
         firstEvaluation.assertStateIs(expectedState);
@@ -147,568 +865,10 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
 
         ExpressionTestCaseBuilder<T, E> builder = ExpressionTestCaseBuilder.newBuilder();
 
-        isNullTestCases(builder);
-        isNotNullTestCases(builder);
-        isTypeTestCases(builder);
-        isNotTypeTestCases(builder);
-        isInstanceOfTestCases(builder);
-        isNotInstanceOfTestCases(builder);
-        isExactlyTestCases(builder);
-        isNotExactlyTestCases(builder);
-        isConditionTestCases(builder);
-        isEqualToTestCases(builder);
-        isEqualToComparatorTestCases(builder);
-        isNotEqualToTestCases(builder);
-        isNotEqualToComparatorTestCases(builder);
-        hashCodeIsTestCases(builder);
-        hashCodeIsNotTestCases(builder);
-        toStringIsTestCases(builder);
-        toStringIsNotTestCases(builder);
-        satisfiesPredicateTestCases(builder);
-        doesNotSatisfyPredicateTestCases(builder);
-
         extendTestCases(builder);
 
         return builder.stream();
     }
 
-    private void isNullTestCases(ExpressionTestCaseBuilder<T, E> builder) {
-        builder.newTest((expression, value) -> expression.isNull())
-                .subject(null)
-                .expectedState(TRUE)
-                .expectedName("isNull")
-                .expectedExpected("(null)")
-                .expectedActual("(null)")
-                .addTest()
-            .newTest((expression, value) -> expression.isNull())
-                .subject(exampleValue1())
-                .expectedState(FALSE)
-                .expectedName("isNull")
-                .expectedExpected("(null)")
-                .expectedActual(exampleValue1().toString())
-                .addTest();
-    }
-
-    private void isNotNullTestCases(ExpressionTestCaseBuilder<T, E> builder) {
-        builder.newTest((expression, value) -> expression.isNotNull())
-                .subject(null)
-                .expectedState(FALSE)
-                .expectedName("isNotNull")
-                .expectedExpected("not[(null)]")
-                .expectedActual("(null)")
-                .addTest()
-            .newTest((expression, value) -> expression.isNotNull())
-                .subject(exampleValue1())
-                .expectedState(TRUE)
-                .expectedName("isNotNull")
-                .expectedExpected("not[(null)]")
-                .expectedActual(exampleValue1().toString())
-                .addTest();
-    }
-
-    private void isTypeTestCases(ExpressionTestCaseBuilder<T, E> builder) {
-
-        final T nonNullValue = exampleValue1();
-
-        builder.newTest((expression, value) -> expression.isType(nonNullValue.getClass()))
-                .subject(nonNullValue)
-                .expectedState(TRUE)
-                .expectedName("isType[" + nonNullValue.getClass() + "]")
-                .expectedExpected(nonNullValue.getClass().toString())
-                .expectedActual(nonNullValue.getClass().toString())
-                .addTest()
-            .newTest((expression, value) -> expression.isType(CanonicalClass.class))
-                .subject(nonNullValue)
-                .expectedState(FALSE)
-                .expectedName("isType[" + CanonicalClass.class + "]")
-                .expectedExpected(CanonicalClass.class.toString())
-                .expectedActual(nonNullValue.getClass().toString())
-                .addTest()
-            .newTest((expression, value) -> expression.isType(null))
-                .subject(nonNullValue)
-                .expectedState(FALSE)
-                .expectedName("isType[(null)]")
-                .expectedExpected("Always fail: cannot compare to (null) type")
-                .expectedActual(nonNullValue.getClass().toString())
-                .addTest();
-    }
-
-    private void isNotTypeTestCases(ExpressionTestCaseBuilder<T, E> builder) {
-
-        final T nonNullValue = exampleValue1();
-
-        builder.newTest((expression, value) -> expression.isNotType(nonNullValue.getClass()))
-                .subject(nonNullValue)
-                .expectedState(FALSE)
-                .expectedName("isNotType[" + nonNullValue.getClass() + "]")
-                .expectedExpected("not[" + nonNullValue.getClass() + "]")
-                .expectedActual(nonNullValue.getClass().toString())
-                .addTest()
-            .newTest((expression, value) -> expression.isNotType(CanonicalClass.class))
-                .subject(nonNullValue)
-                .expectedState(TRUE)
-                .expectedName("isNotType[" + CanonicalClass.class + "]")
-                .expectedExpected("not[" + CanonicalClass.class + "]")
-                .expectedActual((expression, value) -> value.getClass().toString())
-                .addTest()
-            .newTest((expression, value) -> expression.isNotType(null))
-                .subject(nonNullValue)
-                .expectedState(FALSE)
-                .expectedName("isNotType[(null)]")
-                .expectedExpected("Always fail: cannot compare to (null) type")
-                .expectedActual(nonNullValue.getClass().toString())
-                .addTest();
-    }
-
-    private void isInstanceOfTestCases(ExpressionTestCaseBuilder<T, E> builder) {
-
-        final T nonNullValue = exampleValue1();
-
-        builder.newTest((expression, value) -> expression.isInstanceOf(nonNullValue.getClass()))
-                .subject(nonNullValue)
-                .expectedState(TRUE)
-                .expectedName("isInstanceOf[" + nonNullValue.getClass() + "]")
-                .expectedExpected("instanceof[" + nonNullValue.getClass() + "]")
-                .expectedActual(nonNullValue.getClass().toString())
-                .addTest()
-            .newTest((expression, value) -> expression.isInstanceOf(Object.class))
-                .subject(nonNullValue)
-                .expectedState(TRUE)
-                .expectedName("isInstanceOf[" + Object.class + "]")
-                .expectedExpected("instanceof[" + Object.class + "]")
-                .expectedActual(nonNullValue.getClass().toString())
-                .addTest()
-            .newTest((expression, value) -> expression.isInstanceOf(CanonicalClass.class))
-                .subject(nonNullValue)
-                .expectedState(FALSE)
-                .expectedName("isInstanceOf[" + CanonicalClass.class + "]")
-                .expectedExpected("instanceof[" + CanonicalClass.class + "]")
-                .expectedActual(nonNullValue.getClass().toString())
-                .addTest()
-            .newTest((expression, value) -> expression.isInstanceOf(null))
-                .subject(nonNullValue)
-                .expectedState(FALSE)
-                .expectedName("isInstanceOf[(null)]")
-                .expectedExpected("Always fail: cannot compare to (null) type")
-                .expectedActual(nonNullValue.getClass().toString())
-                .addTest();
-    }
-
-    private void isNotInstanceOfTestCases(ExpressionTestCaseBuilder<T, E> builder) {
-
-        final T nonNullValue = exampleValue1();
-
-        builder.newTest((expression, value) -> expression.isNotInstanceOf(nonNullValue.getClass()))
-                .subject(nonNullValue)
-                .expectedState(FALSE)
-                .expectedName("isNotInstanceOf[" + nonNullValue.getClass() + "]")
-                .expectedExpected("not[instanceof[" + nonNullValue.getClass() +"]]")
-                .expectedActual(nonNullValue.getClass().toString())
-                .addTest()
-            .newTest((expression, value) -> expression.isNotInstanceOf(Object.class))
-                .subject(nonNullValue)
-                .expectedState(FALSE)
-                .expectedName("isNotInstanceOf[" + Object.class + "]")
-                .expectedExpected("not[instanceof[" + Object.class + "]]")
-                .expectedActual(nonNullValue.getClass().toString())
-                .addTest()
-            .newTest((expression, value) -> expression.isNotInstanceOf(CanonicalClass.class))
-                .subject(nonNullValue)
-                .expectedState(TRUE)
-                .expectedName("isNotInstanceOf[" + CanonicalClass.class + "]")
-                .expectedExpected("not[instanceof["  + CanonicalClass.class +  "]]")
-                .expectedActual(nonNullValue.getClass().toString())
-                .addTest()
-            .newTest((expression, value) -> expression.isNotInstanceOf(null))
-                .subject(nonNullValue)
-                .expectedState(FALSE)
-                .expectedName("isNotInstanceOf[(null)]")
-                .expectedExpected("Always fail: cannot compare to (null) type")
-                .expectedActual(nonNullValue.getClass().toString())
-                .addTest();
-    }
-
-    private void isExactlyTestCases(ExpressionTestCaseBuilder<T, E> builder) {
-
-        final T value1 = exampleValue1();
-        final T value2 = exampleValue2();
-
-        builder.newTest((expression, value) -> expression.isExactly(value1))
-                .subject(value1)
-                .expectedState(TRUE)
-                .expectedName("isExactly[" + value1 + "]")
-                .expectedExpected((expression, value) -> value.toString())
-                .expectedActual(value1.toString())
-                .addTest()
-            .newTest((expression, value) -> expression.isExactly(value1))
-                .subject(value2)
-                .expectedState(FALSE)
-                .expectedName("isExactly[" + value1 + "]")
-                .expectedExpected(value1.toString())
-                .expectedActual((expression, value) -> value.toString())
-                .addTest()
-            .newTest((expression, value) -> expression.isExactly(null))
-                .subject(null)
-                .expectedState(TRUE)
-                .expectedName("isExactly[(null)]")
-                .expectedExpected("(null)")
-                .expectedActual("(null)")
-                .addTest();
-    }
-
-    private void isNotExactlyTestCases(ExpressionTestCaseBuilder<T, E> builder) {
-
-        final T value1 = exampleValue1();
-        final T value2 = exampleValue2();
-
-        builder.newTest((expression, value) -> expression.isNotExactly(value1))
-                .subject(value1)
-                .expectedState(FALSE)
-                .expectedName("isNotExactly[" + value1 + "]")
-                .expectedExpected("not[" + value1.toString() + "]")
-                .expectedActual((expression, value) -> value.toString())
-                .addTest()
-            .newTest((expression, value) -> expression.isNotExactly(value1))
-                .subject(value2)
-                .expectedState(TRUE)
-                .expectedName("isNotExactly[" + value1 + "]")
-                .expectedExpected("not[" + value1 + "]")
-                .expectedActual((expression, value) -> value.toString())
-                .addTest()
-            .newTest((expression, value) -> expression.isNotExactly(null))
-                .subject(null)
-                .expectedState(FALSE)
-                .expectedName("isNotExactly[(null)]")
-                .expectedExpected("not[(null)]")
-                .expectedActual("(null)")
-                .addTest();
-    }
-
-    private void isConditionTestCases(ExpressionTestCaseBuilder<T, E> builder) {
-
-        final T subject = exampleValue1();
-        final Condition<T> trueCondition = Condition.tautology();
-        final Condition<T> falseCondition = Condition.contradiction();
-
-        builder.newTest((expression, value) -> expression.is(null))
-                .subject(subject)
-                .expectedState(FALSE)
-                .expectedName("is[condition: (null)]")
-                .expectedExpected((expression, value) -> StandardMessages.ALWAYS_FAIL_CANNOT_CHECK_TO_NULL_CONDITION)
-                .expectedActual(subject.toString())
-                .expectedHint(StandardMessages.CANNOT_CHECK_USING_NULL_CONDITION)
-                .addTest()
-            .newTest((expression, value) -> expression.is(trueCondition))
-                .subject(subject)
-                .expectedState(TRUE)
-                .expectedName(trueCondition.compute(subject).name())
-                .expectedExpected("true")
-                .expectedActual("true")
-                .addTest()
-            .newTest((expression, value) -> expression.is(falseCondition))
-                .subject(subject)
-                .expectedState(FALSE)
-                .expectedName(falseCondition.compute(subject).name())
-                .expectedExpected("false")
-                .expectedActual("false")
-                .addTest();
-    }
-
-    private void isEqualToTestCases(ExpressionTestCaseBuilder<T, E> builder) {
-
-        final T value1 = exampleValue1();
-        final T value2 = exampleValue2();
-
-        builder.newTest(ObjectValue::isEqualTo)
-                .subject(value1)
-                .expectedState(TRUE)
-                .expectedName(value -> "isEqualTo[" + value1 + "]")
-                .expectedExpected((expression, value) -> value.toString())
-                .expectedActual((expression, value) -> value.toString())
-                .addTest()
-            .newTest((expression, value) -> expression.isEqualTo(value1))
-                .subject(value2)
-                .expectedState(FALSE)
-                .expectedName(value -> "isEqualTo[" + value1 + "]")
-                .expectedExpected((expression, value) -> value1.toString())
-                .expectedActual((expression, value) -> value.toString())
-                .addTest()
-            .newTest((expression, value) -> expression.isEqualTo(null))
-                .subject(null)
-                .expectedState(TRUE)
-                .expectedName("isEqualTo[(null)]")
-                .expectedExpected("(null)")
-                .expectedActual("(null)")
-                .addTest();
-    }
-
-    private void isEqualToComparatorTestCases(ExpressionTestCaseBuilder<T, E> builder) {
-
-        final T value1 = exampleValue1();
-        final T value2 = exampleValue2();
-
-        builder.newTest((e, s) -> e.isEqualTo(value1, null))
-                .subject(value2)
-                .expectedState(FALSE)
-                .expectedName(value -> "isEqualTo[" + value1 + ", comparator: (null)]")
-                .expectedExpected((expression, value) -> value1.toString())
-                .expectedActual((expression, value) -> value.toString())
-                .expectedHint(StandardMessages.CANNOT_COMPARE_USING_NULL_COMPARATOR)
-                .addTest()
-            .newTest((e, s) -> e.isEqualTo(value1, equalComparator))
-                .subject(value2)
-                .expectedState(TRUE)
-                .expectedName(value -> "isEqualTo[" + value1 + ", comparator: " + Formatter.stringify(equalComparator) + "]")
-                .expectedExpected((expression, value) -> value1.toString())
-                .expectedActual((expression, value) -> value.toString())
-                .addTest()
-            .newTest((e, s) -> e.isEqualTo(value1, lessThanComparator))
-                .subject(value2)
-                .expectedState(FALSE)
-                .expectedName(value -> {
-                    String result;
-                    result = Formatter.stringify(lessThanComparator);
-                    return "isEqualTo[" + value1 + ", comparator: " + result + "]";
-                })
-                .expectedExpected((expression, value) -> value1.toString())
-                .expectedActual((expression, value) -> value.toString())
-                .addTest()
-            .newTest((e, s) -> e.isEqualTo(value1, greaterThanComparator))
-                .subject(value2)
-                .expectedState(FALSE)
-                .expectedName(value -> "isEqualTo[" + value1 + ", comparator: " + Formatter.stringify(greaterThanComparator) + "]")
-                .expectedExpected((expression, value) -> value1.toString())
-                .expectedActual((expression, value) -> value.toString())
-                .addTest();
-    }
-
-    private void isNotEqualToComparatorTestCases(ExpressionTestCaseBuilder<T, E> builder) {
-
-        final T value1 = exampleValue1();
-        final T value2 = exampleValue2();
-
-        builder.newTest((e, s) -> e.isNotEqualTo(value1, null))
-                .subject(value2)
-                .expectedState(FALSE)
-                .expectedName(value -> "isNotEqualTo[" + value1 + ", comparator: (null)]")
-                .expectedExpected((expression, value) -> value1.toString())
-                .expectedActual((expression, value) -> value.toString())
-                .expectedHint(StandardMessages.CANNOT_COMPARE_USING_NULL_COMPARATOR)
-                .addTest()
-            .newTest((e, s) -> e.isNotEqualTo(value1, equalComparator))
-                .subject(value2)
-                .expectedState(FALSE)
-                .expectedName(value -> "isNotEqualTo[" + value1 + ", comparator: " + Formatter.stringify(equalComparator) + "]")
-                .expectedExpected((expression, value) -> value1.toString())
-                .expectedActual((expression, value) -> value.toString())
-                .addTest()
-            .newTest((e, s) -> e.isNotEqualTo(value1, lessThanComparator))
-                .subject(value2)
-                .expectedState(TRUE)
-                .expectedName(value -> "isNotEqualTo[" + value1 + ", comparator: " + Formatter.stringify(lessThanComparator) + "]")
-                .expectedExpected((expression, value) -> value1.toString())
-                .expectedActual((expression, value) -> value.toString())
-                .addTest()
-            .newTest((e, s) -> e.isNotEqualTo(value1, greaterThanComparator))
-                .subject(value2)
-                .expectedState(TRUE)
-                .expectedName(value -> "isNotEqualTo[" + value1 + ", comparator: " + Formatter.stringify(greaterThanComparator) + "]")
-                .expectedExpected((expression, value) -> value1.toString())
-                .expectedActual((expression, value) -> value.toString())
-                .addTest();
-    }
-
-    private void isNotEqualToTestCases(ExpressionTestCaseBuilder<T, E> builder) {
-
-        final T value1 = exampleValue1();
-        final T value2 = exampleValue2();
-
-        builder.newTest(ObjectValue::isNotEqualTo)
-                .subject(value1)
-                .expectedState(FALSE)
-                .expectedName(value -> "isNotEqualTo[" + value + "]")
-                .expectedExpected((expression, value) -> "not[" + value.toString() + "]")
-                .expectedActual((expression, value) -> value.toString())
-                .addTest()
-            .newTest((expression, value) -> expression.isNotEqualTo(value1))
-                .subject(value2)
-                .expectedState(TRUE)
-                .expectedName(value -> "isNotEqualTo[" + value1 + "]")
-                .expectedExpected((expression, value) -> "not[" + value1.toString() + "]")
-                .expectedActual((expression, value) -> value.toString())
-                .addTest()
-            .newTest((expression, value) -> expression.isNotEqualTo(null))
-                .subject(null)
-                .expectedState(FALSE)
-                .expectedName("isNotEqualTo[(null)]")
-                .expectedExpected("not[(null)]")
-                .expectedActual("(null)")
-                .addTest();
-    }
-
-    private void hashCodeIsTestCases(ExpressionTestCaseBuilder<T, E> builder) {
-
-        final T value1 = exampleValue1();
-        final T value2 = exampleValue2();
-
-        builder.newTest((expression, value) -> expression.hashCodeIs(value1.hashCode()))
-                .subject(value1)
-                .expectedState(TRUE)
-                .expectedName(value -> "hashCode == " + value.hashCode())
-                .expectedExpected((expression, value) -> String.valueOf(value1.hashCode()))
-                .expectedActual((expression, value) -> String.valueOf(value.hashCode()))
-                .addTest()
-            .newTest((expression, value) -> expression.hashCodeIs(value1.hashCode()))
-                .subject(value2)
-                .expectedState(FALSE)
-                .expectedName(value -> "hashCode == " + value1.hashCode())
-                .expectedExpected((expression, value) -> String.valueOf(value1.hashCode()))
-                .expectedActual((expression, value) -> String.valueOf(value.hashCode()))
-                .addTest();
-    }
-
-    private void hashCodeIsNotTestCases(ExpressionTestCaseBuilder<T, E> builder) {
-
-        final T value1 = exampleValue1();
-        final T value2 = exampleValue2();
-
-        builder.newTest((expression, value) -> expression.hashCodeIsNot(value1.hashCode()))
-                .subject(value1)
-                .expectedState(FALSE)
-                .expectedName(value -> "hashCode != " + value.hashCode())
-                .expectedExpected((expression, value) -> "not[" + value.hashCode() + "]")
-                .expectedActual((expression, value) -> String.valueOf(value.hashCode()))
-                .addTest()
-            .newTest((expression, value) -> expression.hashCodeIsNot(value1.hashCode()))
-                .subject(value2)
-                .expectedState(TRUE)
-                .expectedName(value -> "hashCode != " + value1.hashCode())
-                .expectedExpected((expression, value) -> "not[" + value1.hashCode() + "]")
-                .expectedActual((expression, value) -> String.valueOf(value.hashCode()))
-                .addTest();
-    }
-
-    private void toStringIsTestCases(ExpressionTestCaseBuilder<T, E> builder) {
-
-        final T value1 = exampleValue1();
-        final T value2 = exampleValue2();
-
-        builder.newTest((expression, value) -> expression.toStringIs(value1.toString()))
-                .subject(value1)
-                .expectedState(TRUE)
-                .expectedName(value -> "toString().equals(" + value1 + ")")
-                .expectedExpected((expression, value) -> value1.toString())
-                .expectedActual((expression, value) -> value.toString())
-            .addTest()
-                .newTest((expression, value) -> expression.toStringIs(value1.toString()))
-                .subject(value2)
-                .expectedState(FALSE)
-                .expectedName(value -> "toString().equals(" + value1 + ")")
-                .expectedExpected((expression, value) -> value1.toString())
-                .expectedActual((expression, value) -> value.toString())
-                .addTest();
-    }
-
-    private void toStringIsNotTestCases(ExpressionTestCaseBuilder<T, E> builder) {
-
-        final T value1 = exampleValue1();
-        final T value2 = exampleValue2();
-
-        builder.newTest((expression, value) -> expression.toStringIsNot(value1.toString()))
-                .subject(value1)
-                .expectedState(FALSE)
-                .expectedName(value -> "not[toString().equals(" + value1 + ")]")
-                .expectedExpected((expression, value) -> "not[" + value1 + "]")
-                .expectedActual((expression, value) -> value.toString())
-                .addTest()
-            .newTest((expression, value) -> expression.toStringIsNot(value1.toString()))
-                .subject(value2)
-                .expectedState(TRUE)
-                .expectedName(value -> "not[toString().equals(" + value1 + ")]")
-                .expectedExpected((expression, value) -> "not[" + value1 + "]")
-                .expectedActual((expression, value) -> value.toString())
-                .addTest();
-    }
-
-    private void satisfiesPredicateTestCases(ExpressionTestCaseBuilder<T, E> builder) {
-
-        final T value1 = exampleValue1();
-
-        builder.newTest((expression, value) -> expression.satisfies(o -> true))
-                .subject(value1)
-                .expectedState(TRUE)
-                .expectedName("predicate")
-                .expectedExpected("Predicate satisfied")
-                .expectedActual("Predicate satisfied")
-                .addTest()
-            .newTest((expression, value) -> expression.satisfies(o -> false))
-                .subject(value1)
-                .expectedState(FALSE)
-                .expectedName("predicate")
-                .expectedExpected("Predicate satisfied")
-                .expectedActual("Predicate unsatisfied")
-                .addTest();
-    }
-
-    private void doesNotSatisfyPredicateTestCases(ExpressionTestCaseBuilder<T, E> builder) {
-
-        final T value1 = exampleValue1();
-
-        builder.newTest((expression, value) -> expression.doesNotSatisfy(o -> true))
-                .subject(value1)
-                .expectedState(FALSE)
-                .expectedName("not[predicate]")
-                .expectedExpected("Predicate unsatisfied")
-                .expectedActual("Predicate satisfied")
-                .addTest()
-            .newTest((expression, value) -> expression.doesNotSatisfy(o -> false))
-                .subject(value1)
-                .expectedState(TRUE)
-                .expectedName("not[predicate]")
-                .expectedExpected("Predicate unsatisfied")
-                .expectedActual("Predicate unsatisfied")
-                .addTest();
-    }
-
-    /**
-     * An extension point that allows for custom test cases to be added and executed using the supplied builder.
-     *
-     * @param builder
-     *     THe builder used to create new test cases.
-     */
     protected void extendTestCases(ExpressionTestCaseBuilder<T, E> builder) {}
-
-    /**
-     * Obtains an example value. This value must be different from the value returned by {@link #exampleValue2()}. The
-     * following properties must hold true for the two methods:
-     * <pre><code>
-     *     exampleValue1() != null
-     *     exampleValue2() != null
-     *     exampleValue1().equals(exampleValue2() == false
-     *     exampleValue1().hashCode() != exampleValue2().hashCode()
-     *     exampleValue1().toString().equals(exampleValue2().toString() == false
-     *     exampleValue1().toString().equalsIgnoreCase(exampleValue2().toString() == false
-     * </code></pre>
-     *
-     * @return An example value.
-     */
-    protected abstract T exampleValue1();
-
-    /**
-     * Obtains an example value. This value must be different from the value returned by {@link #exampleValue1()}. The
-     * following properties must hold true for the two methods:
-     * <pre><code>
-     *     exampleValue1() != null
-     *     exampleValue2() != null
-     *     exampleValue1().equals(exampleValue2() == false
-     *     exampleValue1().hashCode() != exampleValue2().hashCode()
-     *     exampleValue1().toString().equals(exampleValue2().toString() == false
-     *     exampleValue1().toString().equalsIgnoreCase(exampleValue2().toString() == false
-     * </code></pre>
-     *
-     * @return An example value.
-     */
-    protected abstract T exampleValue2();
-
-    private static class CanonicalClass {}
 }

@@ -15,12 +15,12 @@ class StringValueTest extends BaseValueTest<String, StringValue> {
     }
 
     @Override
-    protected String exampleValue1() {
+    protected String nonNullValueA() {
         return "foo";
     }
 
     @Override
-    protected String exampleValue2() {
+    protected String nonNullValueB() {
         return "bar";
     }
 

@@ -21,8 +21,8 @@ abstract class EnumValueTest<T extends Enum<T>> extends BaseValueTest<T, SimpleE
 
     private void ordinalIsTestCases(ExpressionTestCaseBuilder<T, SimpleEnumValue<T>> builder) {
 
-        T value1 = exampleValue1();
-        T value2 = exampleValue2();
+        T value1 = nonNullValueA();
+        T value2 = nonNullValueB();
         
         builder.newTest((expression, value) -> expression.ordinalIs(value1.ordinal()))
                 .subject(value1)
@@ -42,8 +42,8 @@ abstract class EnumValueTest<T extends Enum<T>> extends BaseValueTest<T, SimpleE
 
     private void ordinalIsNotTestCases(ExpressionTestCaseBuilder<T, SimpleEnumValue<T>> builder) {
 
-        T value1 = exampleValue1();
-        T value2 = exampleValue2();
+        T value1 = nonNullValueA();
+        T value2 = nonNullValueB();
 
         builder.newTest((expression, value) -> expression.ordinalIsNot(value1.ordinal()))
                 .subject(value1)
@@ -63,8 +63,8 @@ abstract class EnumValueTest<T extends Enum<T>> extends BaseValueTest<T, SimpleE
 
     private void nameIsTestCases(ExpressionTestCaseBuilder<T, SimpleEnumValue<T>> builder) {
 
-        T value1 = exampleValue1();
-        T value2 = exampleValue2();
+        T value1 = nonNullValueA();
+        T value2 = nonNullValueB();
 
         builder.newTest((expression, value) -> expression.nameIs(value1.name()))
                 .subject(value1)
@@ -84,8 +84,8 @@ abstract class EnumValueTest<T extends Enum<T>> extends BaseValueTest<T, SimpleE
 
     private void nameIsNotTestCases(ExpressionTestCaseBuilder<T, SimpleEnumValue<T>> builder) {
 
-        T value1 = exampleValue1();
-        T value2 = exampleValue2();
+        T value1 = nonNullValueA();
+        T value2 = nonNullValueB();
 
         builder.newTest((expression, value) -> expression.nameIsNot(value1.name()))
                 .subject(value1)
@@ -105,8 +105,8 @@ abstract class EnumValueTest<T extends Enum<T>> extends BaseValueTest<T, SimpleE
 
     private void caseInsensitiveNameIsTestCases(ExpressionTestCaseBuilder<T, SimpleEnumValue<T>> builder) {
 
-        T value1 = exampleValue1();
-        T value2 = exampleValue2();
+        T value1 = nonNullValueA();
+        T value2 = nonNullValueB();
 
         builder.newTest((expression, value) -> expression.caseInsensitiveNameIs(value1.name()))
                 .subject(value1)
@@ -134,8 +134,8 @@ abstract class EnumValueTest<T extends Enum<T>> extends BaseValueTest<T, SimpleE
     private void caseInsensitiveNameIsNotTestCases(ExpressionTestCaseBuilder<T,
         SimpleEnumValue<T>> builder) {
 
-        T value1 = exampleValue1();
-        T value2 = exampleValue2();
+        T value1 = nonNullValueA();
+        T value2 = nonNullValueB();
 
         builder.newTest((expression, value) -> expression.caseInsensitiveNameIsNot(value1.name()))
                 .subject(value1)

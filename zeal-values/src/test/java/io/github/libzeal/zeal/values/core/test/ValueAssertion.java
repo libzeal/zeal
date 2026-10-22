@@ -4,12 +4,11 @@ import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.evaluation.Result;
 import org.junit.jupiter.api.Assertions;
 
-@Deprecated
-public class EvaluatedExpressionAssertion<T> {
+public class ValueAssertion<T> {
 
     private final Evaluation eval;
 
-    public EvaluatedExpressionAssertion(Evaluation eval) {
+    public ValueAssertion(Evaluation eval) {
         this.eval = eval;
     }
 

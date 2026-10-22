@@ -3,7 +3,6 @@ package io.github.libzeal.zeal.values.core.test;
 import io.github.libzeal.zeal.logic.evaluation.Result;
 import io.github.libzeal.zeal.values.core.ObjectValue;
 
-import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public final class ValueTestCaseBuilder<S, V extends ObjectValue<S, V>> {
@@ -11,7 +10,7 @@ public final class ValueTestCaseBuilder<S, V extends ObjectValue<S, V>> {
     private final Function<S, V> expressionFactory;
     private S subject;
     private Result expectedResult;
-    private BiFunction<V, S, V> apply;
+    private Function<V, V> apply;
     private String expectedName;
     private String expectedExpected;
     private String expectedActual;
@@ -35,7 +34,7 @@ public final class ValueTestCaseBuilder<S, V extends ObjectValue<S, V>> {
         return this;
     }
 
-    public ValueTestCaseBuilder<S, V> expression(BiFunction<V, S, V> apply) {
+    public ValueTestCaseBuilder<S, V> expression(Function<V, V> apply) {
         this.apply = apply;
         return this;
     }
@@ -55,7 +54,7 @@ public final class ValueTestCaseBuilder<S, V extends ObjectValue<S, V>> {
         return this;
     }
 
-    public ValueTestCaseBuilder<S, V> expectedHint(String hint) {
+    public ValueTestCaseBuilder<S, V> hint(String hint) {
         this.expectedHint = hint;
         return this;
     }

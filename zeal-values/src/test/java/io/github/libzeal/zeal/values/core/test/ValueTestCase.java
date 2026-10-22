@@ -10,7 +10,7 @@ public record ValueTestCase<S, V extends ObjectValue<S, V>>(
     Function<S, V> expressionFactory,
     S subject,
     Result expectedResult,
-    BiFunction<V, S, V> apply,
+    Function<V, V> apply,
     String expectedName,
     String expectedExpected,
     String expectedActual,

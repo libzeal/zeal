@@ -14,12 +14,12 @@ public class BoxedBooleanValueTest extends BaseValueTest<Boolean, BoxedBooleanVa
     }
 
     @Override
-    protected Boolean exampleValue1() {
+    protected Boolean nonNullValueA() {
         return Boolean.TRUE;
     }
 
     @Override
-    protected Boolean exampleValue2() {
+    protected Boolean nonNullValueB() {
         return Boolean.FALSE;
     }
 

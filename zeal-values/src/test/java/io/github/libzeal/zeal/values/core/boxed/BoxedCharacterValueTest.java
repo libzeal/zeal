@@ -15,12 +15,12 @@ public class BoxedCharacterValueTest extends BaseValueTest<Character,
     }
 
     @Override
-    protected Character exampleValue1() {
+    protected Character nonNullValueA() {
         return 'a';
     }
 
     @Override
-    protected Character exampleValue2() {
+    protected Character nonNullValueB() {
         return 'b';
     }
 
