@@ -13,7 +13,7 @@ abstract class EnumValueTest<T extends Enum<T>> extends BaseValueTest<T, SimpleE
 
     @Test
     void givenSameOrdinal_whenOrdinalIs_thenTrue() {
-        T a = nonNullValueA();
+        final T a = nonNullValueA();
         newTestCase()
             .subject(a)
             .expression(value -> value.ordinalIs(a.ordinal()))
@@ -26,8 +26,8 @@ abstract class EnumValueTest<T extends Enum<T>> extends BaseValueTest<T, SimpleE
 
     @Test
     void givenDifferentOrdinal_whenOrdinalIs_thenFalse() {
-        T a = nonNullValueA();
-        T b = nonNullValueB();
+        final T a = nonNullValueA();
+        final T b = nonNullValueB();
         newTestCase()
             .subject(b)
             .expression(value -> value.ordinalIs(a.ordinal()))
@@ -42,7 +42,7 @@ abstract class EnumValueTest<T extends Enum<T>> extends BaseValueTest<T, SimpleE
 
     @Test
     void givenSameOrdinal_whenOrdinalIsNot_thenFalse() {
-        T a = nonNullValueA();
+        final T a = nonNullValueA();
         newTestCase()
             .subject(a)
             .expression(value -> value.ordinalIsNot(a.ordinal()))
@@ -55,8 +55,8 @@ abstract class EnumValueTest<T extends Enum<T>> extends BaseValueTest<T, SimpleE
 
     @Test
     void givenDifferentOrdinal_whenOrdinalIsNot_thenTrue() {
-        T a = nonNullValueA();
-        T b = nonNullValueB();
+        final T a = nonNullValueA();
+        final T b = nonNullValueB();
         newTestCase()
             .subject(b)
             .expression(value -> value.ordinalIsNot(a.ordinal()))
@@ -71,7 +71,7 @@ abstract class EnumValueTest<T extends Enum<T>> extends BaseValueTest<T, SimpleE
 
     @Test
     void givenSameName_whenNameIs_thenTrue() {
-        T a = nonNullValueA();
+        final T a = nonNullValueA();
         newTestCase()
             .subject(a)
             .expression(value -> value.nameIs(a.name()))
@@ -84,8 +84,8 @@ abstract class EnumValueTest<T extends Enum<T>> extends BaseValueTest<T, SimpleE
 
     @Test
     void givenDifferentName_whenNameIs_thenFalse() {
-        T a = nonNullValueA();
-        T b = nonNullValueB();
+        final T a = nonNullValueA();
+        final T b = nonNullValueB();
         newTestCase()
             .subject(b)
             .expression(value -> value.nameIs(a.name()))
@@ -100,7 +100,7 @@ abstract class EnumValueTest<T extends Enum<T>> extends BaseValueTest<T, SimpleE
 
     @Test
     void givenSameName_whenNameIsNot_thenFalse() {
-        T a = nonNullValueA();
+        final T a = nonNullValueA();
         newTestCase()
             .subject(a)
             .expression(value -> value.nameIsNot(a.name()))
@@ -113,8 +113,8 @@ abstract class EnumValueTest<T extends Enum<T>> extends BaseValueTest<T, SimpleE
 
     @Test
     void givenDifferentName_whenNameIsNot_thenTrue() {
-        T a = nonNullValueA();
-        T b = nonNullValueB();
+        final T a = nonNullValueA();
+        final T b = nonNullValueB();
         newTestCase()
             .subject(b)
             .expression(value -> value.nameIsNot(a.name()))
@@ -129,7 +129,7 @@ abstract class EnumValueTest<T extends Enum<T>> extends BaseValueTest<T, SimpleE
 
     @Test
     void givenSameName_whenCaseInsensitiveNameIs_thenTrue() {
-        T a = nonNullValueA();
+        final T a = nonNullValueA();
         newTestCase()
             .subject(a)
             .expression(value -> value.caseInsensitiveNameIs(a.name()))
@@ -142,7 +142,7 @@ abstract class EnumValueTest<T extends Enum<T>> extends BaseValueTest<T, SimpleE
 
     @Test
     void givenLowerCaseName_whenCaseInsensitiveNameIs_thenTrue() {
-        T a = nonNullValueA();
+        final T a = nonNullValueA();
         newTestCase()
             .subject(a)
             .expression(value -> value.caseInsensitiveNameIs(a.name().toLowerCase()))
@@ -155,8 +155,8 @@ abstract class EnumValueTest<T extends Enum<T>> extends BaseValueTest<T, SimpleE
 
     @Test
     void givenDifferentName_whenCaseInsensitiveNameIs_thenFalse() {
-        T a = nonNullValueA();
-        T b = nonNullValueB();
+        final T a = nonNullValueA();
+        final T b = nonNullValueB();
         newTestCase()
             .subject(b)
             .expression(value -> value.caseInsensitiveNameIs(a.name()))
@@ -171,7 +171,7 @@ abstract class EnumValueTest<T extends Enum<T>> extends BaseValueTest<T, SimpleE
 
     @Test
     void givenSameName_whenCaseInsensitiveNameIsNot_thenFalse() {
-        T a = nonNullValueA();
+        final T a = nonNullValueA();
         newTestCase()
             .subject(a)
             .expression(value -> value.caseInsensitiveNameIsNot(a.name()))
@@ -184,7 +184,7 @@ abstract class EnumValueTest<T extends Enum<T>> extends BaseValueTest<T, SimpleE
 
     @Test
     void givenLowerCaseName_whenCaseInsensitiveNameIsNot_thenFalse() {
-        T a = nonNullValueA();
+        final T a = nonNullValueA();
         newTestCase()
             .subject(a)
             .expression(value -> value.caseInsensitiveNameIsNot(a.name().toLowerCase()))
@@ -197,8 +197,8 @@ abstract class EnumValueTest<T extends Enum<T>> extends BaseValueTest<T, SimpleE
 
     @Test
     void givenDifferentName_whenCaseInsensitiveNameIsNot_thenTrue() {
-        T a = nonNullValueA();
-        T b = nonNullValueB();
+        final T a = nonNullValueA();
+        final T b = nonNullValueB();
         newTestCase()
             .subject(b)
             .expression(value -> value.caseInsensitiveNameIsNot(a.name()))

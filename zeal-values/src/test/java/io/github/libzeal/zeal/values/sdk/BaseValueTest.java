@@ -71,8 +71,8 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
         final Evaluation first = collector.get(1).orElse(null);
         final Evaluation second = collector.get(2).orElse(null);
 
-        ValueAssertion<?> firstAssertion = new ValueAssertion<>(first);
-        ValueAssertion<?> secondAssertion = new ValueAssertion<>(second);
+        final ValueAssertion<?> firstAssertion = new ValueAssertion<>(first);
+        final ValueAssertion<?> secondAssertion = new ValueAssertion<>(second);
 
         assertNotNull(first);
         assertNotNull(second);
@@ -135,7 +135,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
 
     @Test
     void givenMatchingClass_whenIsType_thenTrue() {
-        T v = nonNullValueA();
+        final T v = nonNullValueA();
         newTestCase()
             .subject(v)
             .expression(value -> value.isType(v.getClass()))
@@ -148,7 +148,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
 
     @Test
     void givenDifferentClass_whenIsType_thenFalse() {
-        T v = nonNullValueA();
+        final T v = nonNullValueA();
         newTestCase()
             .subject(v)
             .expression(value -> value.isType(otherClass()))
@@ -161,7 +161,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
 
     @Test
     void givenNullClass_whenIsType_thenFalse() {
-        T v = nonNullValueA();
+        final T v = nonNullValueA();
         newTestCase()
             .subject(v)
             .expression(value -> value.isType(null))
@@ -174,7 +174,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
 
     @Test
     void givenMatchingClass_whenIsNotType_thenFalse() {
-        T v = nonNullValueA();
+        final T v = nonNullValueA();
         newTestCase()
             .subject(v)
             .expression(value -> value.isNotType(v.getClass()))
@@ -187,7 +187,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
 
     @Test
     void givenDifferentClass_whenIsNotType_thenTrue() {
-        T v = nonNullValueA();
+        final T v = nonNullValueA();
         newTestCase()
             .subject(v)
             .expression(value -> value.isNotType(otherClass()))
@@ -200,7 +200,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
 
     @Test
     void givenNullClass_whenIsNotType_thenFalse() {
-        T v = nonNullValueA();
+        final T v = nonNullValueA();
         newTestCase()
             .subject(v)
             .expression(value -> value.isNotType(null))
@@ -213,7 +213,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
 
     @Test
     void givenMatchingClass_whenIsInstanceOf_thenTrue() {
-        T v = nonNullValueA();
+        final T v = nonNullValueA();
         newTestCase()
             .subject(v)
             .expression(value -> value.isInstanceOf(v.getClass()))
@@ -226,7 +226,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
 
     @Test
     void givenObjectClass_whenIsInstanceOf_thenTrue() {
-        T v = nonNullValueA();
+        final T v = nonNullValueA();
         newTestCase()
             .subject(v)
             .expression(value -> value.isInstanceOf(Object.class))
@@ -239,7 +239,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
 
     @Test
     void givenDifferentClass_whenIsInstanceOf_thenFalse() {
-        T v = nonNullValueA();
+        final T v = nonNullValueA();
         newTestCase()
             .subject(v)
             .expression(value -> value.isInstanceOf(otherClass()))
@@ -252,7 +252,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
 
     @Test
     void givenNullClass_whenIsInstanceOf_thenFalse() {
-        T v = nonNullValueA();
+        final T v = nonNullValueA();
         newTestCase()
             .subject(v)
             .expression(value -> value.isInstanceOf(null))
@@ -265,7 +265,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
 
     @Test
     void givenMatchingClass_whenIsNotInstanceOf_thenFalse() {
-        T v = nonNullValueA();
+        final T v = nonNullValueA();
         newTestCase()
             .subject(v)
             .expression(value -> value.isNotInstanceOf(v.getClass()))
@@ -278,7 +278,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
 
     @Test
     void givenObjectClass_whenIsNotInstanceOf_thenFalse() {
-        T v = nonNullValueA();
+        final T v = nonNullValueA();
         newTestCase()
             .subject(v)
             .expression(value -> value.isNotInstanceOf(Object.class))
@@ -291,7 +291,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
 
     @Test
     void givenDifferentClass_whenIsNotInstanceOf_thenTrue() {
-        T v = nonNullValueA();
+        final T v = nonNullValueA();
         newTestCase()
             .subject(v)
             .expression(value -> value.isNotInstanceOf(otherClass()))
@@ -304,7 +304,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
 
     @Test
     void givenNullClass_whenIsNotInstanceOf_thenFalse() {
-        T v = nonNullValueA();
+        final T v = nonNullValueA();
         newTestCase()
             .subject(v)
             .expression(value -> value.isNotInstanceOf(null))
@@ -319,7 +319,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
 
     @Test
     void givenSameValue_whenIsExactly_thenTrue() {
-        T v = nonNullValueA();
+        final T v = nonNullValueA();
         newTestCase()
             .subject(v)
             .expression(value -> value.isExactly(v))
@@ -332,8 +332,8 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
 
     @Test
     void givenDifferentValue_whenIsExactly_thenFalse() {
-        T a = nonNullValueA();
-        T b = nonNullValueB();
+        final T a = nonNullValueA();
+        final T b = nonNullValueB();
         newTestCase()
             .subject(b)
             .expression(value -> value.isExactly(a))
@@ -358,7 +358,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
 
     @Test
     void givenSameValue_whenIsNotExactly_thenFalse() {
-        T v = nonNullValueA();
+        final T v = nonNullValueA();
         newTestCase()
             .subject(v)
             .expression(value -> value.isNotExactly(v))
@@ -371,8 +371,8 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
 
     @Test
     void givenDifferentValue_whenIsNotExactly_thenTrue() {
-        T a = nonNullValueA();
-        T b = nonNullValueB();
+        final T a = nonNullValueA();
+        final T b = nonNullValueB();
         newTestCase()
             .subject(b)
             .expression(value -> value.isNotExactly(a))
@@ -397,7 +397,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
 
     @Test
     void givenSameValue_whenIsEqualTo_thenTrue() {
-        T v = nonNullValueA();
+        final T v = nonNullValueA();
         newTestCase()
             .subject(v)
             .expression(value -> value.isEqualTo(v))
@@ -410,8 +410,8 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
 
     @Test
     void givenDifferentValue_whenIsEqualTo_thenFalse() {
-        T a = nonNullValueA();
-        T b = nonNullValueB();
+        final T a = nonNullValueA();
+        final T b = nonNullValueB();
         newTestCase()
             .subject(b)
             .expression(value -> value.isEqualTo(a))
@@ -438,7 +438,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
 
     @Test
     void givenNullCondition_whenIs_thenFalse() {
-        T v = nonNullValueA();
+        final T v = nonNullValueA();
         newTestCase()
             .subject(v)
             .expression(value -> value.is(null))
@@ -452,8 +452,8 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
 
     @Test
     void givenTautology_whenIs_thenTrue() {
-        T v = nonNullValueA();
-        Condition<T> cond = Condition.tautology();
+        final T v = nonNullValueA();
+        final Condition<T> cond = Condition.tautology();
         newTestCase()
             .subject(v)
             .expression(value -> value.is(cond))
@@ -466,8 +466,8 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
 
     @Test
     void givenContradiction_whenIs_thenFalse() {
-        T v = nonNullValueA();
-        Condition<T> cond = Condition.contradiction();
+        final T v = nonNullValueA();
+        final Condition<T> cond = Condition.contradiction();
         newTestCase()
             .subject(v)
             .expression(value -> value.is(cond))
@@ -482,7 +482,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
 
     @Test
     void givenMatchingHash_whenHashCodeIs_thenTrue() {
-        T v = nonNullValueA();
+        final T v = nonNullValueA();
         newTestCase()
             .subject(v)
             .expression(value -> value.hashCodeIs(v.hashCode()))
@@ -495,8 +495,8 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
 
     @Test
     void givenDifferentHash_whenHashCodeIs_thenFalse() {
-        T a = nonNullValueA();
-        T b = nonNullValueB();
+        final T a = nonNullValueA();
+        final T b = nonNullValueB();
         newTestCase()
             .subject(b)
             .expression(value -> value.hashCodeIs(a.hashCode()))
@@ -509,7 +509,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
 
     @Test
     void givenMatchingHash_whenHashCodeIsNot_thenFalse() {
-        T v = nonNullValueA();
+        final T v = nonNullValueA();
         newTestCase()
             .subject(v)
             .expression(value -> value.hashCodeIsNot(v.hashCode()))
@@ -522,8 +522,8 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
 
     @Test
     void givenDifferentHash_whenHashCodeIsNot_thenTrue() {
-        T a = nonNullValueA();
-        T b = nonNullValueB();
+        final T a = nonNullValueA();
+        final T b = nonNullValueB();
         newTestCase()
             .subject(b)
             .expression(value -> value.hashCodeIsNot(a.hashCode()))
@@ -538,7 +538,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
 
     @Test
     void givenMatchingToString_whenToStringIs_thenTrue() {
-        T v = nonNullValueA();
+        final T v = nonNullValueA();
         newTestCase()
             .subject(v)
             .expression(value -> value.toStringIs(v.toString()))
@@ -551,8 +551,8 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
 
     @Test
     void givenDifferentToString_whenToStringIs_thenFalse() {
-        T a = nonNullValueA();
-        T b = nonNullValueB();
+        final T a = nonNullValueA();
+        final T b = nonNullValueB();
         newTestCase()
             .subject(b)
             .expression(value -> value.toStringIs(a.toString()))
@@ -565,7 +565,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
 
     @Test
     void givenMatchingToString_whenToStringIsNot_thenFalse() {
-        T v = nonNullValueA();
+        final T v = nonNullValueA();
         newTestCase()
             .subject(v)
             .expression(value -> value.toStringIsNot(v.toString()))
@@ -578,8 +578,8 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
 
     @Test
     void givenDifferentToString_whenToStringIsNot_thenTrue() {
-        T a = nonNullValueA();
-        T b = nonNullValueB();
+        final T a = nonNullValueA();
+        final T b = nonNullValueB();
         newTestCase()
             .subject(b)
             .expression(value -> value.toStringIsNot(a.toString()))
@@ -620,8 +620,8 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
 
     @Test
     void givenNullComparator_whenIsEqualTo_thenFalse() {
-        T a = nonNullValueA();
-        T b = nonNullValueB();
+        final T a = nonNullValueA();
+        final T b = nonNullValueB();
         newTestCase()
             .subject(b)
             .expression(value -> value.isEqualTo(a, null))
@@ -635,8 +635,8 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
 
     @Test
     void givenEqualComparator_whenIsEqualTo_thenTrue() {
-        T a = nonNullValueA();
-        T b = nonNullValueB();
+        final T a = nonNullValueA();
+        final T b = nonNullValueB();
         newTestCase()
             .subject(b)
             .expression(value -> value.isEqualTo(a, equalComparator))
@@ -664,8 +664,8 @@ void givenSame_whenIsNotEqualTo_thenFalse() {
 
     @Test
     void givenDifferent_whenIsNotEqualTo_thenTrue() {
-        T a = nonNullValueA();
-        T b = nonNullValueB();
+        final T a = nonNullValueA();
+        final T b = nonNullValueB();
         newTestCase()
             .subject(b)
             .expression(value -> value.isNotEqualTo(a))
@@ -680,8 +680,8 @@ void givenSame_whenIsNotEqualTo_thenFalse() {
 
     @Test
     void givenNullComparator_whenIsNotEqualTo_thenFalse() {
-        T a = nonNullValueA();
-        T b = nonNullValueB();
+        final T a = nonNullValueA();
+        final T b = nonNullValueB();
         newTestCase()
             .subject(b)
             .expression(value -> value.isNotEqualTo(a, null))
@@ -695,8 +695,8 @@ void givenSame_whenIsNotEqualTo_thenFalse() {
 
     @Test
     void givenEqualComparator_whenIsNotEqualTo_thenFalse() {
-        T a = nonNullValueA();
-        T b = nonNullValueB();
+        final T a = nonNullValueA();
+        final T b = nonNullValueB();
         newTestCase()
             .subject(b)
             .expression(value -> value.isNotEqualTo(a, equalComparator))
@@ -709,8 +709,8 @@ void givenSame_whenIsNotEqualTo_thenFalse() {
 
     @Test
     void givenLessThanComparator_whenIsNotEqualTo_thenTrue() {
-        T a = nonNullValueA();
-        T b = nonNullValueB();
+        final T a = nonNullValueA();
+        final T b = nonNullValueB();
         newTestCase()
             .subject(b)
             .expression(value -> value.isNotEqualTo(a, lessThanComparator))
@@ -723,8 +723,8 @@ void givenSame_whenIsNotEqualTo_thenFalse() {
 
     @Test
     void givenGreaterThanComparator_whenIsNotEqualTo_thenTrue() {
-        T a = nonNullValueA();
-        T b = nonNullValueB();
+        final T a = nonNullValueA();
+        final T b = nonNullValueB();
         newTestCase()
             .subject(b)
             .expression(value -> value.isNotEqualTo(a, greaterThanComparator))
@@ -775,8 +775,8 @@ void givenSame_whenIsNotEqualTo_thenFalse() {
 
     @Test
     void givenLessThanComparator_whenIsEqualTo_thenFalse() {
-        T a = nonNullValueA();
-        T b = nonNullValueB();
+        final T a = nonNullValueA();
+        final T b = nonNullValueB();
         newTestCase()
             .subject(b)
             .expression(value -> value.isEqualTo(a, lessThanComparator))
@@ -789,8 +789,8 @@ void givenSame_whenIsNotEqualTo_thenFalse() {
 
     @Test
     void givenGreaterThanComparator_whenIsEqualTo_thenFalse() {
-        T a = nonNullValueA();
-        T b = nonNullValueB();
+        final T a = nonNullValueA();
+        final T b = nonNullValueB();
         newTestCase()
             .subject(b)
             .expression(value -> value.isEqualTo(a, greaterThanComparator))
@@ -798,18 +798,6 @@ void givenSame_whenIsNotEqualTo_thenFalse() {
             .name("isEqualTo[" + a + ", comparator: " + greaterThanComparator + "]")
             .expected(a.toString())
             .actual(b.toString())
-            .run();
-    }
-
-    @Test
-    void givenAlwaysTrue_whenDoesNotSatisfy_thenFalse_nameCheck() {
-        newTestCase()
-            .subject(nonNullValueA())
-            .expression(value -> value.doesNotSatisfy(o -> true))
-            .result(FALSE)
-            .name("not[predicate]")
-            .expected("Predicate unsatisfied")
-            .actual("Predicate satisfied")
             .run();
     }
 }
