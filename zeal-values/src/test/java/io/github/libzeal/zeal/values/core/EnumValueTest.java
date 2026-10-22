@@ -1,162 +1,211 @@
 package io.github.libzeal.zeal.values.core;
 
 import io.github.libzeal.zeal.values.sdk.BaseValueTest;
-import io.github.libzeal.zeal.values.core.test.ExpressionTestCaseBuilder;
+import org.junit.jupiter.api.Test;
 
 import static io.github.libzeal.zeal.logic.evaluation.Result.FALSE;
 import static io.github.libzeal.zeal.logic.evaluation.Result.TRUE;
 
 @SuppressWarnings("java:S2187")
 abstract class EnumValueTest<T extends Enum<T>> extends BaseValueTest<T, SimpleEnumValue<T>> {
-    
-    @Override
-    protected void extendTestCases(ExpressionTestCaseBuilder<T, SimpleEnumValue<T>> builder) {
-        ordinalIsTestCases(builder);
-        ordinalIsNotTestCases(builder);
-        nameIsTestCases(builder);
-        nameIsNotTestCases(builder);
-        caseInsensitiveNameIsTestCases(builder);
-        caseInsensitiveNameIsNotTestCases(builder);
+
+    // ---- ordinalIs ----
+
+    @Test
+    void givenSameOrdinal_whenOrdinalIs_thenTrue() {
+        T a = nonNullValueA();
+        newTestCase()
+            .subject(a)
+            .expression(value -> value.ordinalIs(a.ordinal()))
+            .result(TRUE)
+            .name("ordinalIs[" + a.ordinal() + "]")
+            .expected(String.valueOf(a.ordinal()))
+            .actual(String.valueOf(a.ordinal()))
+            .run();
     }
 
-    private void ordinalIsTestCases(ExpressionTestCaseBuilder<T, SimpleEnumValue<T>> builder) {
-
-        T value1 = nonNullValueA();
-        T value2 = nonNullValueB();
-        
-        builder.newTest((expression, value) -> expression.ordinalIs(value1.ordinal()))
-                .subject(value1)
-                .expectedState(TRUE)
-                .expectedName(value -> "ordinalIs[" + value1.ordinal() + "]")
-                .expectedExpected(String.valueOf(value1.ordinal()))
-                .expectedActual(String.valueOf(value1.ordinal()))
-                .addTest()
-            .newTest((expression, value) -> expression.ordinalIs(value1.ordinal()))
-                .subject(value2)
-                .expectedState(FALSE)
-                .expectedName(value -> "ordinalIs[" + value1.ordinal() + "]")
-                .expectedExpected(String.valueOf(value1.ordinal()))
-                .expectedActual(String.valueOf(value2.ordinal()))
-                .addTest();
+    @Test
+    void givenDifferentOrdinal_whenOrdinalIs_thenFalse() {
+        T a = nonNullValueA();
+        T b = nonNullValueB();
+        newTestCase()
+            .subject(b)
+            .expression(value -> value.ordinalIs(a.ordinal()))
+            .result(FALSE)
+            .name("ordinalIs[" + a.ordinal() + "]")
+            .expected(String.valueOf(a.ordinal()))
+            .actual(String.valueOf(b.ordinal()))
+            .run();
     }
 
-    private void ordinalIsNotTestCases(ExpressionTestCaseBuilder<T, SimpleEnumValue<T>> builder) {
+    // ---- ordinalIsNot ----
 
-        T value1 = nonNullValueA();
-        T value2 = nonNullValueB();
-
-        builder.newTest((expression, value) -> expression.ordinalIsNot(value1.ordinal()))
-                .subject(value1)
-                .expectedState(FALSE)
-                .expectedName(value -> "not[ordinalIs[" + value1.ordinal() + "]]")
-                .expectedExpected("not[" + value1.ordinal() + "]")
-                .expectedActual(String.valueOf(value1.ordinal()))
-                .addTest()
-            .newTest((expression, value) -> expression.ordinalIsNot(value1.ordinal()))
-                .subject(value2)
-                .expectedState(TRUE)
-                .expectedName(value -> "not[ordinalIs[" + value1.ordinal() + "]]")
-                .expectedExpected("not[" + value1.ordinal() + "]")
-                .expectedActual(String.valueOf(value2.ordinal()))
-                .addTest();
+    @Test
+    void givenSameOrdinal_whenOrdinalIsNot_thenFalse() {
+        T a = nonNullValueA();
+        newTestCase()
+            .subject(a)
+            .expression(value -> value.ordinalIsNot(a.ordinal()))
+            .result(FALSE)
+            .name("not[ordinalIs[" + a.ordinal() + "]]")
+            .expected("not[" + a.ordinal() + "]")
+            .actual(String.valueOf(a.ordinal()))
+            .run();
     }
 
-    private void nameIsTestCases(ExpressionTestCaseBuilder<T, SimpleEnumValue<T>> builder) {
-
-        T value1 = nonNullValueA();
-        T value2 = nonNullValueB();
-
-        builder.newTest((expression, value) -> expression.nameIs(value1.name()))
-                .subject(value1)
-                .expectedState(TRUE)
-                .expectedName(value -> "nameIs[" + value1.name() + "]")
-                .expectedExpected(value1.name())
-                .expectedActual(value1.name())
-                .addTest()
-            .newTest((expression, value) -> expression.nameIs(value1.name()))
-                .subject(value2)
-                .expectedState(FALSE)
-                .expectedName(value -> "nameIs[" + value1.name() + "]")
-                .expectedExpected(value1.name())
-                .expectedActual(value2.name())
-                .addTest();
+    @Test
+    void givenDifferentOrdinal_whenOrdinalIsNot_thenTrue() {
+        T a = nonNullValueA();
+        T b = nonNullValueB();
+        newTestCase()
+            .subject(b)
+            .expression(value -> value.ordinalIsNot(a.ordinal()))
+            .result(TRUE)
+            .name("not[ordinalIs[" + a.ordinal() + "]]")
+            .expected("not[" + a.ordinal() + "]")
+            .actual(String.valueOf(b.ordinal()))
+            .run();
     }
 
-    private void nameIsNotTestCases(ExpressionTestCaseBuilder<T, SimpleEnumValue<T>> builder) {
+    // ---- nameIs ----
 
-        T value1 = nonNullValueA();
-        T value2 = nonNullValueB();
-
-        builder.newTest((expression, value) -> expression.nameIsNot(value1.name()))
-                .subject(value1)
-                .expectedState(FALSE)
-                .expectedName(value -> "not[nameIs[" + value1.name() + "]]")
-                .expectedExpected("not[" + value1.name() + "]")
-                .expectedActual(value1.name())
-                .addTest()
-            .newTest((expression, value) -> expression.nameIsNot(value1.name()))
-                .subject(value2)
-                .expectedState(TRUE)
-                .expectedName(value -> "not[nameIs[" + value1.name() + "]]")
-                .expectedExpected("not[" + value1.name() + "]")
-                .expectedActual(value2.name())
-                .addTest();
+    @Test
+    void givenSameName_whenNameIs_thenTrue() {
+        T a = nonNullValueA();
+        newTestCase()
+            .subject(a)
+            .expression(value -> value.nameIs(a.name()))
+            .result(TRUE)
+            .name("nameIs[" + a.name() + "]")
+            .expected(a.name())
+            .actual(a.name())
+            .run();
     }
 
-    private void caseInsensitiveNameIsTestCases(ExpressionTestCaseBuilder<T, SimpleEnumValue<T>> builder) {
-
-        T value1 = nonNullValueA();
-        T value2 = nonNullValueB();
-
-        builder.newTest((expression, value) -> expression.caseInsensitiveNameIs(value1.name()))
-                .subject(value1)
-                .expectedState(TRUE)
-                .expectedName(value -> "caseInsensitiveNameIs[" + value1.name() + "]")
-                .expectedExpected("caseInsensitive[" + value1.name() + "]")
-                .expectedActual(value1.name())
-                .addTest()
-            .newTest((expression, value) -> expression.caseInsensitiveNameIs(value1.name().toLowerCase()))
-                .subject(value1)
-                .expectedState(TRUE)
-                .expectedName(value -> "caseInsensitiveNameIs[" + value1.name().toLowerCase() + "]")
-                .expectedExpected("caseInsensitive[" + value1.name().toLowerCase() + "]")
-                .expectedActual(value1.name())
-                .addTest()
-            .newTest((expression, value) -> expression.caseInsensitiveNameIs(value1.name()))
-                .subject(value2)
-                .expectedState(FALSE)
-                .expectedName(value -> "caseInsensitiveNameIs[" + value1.name() + "]")
-                .expectedExpected("caseInsensitive[" + value1.name() + "]")
-                .expectedActual(value2.name())
-                .addTest();
+    @Test
+    void givenDifferentName_whenNameIs_thenFalse() {
+        T a = nonNullValueA();
+        T b = nonNullValueB();
+        newTestCase()
+            .subject(b)
+            .expression(value -> value.nameIs(a.name()))
+            .result(FALSE)
+            .name("nameIs[" + a.name() + "]")
+            .expected(a.name())
+            .actual(b.name())
+            .run();
     }
 
-    private void caseInsensitiveNameIsNotTestCases(ExpressionTestCaseBuilder<T,
-        SimpleEnumValue<T>> builder) {
+    // ---- nameIsNot ----
 
-        T value1 = nonNullValueA();
-        T value2 = nonNullValueB();
+    @Test
+    void givenSameName_whenNameIsNot_thenFalse() {
+        T a = nonNullValueA();
+        newTestCase()
+            .subject(a)
+            .expression(value -> value.nameIsNot(a.name()))
+            .result(FALSE)
+            .name("not[nameIs[" + a.name() + "]]")
+            .expected("not[" + a.name() + "]")
+            .actual(a.name())
+            .run();
+    }
 
-        builder.newTest((expression, value) -> expression.caseInsensitiveNameIsNot(value1.name()))
-                .subject(value1)
-                .expectedState(FALSE)
-                .expectedName(value -> "not[caseInsensitiveNameIs[" + value1.name() + "]]")
-                .expectedExpected("not[caseInsensitive[" + value1.name() + "]]")
-                .expectedActual(value1.name())
-                .addTest()
-            .newTest((expression, value) -> expression.caseInsensitiveNameIsNot(value1.name().toLowerCase()))
-                .subject(value1)
-                .expectedState(FALSE)
-                .expectedName(value -> "not[caseInsensitiveNameIs[" + value1.name().toLowerCase() + "]]")
-                .expectedExpected("not[caseInsensitive[" + value1.name().toLowerCase() + "]]")
-                .expectedActual(value1.name())
-                .addTest()
-            .newTest((expression, value) -> expression.caseInsensitiveNameIsNot(value1.name()))
-                .subject(value2)
-                .expectedState(TRUE)
-                .expectedName(value -> "not[caseInsensitiveNameIs[" + value1.name() + "]]")
-                .expectedExpected("not[caseInsensitive[" + value1.name() + "]]")
-                .expectedActual(value2.name())
-                .addTest();
+    @Test
+    void givenDifferentName_whenNameIsNot_thenTrue() {
+        T a = nonNullValueA();
+        T b = nonNullValueB();
+        newTestCase()
+            .subject(b)
+            .expression(value -> value.nameIsNot(a.name()))
+            .result(TRUE)
+            .name("not[nameIs[" + a.name() + "]]")
+            .expected("not[" + a.name() + "]")
+            .actual(b.name())
+            .run();
+    }
+
+    // ---- caseInsensitiveNameIs ----
+
+    @Test
+    void givenSameName_whenCaseInsensitiveNameIs_thenTrue() {
+        T a = nonNullValueA();
+        newTestCase()
+            .subject(a)
+            .expression(value -> value.caseInsensitiveNameIs(a.name()))
+            .result(TRUE)
+            .name("caseInsensitiveNameIs[" + a.name() + "]")
+            .expected("caseInsensitive[" + a.name() + "]")
+            .actual(a.name())
+            .run();
+    }
+
+    @Test
+    void givenLowerCaseName_whenCaseInsensitiveNameIs_thenTrue() {
+        T a = nonNullValueA();
+        newTestCase()
+            .subject(a)
+            .expression(value -> value.caseInsensitiveNameIs(a.name().toLowerCase()))
+            .result(TRUE)
+            .name("caseInsensitiveNameIs[" + a.name().toLowerCase() + "]")
+            .expected("caseInsensitive[" + a.name().toLowerCase() + "]")
+            .actual(a.name())
+            .run();
+    }
+
+    @Test
+    void givenDifferentName_whenCaseInsensitiveNameIs_thenFalse() {
+        T a = nonNullValueA();
+        T b = nonNullValueB();
+        newTestCase()
+            .subject(b)
+            .expression(value -> value.caseInsensitiveNameIs(a.name()))
+            .result(FALSE)
+            .name("caseInsensitiveNameIs[" + a.name() + "]")
+            .expected("caseInsensitive[" + a.name() + "]")
+            .actual(b.name())
+            .run();
+    }
+
+    // ---- caseInsensitiveNameIsNot ----
+
+    @Test
+    void givenSameName_whenCaseInsensitiveNameIsNot_thenFalse() {
+        T a = nonNullValueA();
+        newTestCase()
+            .subject(a)
+            .expression(value -> value.caseInsensitiveNameIsNot(a.name()))
+            .result(FALSE)
+            .name("not[caseInsensitiveNameIs[" + a.name() + "]]")
+            .expected("not[caseInsensitive[" + a.name() + "]]")
+            .actual(a.name())
+            .run();
+    }
+
+    @Test
+    void givenLowerCaseName_whenCaseInsensitiveNameIsNot_thenFalse() {
+        T a = nonNullValueA();
+        newTestCase()
+            .subject(a)
+            .expression(value -> value.caseInsensitiveNameIsNot(a.name().toLowerCase()))
+            .result(FALSE)
+            .name("not[caseInsensitiveNameIs[" + a.name().toLowerCase() + "]]")
+            .expected("not[caseInsensitive[" + a.name().toLowerCase() + "]]")
+            .actual(a.name())
+            .run();
+    }
+
+    @Test
+    void givenDifferentName_whenCaseInsensitiveNameIsNot_thenTrue() {
+        T a = nonNullValueA();
+        T b = nonNullValueB();
+        newTestCase()
+            .subject(b)
+            .expression(value -> value.caseInsensitiveNameIsNot(a.name()))
+            .result(TRUE)
+            .name("not[caseInsensitiveNameIs[" + a.name() + "]]")
+            .expected("not[caseInsensitive[" + a.name() + "]]")
+            .actual(b.name())
+            .run();
     }
 }

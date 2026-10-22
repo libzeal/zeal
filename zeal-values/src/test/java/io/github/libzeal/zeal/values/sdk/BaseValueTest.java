@@ -7,19 +7,12 @@ import io.github.libzeal.zeal.logic.evaluation.traverse.DepthFirstTraverser;
 import io.github.libzeal.zeal.logic.evaluation.traverse.Traverser;
 import io.github.libzeal.zeal.logic.unary.condition.Condition;
 import io.github.libzeal.zeal.values.core.ObjectValue;
-import io.github.libzeal.zeal.values.core.test.ExpressionTestCaseBuilder;
 import io.github.libzeal.zeal.values.core.test.ValueAssertion;
 import io.github.libzeal.zeal.values.core.test.ValueTestCaseBuilder;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.Comparator;
-import java.util.function.BiFunction;
-import java.util.function.Function;
-import java.util.stream.Stream;
 
 import static io.github.libzeal.zeal.logic.evaluation.Result.FALSE;
 import static io.github.libzeal.zeal.logic.evaluation.Result.TRUE;
@@ -819,56 +812,4 @@ void givenSame_whenIsNotEqualTo_thenFalse() {
             .actual("Predicate satisfied")
             .run();
     }
-
-
-
-    @ParameterizedTest(name = "{0}")
-    @MethodSource("testCaseStream")
-    final void whenEvaluate_thenCorrectEvaluation(
-        String testCaseName,
-        BiFunction<E, T, E> modifier,
-        T value,
-        Result expectedState,
-        Function<T, String> expectedName,
-        BiFunction<E, T, String> expectedExpectedValue,
-        BiFunction<E, T, String> expectedActualValue,
-        BiFunction<E, T, String> expectedHint
-    ) {
-
-        final E expression = expression(value);
-        final E returnedExpression = modifier.apply(expression, value);
-
-        assertNotNull(returnedExpression);
-        assertEquals(expression.getClass(), returnedExpression.getClass());
-
-        final Evaluation eval = expression.evaluate();
-        final Traverser traverser = new DepthFirstTraverser();
-        final CollectingTraverserAction collector = new CollectingTraverserAction();
-
-        traverser.traverse(eval, collector);
-
-        final Evaluation first = collector.get(1).orElse(null);
-        final ValueAssertion<?> firstEvaluation = new ValueAssertion<>(first);
-
-        assertNotNull(first);
-        firstEvaluation.assertStateIs(expectedState);
-        firstEvaluation.assertNameIs(expectedName.apply(value));
-        firstEvaluation.assertExpectedIs(expectedExpectedValue.apply(expression, value));
-        firstEvaluation.assertActualIs(expectedActualValue.apply(expression, value));
-
-        if (expectedHint != null) {
-            firstEvaluation.assertHintIs(expectedHint.apply(expression, value));
-        }
-    }
-
-    private Stream<Arguments> testCaseStream() {
-
-        ExpressionTestCaseBuilder<T, E> builder = ExpressionTestCaseBuilder.newBuilder();
-
-        extendTestCases(builder);
-
-        return builder.stream();
-    }
-
-    protected void extendTestCases(ExpressionTestCaseBuilder<T, E> builder) {}
 }

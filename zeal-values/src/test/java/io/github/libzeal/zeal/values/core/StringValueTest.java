@@ -2,7 +2,7 @@ package io.github.libzeal.zeal.values.core;
 
 import io.github.libzeal.zeal.values.sdk.BaseValueTest;
 import io.github.libzeal.zeal.values.sdk.StandardRationales;
-import io.github.libzeal.zeal.values.core.test.ExpressionTestCaseBuilder;
+import org.junit.jupiter.api.Test;
 
 import static io.github.libzeal.zeal.logic.evaluation.Result.FALSE;
 import static io.github.libzeal.zeal.logic.evaluation.Result.TRUE;
@@ -24,850 +24,1253 @@ class StringValueTest extends BaseValueTest<String, StringValue> {
         return "bar";
     }
 
-    @Override
-    protected void extendTestCases(ExpressionTestCaseBuilder<String, StringValue> builder) {
-        isEmptyTestCases(builder);
-        isNotEmptyTestCases(builder);
-        isBlankTestCases(builder);
-        isNotBlankTestCases(builder);
-        hasLengthOfTestCases(builder);
-        isLongerThanTestCases(builder);
-        isLongerThanOrEqualToTestCases(builder);
-        isShorterThanTestCases(builder);
-        isShorterThanOrEqualToTestCases(builder);
-        includesTestCases(builder);
-        excludesTestCases(builder);
-        includesExactlyTestCases(builder);
-        includesExactlyMoreThanTestCases(builder);
-        includesExactlyMoreThanOrEqualToTestCases(builder);
-        includesExactlyLessThanTestCases(builder);
-        includesExactlyLessThanOrEqualToTestCases(builder);
-        startsWithTestCases(builder);
-        doesNotStartWithTestCases(builder);
-        endsWithTestCases(builder);
-        doesNotEndWithTestCases(builder);
-        matchesTestCases(builder);
-        doesNotMatchTestCases(builder);
-        isCaseInsensitiveEqualToTestCases(builder);
-        hasAtIndexTestCases(builder);
-        doesNotHaveAtIndexTestCase(builder);
-        hasAtLastIndexTestCases(builder);
-        doesNotHaveAtLastIndexTestCases(builder);
+    // ---- isEmpty ----
+
+    @Test
+    void givenNonEmpty_whenIsEmpty_thenFalse() {
+        newTestCase()
+            .subject("a")
+            .expression(StringValue::isEmpty)
+            .result(FALSE)
+            .name("isEmpty")
+            .expected("length = 0")
+            .actual("length = 1")
+            .run();
     }
 
-    private void isEmptyTestCases(ExpressionTestCaseBuilder<String, StringValue> builder) {
-        builder.newTest((expression, value) -> expression.isEmpty())
-                .subject("a")
-                .expectedState(FALSE)
-                .expectedName("isEmpty")
-                .expectedExpected("length = 0")
-                .expectedActual("length = 1")
-                .addTest()
-            .newTest((expression, value) -> expression.isEmpty())
-                .subject("")
-                .expectedState(TRUE)
-                .expectedName("isEmpty")
-                .expectedExpected("length = 0")
-                .expectedActual("length = 0")
-                .addTest()
-            .newTest((expression, value) -> expression.isEmpty())
-                .subject(" ")
-                .expectedState(FALSE)
-                .expectedName("isEmpty")
-                .expectedExpected("length = 0")
-                .expectedActual("length = 1")
-                .addTest();
+    @Test
+    void givenEmpty_whenIsEmpty_thenTrue() {
+        newTestCase()
+            .subject("")
+            .expression(StringValue::isEmpty)
+            .result(TRUE)
+            .name("isEmpty")
+            .expected("length = 0")
+            .actual("length = 0")
+            .run();
     }
 
-    private void isNotEmptyTestCases(ExpressionTestCaseBuilder<String, StringValue> builder) {
-        builder.newTest((expression, value) -> expression.isNotEmpty())
-                .subject("a")
-                .expectedState(TRUE)
-                .expectedName("isNotEmpty")
-                .expectedExpected("length > 0")
-                .expectedActual("length = 1")
-                .addTest()
-            .newTest((expression, value) -> expression.isNotEmpty())
-                .subject("")
-                .expectedState(FALSE)
-                .expectedName("isNotEmpty")
-                .expectedExpected("length > 0")
-                .expectedActual("length = 0")
-                .addTest()
-            .newTest((expression, value) -> expression.isNotEmpty())
-                .subject(" ")
-                .expectedState(TRUE)
-                .expectedName("isNotEmpty")
-                .expectedExpected("length > 0")
-                .expectedActual("length = 1")
-                .addTest();
+    @Test
+    void givenWhitespace_whenIsEmpty_thenFalse() {
+        newTestCase()
+            .subject(" ")
+            .expression(StringValue::isEmpty)
+            .result(FALSE)
+            .name("isEmpty")
+            .expected("length = 0")
+            .actual("length = 1")
+            .run();
     }
 
-    private void isBlankTestCases(ExpressionTestCaseBuilder<String, StringValue> builder) {
-        builder.newTest((expression, value) -> expression.isBlank())
-                .subject("a")
-                .expectedState(FALSE)
-                .expectedName("isBlank")
-                .expectedExpected("true")
-                .expectedActual("false")
-                .addTest()
-            .newTest((expression, value) -> expression.isBlank())
-                .subject("")
-                .expectedState(TRUE)
-                .expectedName("isBlank")
-                .expectedExpected("true")
-                .expectedActual("true")
-                .addTest()
-            .newTest((expression, value) -> expression.isBlank())
-                .subject(" ")
-                .expectedState(TRUE)
-                .expectedName("isBlank")
-                .expectedExpected("true")
-                .expectedActual("true")
-                .addTest();
+    // ---- isNotEmpty ----
+
+    @Test
+    void givenNonEmpty_whenIsNotEmpty_thenTrue() {
+        newTestCase()
+            .subject("a")
+            .expression(StringValue::isNotEmpty)
+            .result(TRUE)
+            .name("isNotEmpty")
+            .expected("length > 0")
+            .actual("length = 1")
+            .run();
     }
 
-    private void isNotBlankTestCases(ExpressionTestCaseBuilder<String, StringValue> builder) {
-        builder.newTest((expression, value) -> expression.isNotBlank())
-                .subject("a")
-                .expectedState(TRUE)
-                .expectedName("isNotBlank")
-                .expectedExpected("true")
-                .expectedActual("true")
-                .addTest()
-            .newTest((expression, value) -> expression.isNotBlank())
-                .subject("")
-                .expectedState(FALSE)
-                .expectedName("isNotBlank")
-                .expectedExpected("true")
-                .expectedActual("false")
-                .addTest()
-            .newTest((expression, value) -> expression.isNotBlank())
-                .subject(" ")
-                .expectedState(FALSE)
-                .expectedName("isNotBlank")
-                .expectedExpected("true")
-                .expectedActual("false")
-                .addTest();
+    @Test
+    void givenEmpty_whenIsNotEmpty_thenFalse() {
+        newTestCase()
+            .subject("")
+            .expression(StringValue::isNotEmpty)
+            .result(FALSE)
+            .name("isNotEmpty")
+            .expected("length > 0")
+            .actual("length = 0")
+            .run();
     }
 
-    private void hasLengthOfTestCases(ExpressionTestCaseBuilder<String, StringValue> builder) {
-        builder.newTest((expression, value) -> expression.hasLengthOf(1))
-                .subject("a")
-                .expectedState(TRUE)
-                .expectedName("hasLengthOf[1]")
-                .expectedExpected("length = 1")
-                .expectedActual("length = 1")
-                .addTest()
-            .newTest((expression, value) -> expression.hasLengthOf(1))
-                .subject("")
-                .expectedState(FALSE)
-                .expectedName("hasLengthOf[1]")
-                .expectedExpected("length = 1")
-                .expectedActual("length = 0")
-                .addTest()
-            .newTest((expression, value) -> expression.hasLengthOf(1))
-                .subject("aa")
-                .expectedState(FALSE)
-                .expectedName("hasLengthOf[1]")
-                .expectedExpected("length = 1")
-                .expectedActual("length = 2")
-                .addTest();
+    @Test
+    void givenWhitespace_whenIsNotEmpty_thenTrue() {
+        newTestCase()
+            .subject(" ")
+            .expression(StringValue::isNotEmpty)
+            .result(TRUE)
+            .name("isNotEmpty")
+            .expected("length > 0")
+            .actual("length = 1")
+            .run();
     }
 
-    private void isLongerThanTestCases(ExpressionTestCaseBuilder<String, StringValue> builder) {
-        builder.newTest((expression, value) -> expression.isLongerThan(1))
-                .subject("a")
-                .expectedState(FALSE)
-                .expectedName("isLongerThan[1]")
-                .expectedExpected("length > 1")
-                .expectedActual("length = 1")
-                .addTest()
-            .newTest((expression, value) -> expression.isLongerThan(1))
-                .subject("")
-                .expectedState(FALSE)
-                .expectedName("isLongerThan[1]")
-                .expectedExpected("length > 1")
-                .expectedActual("length = 0")
-                .addTest()
-            .newTest((expression, value) -> expression.isLongerThan(1))
-                .subject("aa")
-                .expectedState(TRUE)
-                .expectedName("isLongerThan[1]")
-                .expectedExpected("length > 1")
-                .expectedActual("length = 2")
-                .addTest();
+    // ---- isBlank ----
+
+    @Test
+    void givenNonBlank_whenIsBlank_thenFalse() {
+        newTestCase()
+            .subject("a")
+            .expression(StringValue::isBlank)
+            .result(FALSE)
+            .name("isBlank")
+            .expected("true")
+            .actual("false")
+            .run();
     }
 
-    private void isLongerThanOrEqualToTestCases(ExpressionTestCaseBuilder<String, StringValue> builder) {
-        builder.newTest((expression, value) -> expression.isLongerThanOrEqualTo(1))
-                .subject("a")
-                .expectedState(TRUE)
-                .expectedName("isLongerThanOrEqualTo[1]")
-                .expectedExpected("length >= 1")
-                .expectedActual("length = 1")
-                .addTest()
-            .newTest((expression, value) -> expression.isLongerThanOrEqualTo(1))
-                .subject("")
-                .expectedState(FALSE)
-                .expectedName("isLongerThanOrEqualTo[1]")
-                .expectedExpected("length >= 1")
-                .expectedActual("length = 0")
-                .addTest()
-            .newTest((expression, value) -> expression.isLongerThanOrEqualTo(1))
-                .subject("aa")
-                .expectedState(TRUE)
-                .expectedName("isLongerThanOrEqualTo[1]")
-                .expectedExpected("length >= 1")
-                .expectedActual("length = 2")
-                .addTest();
+    @Test
+    void givenEmpty_whenIsBlank_thenTrue() {
+        newTestCase()
+            .subject("")
+            .expression(StringValue::isBlank)
+            .result(TRUE)
+            .name("isBlank")
+            .expected("true")
+            .actual("true")
+            .run();
     }
 
-    private void isShorterThanTestCases(ExpressionTestCaseBuilder<String, StringValue> builder) {
-        builder.newTest((expression, value) -> expression.isShorterThan(1))
-                .subject("a")
-                .expectedState(FALSE)
-                .expectedName("isShorterThan[1]")
-                .expectedExpected("length < 1")
-                .expectedActual("length = 1")
-                .addTest()
-            .newTest((expression, value) -> expression.isShorterThan(1))
-                .subject("")
-                .expectedState(TRUE)
-                .expectedName("isShorterThan[1]")
-                .expectedExpected("length < 1")
-                .expectedActual("length = 0")
-                .addTest()
-            .newTest((expression, value) -> expression.isShorterThan(1))
-                .subject("aa")
-                .expectedState(FALSE)
-                .expectedName("isShorterThan[1]")
-                .expectedExpected("length < 1")
-                .expectedActual("length = 2")
-                .addTest();
+    @Test
+    void givenWhitespace_whenIsBlank_thenTrue() {
+        newTestCase()
+            .subject(" ")
+            .expression(StringValue::isBlank)
+            .result(TRUE)
+            .name("isBlank")
+            .expected("true")
+            .actual("true")
+            .run();
     }
 
-    private void isShorterThanOrEqualToTestCases(ExpressionTestCaseBuilder<String, StringValue> builder) {
-        builder.newTest((expression, value) -> expression.isShorterThanOrEqualTo(1))
-                .subject("a")
-                .expectedState(TRUE)
-                .expectedName("isShorterThanOrEqualTo[1]")
-                .expectedExpected("length <= 1")
-                .expectedActual("length = 1")
-                .addTest()
-            .newTest((expression, value) -> expression.isShorterThanOrEqualTo(1))
-                .subject("")
-                .expectedState(TRUE)
-                .expectedName("isShorterThanOrEqualTo[1]")
-                .expectedExpected("length <= 1")
-                .expectedActual("length = 0")
-                .addTest()
-            .newTest((expression, value) -> expression.isShorterThanOrEqualTo(1))
-                .subject("aa")
-                .expectedState(FALSE)
-                .expectedName("isShorterThanOrEqualTo[1]")
-                .expectedExpected("length <= 1")
-                .expectedActual("length = 2")
-                .addTest();
+    // ---- isNotBlank ----
+
+    @Test
+    void givenNonBlank_whenIsNotBlank_thenTrue() {
+        newTestCase()
+            .subject("a")
+            .expression(StringValue::isNotBlank)
+            .result(TRUE)
+            .name("isNotBlank")
+            .expected("true")
+            .actual("true")
+            .run();
     }
 
-    private void includesTestCases(ExpressionTestCaseBuilder<String, StringValue> builder) {
-        builder.newTest((expression, value) -> expression.includes('a'))
-                .subject("ab")
-                .expectedState(TRUE)
-                .expectedName("includes[a]")
-                .expectedExpected("includes[a]")
-                .expectedActual("includes[a]")
-                .expectedHint(StandardRationales.needleInHaystackHint(0, 'a'))
-                .addTest()
-            .newTest((expression, value) -> expression.includes('a'))
-                .subject("b")
-                .expectedState(FALSE)
-                .expectedName("includes[a]")
-                .expectedExpected("includes[a]")
-                .expectedActual("excludes[a]")
-                .expectedHint(StandardRationales.needleInHaystackHint(-1, 'a'))
-                .addTest()
-            .newTest((expression, value) -> expression.includes("a"))
-                .subject("ab")
-                .expectedState(TRUE)
-                .expectedName("includes[a]")
-                .expectedExpected("includes[a]")
-                .expectedActual("includes[a]")
-                .expectedHint(StandardRationales.needleInHaystackHint(0, "a"))
-                .addTest()
-            .newTest((expression, value) -> expression.includes("a"))
-                .subject("b")
-                .expectedState(FALSE)
-                .expectedName("includes[a]")
-                .expectedExpected("includes[a]")
-                .expectedActual("excludes[a]")
-                .expectedHint(StandardRationales.needleInHaystackHint(-1, "a"))
-                .addTest();
+    @Test
+    void givenEmpty_whenIsNotBlank_thenFalse() {
+        newTestCase()
+            .subject("")
+            .expression(StringValue::isNotBlank)
+            .result(FALSE)
+            .name("isNotBlank")
+            .expected("true")
+            .actual("false")
+            .run();
     }
 
-    private void excludesTestCases(ExpressionTestCaseBuilder<String, StringValue> builder) {
-        builder.newTest((expression, value) -> expression.excludes('a'))
-                .subject("ab")
-                .expectedState(FALSE)
-                .expectedName("excludes[a]")
-                .expectedExpected("excludes[a]")
-                .expectedActual("includes[a]")
-                .expectedHint(StandardRationales.needleInHaystackHint(0, 'a'))
-                .addTest()
-            .newTest((expression, value) -> expression.excludes('a'))
-                .subject("b")
-                .expectedState(TRUE)
-                .expectedName("excludes[a]")
-                .expectedExpected("excludes[a]")
-                .expectedActual("excludes[a]")
-                .expectedHint(StandardRationales.needleInHaystackHint(-1, 'a'))
-                .addTest()
-            .newTest((expression, value) -> expression.excludes("a"))
-                .subject("ab")
-                .expectedState(FALSE)
-                .expectedName("excludes[a]")
-                .expectedExpected("excludes[a]")
-                .expectedActual("includes[a]")
-                .expectedHint(StandardRationales.needleInHaystackHint(0, "a"))
-                .addTest()
-            .newTest((expression, value) -> expression.excludes("a"))
-                .subject("b")
-                .expectedState(TRUE)
-                .expectedName("excludes[a]")
-                .expectedExpected("excludes[a]")
-                .expectedActual("excludes[a]")
-                .expectedHint(StandardRationales.needleInHaystackHint(-1, "a"))
-                .addTest();
+    @Test
+    void givenWhitespace_whenIsNotBlank_thenFalse() {
+        newTestCase()
+            .subject(" ")
+            .expression(StringValue::isNotBlank)
+            .result(FALSE)
+            .name("isNotBlank")
+            .expected("true")
+            .actual("false")
+            .run();
     }
 
-    private void includesExactlyTestCases(ExpressionTestCaseBuilder<String, StringValue> builder) {
-        builder.newTest((expression, value) -> expression.includesExactly('a', 1))
-                .subject("ab")
-                .expectedState(TRUE)
-                .expectedName("includesExactly[desired=a, times=1]")
-                .expectedExpected("found 'a' 1 time")
-                .expectedActual("found 'a' 1 time")
-                .addTest()
-            .newTest((expression, value) -> expression.includesExactly('a', 1))
-                .subject("aab")
-                .expectedState(FALSE)
-                .expectedName("includesExactly[desired=a, times=1]")
-                .expectedExpected("found 'a' 1 time")
-                .expectedActual("found 'a' 2 times")
-                .addTest()
-            .newTest((expression, value) -> expression.includesExactly('a', 1))
-                .subject("b")
-                .expectedState(FALSE)
-                .expectedName("includesExactly[desired=a, times=1]")
-                .expectedExpected("found 'a' 1 time")
-                .expectedActual("found 'a' 0 times")
-                .addTest();
+    // ---- hasLengthOf ----
+
+    @Test
+    void givenSameLength_whenHasLengthOf_thenTrue() {
+        newTestCase()
+            .subject("a")
+            .expression(value -> value.hasLengthOf(1))
+            .result(TRUE)
+            .name("hasLengthOf[1]")
+            .expected("length = 1")
+            .actual("length = 1")
+            .run();
     }
 
-    private void includesExactlyMoreThanTestCases(ExpressionTestCaseBuilder<String, StringValue> builder) {
-        builder.newTest((expression, value) -> expression.includesMoreThan('a', 1))
-                .subject("ab")
-                .expectedState(FALSE)
-                .expectedName("includesMoreThan[desired=a, times=1]")
-                .expectedExpected("found 'a' more than 1 time")
-                .expectedActual("found 'a' 1 time")
-                .addTest()
-            .newTest((expression, value) -> expression.includesMoreThan('a', 1))
-                .subject("aab")
-                .expectedState(TRUE)
-                .expectedName("includesMoreThan[desired=a, times=1]")
-                .expectedExpected("found 'a' more than 1 time")
-                .expectedActual("found 'a' 2 times")
-                .addTest()
-            .newTest((expression, value) -> expression.includesMoreThan('a', 1))
-                .subject("b")
-                .expectedState(FALSE)
-                .expectedName("includesMoreThan[desired=a, times=1]")
-                .expectedExpected("found 'a' more than 1 time")
-                .expectedActual("found 'a' 0 times")
-                .addTest();
+    @Test
+    void givenShorter_whenHasLengthOf_thenFalse() {
+        newTestCase()
+            .subject("")
+            .expression(value -> value.hasLengthOf(1))
+            .result(FALSE)
+            .name("hasLengthOf[1]")
+            .expected("length = 1")
+            .actual("length = 0")
+            .run();
     }
 
-    private void includesExactlyMoreThanOrEqualToTestCases(ExpressionTestCaseBuilder<String, StringValue> builder) {
-        builder.newTest((expression, value) -> expression.includesMoreThanOrEqualTo('a', 1))
-                .subject("ab")
-                .expectedState(TRUE)
-                .expectedName("includesMoreThanOrEqualTo[desired=a, times=1]")
-                .expectedExpected("found 'a' more than or equal to 1 time")
-                .expectedActual("found 'a' 1 time")
-                .addTest()
-            .newTest((expression, value) -> expression.includesMoreThanOrEqualTo('a', 1))
-                .subject("aab")
-                .expectedState(TRUE)
-                .expectedName("includesMoreThanOrEqualTo[desired=a, times=1]")
-                .expectedExpected("found 'a' more than or equal to 1 time")
-                .expectedActual("found 'a' 2 times")
-                .addTest()
-            .newTest((expression, value) -> expression.includesMoreThanOrEqualTo('a', 1))
-                .subject("b")
-                .expectedState(FALSE)
-                .expectedName("includesMoreThanOrEqualTo[desired=a, times=1]")
-                .expectedExpected("found 'a' more than or equal to 1 time")
-                .expectedActual("found 'a' 0 times")
-                .addTest();
+    @Test
+    void givenLonger_whenHasLengthOf_thenFalse() {
+        newTestCase()
+            .subject("aa")
+            .expression(value -> value.hasLengthOf(1))
+            .result(FALSE)
+            .name("hasLengthOf[1]")
+            .expected("length = 1")
+            .actual("length = 2")
+            .run();
     }
 
-    private void includesExactlyLessThanTestCases(ExpressionTestCaseBuilder<String, StringValue> builder) {
-        builder.newTest((expression, value) -> expression.includesLessThan('a', 1))
-                .subject("ab")
-                .expectedState(FALSE)
-                .expectedName("includesLessThan[desired=a, times=1]")
-                .expectedExpected("found 'a' less than 1 time")
-                .expectedActual("found 'a' 1 time")
-                .addTest()
-            .newTest((expression, value) -> expression.includesLessThan('a', 1))
-                .subject("aab")
-                .expectedState(FALSE)
-                .expectedName("includesLessThan[desired=a, times=1]")
-                .expectedExpected("found 'a' less than 1 time")
-                .expectedActual("found 'a' 2 times")
-                .addTest()
-            .newTest((expression, value) -> expression.includesLessThan('a', 1))
-                .subject("b")
-                .expectedState(TRUE)
-                .expectedName("includesLessThan[desired=a, times=1]")
-                .expectedExpected("found 'a' less than 1 time")
-                .expectedActual("found 'a' 0 times")
-                .addTest();
+    // ---- isLongerThan ----
+
+    @Test
+    void givenSameLength_whenIsLongerThan_thenFalse() {
+        newTestCase()
+            .subject("a")
+            .expression(value -> value.isLongerThan(1))
+            .result(FALSE)
+            .name("isLongerThan[1]")
+            .expected("length > 1")
+            .actual("length = 1")
+            .run();
     }
 
-    private void includesExactlyLessThanOrEqualToTestCases(ExpressionTestCaseBuilder<String, StringValue> builder) {
-        builder.newTest((expression, value) -> expression.includesLessThanOrEqualTo('a', 1))
-                .subject("ab")
-                .expectedState(TRUE)
-                .expectedName("includesLessThanOrEqualTo[desired=a, times=1]")
-                .expectedExpected("found 'a' less than or equal to 1 time")
-                .expectedActual("found 'a' 1 time")
-                .addTest()
-            .newTest((expression, value) -> expression.includesLessThanOrEqualTo('a', 1))
-                .subject("aab")
-                .expectedState(FALSE)
-                .expectedName("includesLessThanOrEqualTo[desired=a, times=1]")
-                .expectedExpected("found 'a' less than or equal to 1 time")
-                .expectedActual("found 'a' 2 times")
-                .addTest()
-            .newTest((expression, value) -> expression.includesLessThanOrEqualTo('a', 1))
-                .subject("b")
-                .expectedState(TRUE)
-                .expectedName("includesLessThanOrEqualTo[desired=a, times=1]")
-                .expectedExpected("found 'a' less than or equal to 1 time")
-                .expectedActual("found 'a' 0 times")
-                .addTest();
+    @Test
+    void givenShorter_whenIsLongerThan_thenFalse() {
+        newTestCase()
+            .subject("")
+            .expression(value -> value.isLongerThan(1))
+            .result(FALSE)
+            .name("isLongerThan[1]")
+            .expected("length > 1")
+            .actual("length = 0")
+            .run();
     }
 
-    private void startsWithTestCases(ExpressionTestCaseBuilder<String, StringValue> builder) {
-        builder.newTest((expression, value) -> expression.startsWith("aa"))
-                .subject("bbaa")
-                .expectedState(FALSE)
-                .expectedName("startsWith[aa]")
-                .expectedExpected("aa")
-                .expectedActual("bb")
-                .addTest()
-            .newTest((expression, value) -> expression.startsWith("aa"))
-                .subject("aabb")
-                .expectedState(TRUE)
-                .expectedName("startsWith[aa]")
-                .expectedExpected("aa")
-                .expectedActual("aa")
-                .addTest();
+    @Test
+    void givenLonger_whenIsLongerThan_thenTrue() {
+        newTestCase()
+            .subject("aa")
+            .expression(value -> value.isLongerThan(1))
+            .result(TRUE)
+            .name("isLongerThan[1]")
+            .expected("length > 1")
+            .actual("length = 2")
+            .run();
     }
 
-    private void doesNotStartWithTestCases(ExpressionTestCaseBuilder<String, StringValue> builder) {
-        builder.newTest((expression, value) -> expression.doesNotStartWith("aa"))
-                .subject("bbaa")
-                .expectedState(TRUE)
-                .expectedName("doesNotStartWith[aa]")
-                .expectedExpected("not[aa]")
-                .expectedActual("bb")
-                .addTest()
-            .newTest((expression, value) -> expression.doesNotStartWith("aa"))
-                .subject("aabb")
-                .expectedState(FALSE)
-                .expectedName("doesNotStartWith[aa]")
-                .expectedExpected("not[aa]")
-                .expectedActual("aa")
-                .addTest();
+    // ---- isLongerThanOrEqualTo ----
+
+    @Test
+    void givenSameLength_whenIsLongerThanOrEqualTo_thenTrue() {
+        newTestCase()
+            .subject("a")
+            .expression(value -> value.isLongerThanOrEqualTo(1))
+            .result(TRUE)
+            .name("isLongerThanOrEqualTo[1]")
+            .expected("length >= 1")
+            .actual("length = 1")
+            .run();
     }
 
-    private void endsWithTestCases(ExpressionTestCaseBuilder<String, StringValue> builder) {
-        builder.newTest((expression, value) -> expression.endsWith("aa"))
-                .subject("bbaa")
-                .expectedState(TRUE)
-                .expectedName("endsWith[aa]")
-                .expectedExpected("aa")
-                .expectedActual("aa")
-                .addTest()
-            .newTest((expression, value) -> expression.endsWith("aa"))
-                .subject("aabb")
-                .expectedState(FALSE)
-                .expectedName("endsWith[aa]")
-                .expectedExpected("aa")
-                .expectedActual("bb")
-                .addTest();
+    @Test
+    void givenShorter_whenIsLongerThanOrEqualTo_thenFalse() {
+        newTestCase()
+            .subject("")
+            .expression(value -> value.isLongerThanOrEqualTo(1))
+            .result(FALSE)
+            .name("isLongerThanOrEqualTo[1]")
+            .expected("length >= 1")
+            .actual("length = 0")
+            .run();
     }
 
-    private void doesNotEndWithTestCases(ExpressionTestCaseBuilder<String, StringValue> builder) {
-        builder.newTest((expression, value) -> expression.doesNotEndWith("aa"))
-                .subject("bbaa")
-                .expectedState(FALSE)
-                .expectedName("doesNotEndWith[aa]")
-                .expectedExpected("not[aa]")
-                .expectedActual("aa")
-                .addTest()
-            .newTest((expression, value) -> expression.doesNotEndWith("aa"))
-                .subject("aabb")
-                .expectedState(TRUE)
-                .expectedName("doesNotEndWith[aa]")
-                .expectedExpected("not[aa]")
-                .expectedActual("bb")
-                .addTest();
+    @Test
+    void givenLonger_whenIsLongerThanOrEqualTo_thenTrue() {
+        newTestCase()
+            .subject("aa")
+            .expression(value -> value.isLongerThanOrEqualTo(1))
+            .result(TRUE)
+            .name("isLongerThanOrEqualTo[1]")
+            .expected("length >= 1")
+            .actual("length = 2")
+            .run();
     }
 
-    private void matchesTestCases(ExpressionTestCaseBuilder<String, StringValue> builder) {
-        builder.newTest((expression, value) -> expression.matches("a*b"))
-                .subject("aab")
-                .expectedState(TRUE)
-                .expectedName("matches[a*b]")
-                .expectedExpected("matches[a*b]")
-                .expectedActual("aab")
-                .addTest()
-            .newTest((expression, value) -> expression.matches("a*b"))
-                .subject("ccc")
-                .expectedState(FALSE)
-                .expectedName("matches[a*b]")
-                .expectedExpected("matches[a*b]")
-                .expectedActual("ccc")
-                .addTest();
+    // ---- isShorterThan ----
+
+    @Test
+    void givenSameLength_whenIsShorterThan_thenFalse() {
+        newTestCase()
+            .subject("a")
+            .expression(value -> value.isShorterThan(1))
+            .result(FALSE)
+            .name("isShorterThan[1]")
+            .expected("length < 1")
+            .actual("length = 1")
+            .run();
     }
 
-    private void doesNotMatchTestCases(ExpressionTestCaseBuilder<String, StringValue> builder) {
-        builder.newTest((expression, value) -> expression.doesNotMatch("a*b"))
-                .subject("aab")
-                .expectedState(FALSE)
-                .expectedName("doesNotMatch[a*b]")
-                .expectedExpected("not[matches[a*b]]")
-                .expectedActual("aab")
-                .addTest()
-            .newTest((expression, value) -> expression.doesNotMatch("a*b"))
-                .subject("ccc")
-                .expectedState(TRUE)
-                .expectedName("doesNotMatch[a*b]")
-                .expectedExpected("not[matches[a*b]]")
-                .expectedActual("ccc")
-                .addTest();
+    @Test
+    void givenShorter_whenIsShorterThan_thenTrue() {
+        newTestCase()
+            .subject("")
+            .expression(value -> value.isShorterThan(1))
+            .result(TRUE)
+            .name("isShorterThan[1]")
+            .expected("length < 1")
+            .actual("length = 0")
+            .run();
     }
 
-    private void isCaseInsensitiveEqualToTestCases(ExpressionTestCaseBuilder<String, StringValue> builder) {
-        builder.newTest((expression, value) -> expression.isCaseInsensitiveEqualTo("foo"))
-                .subject("foo")
-                .expectedState(TRUE)
-                .expectedName("caseInsensitiveEqualTo[foo]")
-                .expectedExpected("foo")
-                .expectedActual("foo")
-                .addTest()
-            .newTest((expression, value) -> expression.isCaseInsensitiveEqualTo("Foo"))
-                .subject("foo")
-                .expectedState(TRUE)
-                .expectedName("caseInsensitiveEqualTo[Foo]")
-                .expectedExpected("Foo")
-                .expectedActual("foo")
-                .addTest()
-            .newTest((expression, value) -> expression.isCaseInsensitiveEqualTo("bar"))
-                .subject("foo")
-                .expectedState(FALSE)
-                .expectedName("caseInsensitiveEqualTo[bar]")
-                .expectedExpected("bar")
-                .expectedActual("foo")
-                .addTest();
+    @Test
+    void givenLonger_whenIsShorterThan_thenFalse() {
+        newTestCase()
+            .subject("aa")
+            .expression(value -> value.isShorterThan(1))
+            .result(FALSE)
+            .name("isShorterThan[1]")
+            .expected("length < 1")
+            .actual("length = 2")
+            .run();
     }
 
-    private void hasAtIndexTestCases(ExpressionTestCaseBuilder<String, StringValue> builder) {
-        builder.newTest((expression, value) -> expression.hasAtIndex('c', 0))
-                .testCaseName("[hasAtIndex:char] Has letter but not at index")
-                .subject("abc")
-                .expectedState(FALSE)
-                .expectedName("hasAtIndex[desired=c, index=0]")
-                .expectedExpected("c")
-                .expectedActual("a")
-                .addTest()
-            .newTest((expression, value) -> expression.hasAtIndex('c', 0))
-                .testCaseName("[hasAtIndex:char] Has letter at index")
-                .subject("cba")
-                .expectedState(TRUE)
-                .expectedName("hasAtIndex[desired=c, index=0]")
-                .expectedExpected("c")
-                .expectedActual("c")
-                .addTest()
-            .newTest((expression, value) -> expression.hasAtIndex('z', 0))
-                .testCaseName("[hasAtIndex:char] Does not have letter")
-                .subject("cba")
-                .expectedState(FALSE)
-                .expectedName("hasAtIndex[desired=z, index=0]")
-                .expectedExpected("z")
-                .expectedActual("c")
-                .addTest()
-            .newTest((expression, value) -> expression.hasAtIndex('c', 0))
-                .testCaseName("[hasAtIndex:char] First index matches")
-                .subject("cabc")
-                .expectedState(TRUE)
-                .expectedName("hasAtIndex[desired=c, index=0]")
-                .expectedExpected("c")
-                .expectedActual("c")
-                .addTest()
-            .newTest((expression, value) -> expression.hasAtIndex('c', 3))
-                .testCaseName("[hasAtIndex:char] Out of bounds")
-                .subject("cba")
-                .expectedState(FALSE)
-                .expectedName("hasAtIndex[desired=c, index=3]")
-                .expectedExpected("c")
-                .expectedActual("Index 3 is out of bounds")
-                .addTest()
-            .newTest((expression, value) -> expression.hasAtIndex("c", 0))
-                .testCaseName("[hasAtIndex:char] Has letter but not at index")
-                .subject("abc")
-                .expectedState(FALSE)
-                .expectedName("hasAtIndex[desired=c, index=0]")
-                .expectedExpected("c")
-                .expectedActual("a")
-                .addTest()
-            .newTest((expression, value) -> expression.hasAtIndex("c", 0))
-                .testCaseName("[hasAtIndex:string] Has letter at index")
-                .subject("cba")
-                .expectedState(TRUE)
-                .expectedName("hasAtIndex[desired=c, index=0]")
-                .expectedExpected("c")
-                .expectedActual("c")
-                .addTest()
-            .newTest((expression, value) -> expression.hasAtIndex("z", 0))
-                .testCaseName("[hasAtIndex:string] Does not have letter")
-                .subject("cba")
-                .expectedState(FALSE)
-                .expectedName("hasAtIndex[desired=z, index=0]")
-                .expectedExpected("z")
-                .expectedActual("c")
-                .addTest()
-            .newTest((expression, value) -> expression.hasAtIndex("c", 0))
-                .testCaseName("[hasAtIndex:string] First index matches")
-                .subject("cabc")
-                .expectedState(TRUE)
-                .expectedName("hasAtIndex[desired=c, index=0]")
-                .expectedExpected("c")
-                .expectedActual("c")
-                .addTest()
-            .newTest((expression, value) -> expression.hasAtIndex("c", 3))
-                .testCaseName("[hasAtIndex:char] Out of bounds")
-                .subject("cba")
-                .expectedState(FALSE)
-                .expectedName("hasAtIndex[desired=c, index=3]")
-                .expectedExpected("c")
-                .expectedActual("Index 3 is out of bounds")
-                .addTest();
+    // ---- isShorterThanOrEqualTo ----
+
+    @Test
+    void givenSameLength_whenIsShorterThanOrEqualTo_thenTrue() {
+        newTestCase()
+            .subject("a")
+            .expression(value -> value.isShorterThanOrEqualTo(1))
+            .result(TRUE)
+            .name("isShorterThanOrEqualTo[1]")
+            .expected("length <= 1")
+            .actual("length = 1")
+            .run();
     }
 
-    private void doesNotHaveAtIndexTestCase(ExpressionTestCaseBuilder<String, StringValue> builder) {
-        builder.newTest((expression, value) -> expression.doesNotHaveAtIndex('c', 0))
-                .testCaseName("[doesNotHaveAtIndex:char] Has letter but not at index")
-                .subject("abc")
-                .expectedState(TRUE)
-                .expectedName("indexOf[" + 'c' + "] != " + 0)
-                .expectedExpected("not[0]")
-                .expectedActual("2")
-                .addTest()
-            .newTest((expression, value) -> expression.doesNotHaveAtIndex('c', 0))
-                .testCaseName("[doesNotHaveAtIndex:char] Has letter at index")
-                .subject("cba")
-                .expectedState(FALSE)
-                .expectedName("indexOf[" + 'c' + "] != " + 0)
-                .expectedExpected("not[0]")
-                .expectedActual("0")
-                .addTest()
-            .newTest((expression, value) -> expression.doesNotHaveAtIndex('z', 0))
-                .testCaseName("[doesNotHaveAtIndex:char] Does not have letter")
-                .subject("cba")
-                .expectedState(TRUE)
-                .expectedName("indexOf[" + 'z' + "] != " + 0)
-                .expectedExpected("not[0]")
-                .expectedActual("-1")
-                .addTest()
-            .newTest((expression, value) -> expression.doesNotHaveAtIndex('c', 0))
-                .testCaseName("[doesNotHaveAtIndex:char] First index matches")
-                .subject("cabc")
-                .expectedState(FALSE)
-                .expectedName("indexOf[" + 'c' + "] != " + 0)
-                .expectedExpected("not[0]")
-                .expectedActual("0")
-                .addTest()
-            .newTest((expression, value) -> expression.doesNotHaveAtIndex("c", 0))
-                .testCaseName("[doesNotHaveAtIndex:string] Has letter but not at index")
-                .subject("abc")
-                .expectedState(TRUE)
-                .expectedName("indexOf[" + 'c' + "] != " + 0)
-                .expectedExpected("not[0]")
-                .expectedActual("2")
-                .addTest()
-            .newTest((expression, value) -> expression.doesNotHaveAtIndex("c", 0))
-                .testCaseName("[doesNotHaveAtIndex:string] Has letter at index")
-                .subject("cba")
-                .expectedState(FALSE)
-                .expectedName("indexOf[" + 'c' + "] != " + 0)
-                .expectedExpected("not[0]")
-                .expectedActual("0")
-                .addTest()
-            .newTest((expression, value) -> expression.doesNotHaveAtIndex("z", 0))
-                .testCaseName("[doesNotHaveAtIndex:string] Does not have letter")
-                .subject("cba")
-                .expectedState(TRUE)
-                .expectedName("indexOf[" + 'z' + "] != " + 0)
-                .expectedExpected("not[0]")
-                .expectedActual("-1")
-                .addTest()
-            .newTest((expression, value) -> expression.doesNotHaveAtIndex("c", 0))
-                .testCaseName("[doesNotHaveAtIndex:string] First index matches")
-                .subject("cabc")
-                .expectedState(FALSE)
-                .expectedName("indexOf[" + 'c' + "] != " + 0)
-                .expectedExpected("not[0]")
-                .expectedActual("0")
-                .addTest();
+    @Test
+    void givenShorter_whenIsShorterThanOrEqualTo_thenTrue() {
+        newTestCase()
+            .subject("")
+            .expression(value -> value.isShorterThanOrEqualTo(1))
+            .result(TRUE)
+            .name("isShorterThanOrEqualTo[1]")
+            .expected("length <= 1")
+            .actual("length = 0")
+            .run();
     }
 
-    private void hasAtLastIndexTestCases(ExpressionTestCaseBuilder<String, StringValue> builder) {
-        builder.newTest((expression, value) -> expression.hasAtLastIndex('c', 0))
-                .testCaseName("[hasAtLastIndex:char] Has letter but not at index")
-                .subject("abc")
-                .expectedState(FALSE)
-                .expectedName("lastIndexOf[" + 'c' + "] = " + 0)
-                .expectedExpected("0")
-                .expectedActual("2")
-                .addTest()
-            .newTest((expression, value) -> expression.hasAtLastIndex('c', 0))
-                .testCaseName("[hasAtLastIndex:char] Has letter at index")
-                .subject("cba")
-                .expectedState(TRUE)
-                .expectedName("lastIndexOf[" + 'c' + "] = " + 0)
-                .expectedExpected("0")
-                .expectedActual("0")
-                .addTest()
-            .newTest((expression, value) -> expression.hasAtLastIndex('z', 0))
-                .testCaseName("[hasAtLastIndex:char] Does not have letter")
-                .subject("cba")
-                .expectedState(FALSE)
-                .expectedName("lastIndexOf[" + 'z' + "] = " + 0)
-                .expectedExpected("0")
-                .expectedActual("-1")
-                .addTest()
-            .newTest((expression, value) -> expression.hasAtLastIndex('c', 0))
-                .testCaseName("[hasAtLastIndex:char] First index matches")
-                .subject("cabc")
-                .expectedState(FALSE)
-                .expectedName("lastIndexOf[" + 'c' + "] = " + 0)
-                .expectedExpected("0")
-                .expectedActual("3")
-                .addTest()
-            .newTest((expression, value) -> expression.hasAtLastIndex("c", 0))
-                .testCaseName("[hasAtLastIndex:char] Has letter but not at index")
-                .subject("abc")
-                .expectedState(FALSE)
-                .expectedName("lastIndexOf[" + 'c' + "] = " + 0)
-                .expectedExpected("0")
-                .expectedActual("2")
-                .addTest()
-            .newTest((expression, value) -> expression.hasAtLastIndex("c", 0))
-                .testCaseName("[hasAtLastIndex:string] Has letter at index")
-                .subject("cba")
-                .expectedState(TRUE)
-                .expectedName("lastIndexOf[" + 'c' + "] = " + 0)
-                .expectedExpected("0")
-                .expectedActual("0")
-                .addTest()
-            .newTest((expression, value) -> expression.hasAtLastIndex("z", 0))
-                .testCaseName("[hasAtLastIndex:string] Does not have letter")
-                .subject("cba")
-                .expectedState(FALSE)
-                .expectedName("lastIndexOf[" + 'z' + "] = " + 0)
-                .expectedExpected("0")
-                .expectedActual("-1")
-                .addTest()
-            .newTest((expression, value) -> expression.hasAtLastIndex("c", 0))
-                .testCaseName("[hasAtLastIndex:string] First index matches")
-                .subject("cabc")
-                .expectedState(FALSE)
-                .expectedName("lastIndexOf[" + 'c' + "] = " + 0)
-                .expectedExpected("0")
-                .expectedActual("3")
-                .addTest();
+    @Test
+    void givenLonger_whenIsShorterThanOrEqualTo_thenFalse() {
+        newTestCase()
+            .subject("aa")
+            .expression(value -> value.isShorterThanOrEqualTo(1))
+            .result(FALSE)
+            .name("isShorterThanOrEqualTo[1]")
+            .expected("length <= 1")
+            .actual("length = 2")
+            .run();
     }
 
-    private void doesNotHaveAtLastIndexTestCases(ExpressionTestCaseBuilder<String, StringValue> builder) {
-        builder.newTest((expression, value) -> expression.doesNotHaveAtLastIndex('c', 0))
-                .testCaseName("[doesNotHaveAtLastIndex:char] Has letter but not at index")
-                .subject("abc")
-                .expectedState(TRUE)
-                .expectedName("lastIndexOf[" + 'c' + "] != " + 0)
-                .expectedExpected("not[0]")
-                .expectedActual("2")
-                .addTest()
-            .newTest((expression, value) -> expression.doesNotHaveAtLastIndex('c', 0))
-                .testCaseName("[doesNotHaveAtLastIndex:char] Has letter at index")
-                .subject("cba")
-                .expectedState(FALSE)
-                .expectedName("lastIndexOf[" + 'c' + "] != " + 0)
-                .expectedExpected("not[0]")
-                .expectedActual("0")
-                .addTest()
-            .newTest((expression, value) -> expression.doesNotHaveAtLastIndex('z', 0))
-                .testCaseName("[doesNotHaveAtLastIndex:char] Does not have letter")
-                .subject("cba")
-                .expectedState(TRUE)
-                .expectedName("lastIndexOf[" + 'z' + "] != " + 0)
-                .expectedExpected("not[0]")
-                .expectedActual("-1")
-                .addTest()
-            .newTest((expression, value) -> expression.doesNotHaveAtLastIndex('c', 0))
-                .testCaseName("[hasAtLastIndex:char] First index matches")
-                .subject("cabc")
-                .expectedState(TRUE)
-                .expectedName("lastIndexOf[" + 'c' + "] != " + 0)
-                .expectedExpected("not[0]")
-                .expectedActual("3")
-                .addTest()
-            .newTest((expression, value) -> expression.doesNotHaveAtLastIndex("c", 0))
-                .testCaseName("[doesNotHaveAtLastIndex:string] Has letter but not at index")
-                .subject("abc")
-                .expectedState(TRUE)
-                .expectedName("lastIndexOf[" + 'c' + "] != " + 0)
-                .expectedExpected("not[0]")
-                .expectedActual("2")
-                .addTest()
-            .newTest((expression, value) -> expression.doesNotHaveAtLastIndex("c", 0))
-                .testCaseName("[doesNotHaveAtLastIndex:string] Has letter at index")
-                .subject("cba")
-                .expectedState(FALSE)
-                .expectedName("lastIndexOf[" + 'c' + "] != " + 0)
-                .expectedExpected("not[0]")
-                .expectedActual("0")
-                .addTest()
-            .newTest((expression, value) -> expression.doesNotHaveAtLastIndex("z", 0))
-                .testCaseName("[doesNotHaveAtLastIndex:string] Does not have letter")
-                .subject("cba")
-                .expectedState(TRUE)
-                .expectedName("lastIndexOf[" + 'z' + "] != " + 0)
-                .expectedExpected("not[0]")
-                .expectedActual("-1")
-                .addTest()
-            .newTest((expression, value) -> expression.doesNotHaveAtLastIndex("c", 0))
-                .testCaseName("[hasAtLastIndex:string] First index matches")
-                .subject("cabc")
-                .expectedState(TRUE)
-                .expectedName("lastIndexOf[" + 'c' + "] != " + 0)
-                .expectedExpected("not[0]")
-                .expectedActual("3")
-                .addTest();
+    // ---- includes ----
+
+    @Test
+    void givenIncludedChar_whenIncludes_thenTrue() {
+        newTestCase()
+            .subject("ab")
+            .expression(value -> value.includes('a'))
+            .result(TRUE)
+            .name("includes[a]")
+            .expected("includes[a]")
+            .actual("includes[a]")
+            .hint(StandardRationales.needleInHaystackHint(0, 'a'))
+            .run();
+    }
+
+    @Test
+    void givenExcludedChar_whenIncludes_thenFalse() {
+        newTestCase()
+            .subject("b")
+            .expression(value -> value.includes('a'))
+            .result(FALSE)
+            .name("includes[a]")
+            .expected("includes[a]")
+            .actual("excludes[a]")
+            .hint(StandardRationales.needleInHaystackHint(-1, 'a'))
+            .run();
+    }
+
+    @Test
+    void givenIncludedString_whenIncludes_thenTrue() {
+        newTestCase()
+            .subject("ab")
+            .expression(value -> value.includes("a"))
+            .result(TRUE)
+            .name("includes[a]")
+            .expected("includes[a]")
+            .actual("includes[a]")
+            .hint(StandardRationales.needleInHaystackHint(0, "a"))
+            .run();
+    }
+
+    @Test
+    void givenExcludedString_whenIncludes_thenFalse() {
+        newTestCase()
+            .subject("b")
+            .expression(value -> value.includes("a"))
+            .result(FALSE)
+            .name("includes[a]")
+            .expected("includes[a]")
+            .actual("excludes[a]")
+            .hint(StandardRationales.needleInHaystackHint(-1, "a"))
+            .run();
+    }
+
+    // ---- excludes ----
+
+    @Test
+    void givenIncludedChar_whenExcludes_thenFalse() {
+        newTestCase()
+            .subject("ab")
+            .expression(value -> value.excludes('a'))
+            .result(FALSE)
+            .name("excludes[a]")
+            .expected("excludes[a]")
+            .actual("includes[a]")
+            .hint(StandardRationales.needleInHaystackHint(0, 'a'))
+            .run();
+    }
+
+    @Test
+    void givenExcludedChar_whenExcludes_thenTrue() {
+        newTestCase()
+            .subject("b")
+            .expression(value -> value.excludes('a'))
+            .result(TRUE)
+            .name("excludes[a]")
+            .expected("excludes[a]")
+            .actual("excludes[a]")
+            .hint(StandardRationales.needleInHaystackHint(-1, 'a'))
+            .run();
+    }
+
+    @Test
+    void givenIncludedString_whenExcludes_thenFalse() {
+        newTestCase()
+            .subject("ab")
+            .expression(value -> value.excludes("a"))
+            .result(FALSE)
+            .name("excludes[a]")
+            .expected("excludes[a]")
+            .actual("includes[a]")
+            .hint(StandardRationales.needleInHaystackHint(0, "a"))
+            .run();
+    }
+
+    @Test
+    void givenExcludedString_whenExcludes_thenTrue() {
+        newTestCase()
+            .subject("b")
+            .expression(value -> value.excludes("a"))
+            .result(TRUE)
+            .name("excludes[a]")
+            .expected("excludes[a]")
+            .actual("excludes[a]")
+            .hint(StandardRationales.needleInHaystackHint(-1, "a"))
+            .run();
+    }
+
+    // ---- includesExactly ----
+
+    @Test
+    void givenOneOccurrence_whenIncludesExactly_thenTrue() {
+        newTestCase()
+            .subject("ab")
+            .expression(value -> value.includesExactly('a', 1))
+            .result(TRUE)
+            .name("includesExactly[desired=a, times=1]")
+            .expected("found 'a' 1 time")
+            .actual("found 'a' 1 time")
+            .run();
+    }
+
+    @Test
+    void givenTwoOccurrences_whenIncludesExactly_thenFalse() {
+        newTestCase()
+            .subject("aab")
+            .expression(value -> value.includesExactly('a', 1))
+            .result(FALSE)
+            .name("includesExactly[desired=a, times=1]")
+            .expected("found 'a' 1 time")
+            .actual("found 'a' 2 times")
+            .run();
+    }
+
+    @Test
+    void givenNoOccurrences_whenIncludesExactly_thenFalse() {
+        newTestCase()
+            .subject("b")
+            .expression(value -> value.includesExactly('a', 1))
+            .result(FALSE)
+            .name("includesExactly[desired=a, times=1]")
+            .expected("found 'a' 1 time")
+            .actual("found 'a' 0 times")
+            .run();
+    }
+
+    // ---- includesMoreThan ----
+
+    @Test
+    void givenOneOccurrence_whenIncludesMoreThan_thenFalse() {
+        newTestCase()
+            .subject("ab")
+            .expression(value -> value.includesMoreThan('a', 1))
+            .result(FALSE)
+            .name("includesMoreThan[desired=a, times=1]")
+            .expected("found 'a' more than 1 time")
+            .actual("found 'a' 1 time")
+            .run();
+    }
+
+    @Test
+    void givenTwoOccurrences_whenIncludesMoreThan_thenTrue() {
+        newTestCase()
+            .subject("aab")
+            .expression(value -> value.includesMoreThan('a', 1))
+            .result(TRUE)
+            .name("includesMoreThan[desired=a, times=1]")
+            .expected("found 'a' more than 1 time")
+            .actual("found 'a' 2 times")
+            .run();
+    }
+
+    @Test
+    void givenNoOccurrences_whenIncludesMoreThan_thenFalse() {
+        newTestCase()
+            .subject("b")
+            .expression(value -> value.includesMoreThan('a', 1))
+            .result(FALSE)
+            .name("includesMoreThan[desired=a, times=1]")
+            .expected("found 'a' more than 1 time")
+            .actual("found 'a' 0 times")
+            .run();
+    }
+
+    // ---- includesMoreThanOrEqualTo ----
+
+    @Test
+    void givenOneOccurrence_whenIncludesMoreThanOrEqualTo_thenTrue() {
+        newTestCase()
+            .subject("ab")
+            .expression(value -> value.includesMoreThanOrEqualTo('a', 1))
+            .result(TRUE)
+            .name("includesMoreThanOrEqualTo[desired=a, times=1]")
+            .expected("found 'a' more than or equal to 1 time")
+            .actual("found 'a' 1 time")
+            .run();
+    }
+
+    @Test
+    void givenTwoOccurrences_whenIncludesMoreThanOrEqualTo_thenTrue() {
+        newTestCase()
+            .subject("aab")
+            .expression(value -> value.includesMoreThanOrEqualTo('a', 1))
+            .result(TRUE)
+            .name("includesMoreThanOrEqualTo[desired=a, times=1]")
+            .expected("found 'a' more than or equal to 1 time")
+            .actual("found 'a' 2 times")
+            .run();
+    }
+
+    @Test
+    void givenNoOccurrences_whenIncludesMoreThanOrEqualTo_thenFalse() {
+        newTestCase()
+            .subject("b")
+            .expression(value -> value.includesMoreThanOrEqualTo('a', 1))
+            .result(FALSE)
+            .name("includesMoreThanOrEqualTo[desired=a, times=1]")
+            .expected("found 'a' more than or equal to 1 time")
+            .actual("found 'a' 0 times")
+            .run();
+    }
+
+    // ---- includesLessThan ----
+
+    @Test
+    void givenOneOccurrence_whenIncludesLessThan_thenFalse() {
+        newTestCase()
+            .subject("ab")
+            .expression(value -> value.includesLessThan('a', 1))
+            .result(FALSE)
+            .name("includesLessThan[desired=a, times=1]")
+            .expected("found 'a' less than 1 time")
+            .actual("found 'a' 1 time")
+            .run();
+    }
+
+    @Test
+    void givenTwoOccurrences_whenIncludesLessThan_thenFalse() {
+        newTestCase()
+            .subject("aab")
+            .expression(value -> value.includesLessThan('a', 1))
+            .result(FALSE)
+            .name("includesLessThan[desired=a, times=1]")
+            .expected("found 'a' less than 1 time")
+            .actual("found 'a' 2 times")
+            .run();
+    }
+
+    @Test
+    void givenNoOccurrences_whenIncludesLessThan_thenTrue() {
+        newTestCase()
+            .subject("b")
+            .expression(value -> value.includesLessThan('a', 1))
+            .result(TRUE)
+            .name("includesLessThan[desired=a, times=1]")
+            .expected("found 'a' less than 1 time")
+            .actual("found 'a' 0 times")
+            .run();
+    }
+
+    // ---- includesLessThanOrEqualTo ----
+
+    @Test
+    void givenOneOccurrence_whenIncludesLessThanOrEqualTo_thenTrue() {
+        newTestCase()
+            .subject("ab")
+            .expression(value -> value.includesLessThanOrEqualTo('a', 1))
+            .result(TRUE)
+            .name("includesLessThanOrEqualTo[desired=a, times=1]")
+            .expected("found 'a' less than or equal to 1 time")
+            .actual("found 'a' 1 time")
+            .run();
+    }
+
+    @Test
+    void givenTwoOccurrences_whenIncludesLessThanOrEqualTo_thenFalse() {
+        newTestCase()
+            .subject("aab")
+            .expression(value -> value.includesLessThanOrEqualTo('a', 1))
+            .result(FALSE)
+            .name("includesLessThanOrEqualTo[desired=a, times=1]")
+            .expected("found 'a' less than or equal to 1 time")
+            .actual("found 'a' 2 times")
+            .run();
+    }
+
+    @Test
+    void givenNoOccurrences_whenIncludesLessThanOrEqualTo_thenTrue() {
+        newTestCase()
+            .subject("b")
+            .expression(value -> value.includesLessThanOrEqualTo('a', 1))
+            .result(TRUE)
+            .name("includesLessThanOrEqualTo[desired=a, times=1]")
+            .expected("found 'a' less than or equal to 1 time")
+            .actual("found 'a' 0 times")
+            .run();
+    }
+
+    // ---- startsWith ----
+
+    @Test
+    void givenDifferentPrefix_whenStartsWith_thenFalse() {
+        newTestCase()
+            .subject("bbaa")
+            .expression(value -> value.startsWith("aa"))
+            .result(FALSE)
+            .name("startsWith[aa]")
+            .expected("aa")
+            .actual("bb")
+            .run();
+    }
+
+    @Test
+    void givenMatchingPrefix_whenStartsWith_thenTrue() {
+        newTestCase()
+            .subject("aabb")
+            .expression(value -> value.startsWith("aa"))
+            .result(TRUE)
+            .name("startsWith[aa]")
+            .expected("aa")
+            .actual("aa")
+            .run();
+    }
+
+    // ---- doesNotStartWith ----
+
+    @Test
+    void givenDifferentPrefix_whenDoesNotStartWith_thenTrue() {
+        newTestCase()
+            .subject("bbaa")
+            .expression(value -> value.doesNotStartWith("aa"))
+            .result(TRUE)
+            .name("doesNotStartWith[aa]")
+            .expected("not[aa]")
+            .actual("bb")
+            .run();
+    }
+
+    @Test
+    void givenMatchingPrefix_whenDoesNotStartWith_thenFalse() {
+        newTestCase()
+            .subject("aabb")
+            .expression(value -> value.doesNotStartWith("aa"))
+            .result(FALSE)
+            .name("doesNotStartWith[aa]")
+            .expected("not[aa]")
+            .actual("aa")
+            .run();
+    }
+
+    // ---- endsWith ----
+
+    @Test
+    void givenMatchingSuffix_whenEndsWith_thenTrue() {
+        newTestCase()
+            .subject("bbaa")
+            .expression(value -> value.endsWith("aa"))
+            .result(TRUE)
+            .name("endsWith[aa]")
+            .expected("aa")
+            .actual("aa")
+            .run();
+    }
+
+    @Test
+    void givenDifferentSuffix_whenEndsWith_thenFalse() {
+        newTestCase()
+            .subject("aabb")
+            .expression(value -> value.endsWith("aa"))
+            .result(FALSE)
+            .name("endsWith[aa]")
+            .expected("aa")
+            .actual("bb")
+            .run();
+    }
+
+    // ---- doesNotEndWith ----
+
+    @Test
+    void givenMatchingSuffix_whenDoesNotEndWith_thenFalse() {
+        newTestCase()
+            .subject("bbaa")
+            .expression(value -> value.doesNotEndWith("aa"))
+            .result(FALSE)
+            .name("doesNotEndWith[aa]")
+            .expected("not[aa]")
+            .actual("aa")
+            .run();
+    }
+
+    @Test
+    void givenDifferentSuffix_whenDoesNotEndWith_thenTrue() {
+        newTestCase()
+            .subject("aabb")
+            .expression(value -> value.doesNotEndWith("aa"))
+            .result(TRUE)
+            .name("doesNotEndWith[aa]")
+            .expected("not[aa]")
+            .actual("bb")
+            .run();
+    }
+
+    // ---- matches ----
+
+    @Test
+    void givenMatchingString_whenMatches_thenTrue() {
+        newTestCase()
+            .subject("aab")
+            .expression(value -> value.matches("a*b"))
+            .result(TRUE)
+            .name("matches[a*b]")
+            .expected("matches[a*b]")
+            .actual("aab")
+            .run();
+    }
+
+    @Test
+    void givenNonMatchingString_whenMatches_thenFalse() {
+        newTestCase()
+            .subject("ccc")
+            .expression(value -> value.matches("a*b"))
+            .result(FALSE)
+            .name("matches[a*b]")
+            .expected("matches[a*b]")
+            .actual("ccc")
+            .run();
+    }
+
+    // ---- doesNotMatch ----
+
+    @Test
+    void givenMatchingString_whenDoesNotMatch_thenFalse() {
+        newTestCase()
+            .subject("aab")
+            .expression(value -> value.doesNotMatch("a*b"))
+            .result(FALSE)
+            .name("doesNotMatch[a*b]")
+            .expected("not[matches[a*b]]")
+            .actual("aab")
+            .run();
+    }
+
+    @Test
+    void givenNonMatchingString_whenDoesNotMatch_thenTrue() {
+        newTestCase()
+            .subject("ccc")
+            .expression(value -> value.doesNotMatch("a*b"))
+            .result(TRUE)
+            .name("doesNotMatch[a*b]")
+            .expected("not[matches[a*b]]")
+            .actual("ccc")
+            .run();
+    }
+
+    // ---- isCaseInsensitiveEqualTo ----
+
+    @Test
+    void givenSameCase_whenIsCaseInsensitiveEqualTo_thenTrue() {
+        newTestCase()
+            .subject("foo")
+            .expression(value -> value.isCaseInsensitiveEqualTo("foo"))
+            .result(TRUE)
+            .name("caseInsensitiveEqualTo[foo]")
+            .expected("foo")
+            .actual("foo")
+            .run();
+    }
+
+    @Test
+    void givenDifferentCase_whenIsCaseInsensitiveEqualTo_thenTrue() {
+        newTestCase()
+            .subject("foo")
+            .expression(value -> value.isCaseInsensitiveEqualTo("Foo"))
+            .result(TRUE)
+            .name("caseInsensitiveEqualTo[Foo]")
+            .expected("Foo")
+            .actual("foo")
+            .run();
+    }
+
+    @Test
+    void givenDifferentValue_whenIsCaseInsensitiveEqualTo_thenFalse() {
+        newTestCase()
+            .subject("foo")
+            .expression(value -> value.isCaseInsensitiveEqualTo("bar"))
+            .result(FALSE)
+            .name("caseInsensitiveEqualTo[bar]")
+            .expected("bar")
+            .actual("foo")
+            .run();
+    }
+
+    // ---- hasAtIndex ----
+
+    @Test
+    void givenLetterNotAtIndex_whenHasAtIndexChar_thenFalse() {
+        newTestCase()
+            .subject("abc")
+            .expression(value -> value.hasAtIndex('c', 0))
+            .result(FALSE)
+            .name("hasAtIndex[desired=c, index=0]")
+            .expected("c")
+            .actual("a")
+            .run();
+    }
+
+    @Test
+    void givenLetterAtIndex_whenHasAtIndexChar_thenTrue() {
+        newTestCase()
+            .subject("cba")
+            .expression(value -> value.hasAtIndex('c', 0))
+            .result(TRUE)
+            .name("hasAtIndex[desired=c, index=0]")
+            .expected("c")
+            .actual("c")
+            .run();
+    }
+
+    @Test
+    void givenMissingLetter_whenHasAtIndexChar_thenFalse() {
+        newTestCase()
+            .subject("cba")
+            .expression(value -> value.hasAtIndex('z', 0))
+            .result(FALSE)
+            .name("hasAtIndex[desired=z, index=0]")
+            .expected("z")
+            .actual("c")
+            .run();
+    }
+
+    @Test
+    void givenLetterAtIndexAndLater_whenHasAtIndexChar_thenTrue() {
+        newTestCase()
+            .subject("cabc")
+            .expression(value -> value.hasAtIndex('c', 0))
+            .result(TRUE)
+            .name("hasAtIndex[desired=c, index=0]")
+            .expected("c")
+            .actual("c")
+            .run();
+    }
+
+    @Test
+    void givenIndexOutOfBounds_whenHasAtIndexChar_thenFalse() {
+        newTestCase()
+            .subject("cba")
+            .expression(value -> value.hasAtIndex('c', 3))
+            .result(FALSE)
+            .name("hasAtIndex[desired=c, index=3]")
+            .expected("c")
+            .actual("Index 3 is out of bounds")
+            .run();
+    }
+
+    @Test
+    void givenLetterNotAtIndex_whenHasAtIndexString_thenFalse() {
+        newTestCase()
+            .subject("abc")
+            .expression(value -> value.hasAtIndex("c", 0))
+            .result(FALSE)
+            .name("hasAtIndex[desired=c, index=0]")
+            .expected("c")
+            .actual("a")
+            .run();
+    }
+
+    @Test
+    void givenLetterAtIndex_whenHasAtIndexString_thenTrue() {
+        newTestCase()
+            .subject("cba")
+            .expression(value -> value.hasAtIndex("c", 0))
+            .result(TRUE)
+            .name("hasAtIndex[desired=c, index=0]")
+            .expected("c")
+            .actual("c")
+            .run();
+    }
+
+    @Test
+    void givenMissingLetter_whenHasAtIndexString_thenFalse() {
+        newTestCase()
+            .subject("cba")
+            .expression(value -> value.hasAtIndex("z", 0))
+            .result(FALSE)
+            .name("hasAtIndex[desired=z, index=0]")
+            .expected("z")
+            .actual("c")
+            .run();
+    }
+
+    @Test
+    void givenLetterAtIndexAndLater_whenHasAtIndexString_thenTrue() {
+        newTestCase()
+            .subject("cabc")
+            .expression(value -> value.hasAtIndex("c", 0))
+            .result(TRUE)
+            .name("hasAtIndex[desired=c, index=0]")
+            .expected("c")
+            .actual("c")
+            .run();
+    }
+
+    @Test
+    void givenIndexOutOfBounds_whenHasAtIndexString_thenFalse() {
+        newTestCase()
+            .subject("cba")
+            .expression(value -> value.hasAtIndex("c", 3))
+            .result(FALSE)
+            .name("hasAtIndex[desired=c, index=3]")
+            .expected("c")
+            .actual("Index 3 is out of bounds")
+            .run();
+    }
+
+    // ---- doesNotHaveAtIndex ----
+
+    @Test
+    void givenLetterNotAtIndex_whenDoesNotHaveAtIndexChar_thenTrue() {
+        newTestCase()
+            .subject("abc")
+            .expression(value -> value.doesNotHaveAtIndex('c', 0))
+            .result(TRUE)
+            .name("indexOf[c] != 0")
+            .expected("not[0]")
+            .actual("2")
+            .run();
+    }
+
+    @Test
+    void givenLetterAtIndex_whenDoesNotHaveAtIndexChar_thenFalse() {
+        newTestCase()
+            .subject("cba")
+            .expression(value -> value.doesNotHaveAtIndex('c', 0))
+            .result(FALSE)
+            .name("indexOf[c] != 0")
+            .expected("not[0]")
+            .actual("0")
+            .run();
+    }
+
+    @Test
+    void givenMissingLetter_whenDoesNotHaveAtIndexChar_thenTrue() {
+        newTestCase()
+            .subject("cba")
+            .expression(value -> value.doesNotHaveAtIndex('z', 0))
+            .result(TRUE)
+            .name("indexOf[z] != 0")
+            .expected("not[0]")
+            .actual("-1")
+            .run();
+    }
+
+    @Test
+    void givenLetterAtIndexAndLater_whenDoesNotHaveAtIndexChar_thenFalse() {
+        newTestCase()
+            .subject("cabc")
+            .expression(value -> value.doesNotHaveAtIndex('c', 0))
+            .result(FALSE)
+            .name("indexOf[c] != 0")
+            .expected("not[0]")
+            .actual("0")
+            .run();
+    }
+
+    @Test
+    void givenLetterNotAtIndex_whenDoesNotHaveAtIndexString_thenTrue() {
+        newTestCase()
+            .subject("abc")
+            .expression(value -> value.doesNotHaveAtIndex("c", 0))
+            .result(TRUE)
+            .name("indexOf[c] != 0")
+            .expected("not[0]")
+            .actual("2")
+            .run();
+    }
+
+    @Test
+    void givenLetterAtIndex_whenDoesNotHaveAtIndexString_thenFalse() {
+        newTestCase()
+            .subject("cba")
+            .expression(value -> value.doesNotHaveAtIndex("c", 0))
+            .result(FALSE)
+            .name("indexOf[c] != 0")
+            .expected("not[0]")
+            .actual("0")
+            .run();
+    }
+
+    @Test
+    void givenMissingLetter_whenDoesNotHaveAtIndexString_thenTrue() {
+        newTestCase()
+            .subject("cba")
+            .expression(value -> value.doesNotHaveAtIndex("z", 0))
+            .result(TRUE)
+            .name("indexOf[z] != 0")
+            .expected("not[0]")
+            .actual("-1")
+            .run();
+    }
+
+    @Test
+    void givenLetterAtIndexAndLater_whenDoesNotHaveAtIndexString_thenFalse() {
+        newTestCase()
+            .subject("cabc")
+            .expression(value -> value.doesNotHaveAtIndex("c", 0))
+            .result(FALSE)
+            .name("indexOf[c] != 0")
+            .expected("not[0]")
+            .actual("0")
+            .run();
+    }
+
+    // ---- hasAtLastIndex ----
+
+    @Test
+    void givenLetterNotAtIndex_whenHasAtLastIndexChar_thenFalse() {
+        newTestCase()
+            .subject("abc")
+            .expression(value -> value.hasAtLastIndex('c', 0))
+            .result(FALSE)
+            .name("lastIndexOf[c] = 0")
+            .expected("0")
+            .actual("2")
+            .run();
+    }
+
+    @Test
+    void givenLetterAtIndex_whenHasAtLastIndexChar_thenTrue() {
+        newTestCase()
+            .subject("cba")
+            .expression(value -> value.hasAtLastIndex('c', 0))
+            .result(TRUE)
+            .name("lastIndexOf[c] = 0")
+            .expected("0")
+            .actual("0")
+            .run();
+    }
+
+    @Test
+    void givenMissingLetter_whenHasAtLastIndexChar_thenFalse() {
+        newTestCase()
+            .subject("cba")
+            .expression(value -> value.hasAtLastIndex('z', 0))
+            .result(FALSE)
+            .name("lastIndexOf[z] = 0")
+            .expected("0")
+            .actual("-1")
+            .run();
+    }
+
+    @Test
+    void givenLetterAtIndexAndLater_whenHasAtLastIndexChar_thenFalse() {
+        newTestCase()
+            .subject("cabc")
+            .expression(value -> value.hasAtLastIndex('c', 0))
+            .result(FALSE)
+            .name("lastIndexOf[c] = 0")
+            .expected("0")
+            .actual("3")
+            .run();
+    }
+
+    @Test
+    void givenLetterNotAtIndex_whenHasAtLastIndexString_thenFalse() {
+        newTestCase()
+            .subject("abc")
+            .expression(value -> value.hasAtLastIndex("c", 0))
+            .result(FALSE)
+            .name("lastIndexOf[c] = 0")
+            .expected("0")
+            .actual("2")
+            .run();
+    }
+
+    @Test
+    void givenLetterAtIndex_whenHasAtLastIndexString_thenTrue() {
+        newTestCase()
+            .subject("cba")
+            .expression(value -> value.hasAtLastIndex("c", 0))
+            .result(TRUE)
+            .name("lastIndexOf[c] = 0")
+            .expected("0")
+            .actual("0")
+            .run();
+    }
+
+    @Test
+    void givenMissingLetter_whenHasAtLastIndexString_thenFalse() {
+        newTestCase()
+            .subject("cba")
+            .expression(value -> value.hasAtLastIndex("z", 0))
+            .result(FALSE)
+            .name("lastIndexOf[z] = 0")
+            .expected("0")
+            .actual("-1")
+            .run();
+    }
+
+    @Test
+    void givenLetterAtIndexAndLater_whenHasAtLastIndexString_thenFalse() {
+        newTestCase()
+            .subject("cabc")
+            .expression(value -> value.hasAtLastIndex("c", 0))
+            .result(FALSE)
+            .name("lastIndexOf[c] = 0")
+            .expected("0")
+            .actual("3")
+            .run();
+    }
+
+    // ---- doesNotHaveAtLastIndex ----
+
+    @Test
+    void givenLetterNotAtIndex_whenDoesNotHaveAtLastIndexChar_thenTrue() {
+        newTestCase()
+            .subject("abc")
+            .expression(value -> value.doesNotHaveAtLastIndex('c', 0))
+            .result(TRUE)
+            .name("lastIndexOf[c] != 0")
+            .expected("not[0]")
+            .actual("2")
+            .run();
+    }
+
+    @Test
+    void givenLetterAtIndex_whenDoesNotHaveAtLastIndexChar_thenFalse() {
+        newTestCase()
+            .subject("cba")
+            .expression(value -> value.doesNotHaveAtLastIndex('c', 0))
+            .result(FALSE)
+            .name("lastIndexOf[c] != 0")
+            .expected("not[0]")
+            .actual("0")
+            .run();
+    }
+
+    @Test
+    void givenMissingLetter_whenDoesNotHaveAtLastIndexChar_thenTrue() {
+        newTestCase()
+            .subject("cba")
+            .expression(value -> value.doesNotHaveAtLastIndex('z', 0))
+            .result(TRUE)
+            .name("lastIndexOf[z] != 0")
+            .expected("not[0]")
+            .actual("-1")
+            .run();
+    }
+
+    @Test
+    void givenLetterAtIndexAndLater_whenDoesNotHaveAtLastIndexChar_thenTrue() {
+        newTestCase()
+            .subject("cabc")
+            .expression(value -> value.doesNotHaveAtLastIndex('c', 0))
+            .result(TRUE)
+            .name("lastIndexOf[c] != 0")
+            .expected("not[0]")
+            .actual("3")
+            .run();
+    }
+
+    @Test
+    void givenLetterNotAtIndex_whenDoesNotHaveAtLastIndexString_thenTrue() {
+        newTestCase()
+            .subject("abc")
+            .expression(value -> value.doesNotHaveAtLastIndex("c", 0))
+            .result(TRUE)
+            .name("lastIndexOf[c] != 0")
+            .expected("not[0]")
+            .actual("2")
+            .run();
+    }
+
+    @Test
+    void givenLetterAtIndex_whenDoesNotHaveAtLastIndexString_thenFalse() {
+        newTestCase()
+            .subject("cba")
+            .expression(value -> value.doesNotHaveAtLastIndex("c", 0))
+            .result(FALSE)
+            .name("lastIndexOf[c] != 0")
+            .expected("not[0]")
+            .actual("0")
+            .run();
+    }
+
+    @Test
+    void givenMissingLetter_whenDoesNotHaveAtLastIndexString_thenTrue() {
+        newTestCase()
+            .subject("cba")
+            .expression(value -> value.doesNotHaveAtLastIndex("z", 0))
+            .result(TRUE)
+            .name("lastIndexOf[z] != 0")
+            .expected("not[0]")
+            .actual("-1")
+            .run();
+    }
+
+    @Test
+    void givenLetterAtIndexAndLater_whenDoesNotHaveAtLastIndexString_thenTrue() {
+        newTestCase()
+            .subject("cabc")
+            .expression(value -> value.doesNotHaveAtLastIndex("c", 0))
+            .result(TRUE)
+            .name("lastIndexOf[c] != 0")
+            .expected("not[0]")
+            .actual("3")
+            .run();
     }
 }

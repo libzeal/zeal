@@ -1,7 +1,7 @@
 package io.github.libzeal.zeal.values.core.boxed;
 
 import io.github.libzeal.zeal.values.sdk.BaseValueTest;
-import io.github.libzeal.zeal.values.core.test.ExpressionTestCaseBuilder;
+import org.junit.jupiter.api.Test;
 
 import static io.github.libzeal.zeal.logic.evaluation.Result.FALSE;
 import static io.github.libzeal.zeal.logic.evaluation.Result.TRUE;
@@ -23,43 +23,55 @@ public class BoxedBooleanValueTest extends BaseValueTest<Boolean, BoxedBooleanVa
         return Boolean.FALSE;
     }
 
-    @Override
-    protected void extendTestCases(ExpressionTestCaseBuilder<Boolean, BoxedBooleanValue> builder) {
-        isTrueTestCases(builder);
-        isFalseTestCases(builder);
+    // ---- isTrue ----
+
+    @Test
+    void givenTrue_whenIsTrue_thenTrue() {
+        newTestCase()
+            .subject(true)
+            .expression(BoxedBooleanValue::isTrue)
+            .result(TRUE)
+            .name("isTrue")
+            .expected("true")
+            .actual("true")
+            .run();
     }
 
-    private void isTrueTestCases(final ExpressionTestCaseBuilder<Boolean, BoxedBooleanValue> builder) {
-        builder.newTest((expression, value) -> expression.isTrue())
-                .subject(true)
-                .expectedState(TRUE)
-                .expectedName("isTrue")
-                .expectedExpected("true")
-                .expectedActual("true")
-                .addTest()
-            .newTest((expression, value) -> expression.isTrue())
-                .subject(false)
-                .expectedState(FALSE)
-                .expectedName("isTrue")
-                .expectedExpected("true")
-                .expectedActual("false")
-                .addTest();
+    @Test
+    void givenFalse_whenIsTrue_thenFalse() {
+        newTestCase()
+            .subject(false)
+            .expression(BoxedBooleanValue::isTrue)
+            .result(FALSE)
+            .name("isTrue")
+            .expected("true")
+            .actual("false")
+            .run();
     }
 
-    private void isFalseTestCases(final ExpressionTestCaseBuilder<Boolean, BoxedBooleanValue> builder) {
-        builder.newTest((expression, value) -> expression.isFalse())
-                .subject(true)
-                .expectedState(FALSE)
-                .expectedName("isFalse")
-                .expectedExpected("false")
-                .expectedActual("true")
-                .addTest()
-            .newTest((expression, value) -> expression.isFalse())
-                .subject(false)
-                .expectedState(TRUE)
-                .expectedName("isFalse")
-                .expectedExpected("false")
-                .expectedActual("false")
-                .addTest();
+    // ---- isFalse ----
+
+    @Test
+    void givenTrue_whenIsFalse_thenFalse() {
+        newTestCase()
+            .subject(true)
+            .expression(BoxedBooleanValue::isFalse)
+            .result(FALSE)
+            .name("isFalse")
+            .expected("false")
+            .actual("true")
+            .run();
+    }
+
+    @Test
+    void givenFalse_whenIsFalse_thenTrue() {
+        newTestCase()
+            .subject(false)
+            .expression(BoxedBooleanValue::isFalse)
+            .result(TRUE)
+            .name("isFalse")
+            .expected("false")
+            .actual("false")
+            .run();
     }
 }
