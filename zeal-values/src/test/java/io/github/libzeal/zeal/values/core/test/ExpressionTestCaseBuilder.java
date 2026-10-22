@@ -11,6 +11,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+@Deprecated
 public class ExpressionTestCaseBuilder<T, E extends ObjectValue<T, E>> {
 
     private final List<Arguments> arguments;

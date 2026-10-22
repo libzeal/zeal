@@ -32,24 +32,9 @@ import static java.util.Objects.requireNonNull;
 public record NotExpression(String name,
                             Expression wrapped) implements Expression {
 
-    /**
-     * The actual value for the rationale if the wrapped expression is true.
-     */
     static final String ACTUAL_VALUE_WRAPPED_TRUE = "Wrapped: true";
-
-    /**
-     * The actual value for the rationale if the wrapped expression is false.
-     */
     static final String ACTUAL_VALUE_WRAPPED_FALSE = "Wrapped: false";
-
-    /**
-     * The actual value for the rationale if the wrapped expression is skip.
-     */
     static final String ACTUAL_VALUE_WRAPPED_SKIPPED = "Wrapped: skipped";
-
-    /**
-     * The default name of a negated expression.
-     */
     static final String DEFAULT_NAME = "NOT";
 
     /**

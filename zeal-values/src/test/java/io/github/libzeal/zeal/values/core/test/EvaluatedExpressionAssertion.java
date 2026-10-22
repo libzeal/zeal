@@ -4,6 +4,7 @@ import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.evaluation.Result;
 import org.junit.jupiter.api.Assertions;
 
+@Deprecated
 public class EvaluatedExpressionAssertion<T> {
 
     private final Evaluation eval;
