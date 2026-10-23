@@ -10,21 +10,5 @@ import java.util.List;
 public sealed interface CompoundExpression extends Expression
         permits AndExpression, OrExpression {
 
-    /**
-     * Appends the supplied expression to this compound expression.
-     *
-     * @param expression
-     *     The expression to append.
-     */
-    void append(Expression expression);
-
-    /**
-     * Prepends the supplied expression to this compound expression.
-     *
-     * @param expression
-     *      The expression to prepend.
-     */
-    void prepend(Expression expression);
-
     List<Expression> children();
 }

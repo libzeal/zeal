@@ -1,5 +1,6 @@
 package io.github.libzeal.zeal.logic;
 
+import io.github.libzeal.zeal.logic.evaluation.Cause;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.evaluation.Result;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
@@ -30,7 +31,7 @@ class ExpressionsTest {
         assertEquals(Result.FALSE, evaluation.result());
         assertEquals(Contradiction.NAME, evaluation.name());
         assertRationaleEquals(rationale, FALSE, FALSE);
-        assertEquals(evaluation, evaluation.cause().evaluation());
+        assertEquals(Cause.self(), evaluation.cause());
         assertDepthFirstTraversalIsTerminal(evaluation);
     }
 
@@ -49,7 +50,7 @@ class ExpressionsTest {
         assertEquals(Result.TRUE, evaluation.result());
         assertEquals(Tautology.NAME, evaluation.name());
         assertRationaleEquals(rationale, TRUE, TRUE);
-        assertEquals(evaluation, evaluation.cause().evaluation());
+        assertEquals(Cause.self(), evaluation.cause());
         assertDepthFirstTraversalIsTerminal(evaluation);
     }
 

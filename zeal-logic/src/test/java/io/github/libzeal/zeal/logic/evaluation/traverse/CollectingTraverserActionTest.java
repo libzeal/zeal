@@ -1,6 +1,8 @@
 package io.github.libzeal.zeal.logic.evaluation.traverse;
 
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
+import io.github.libzeal.zeal.logic.evaluation.Result;
+import io.github.libzeal.zeal.logic.test.TestExpressions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -26,7 +28,7 @@ class CollectingTraverserActionTest {
     @Test
     void givenOneEvaluation_whenFound_thenCorrectFound() {
 
-        final Evaluation evaluation = mock(Evaluation.class);
+        final Evaluation evaluation = TestExpressions.evaluation("evaluation", Result.TRUE);
         final TraversalContext context = mock(TraversalContext.class);
 
         action.on(evaluation, context);
@@ -40,8 +42,8 @@ class CollectingTraverserActionTest {
     @Test
     void givenTwoEvaluations_whenFound_thenCorrectFound() {
 
-        final Evaluation evaluation1 = mock(Evaluation.class);
-        final Evaluation evaluation2 = mock(Evaluation.class);
+        final Evaluation evaluation1 = TestExpressions.evaluation("evaluation1", Result.TRUE);
+        final Evaluation evaluation2 = TestExpressions.evaluation("evaluation2", Result.TRUE);
         final TraversalContext context = mock(TraversalContext.class);
 
         action.on(evaluation1, context);
@@ -62,7 +64,7 @@ class CollectingTraverserActionTest {
     @Test
     void givenOneEvaluation_whenChildren_thenCorrectChildrenFound() {
 
-        final Evaluation evaluation = mock(Evaluation.class);
+        final Evaluation evaluation = TestExpressions.evaluation("evaluation", Result.TRUE);
         final TraversalContext context = mock(TraversalContext.class);
 
         action.on(evaluation, context);
@@ -75,8 +77,8 @@ class CollectingTraverserActionTest {
     @Test
     void givenTwoEvaluations_whenFound_thenCorrectChildrenFound() {
 
-        final Evaluation evaluation1 = mock(Evaluation.class);
-        final Evaluation evaluation2 = mock(Evaluation.class);
+        final Evaluation evaluation1 = TestExpressions.evaluation("evaluation1", Result.TRUE);
+        final Evaluation evaluation2 = TestExpressions.evaluation("evaluation2", Result.TRUE);
         final TraversalContext context = mock(TraversalContext.class);
 
         action.on(evaluation1, context);
@@ -98,7 +100,7 @@ class CollectingTraverserActionTest {
     @Test
     void givenOneEvaluation_whenGet_thenCorrectChildrenFound() {
 
-        final Evaluation evaluation = mock(Evaluation.class);
+        final Evaluation evaluation = TestExpressions.evaluation("evaluation", Result.TRUE);
         final TraversalContext context = mock(TraversalContext.class);
 
         action.on(evaluation, context);
@@ -112,8 +114,8 @@ class CollectingTraverserActionTest {
     @Test
     void givenTwoEvaluations_whenGet_thenCorrectChildrenFound() {
 
-        final Evaluation evaluation1 = mock(Evaluation.class);
-        final Evaluation evaluation2 = mock(Evaluation.class);
+        final Evaluation evaluation1 = TestExpressions.evaluation("evaluation1", Result.TRUE);
+        final Evaluation evaluation2 = TestExpressions.evaluation("evaluation2", Result.TRUE);
         final TraversalContext context = mock(TraversalContext.class);
 
         action.on(evaluation1, context);

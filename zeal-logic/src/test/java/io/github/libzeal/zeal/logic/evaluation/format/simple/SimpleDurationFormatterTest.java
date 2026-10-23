@@ -1,17 +1,16 @@
 package io.github.libzeal.zeal.logic.evaluation.format.simple;
 
-import io.github.libzeal.zeal.logic.evaluation.cause.Cause;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.mock;
 
 class SimpleDurationFormatterTest {
 
-    private static final SimpleFormatterContext CONTEXT = new SimpleFormatterContext(mock(Cause.class), 0);
+    private static final SimpleFormatterContext CONTEXT = new SimpleFormatterContext(List.of(), 0);
     private SimpleDurationFormatter formatter;
 
     @BeforeEach

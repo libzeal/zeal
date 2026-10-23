@@ -1,7 +1,8 @@
 package io.github.libzeal.zeal.logic;
 
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
-import io.github.libzeal.zeal.logic.evaluation.EvaluatedTerminalEvaluation;
+import io.github.libzeal.zeal.logic.evaluation.Result;
+import io.github.libzeal.zeal.logic.evaluation.TerminalEvaluation;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
 import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
 import io.github.libzeal.zeal.logic.util.StopWatch;
@@ -65,11 +66,6 @@ public final class BooleanExpression implements Expression {
         final Rationale rationale = new SimpleRationale("true", String.valueOf(passed));
         final Duration elapsedTime = stopWatch.stop();
 
-        if (passed) {
-            return EvaluatedTerminalEvaluation.ofTrue(name, rationale, elapsedTime);
-        }
-        else {
-            return EvaluatedTerminalEvaluation.ofFalse(name, rationale, elapsedTime);
-        }
+        return TerminalEvaluation.of(Result.from(passed), name, rationale, elapsedTime);
     }
 }

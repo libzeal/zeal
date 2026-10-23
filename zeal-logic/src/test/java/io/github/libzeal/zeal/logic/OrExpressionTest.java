@@ -2,7 +2,6 @@ package io.github.libzeal.zeal.logic;
 
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.evaluation.Result;
-import io.github.libzeal.zeal.logic.evaluation.cause.CauseGenerator;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
 import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
 import io.github.libzeal.zeal.logic.test.TestExpressions;
@@ -15,6 +14,8 @@ import java.util.List;
 import static io.github.libzeal.zeal.logic.CompoundEvaluator.CompoundRationaleBuilder.format;
 import static io.github.libzeal.zeal.logic.CompoundEvaluator.CompoundRationaleBuilder.formatPassed;
 import static io.github.libzeal.zeal.logic.test.Arguments.listWithSingleNull;
+import static io.github.libzeal.zeal.logic.test.CauseAssertions.*;
+import static io.github.libzeal.zeal.logic.test.NamedExpressions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -28,13 +29,13 @@ class OrExpressionTest {
 
         name = "foo";
 
-        expression = new OrExpression(name, new ArrayList<>());
+        expression = new OrExpression(name, List.of());
     }
 
     @Test
     void givenNullName_whenConstruct_thenExceptionThrown() {
 
-        final ArrayList<Expression> list = new ArrayList<>();
+        final List<Expression> list = List.of();
 
         assertThrows(
             NullPointerException.class,
@@ -47,14 +48,6 @@ class OrExpressionTest {
         assertThrows(
             NullPointerException.class,
             () -> new OrExpression(name, null)
-        );
-    }
-
-    @Test
-    void givenNullName_whenConstructWithNameOnly_thenExceptionThrown() {
-        assertThrows(
-            NullPointerException.class,
-            () -> new OrExpression(null)
         );
     }
 
@@ -99,7 +92,7 @@ class OrExpressionTest {
     @Test
     void whenWithDefaultName_thenCorrectNameThrown() {
 
-        final List<Expression> children = new ArrayList<>();
+        final List<Expression> children = List.of();
 
         final Expression defaultNameExpression = OrExpression.unnamed(children);
 
@@ -125,13 +118,11 @@ class OrExpressionTest {
     }
 
     @Test
-    void givenOnePassingExpressionAppended_whenEvaluate_thenEvaluationIsCorrect() {
+    void givenOnePassingExpression_whenEvaluate_thenEvaluationIsCorrect() {
 
         final Expression subPredicate = TestExpressions.tautology();
 
-        expression.append(subPredicate);
-
-        final Evaluation evaluation = expression.evaluate();
+        final Evaluation evaluation = new OrExpression(name, List.of(subPredicate)).evaluate();
         final Rationale rationale = evaluation.rationale();
 
         assertEquals(Result.TRUE, evaluation.result());
@@ -142,13 +133,11 @@ class OrExpressionTest {
     }
 
     @Test
-    void givenOneFailingExpressionAppended_whenEvaluate_thenEvaluationIsCorrect() {
+    void givenOneFailingExpression_whenEvaluate_thenEvaluationIsCorrect() {
 
         final Expression subPredicate = TestExpressions.expression(Result.FALSE);
 
-        expression.append(subPredicate);
-
-        final Evaluation evaluation = expression.evaluate();
+        final Evaluation evaluation = new OrExpression(name, List.of(subPredicate)).evaluate();
         final Rationale rationale = evaluation.rationale();
 
         assertEquals(Result.FALSE, evaluation.result());
@@ -159,13 +148,11 @@ class OrExpressionTest {
     }
 
     @Test
-    void givenOneSkippedExpressionAppended_whenEvaluate_thenEvaluationIsCorrect() {
+    void givenOneSkippedExpression_whenEvaluate_thenEvaluationIsCorrect() {
 
         final Expression subPredicate = TestExpressions.expression(Result.SKIPPED);
 
-        expression.append(subPredicate);
-
-        final Evaluation evaluation = expression.evaluate();
+        final Evaluation evaluation = new OrExpression(name, List.of(subPredicate)).evaluate();
 
         assertEquals(Result.SKIPPED, evaluation.result());
         assertEquals(name, evaluation.name());
@@ -173,15 +160,13 @@ class OrExpressionTest {
     }
 
     @Test
-    void givenOneFailingPredicatePrependedBeforePassingPredicate_whenEvaluate_thenEvaluationIsCorrect() {
+    void givenOneFailingPredicateBeforePassingPredicate_whenEvaluate_thenEvaluationIsCorrect() {
 
         final Expression passingSubPredicate = TestExpressions.expression(Result.TRUE);
         final Expression failingSubPredicate = TestExpressions.expression(Result.FALSE);
 
-        expression.append(passingSubPredicate);
-        expression.prepend(failingSubPredicate);
-
-        final Evaluation evaluation = expression.evaluate();
+        final List<Expression> children = List.of(failingSubPredicate, passingSubPredicate);
+        final Evaluation evaluation = new OrExpression(name, children).evaluate();
         final Rationale rationale = evaluation.rationale();
 
         assertEquals(Result.TRUE, evaluation.result());
@@ -201,15 +186,13 @@ class OrExpressionTest {
     }
 
     @Test
-    void givenOnePassingPredicatePrependedBeforeFailingPredicate_whenEvaluate_thenEvaluationIsCorrect() {
+    void givenOnePassingPredicateBeforeFailingPredicate_whenEvaluate_thenEvaluationIsCorrect() {
 
         final Expression passingSubPredicate = TestExpressions.expression(Result.TRUE);
         final Expression failingSubPredicate = TestExpressions.expression(Result.FALSE);
 
-        expression.append(failingSubPredicate);
-        expression.prepend(passingSubPredicate);
-
-        final Evaluation evaluation = expression.evaluate();
+        final List<Expression> children = List.of(passingSubPredicate, failingSubPredicate);
+        final Evaluation evaluation = new OrExpression(name, children).evaluate();
         final Rationale rationale = evaluation.rationale();
 
         assertEquals(Result.TRUE, evaluation.result());
@@ -221,16 +204,100 @@ class OrExpressionTest {
     }
 
     @Test
-    void givenSelfRootCause_whenEvaluate_thenRootCauseIsCorrect() {
+    void givenMutableChildren_whenConstruct_thenChildrenAreCopied() {
 
-        final Expression subExpression =
-            TestExpressions.expressionWithRootCause(Result.FALSE, CauseGenerator.self())
-                ;
+        final Expression child = TestExpressions.tautology();
+        final List<Expression> children = new ArrayList<>(List.of(child));
 
-        expression.append(subExpression);
+        final OrExpression copied = new OrExpression(name, children);
 
-        final Evaluation evaluation = expression.evaluate();
+        children.clear();
 
-        assertEquals(subExpression.name(), evaluation.cause().rootCause().evaluation().name());
+        assertEquals(List.of(child), copied.children());
+    }
+
+    @Test
+    void givenExpression_whenModifyChildren_thenExceptionThrown() {
+
+        final List<Expression> children = expression.children();
+        final Expression child = TestExpressions.tautology();
+
+        assertThrows(
+            UnsupportedOperationException.class,
+            () -> children.add(child)
+        );
+    }
+
+    @Test
+    void givenEmptyOr_whenEvaluate_thenCauseIsSelf() {
+
+        final Evaluation evaluation = or("OR").evaluate();
+
+        assertEquals(Result.TRUE, evaluation.result());
+        assertCauseIsSelf(evaluation);
+        assertTraces(evaluation, "OR");
+    }
+
+    @Test
+    void givenOrWithAllFalse_whenEvaluate_thenCauseIsAllChildren() {
+
+        final Evaluation evaluation = or("OR", f("f1"), f("f2")).evaluate();
+
+        assertEquals(Result.FALSE, evaluation.result());
+        assertCause(evaluation, child(evaluation, 0), child(evaluation, 1));
+        assertTraces(evaluation, "OR -> f1", "OR -> f2");
+        assertRootCauses(evaluation, child(evaluation, 0), child(evaluation, 1));
+    }
+
+    @Test
+    void givenOrWithTrueInMiddle_whenEvaluate_thenCauseIsFirstTrueAndRemainingSkipped() {
+
+        final Evaluation evaluation = or("OR", f("f1"), t("t2"), f("f3")).evaluate();
+        final Evaluation t2 = child(evaluation, 1);
+        final Evaluation f3 = child(evaluation, 2);
+
+        assertEquals(Result.TRUE, evaluation.result());
+        assertCause(evaluation, t2);
+        assertTraces(evaluation, "OR -> t2");
+
+        assertEquals(Result.SKIPPED, f3.result());
+        assertCause(f3, t2);
+        assertTraces(f3, "f3 -> t2");
+    }
+
+    @Test
+    void givenOrWithTrueLast_whenEvaluate_thenCauseIsTrueChildOnly() {
+
+        final Evaluation evaluation = or("OR", f("f1"), t("t2")).evaluate();
+
+        assertEquals(Result.TRUE, evaluation.result());
+        assertCause(evaluation, child(evaluation, 1));
+        assertTraces(evaluation, "OR -> t2");
+    }
+
+    @Test
+    void givenOrOfFalseAndThenTrueAnd_whenEvaluate_thenTracesFollowEveryChildOfTrueAnd() {
+
+        final Evaluation evaluation = or(
+            "OR",
+            and("AND1", t("t1"), f("f2")),
+            and("AND2", t("t3"), t("t4"))
+        ).evaluate();
+
+        assertEquals(Result.TRUE, evaluation.result());
+        assertTraces(evaluation, "OR -> AND2 -> t3", "OR -> AND2 -> t4");
+    }
+
+    @Test
+    void givenOrOfTrueAnd_whenEvaluate_thenSkippedSiblingTracesFollowTrueAnd() {
+
+        final Evaluation evaluation = or("OR", and("AND", t("t1"), t("t2")), f("f3")).evaluate();
+        final Evaluation f3 = child(evaluation, 1);
+
+        assertEquals(Result.TRUE, evaluation.result());
+        assertTraces(evaluation, "OR -> AND -> t1", "OR -> AND -> t2");
+
+        assertEquals(Result.SKIPPED, f3.result());
+        assertTraces(f3, "f3 -> AND -> t1", "f3 -> AND -> t2");
     }
 }

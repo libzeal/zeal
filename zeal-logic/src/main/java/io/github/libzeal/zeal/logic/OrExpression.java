@@ -3,12 +3,10 @@ package io.github.libzeal.zeal.logic;
 import io.github.libzeal.zeal.logic.CompoundEvaluator.CompoundRationaleBuilder;
 import io.github.libzeal.zeal.logic.CompoundEvaluator.Tally;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
+import io.github.libzeal.zeal.logic.evaluation.Result;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import static io.github.libzeal.zeal.logic.util.ArgumentValidator.requireDoesNotContainNulls;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -36,7 +34,7 @@ public record OrExpression(String name,
      */
     public OrExpression {
         requireNonNull(name);
-        requireDoesNotContainNulls(children);
+        children = List.copyOf(children);
     }
 
     /**
@@ -68,31 +66,7 @@ public record OrExpression(String name,
      *     {@code null} value.
      */
     public static OrExpression unnamed(final Expression... children) {
-        return new OrExpression(DEFAULT_NAME, Arrays.asList(children));
-    }
-
-    /**
-     * Creates a new disjunctive expression with an empty default sub-expression
-     * list.
-     *
-     * @param name
-     *     The name of the expression.
-     *
-     * @throws NullPointerException
-     *     The supplied name is {@code null}.
-     */
-    public OrExpression(final String name) {
-        this(name, new ArrayList<>(1));
-    }
-
-    @Override
-    public void append(final Expression predicate) {
-        this.children.add(predicate);
-    }
-
-    @Override
-    public void prepend(final Expression predicate) {
-        this.children.addFirst(predicate);
+        return new OrExpression(DEFAULT_NAME, List.of(children));
     }
 
     @Override
@@ -103,8 +77,8 @@ public record OrExpression(String name,
 
         return new CompoundEvaluator(
             name,
+            Result.TRUE,
             Tally::anyPassed,
-            Tally::allFailed,
             builder
         ).evaluate(children);
     }

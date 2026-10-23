@@ -1,7 +1,6 @@
 module zeal.logic {
     exports io.github.libzeal.zeal.logic;
     exports io.github.libzeal.zeal.logic.evaluation;
-    exports io.github.libzeal.zeal.logic.evaluation.cause;
     exports io.github.libzeal.zeal.logic.evaluation.format;
     exports io.github.libzeal.zeal.logic.evaluation.format.simple;
     exports io.github.libzeal.zeal.logic.evaluation.traverse;

@@ -1,10 +1,10 @@
 package io.github.libzeal.zeal.logic.evaluation;
 
 import io.github.libzeal.zeal.logic.Expression;
-import io.github.libzeal.zeal.logic.evaluation.cause.Cause;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
 
 import java.time.Duration;
+import java.util.List;
 
 /**
  * An {@link Expression} that has been evaluated. An evaluated expression contains a state, the name of the evaluation
@@ -13,7 +13,7 @@ import java.time.Duration;
  *
  * @author Justin Albano
  */
-public interface Evaluation {
+public sealed interface Evaluation permits TerminalEvaluation, CompoundEvaluation {
 
     /**
      * Obtains the state of the evaluation (i.e., pass or fail).
@@ -53,4 +53,20 @@ public interface Evaluation {
      * @since 0.2.1
      */
     Cause cause();
+
+    default List<Cause.Trace> causeTraces() {
+        return switch (cause()) {
+            case Cause.Self() -> List.of(Cause.Trace.of(this));
+            case Cause.Delegated(List<Evaluation> causes) -> causes.stream()
+                .flatMap(cause -> cause.causeTraces().stream())
+                .map(trace -> trace.prepend(this))
+                .toList();
+        };
+    }
+
+    default List<Evaluation> rootCauses() {
+        return causeTraces().stream()
+            .map(Cause.Trace::rootCause)
+            .toList();
+    }
 }

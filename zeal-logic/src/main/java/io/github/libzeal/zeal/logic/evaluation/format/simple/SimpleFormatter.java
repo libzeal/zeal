@@ -4,12 +4,12 @@ import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.evaluation.Result;
 import io.github.libzeal.zeal.logic.evaluation.traverse.TraversalContext;
 import io.github.libzeal.zeal.logic.evaluation.traverse.DepthFirstTraverser;
-import io.github.libzeal.zeal.logic.evaluation.cause.Cause;
 import io.github.libzeal.zeal.logic.evaluation.format.Formatter;
 import io.github.libzeal.zeal.logic.evaluation.traverse.Traverser;
 import io.github.libzeal.zeal.logic.evaluation.traverse.TraverserAction;
 
 import java.time.Duration;
+import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
@@ -23,7 +23,7 @@ public class SimpleFormatter implements Formatter {
 
     static final int INDENTATION = 4;
     private final ComponentFormatter<Evaluation> evaluationFormatter;
-    private final ComponentFormatter<Cause> causeFormatter;
+    private final ComponentFormatter<Evaluation> rootCauseFormatter;
     private final ComponentFormatter<Heading> headingFormatter;
 
     /**
@@ -35,22 +35,22 @@ public class SimpleFormatter implements Formatter {
         final ComponentFormatter<Duration> durationFormatter = new SimpleDurationFormatter();
 
         this.evaluationFormatter = new SimpleEvaluationFormatter(INDENTATION, resultFormatter, durationFormatter);
-        this.causeFormatter = new SimpleRootCauseFormatter(INDENTATION);
+        this.rootCauseFormatter = new SimpleRootCauseFormatter(INDENTATION);
         this.headingFormatter = new SimpleHeadingFormatter(INDENTATION);
     }
 
     @Override
     public String format(final Evaluation evaluation) {
 
-        final Cause cause = evaluation.cause();
-        final SimpleFormatterContext context = new SimpleFormatterContext(cause, 0);
+        final List<Evaluation> rootCauses = evaluation.rootCauses();
+        final SimpleFormatterContext context = new SimpleFormatterContext(rootCauses, 0);
         final StringBuilder builder = new StringBuilder();
         final Traverser traverser = new DepthFirstTraverser();
-        final TraverserAction action = new FormattingTraverser(evaluation, builder,
+        final TraverserAction action = new FormattingTraverser(rootCauses, builder,
             evaluationFormatter);
         final Heading heading = new Heading("Evaluation");
 
-        builder.append(causeFormatter.format(cause, context))
+        builder.append(rootCauseFormatter.format(evaluation, context))
             .append(headingFormatter.format(heading, context));
 
         traverser.traverse(evaluation, action);
@@ -58,12 +58,12 @@ public class SimpleFormatter implements Formatter {
         return builder.toString().trim();
     }
 
-    private record FormattingTraverser(Evaluation evaluation,
+    private record FormattingTraverser(List<Evaluation> rootCauses,
                                        StringBuilder builder,
                                        ComponentFormatter<Evaluation> evaluationFormatter) implements TraverserAction {
 
             private FormattingTraverser {
-                requireNonNull(evaluation);
+                requireNonNull(rootCauses);
                 requireNonNull(builder);
                 requireNonNull(evaluationFormatter);
             }
@@ -79,7 +79,7 @@ public class SimpleFormatter implements Formatter {
             }
 
             private SimpleFormatterContext createContext(final TraversalContext context) {
-                return new SimpleFormatterContext(evaluation.cause(), context.depth());
+                return new SimpleFormatterContext(rootCauses, context.depth());
             }
         }
 }

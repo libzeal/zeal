@@ -18,18 +18,15 @@ public class DepthFirstTraverser implements Traverser {
     private void traverse(final Evaluation evaluation, final TraverserAction action,
                           final TraversalContext context) {
 
+        action.on(evaluation, context);
+
         if (evaluation instanceof final CompoundEvaluation compoundEvaluation) {
 
             final TraversalContext childContext = context.withIncrementedDepth();
 
-            action.on(evaluation, context);
-
             for (final Evaluation child : compoundEvaluation.children()) {
                 traverse(child, action, childContext);
             }
-        }
-        else {
-            action.on(evaluation, context);
         }
     }
 }

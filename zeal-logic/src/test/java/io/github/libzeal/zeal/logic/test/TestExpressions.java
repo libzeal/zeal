@@ -3,9 +3,11 @@ package io.github.libzeal.zeal.logic.test;
 import io.github.libzeal.zeal.logic.Expression;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.evaluation.Result;
-import io.github.libzeal.zeal.logic.evaluation.cause.Cause;
-import io.github.libzeal.zeal.logic.evaluation.cause.CauseGenerator;
+import io.github.libzeal.zeal.logic.evaluation.TerminalEvaluation;
+import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
 import io.github.libzeal.zeal.logic.unary.UnaryExpression;
+
+import java.time.Duration;
 
 import static org.mockito.Mockito.*;
 
@@ -26,27 +28,22 @@ public class TestExpressions {
     }
 
     public static Expression expression(final String name, final Result expectedResult) {
-        return expressionWithRootCause(name, expectedResult, Cause::new);
-    }
 
-    public static Expression expressionWithRootCause(final Result expectedResult,
-                                                     CauseGenerator rootCauseSupplier) {
-        return expressionWithRootCause("test predicate", expectedResult, rootCauseSupplier);
-    }
-
-    public static Expression expressionWithRootCause(final String name, final Result expectedResult,
-                                                     final CauseGenerator rootCauseSupplier) {
-
-        final Evaluation evaluation = mock(Evaluation.class);
-
-        doReturn(expectedResult).when(evaluation).result();
-        doReturn(name).when(evaluation).name();
-        doReturn(rootCauseSupplier.generate(evaluation)).when(evaluation).cause();
-
+        final Evaluation evaluation = evaluation(name, expectedResult);
         final Expression expression = mock(UnaryExpression.class);
+
         doReturn(evaluation).when(expression).evaluate();
         doReturn(name).when(expression).name();
 
         return expression;
+    }
+
+    public static Evaluation evaluation(final String name, final Result result) {
+
+        if (result.isSkipped()) {
+            return TerminalEvaluation.skipped(name, evaluation("decider", Result.FALSE));
+        }
+
+        return TerminalEvaluation.of(result, name, new SimpleRationale("expected", "actual"), Duration.ZERO);
     }
 }

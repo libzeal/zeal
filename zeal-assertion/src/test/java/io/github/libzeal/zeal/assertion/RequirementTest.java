@@ -97,14 +97,6 @@ class RequirementTest {
                 ),
                 Arguments.of(
                     new ExceptionTestCaseData(
-                        "Null result",
-                        expressionWithNullResult(),
-                        NullPointerException.class,
-                        NULL_RESULT
-                    )
-                ),
-                Arguments.of(
-                    new ExceptionTestCaseData(
                         "Failed evaluation and null subject",
                         expression(Result.FALSE, null),
                         NullPointerException.class
