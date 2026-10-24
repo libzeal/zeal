@@ -1,6 +1,5 @@
 package io.github.libzeal.zeal.logic;
 
-import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.evaluation.Result;
 import io.github.libzeal.zeal.logic.evaluation.TerminalEvaluation;
 import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
@@ -12,7 +11,7 @@ import java.time.Duration;
  *
  * @author Justin Albano
  */
-final class Tautology implements Expression {
+final class Tautology implements TerminalExpression {
 
     static final String NAME = "Tautology";
     private static final String TRUE = "true";
@@ -23,7 +22,7 @@ final class Tautology implements Expression {
     }
 
     @Override
-    public Evaluation evaluate() {
+    public TerminalEvaluation evaluate() {
         return TerminalEvaluation.of(Result.TRUE, NAME, new SimpleRationale(TRUE, TRUE), Duration.ZERO);
     }
 }

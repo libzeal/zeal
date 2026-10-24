@@ -1,6 +1,5 @@
 package io.github.libzeal.zeal.logic;
 
-import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.evaluation.Result;
 import io.github.libzeal.zeal.logic.evaluation.TerminalEvaluation;
 import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
@@ -12,7 +11,7 @@ import java.time.Duration;
  *
  * @author Justin Albano
  */
-final class Contradiction implements Expression {
+final class Contradiction implements TerminalExpression {
 
     static final String NAME = "Contradiction";
     private static final String FALSE = "false";
@@ -23,7 +22,7 @@ final class Contradiction implements Expression {
     }
 
     @Override
-    public Evaluation evaluate() {
+    public TerminalEvaluation evaluate() {
         return TerminalEvaluation.of(Result.FALSE, NAME, new SimpleRationale(FALSE, FALSE), Duration.ZERO);
     }
 }

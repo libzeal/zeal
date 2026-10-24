@@ -1,7 +1,6 @@
 package io.github.libzeal.zeal.logic.unary;
 
 import io.github.libzeal.zeal.logic.evaluation.TerminalEvaluation;
-import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.evaluation.Result;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
 import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
@@ -21,7 +20,7 @@ public record PredicateExpression<T, O>(
         Predicate<O> condition,
         Field<T, O> expected,
         Field<T, O> actual,
-        Field<T, O> hint) implements UnaryExpression<T> {
+        Field<T, O> hint) implements TerminalUnaryExpression<T> {
 
     public PredicateExpression {
         requireNonNull(name);
@@ -32,7 +31,7 @@ public record PredicateExpression<T, O>(
     }
 
     @Override
-    public Evaluation evaluate() {
+    public TerminalEvaluation evaluate() {
 
         final StopWatch stopWatch = StopWatch.started();
         final boolean observable = subject != null || nullable;

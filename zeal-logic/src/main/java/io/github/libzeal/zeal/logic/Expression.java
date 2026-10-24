@@ -1,13 +1,14 @@
 package io.github.libzeal.zeal.logic;
 
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
+import io.github.libzeal.zeal.logic.unary.UnaryExpression;
 
 /**
  * An expression that can be evaluated.
  *
  * @author Justin Albano
  */
-public interface Expression {
+public sealed interface Expression permits TerminalExpression, CompoundExpression, UnaryExpression {
 
     String DEFAULT_NAME = "(unnamed)";
 

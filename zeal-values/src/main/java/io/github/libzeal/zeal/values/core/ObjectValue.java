@@ -1,7 +1,7 @@
 package io.github.libzeal.zeal.values.core;
 
 import io.github.libzeal.zeal.logic.Expression;
-import io.github.libzeal.zeal.logic.unary.UnaryExpression;
+import io.github.libzeal.zeal.logic.unary.CompoundUnaryExpression;
 import io.github.libzeal.zeal.logic.unary.condition.Condition;
 import io.github.libzeal.zeal.logic.unary.ExpressionBuilder;
 import io.github.libzeal.zeal.values.sdk.StandardMessages;
@@ -11,7 +11,7 @@ import java.util.Objects;
 import java.util.function.Predicate;
 
 public interface ObjectValue<T, E extends ObjectValue<T, E>>
-        extends UnaryExpression<T> {
+        extends CompoundUnaryExpression<T> {
 
     /**
      * Adds a predicate to the expression that checks if the subject is

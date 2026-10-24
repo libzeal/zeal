@@ -1,7 +1,8 @@
 package io.github.libzeal.zeal.values.sdk;
 
-import io.github.libzeal.zeal.logic.evaluation.Evaluation;
-import io.github.libzeal.zeal.logic.unary.UnaryExpression;
+import io.github.libzeal.zeal.logic.AndExpression;
+import io.github.libzeal.zeal.logic.Expression;
+import io.github.libzeal.zeal.logic.evaluation.CompoundEvaluation;
 import io.github.libzeal.zeal.logic.unary.ComputableExpression;
 import io.github.libzeal.zeal.logic.unary.ExpressionBuilder;
 import io.github.libzeal.zeal.logic.unary.ExpressionBuilder.Observing;
@@ -9,6 +10,7 @@ import io.github.libzeal.zeal.logic.unary.condition.Condition;
 import io.github.libzeal.zeal.values.core.ObjectValue;
 
 import java.util.Comparator;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -54,11 +56,11 @@ import static java.util.Objects.requireNonNull;
  * @author Justin Albano
  * @since 0.5.0
  */
-public abstract class BaseValue<T, E extends BaseValue<T, E>> implements UnaryExpression<T>, ObjectValue<T, E> {
+public abstract class BaseValue<T, E extends BaseValue<T, E>> implements ObjectValue<T, E> {
 
     private final String name;
     private final T subject;
-    private final UnaryExpressionChain<T> children;
+    private final UnaryExpressionChain<T> chain;
 
     /**
      * Creates an object expression with the supplied subject. This constructor
@@ -82,13 +84,13 @@ public abstract class BaseValue<T, E extends BaseValue<T, E>> implements UnaryEx
     protected BaseValue(final T subject, final String name) {
         this.name = requireNonNull(name) + ": " + stringify(subject);
         this.subject = subject;
-        this.children = new UnaryExpressionChain<>();
+        this.chain = new UnaryExpressionChain<>();
     }
 
     @SuppressWarnings("unchecked")
     protected final E append(final ComputableExpression<T> expression) {
 
-        children.append(expression);
+        chain.append(expression);
 
         return (E) this;
     }
@@ -96,7 +98,7 @@ public abstract class BaseValue<T, E extends BaseValue<T, E>> implements UnaryEx
     @SuppressWarnings("unchecked")
     protected final E prepend(final ComputableExpression<T> expression) {
 
-        children.prepend(expression);
+        chain.prepend(expression);
 
         return (E) this;
     }
@@ -112,8 +114,13 @@ public abstract class BaseValue<T, E extends BaseValue<T, E>> implements UnaryEx
     }
 
     @Override
-    public final Evaluation evaluate() {
-        return children.evaluate(name, subject);
+    public final List<Expression> children() {
+        return chain.bind(subject);
+    }
+
+    @Override
+    public final CompoundEvaluation evaluate() {
+        return new AndExpression(name, children()).evaluate();
     }
 
     /**

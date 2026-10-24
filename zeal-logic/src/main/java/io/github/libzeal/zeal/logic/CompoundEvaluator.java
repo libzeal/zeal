@@ -33,7 +33,7 @@ class CompoundEvaluator {
         this.rationaleBuilder = requireNonNull(rationaleBuilder);
     }
 
-    public Evaluation evaluate(final List<Expression> expressions) {
+    public CompoundEvaluation evaluate(final List<Expression> expressions) {
 
         final StopWatch stopWatch = StopWatch.started();
         final int total = expressions.size();
@@ -75,8 +75,8 @@ class CompoundEvaluator {
         }
     }
 
-    private Evaluation compoundEvaluation(final Tally tally, final Cause cause, final List<Evaluation> evaluated,
-                                          final Duration elapsedTime) {
+    private CompoundEvaluation compoundEvaluation(final Tally tally, final Cause cause,
+                                                  final List<Evaluation> evaluated, final Duration elapsedTime) {
 
         final Rationale rationale = rationaleBuilder.build(tally);
 

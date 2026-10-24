@@ -2,7 +2,7 @@ package io.github.libzeal.zeal.logic;
 
 import io.github.libzeal.zeal.logic.CompoundEvaluator.CompoundRationaleBuilder;
 import io.github.libzeal.zeal.logic.CompoundEvaluator.Tally;
-import io.github.libzeal.zeal.logic.evaluation.Evaluation;
+import io.github.libzeal.zeal.logic.evaluation.CompoundEvaluation;
 import io.github.libzeal.zeal.logic.evaluation.Result;
 
 import java.util.List;
@@ -75,7 +75,7 @@ public record AndExpression(String name,
     }
 
     @Override
-    public Evaluation evaluate() {
+    public CompoundEvaluation evaluate() {
 
         final CompoundRationaleBuilder builder = CompoundRationaleBuilder.withExpectedPassed(children.size());
 

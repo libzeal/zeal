@@ -1,6 +1,5 @@
 package io.github.libzeal.zeal.logic;
 
-import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.evaluation.Result;
 import io.github.libzeal.zeal.logic.evaluation.TerminalEvaluation;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
@@ -19,7 +18,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @author Justin Albano
  */
-public final class BooleanExpression implements Expression {
+public final class BooleanExpression implements TerminalExpression {
 
     private final String name;
     private final BooleanSupplier predicate;
@@ -59,7 +58,7 @@ public final class BooleanExpression implements Expression {
     }
 
     @Override
-    public Evaluation evaluate() {
+    public TerminalEvaluation evaluate() {
 
         final StopWatch stopWatch = StopWatch.started();
         final boolean passed = predicate.getAsBoolean();

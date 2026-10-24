@@ -1,11 +1,11 @@
 package io.github.libzeal.zeal.logic.test;
 
 import io.github.libzeal.zeal.logic.Expression;
+import io.github.libzeal.zeal.logic.TerminalExpression;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.evaluation.Result;
 import io.github.libzeal.zeal.logic.evaluation.TerminalEvaluation;
 import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
-import io.github.libzeal.zeal.logic.unary.UnaryExpression;
 
 import java.time.Duration;
 
@@ -30,7 +30,7 @@ public class TestExpressions {
     public static Expression expression(final String name, final Result expectedResult) {
 
         final Evaluation evaluation = evaluation(name, expectedResult);
-        final Expression expression = mock(UnaryExpression.class);
+        final Expression expression = mock(TerminalExpression.class);
 
         doReturn(evaluation).when(expression).evaluate();
         doReturn(name).when(expression).name();

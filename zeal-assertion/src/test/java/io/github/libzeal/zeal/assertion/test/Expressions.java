@@ -4,6 +4,7 @@ import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.evaluation.Result;
 import io.github.libzeal.zeal.logic.evaluation.TerminalEvaluation;
 import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
+import io.github.libzeal.zeal.logic.unary.TerminalUnaryExpression;
 import io.github.libzeal.zeal.logic.unary.UnaryExpression;
 
 import java.time.Duration;
@@ -15,7 +16,7 @@ public class Expressions {
 
     @SuppressWarnings("unchecked")
     public static UnaryExpression<Object> expression() {
-        return mock(UnaryExpression.class);
+        return mock(TerminalUnaryExpression.class);
     }
 
     public static UnaryExpression<Object> expressionWithNullEvaluation() {

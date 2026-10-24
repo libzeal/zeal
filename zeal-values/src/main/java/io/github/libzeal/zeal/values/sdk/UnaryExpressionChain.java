@@ -1,8 +1,6 @@
 package io.github.libzeal.zeal.values.sdk;
 
-import io.github.libzeal.zeal.logic.AndExpression;
 import io.github.libzeal.zeal.logic.Expression;
-import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.unary.ComputableExpression;
 
 import java.util.ArrayList;
@@ -37,14 +35,9 @@ class UnaryExpressionChain<T> {
         return this;
     }
 
-    public Evaluation evaluate(final String name, final T subject) {
-
-        final List<Expression> expressionsWithSubject = expressions.stream()
+    public List<Expression> bind(final T subject) {
+        return expressions.stream()
                 .map(e -> e.compute(subject))
                 .collect(Collectors.toList());
-
-        final AndExpression and = new AndExpression(name, expressionsWithSubject);
-
-        return and.evaluate();
     }
 }

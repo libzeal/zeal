@@ -1,5 +1,7 @@
 package io.github.libzeal.zeal.logic;
 
+import io.github.libzeal.zeal.logic.evaluation.CompoundEvaluation;
+
 import java.util.List;
 
 /**
@@ -7,8 +9,10 @@ import java.util.List;
  *
  * @author Justin Albano
  */
-public sealed interface CompoundExpression extends Expression
-        permits AndExpression, OrExpression {
+public non-sealed interface CompoundExpression extends Expression {
 
     List<Expression> children();
+
+    @Override
+    CompoundEvaluation evaluate();
 }

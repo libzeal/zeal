@@ -28,7 +28,7 @@ import static java.util.Objects.requireNonNull;
  * @author Justin Albano
  */
 public record NotExpression(String name,
-                            Expression wrapped) implements Expression {
+                            Expression wrapped) implements CompoundExpression {
 
     static final String ACTUAL_VALUE_WRAPPED_TRUE = "Wrapped: true";
     static final String ACTUAL_VALUE_WRAPPED_FALSE = "Wrapped: false";
@@ -68,7 +68,12 @@ public record NotExpression(String name,
     }
 
     @Override
-    public Evaluation evaluate() {
+    public List<Expression> children() {
+        return List.of(wrapped);
+    }
+
+    @Override
+    public CompoundEvaluation evaluate() {
 
         final StopWatch stopWatch = StopWatch.started();
         final Evaluation wrappedEvaluation = wrapped.evaluate();
