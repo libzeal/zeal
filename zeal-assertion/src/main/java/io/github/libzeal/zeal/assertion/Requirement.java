@@ -5,7 +5,6 @@ import io.github.libzeal.zeal.assertion.error.PreconditionFailedException;
 import io.github.libzeal.zeal.logic.evaluation.format.simple.SimpleFormatter;
 import io.github.libzeal.zeal.logic.unary.UnaryExpression;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
-import io.github.libzeal.zeal.logic.evaluation.Result;
 
 public class Requirement {
 
@@ -41,7 +40,6 @@ public class Requirement {
      *     <ol>
      *         <li>The supplied expression was {@code null}</li>
      *         <li>The supplied expression provides a {@code null} {@link Evaluation}</li>
-     *         <li>The supplied expression provides a {@code null} evaluation {@link Result}</li>
      *         <li>The supplied expression evaluates to false and the subject of the expression is {@code null}</li>
      *     </ol>
      * @throws PreconditionFailedException
@@ -68,7 +66,6 @@ public class Requirement {
      *     <ol>
      *         <li>The supplied expression was {@code null}</li>
      *         <li>The supplied expression provides a {@code null} {@link Evaluation}</li>
-     *         <li>The supplied expression provides a {@code null} evaluation {@link Result}</li>
      *         <li>The supplied expression evaluates to false and the subject of the expression is {@code null}</li>
      *     </ol>
      * @throws PostconditionFailedException

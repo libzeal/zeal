@@ -1,12 +1,12 @@
 package io.github.libzeal.zeal.values.core.boxed;
 
-import io.github.libzeal.zeal.values.api.BasedObjectValueTest;
-import io.github.libzeal.zeal.values.core.test.ExpressionTestCaseBuilder;
+import io.github.libzeal.zeal.values.sdk.BaseValueTest;
+import org.junit.jupiter.api.Test;
 
 import static io.github.libzeal.zeal.logic.evaluation.Result.FALSE;
 import static io.github.libzeal.zeal.logic.evaluation.Result.TRUE;
 
-public class BoxedCharacterValueTest extends BasedObjectValueTest<Character,
+public class BoxedCharacterValueTest extends BaseValueTest<Character,
         BoxedCharacterValue> {
 
     @Override
@@ -15,224 +15,320 @@ public class BoxedCharacterValueTest extends BasedObjectValueTest<Character,
     }
 
     @Override
-    protected Character exampleValue1() {
+    protected Character nonNullValueA() {
         return 'a';
     }
 
     @Override
-    protected Character exampleValue2() {
+    protected Character nonNullValueB() {
         return 'b';
     }
 
-    @Override
-    protected void extendTestCases(ExpressionTestCaseBuilder<Character, BoxedCharacterValue> builder) {
-        isLowerCaseTestCases(builder);
-        isUpperCaseTestCases(builder);
-        isLetterTestCases(builder);
-        isNotLetterTestCases(builder);
-        isDigitTestCases(builder);
-        isNotDigitTestCases(builder);
-        isLetterOrDigitTestCases(builder);
-        isNotLetterOrDigitTestCases(builder);
-        isWhitespaceTestCases(builder);
-        isNotWhitespaceTestCases(builder);
+    // ---- isLowerCase ----
+
+    @Test
+    void givenLowerCase_whenIsLowerCase_thenTrue() {
+        newTestCase()
+            .subject('c')
+            .expression(BoxedCharacterValue::isLowerCase)
+            .result(TRUE)
+            .name("isLowerCase")
+            .expected("isLowerCase")
+            .actual("c")
+            .run();
     }
 
-    private void isLowerCaseTestCases(final ExpressionTestCaseBuilder<Character, BoxedCharacterValue> builder) {
-        builder.newTest((expression, value) -> expression.isLowerCase())
-                .subject('c')
-                .expectedState(TRUE)
-                .expectedName("isLowerCase")
-                .expectedExpected("isLowerCase")
-                .expectedActual("c")
-                .addTest()
-            .newTest((expression, value) -> expression.isLowerCase())
-                .subject('C')
-                .expectedState(FALSE)
-                .expectedName("isLowerCase")
-                .expectedExpected("isLowerCase")
-                .expectedActual("C")
-                .addTest();
+    @Test
+    void givenUpperCase_whenIsLowerCase_thenFalse() {
+        newTestCase()
+            .subject('C')
+            .expression(BoxedCharacterValue::isLowerCase)
+            .result(FALSE)
+            .name("isLowerCase")
+            .expected("isLowerCase")
+            .actual("C")
+            .run();
     }
 
-    private void isUpperCaseTestCases(final ExpressionTestCaseBuilder<Character, BoxedCharacterValue> builder) {
-        builder.newTest((expression, value) -> expression.isUpperCase())
-                .subject('c')
-                .expectedState(FALSE)
-                .expectedName("isUpperCase")
-                .expectedExpected("isUpperCase")
-                .expectedActual("c")
-                .addTest()
-            .newTest((expression, value) -> expression.isUpperCase())
-                .subject('C')
-                .expectedState(TRUE)
-                .expectedName("isUpperCase")
-                .expectedExpected("isUpperCase")
-                .expectedActual("C")
-                .addTest();
+    // ---- isUpperCase ----
+
+    @Test
+    void givenLowerCase_whenIsUpperCase_thenFalse() {
+        newTestCase()
+            .subject('c')
+            .expression(BoxedCharacterValue::isUpperCase)
+            .result(FALSE)
+            .name("isUpperCase")
+            .expected("isUpperCase")
+            .actual("c")
+            .run();
     }
 
-    private void isLetterTestCases(final ExpressionTestCaseBuilder<Character, BoxedCharacterValue> builder) {
-        builder.newTest((expression, value) -> expression.isLetter())
-                .subject('1')
-                .expectedState(FALSE)
-                .expectedName("isLetter")
-                .expectedExpected("isLetter")
-                .expectedActual("1")
-                .addTest()
-            .newTest((expression, value) -> expression.isLetter())
-                .subject('C')
-                .expectedState(TRUE)
-                .expectedName("isLetter")
-                .expectedExpected("isLetter")
-                .expectedActual("C")
-                .addTest();
+    @Test
+    void givenUpperCase_whenIsUpperCase_thenTrue() {
+        newTestCase()
+            .subject('C')
+            .expression(BoxedCharacterValue::isUpperCase)
+            .result(TRUE)
+            .name("isUpperCase")
+            .expected("isUpperCase")
+            .actual("C")
+            .run();
     }
 
-    private void isNotLetterTestCases(final ExpressionTestCaseBuilder<Character, BoxedCharacterValue> builder) {
-        builder.newTest((expression, value) -> expression.isNotLetter())
-                .subject('1')
-                .expectedState(TRUE)
-                .expectedName("isNotLetter")
-                .expectedExpected("not[isLetter]")
-                .expectedActual("1")
-                .addTest()
-            .newTest((expression, value) -> expression.isNotLetter())
-                .subject('C')
-                .expectedState(FALSE)
-                .expectedName("isNotLetter")
-                .expectedExpected("not[isLetter]")
-                .expectedActual("C")
-                .addTest();
+    // ---- isLetter ----
+
+    @Test
+    void givenDigit_whenIsLetter_thenFalse() {
+        newTestCase()
+            .subject('1')
+            .expression(BoxedCharacterValue::isLetter)
+            .result(FALSE)
+            .name("isLetter")
+            .expected("isLetter")
+            .actual("1")
+            .run();
     }
 
-    private void isDigitTestCases(final ExpressionTestCaseBuilder<Character, BoxedCharacterValue> builder) {
-        builder.newTest((expression, value) -> expression.isDigit())
-                .subject('1')
-                .expectedState(TRUE)
-                .expectedName("isDigit")
-                .expectedExpected("isDigit")
-                .expectedActual("1")
-                .addTest()
-            .newTest((expression, value) -> expression.isDigit())
-                .subject('C')
-                .expectedState(FALSE)
-                .expectedName("isDigit")
-                .expectedExpected("isDigit")
-                .expectedActual("C")
-                .addTest();
+    @Test
+    void givenLetter_whenIsLetter_thenTrue() {
+        newTestCase()
+            .subject('C')
+            .expression(BoxedCharacterValue::isLetter)
+            .result(TRUE)
+            .name("isLetter")
+            .expected("isLetter")
+            .actual("C")
+            .run();
     }
 
-    private void isNotDigitTestCases(final ExpressionTestCaseBuilder<Character, BoxedCharacterValue> builder) {
-        builder.newTest((expression, value) -> expression.isNotDigit())
-                .subject('1')
-                .expectedState(FALSE)
-                .expectedName("isNotDigit")
-                .expectedExpected("not[isDigit]")
-                .expectedActual("1")
-                .addTest()
-            .newTest((expression, value) -> expression.isNotDigit())
-                .subject('C')
-                .expectedState(TRUE)
-                .expectedName("isNotDigit")
-                .expectedExpected("not[isDigit]")
-                .expectedActual("C")
-                .addTest();
+    // ---- isNotLetter ----
+
+    @Test
+    void givenDigit_whenIsNotLetter_thenTrue() {
+        newTestCase()
+            .subject('1')
+            .expression(BoxedCharacterValue::isNotLetter)
+            .result(TRUE)
+            .name("isNotLetter")
+            .expected("not[isLetter]")
+            .actual("1")
+            .run();
     }
 
-    private void isLetterOrDigitTestCases(final ExpressionTestCaseBuilder<Character, BoxedCharacterValue> builder) {
-        builder.newTest((expression, value) -> expression.isLetterOrDigit())
-                .subject('1')
-                .expectedState(TRUE)
-                .expectedName("isLetterOrDigit")
-                .expectedExpected("isLetterOrDigit")
-                .expectedActual("1")
-                .addTest()
-            .newTest((expression, value) -> expression.isLetterOrDigit())
-                .subject('C')
-                .expectedState(TRUE)
-                .expectedName("isLetterOrDigit")
-                .expectedExpected("isLetterOrDigit")
-                .expectedActual("C")
-                .addTest()
-            .newTest((expression, value) -> expression.isLetterOrDigit())
-                .subject('-')
-                .expectedState(FALSE)
-                .expectedName("isLetterOrDigit")
-                .expectedExpected("isLetterOrDigit")
-                .expectedActual("-")
-                .addTest();
+    @Test
+    void givenLetter_whenIsNotLetter_thenFalse() {
+        newTestCase()
+            .subject('C')
+            .expression(BoxedCharacterValue::isNotLetter)
+            .result(FALSE)
+            .name("isNotLetter")
+            .expected("not[isLetter]")
+            .actual("C")
+            .run();
     }
 
-    private void isNotLetterOrDigitTestCases(final ExpressionTestCaseBuilder<Character, BoxedCharacterValue> builder) {
-        builder.newTest((expression, value) -> expression.isNotLetterOrDigit())
-                .subject('1')
-                .expectedState(FALSE)
-                .expectedName("isNotLetterOrDigit")
-                .expectedExpected("not[isLetterOrDigit]")
-                .expectedActual("1")
-                .addTest()
-            .newTest((expression, value) -> expression.isNotLetterOrDigit())
-                .subject('C')
-                .expectedState(FALSE)
-                .expectedName("isNotLetterOrDigit")
-                .expectedExpected("not[isLetterOrDigit]")
-                .expectedActual("C")
-                .addTest()
-            .newTest((expression, value) -> expression.isNotLetterOrDigit())
-                .subject('-')
-                .expectedState(TRUE)
-                .expectedName("isNotLetterOrDigit")
-                .expectedExpected("not[isLetterOrDigit]")
-                .expectedActual("-")
-                .addTest();
+    // ---- isDigit ----
+
+    @Test
+    void givenDigit_whenIsDigit_thenTrue() {
+        newTestCase()
+            .subject('1')
+            .expression(BoxedCharacterValue::isDigit)
+            .result(TRUE)
+            .name("isDigit")
+            .expected("isDigit")
+            .actual("1")
+            .run();
     }
 
-    private void isWhitespaceTestCases(final ExpressionTestCaseBuilder<Character, BoxedCharacterValue> builder) {
-        builder.newTest((expression, value) -> expression.isWhitespace())
-                .subject('1')
-                .expectedState(FALSE)
-                .expectedName("isWhitespace")
-                .expectedExpected("isWhitespace")
-                .expectedActual("1")
-                .addTest()
-            .newTest((expression, value) -> expression.isWhitespace())
-                .subject('C')
-                .expectedState(FALSE)
-                .expectedName("isWhitespace")
-                .expectedExpected("isWhitespace")
-                .expectedActual("C")
-                .addTest()
-            .newTest((expression, value) -> expression.isWhitespace())
-                .subject(' ')
-                .expectedState(TRUE)
-                .expectedName("isWhitespace")
-                .expectedExpected("isWhitespace")
-                .expectedActual(" ")
-                .addTest();
+    @Test
+    void givenLetter_whenIsDigit_thenFalse() {
+        newTestCase()
+            .subject('C')
+            .expression(BoxedCharacterValue::isDigit)
+            .result(FALSE)
+            .name("isDigit")
+            .expected("isDigit")
+            .actual("C")
+            .run();
     }
 
-    private void isNotWhitespaceTestCases(final ExpressionTestCaseBuilder<Character, BoxedCharacterValue> builder) {
-        builder.newTest((expression, value) -> expression.isNotWhitespace())
-                .subject('1')
-                .expectedState(TRUE)
-                .expectedName("isNotWhitespace")
-                .expectedExpected("not[isWhitespace]")
-                .expectedActual("1")
-                .addTest()
-            .newTest((expression, value) -> expression.isNotWhitespace())
-                .subject('C')
-                .expectedState(TRUE)
-                .expectedName("isNotWhitespace")
-                .expectedExpected("not[isWhitespace]")
-                .expectedActual("C")
-                .addTest()
-            .newTest((expression, value) -> expression.isNotWhitespace())
-                .subject(' ')
-                .expectedState(FALSE)
-                .expectedName("isNotWhitespace")
-                .expectedExpected("not[isWhitespace]")
-                .expectedActual(" ")
-                .addTest();
+    // ---- isNotDigit ----
+
+    @Test
+    void givenDigit_whenIsNotDigit_thenFalse() {
+        newTestCase()
+            .subject('1')
+            .expression(BoxedCharacterValue::isNotDigit)
+            .result(FALSE)
+            .name("isNotDigit")
+            .expected("not[isDigit]")
+            .actual("1")
+            .run();
+    }
+
+    @Test
+    void givenLetter_whenIsNotDigit_thenTrue() {
+        newTestCase()
+            .subject('C')
+            .expression(BoxedCharacterValue::isNotDigit)
+            .result(TRUE)
+            .name("isNotDigit")
+            .expected("not[isDigit]")
+            .actual("C")
+            .run();
+    }
+
+    // ---- isLetterOrDigit ----
+
+    @Test
+    void givenDigit_whenIsLetterOrDigit_thenTrue() {
+        newTestCase()
+            .subject('1')
+            .expression(BoxedCharacterValue::isLetterOrDigit)
+            .result(TRUE)
+            .name("isLetterOrDigit")
+            .expected("isLetterOrDigit")
+            .actual("1")
+            .run();
+    }
+
+    @Test
+    void givenLetter_whenIsLetterOrDigit_thenTrue() {
+        newTestCase()
+            .subject('C')
+            .expression(BoxedCharacterValue::isLetterOrDigit)
+            .result(TRUE)
+            .name("isLetterOrDigit")
+            .expected("isLetterOrDigit")
+            .actual("C")
+            .run();
+    }
+
+    @Test
+    void givenSymbol_whenIsLetterOrDigit_thenFalse() {
+        newTestCase()
+            .subject('-')
+            .expression(BoxedCharacterValue::isLetterOrDigit)
+            .result(FALSE)
+            .name("isLetterOrDigit")
+            .expected("isLetterOrDigit")
+            .actual("-")
+            .run();
+    }
+
+    // ---- isNotLetterOrDigit ----
+
+    @Test
+    void givenDigit_whenIsNotLetterOrDigit_thenFalse() {
+        newTestCase()
+            .subject('1')
+            .expression(BoxedCharacterValue::isNotLetterOrDigit)
+            .result(FALSE)
+            .name("isNotLetterOrDigit")
+            .expected("not[isLetterOrDigit]")
+            .actual("1")
+            .run();
+    }
+
+    @Test
+    void givenLetter_whenIsNotLetterOrDigit_thenFalse() {
+        newTestCase()
+            .subject('C')
+            .expression(BoxedCharacterValue::isNotLetterOrDigit)
+            .result(FALSE)
+            .name("isNotLetterOrDigit")
+            .expected("not[isLetterOrDigit]")
+            .actual("C")
+            .run();
+    }
+
+    @Test
+    void givenSymbol_whenIsNotLetterOrDigit_thenTrue() {
+        newTestCase()
+            .subject('-')
+            .expression(BoxedCharacterValue::isNotLetterOrDigit)
+            .result(TRUE)
+            .name("isNotLetterOrDigit")
+            .expected("not[isLetterOrDigit]")
+            .actual("-")
+            .run();
+    }
+
+    // ---- isWhitespace ----
+
+    @Test
+    void givenDigit_whenIsWhitespace_thenFalse() {
+        newTestCase()
+            .subject('1')
+            .expression(BoxedCharacterValue::isWhitespace)
+            .result(FALSE)
+            .name("isWhitespace")
+            .expected("isWhitespace")
+            .actual("1")
+            .run();
+    }
+
+    @Test
+    void givenLetter_whenIsWhitespace_thenFalse() {
+        newTestCase()
+            .subject('C')
+            .expression(BoxedCharacterValue::isWhitespace)
+            .result(FALSE)
+            .name("isWhitespace")
+            .expected("isWhitespace")
+            .actual("C")
+            .run();
+    }
+
+    @Test
+    void givenWhitespace_whenIsWhitespace_thenTrue() {
+        newTestCase()
+            .subject(' ')
+            .expression(BoxedCharacterValue::isWhitespace)
+            .result(TRUE)
+            .name("isWhitespace")
+            .expected("isWhitespace")
+            .actual(" ")
+            .run();
+    }
+
+    // ---- isNotWhitespace ----
+
+    @Test
+    void givenDigit_whenIsNotWhitespace_thenTrue() {
+        newTestCase()
+            .subject('1')
+            .expression(BoxedCharacterValue::isNotWhitespace)
+            .result(TRUE)
+            .name("isNotWhitespace")
+            .expected("not[isWhitespace]")
+            .actual("1")
+            .run();
+    }
+
+    @Test
+    void givenLetter_whenIsNotWhitespace_thenTrue() {
+        newTestCase()
+            .subject('C')
+            .expression(BoxedCharacterValue::isNotWhitespace)
+            .result(TRUE)
+            .name("isNotWhitespace")
+            .expected("not[isWhitespace]")
+            .actual("C")
+            .run();
+    }
+
+    @Test
+    void givenWhitespace_whenIsNotWhitespace_thenFalse() {
+        newTestCase()
+            .subject(' ')
+            .expression(BoxedCharacterValue::isNotWhitespace)
+            .result(FALSE)
+            .name("isNotWhitespace")
+            .expected("not[isWhitespace]")
+            .actual(" ")
+            .run();
     }
 }

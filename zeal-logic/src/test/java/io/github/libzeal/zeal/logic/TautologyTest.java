@@ -1,6 +1,6 @@
 package io.github.libzeal.zeal.logic;
 
-import io.github.libzeal.zeal.logic.evaluation.cause.Cause;
+import io.github.libzeal.zeal.logic.evaluation.Cause;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.evaluation.Result;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import static io.github.libzeal.zeal.logic.test.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.mock;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
 
 class TautologyTest {
 
@@ -35,7 +35,12 @@ class TautologyTest {
         assertEquals(Result.TRUE, evaluation.result());
         assertEquals(Tautology.NAME, evaluation.name());
         assertRationaleEquals(rationale, TRUE, TRUE);
-        assertEquals(evaluation, evaluation.cause().evaluation());
+        assertEquals(Cause.self(), evaluation.cause());
         assertDepthFirstTraversalIsTerminal(evaluation);
+    }
+
+    @Test
+    void givenDefault_whenEvaluateTwice_thenDistinctEvaluationsReturned() {
+        assertNotSame(tautology.evaluate(), tautology.evaluate());
     }
 }

@@ -32,3 +32,31 @@ jobs:
           fail-on-empty: false
           reporter: java-junit
           fail-on-error: true
+  dry-run-publish:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Java + GPG + Central credentials
+        uses: actions/setup-java@v4
+        with:
+          java-version: "21"
+          distribution: temurin
+          server-id: central
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_PASSWORD
+          gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE
+          cache: maven
+      - name: Maven Central Upload (dry-run)
+        run: |
+          mvn -B -Ppublish deploy \
+            -DskipTests \
+            -DautoPublish=false \
+            -DwaitUntil=validated \
+            -DdropValidated=true \
+            --no-transfer-progress
+        env:
+          MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}

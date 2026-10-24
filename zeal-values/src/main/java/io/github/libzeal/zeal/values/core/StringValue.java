@@ -1,16 +1,11 @@
 package io.github.libzeal.zeal.values.core;
 
-import io.github.libzeal.zeal.values.api.BaseObjectValue;
-import io.github.libzeal.zeal.values.api.StandardRationales.Operators;
-import io.github.libzeal.zeal.values.api.sequence.InspectableSequenceValue;
-import io.github.libzeal.zeal.values.api.sequence.OrderedSequenceValue;
-import io.github.libzeal.zeal.values.api.sequence.RepeatableSequenceValue;
-import io.github.libzeal.zeal.values.api.sequence.SizedSequenceValue;
-import io.github.libzeal.zeal.values.api.sequence.builder.*;
-import io.github.libzeal.zeal.values.api.sequence.builder.InspectableSequenceValueBuilder.InspectableSequenceOperations;
-import io.github.libzeal.zeal.values.api.sequence.builder.OrderedSequenceValueBuilder.OrderedSequenceOperations;
-import io.github.libzeal.zeal.values.api.sequence.builder.RepeatableSequenceValueBuilder.RepeatableSequenceOperations;
-import io.github.libzeal.zeal.values.api.sequence.builder.SizedSequenceValueBuilder.SizedSequenceOperations;
+import io.github.libzeal.zeal.values.sdk.BaseValue;
+import io.github.libzeal.zeal.values.sdk.sequence.*;
+import io.github.libzeal.zeal.values.sdk.sequence.InspectableSequenceExpressions.InspectableSequenceOperations;
+import io.github.libzeal.zeal.values.sdk.sequence.OrderedSequenceExpressions.OrderedSequenceOperations;
+import io.github.libzeal.zeal.values.sdk.sequence.RepeatableSequenceExpressions.RepeatableSequenceOperations;
+import io.github.libzeal.zeal.values.sdk.sequence.SizedSequenceExpressions.SizedSequenceOperations;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -23,17 +18,12 @@ import static java.util.stream.Collectors.toList;
  *
  * @author Justin Albano
  */
-public class StringValue extends BaseObjectValue<String, StringValue>
+public class StringValue extends BaseValue<String, StringValue>
     implements
         SizedSequenceValue<String, StringValue>,
-        InspectableSequenceValue<Character, StringValue>,
-        OrderedSequenceValue<Character, StringValue>,
-        RepeatableSequenceValue<Character, StringValue> {
-
-    private static final String EQUALS_OPERATOR = Operators.EQ.symbol();
-    private static final String NOT_EQUALS_OPERATOR = Operators.NE.symbol();
-    private static final String INDEX_OF_PREFIX = "indexOf";
-    private static final String LAST_INDEX_OF_PREFIX = "lastIndexOf";
+    InspectableSequenceValue<Character, StringValue>,
+    OrderedSequenceValue<Character, StringValue>,
+    RepeatableSequenceValue<Character, StringValue> {
 
     private final StringOperations operations;
     private final StringOnStringOperations charSequenceOperations = new StringOnStringOperations();
@@ -52,14 +42,14 @@ public class StringValue extends BaseObjectValue<String, StringValue>
     @Override
     public StringValue isEmpty() {
         return append(
-            SizedSequenceValueBuilder.isEmpty(operations)
+            SizedSequenceExpressions.isEmpty(operations)
         );
     }
 
     @Override
     public StringValue isNotEmpty() {
         return append(
-            SizedSequenceValueBuilder.isNotEmpty(operations)
+            SizedSequenceExpressions.isNotEmpty(operations)
         );
     }
 
@@ -74,6 +64,7 @@ public class StringValue extends BaseObjectValue<String, StringValue>
                 .name("isBlank")
                 .expected("true")
                 .actual(context -> context.ifPassedOrElse("true", "false"))
+                .build()
         );
     }
 
@@ -88,68 +79,69 @@ public class StringValue extends BaseObjectValue<String, StringValue>
                 .name("isNotBlank")
                 .expected("true")
                 .actual(context -> context.ifPassedOrElse("true", "false"))
+                .build()
         );
     }
 
     @Override
     public StringValue hasLengthOf(final int length) {
         return append(
-            SizedSequenceValueBuilder.hasLengthOf(length, operations)
+            SizedSequenceExpressions.hasLengthOf(length, operations)
         );
     }
 
     @Override
     public StringValue doesNotHaveLengthOf(final int length) {
         return append(
-            SizedSequenceValueBuilder.doesNotHaveLengthOf(length, operations)
+            SizedSequenceExpressions.doesNotHaveLengthOf(length, operations)
         );
     }
 
     @Override
     public StringValue isShorterThan(final int length) {
         return append(
-            SizedSequenceValueBuilder.isShorterThan(length, operations)
+            SizedSequenceExpressions.isShorterThan(length, operations)
         );
     }
 
     @Override
     public StringValue isShorterThanOrEqualTo(final int length) {
         return append(
-            SizedSequenceValueBuilder.isShorterThanOrEqualTo(length, operations)
+            SizedSequenceExpressions.isShorterThanOrEqualTo(length, operations)
         );
     }
 
     @Override
     public StringValue isLongerThan(final int length) {
         return append(
-            SizedSequenceValueBuilder.isLongerThan(length, operations)
+            SizedSequenceExpressions.isLongerThan(length, operations)
         );
     }
 
     @Override
     public StringValue isLongerThanOrEqualTo(final int length) {
         return append(
-            SizedSequenceValueBuilder.isLongerThanOrEqualTo(length, operations)
+            SizedSequenceExpressions.isLongerThanOrEqualTo(length, operations)
         );
     }
 
     @Override
     public StringValue includes(final Character desired) {
         return append(
-            OrderedSequenceValueBuilder.includes(desired, operations)
+            OrderedSequenceExpressions.includes(desired, operations)
         );
     }
 
     public StringValue includes(final CharSequence desired) {
         return append(
-            OrderedSequenceValueBuilder.includes(desired, charSequenceOperations)
+            OrderedSequenceExpressions.includes(desired, charSequenceOperations)
         );
     }
 
     @Override
     public StringValue includesAll(final Collection<Character> desired) {
         return append(
-            InspectableSequenceValueBuilder.includesAll(desired, operations)
+            InspectableSequenceExpressions.includesAll(desired, operations)
         );
     }
 
@@ -161,7 +153,7 @@ public class StringValue extends BaseObjectValue<String, StringValue>
     @Override
     public StringValue includesAny(final Collection<Character> desired) {
         return append(
-            InspectableSequenceValueBuilder.includesAny(desired, operations)
+            InspectableSequenceExpressions.includesAny(desired, operations)
         );
     }
 
@@ -173,55 +165,55 @@ public class StringValue extends BaseObjectValue<String, StringValue>
     @Override
     public StringValue includesExactly(final Character desired, final long times) {
         return append(
-            RepeatableSequenceValueBuilder.includesExactly(desired, times, operations)
+            RepeatableSequenceExpressions.includesExactly(desired, times, operations)
         );
     }
 
     @Override
     public StringValue includesMoreThan(final Character desired, final long times) {
         return append(
-            RepeatableSequenceValueBuilder.includesMoreThan(desired, times, operations)
+            RepeatableSequenceExpressions.includesMoreThan(desired, times, operations)
         );
     }
 
     @Override
     public StringValue includesMoreThanOrEqualTo(final Character desired, final long times) {
         return append(
-            RepeatableSequenceValueBuilder.includesMoreThanOrEqualTo(desired, times, operations)
+            RepeatableSequenceExpressions.includesMoreThanOrEqualTo(desired, times, operations)
         );
     }
 
     @Override
     public StringValue includesLessThan(final Character desired, final long times) {
         return append(
-            RepeatableSequenceValueBuilder.includesLessThan(desired, times, operations)
+            RepeatableSequenceExpressions.includesLessThan(desired, times, operations)
         );
     }
 
     @Override
     public StringValue includesLessThanOrEqualTo(final Character desired, final long times) {
         return append(
-            RepeatableSequenceValueBuilder.includesLessThanOrEqualTo(desired, times, operations)
+            RepeatableSequenceExpressions.includesLessThanOrEqualTo(desired, times, operations)
         );
     }
 
     @Override
     public StringValue excludes(final Character desired) {
         return append(
-            OrderedSequenceValueBuilder.excludes(desired, operations)
+            OrderedSequenceExpressions.excludes(desired, operations)
         );
     }
 
     public StringValue excludes(final CharSequence desired) {
         return append(
-            OrderedSequenceValueBuilder.excludes(desired, charSequenceOperations)
+            OrderedSequenceExpressions.excludes(desired, charSequenceOperations)
         );
     }
 
     @Override
     public StringValue excludesAll(final Collection<Character> desired) {
         return append(
-            InspectableSequenceValueBuilder.excludesAll(desired, operations)
+            InspectableSequenceExpressions.excludesAll(desired, operations)
         );
     }
 
@@ -233,7 +225,7 @@ public class StringValue extends BaseObjectValue<String, StringValue>
     @Override
     public StringValue excludesAny(final Collection<Character> desired) {
         return append(
-            InspectableSequenceValueBuilder.excludesAny(desired, operations)
+            InspectableSequenceExpressions.excludesAny(desired, operations)
         );
     }
 
@@ -245,78 +237,104 @@ public class StringValue extends BaseObjectValue<String, StringValue>
     @Override
     public StringValue hasAtIndex(final Character desired, final int index) {
         return append(
-            OrderedSequenceValueBuilder.hasAtIndex(desired, index, operations)
+            OrderedSequenceExpressions.hasAtIndex(desired, index, operations)
         );
     }
 
     public StringValue hasAtIndex(final CharSequence desired, final int index) {
         return append(
-            OrderedSequenceValueBuilder.hasAtIndex(desired, index, charSequenceOperations)
+            OrderedSequenceExpressions.hasAtIndex(desired, index, charSequenceOperations)
         );
     }
 
     @Override
     public StringValue doesNotHaveAtIndex(final Character desired, final int index) {
         return append(
-            OrderedSequenceValueBuilder.doesNotHaveAtIndex(desired, index, operations)
+            OrderedSequenceExpressions.doesNotHaveAtIndex(desired, index, operations)
         );
     }
 
     public StringValue doesNotHaveAtIndex(final CharSequence desired, final int index) {
         return append(
-            OrderedSequenceValueBuilder.doesNotHaveAtIndex(desired, index, charSequenceOperations)
+            OrderedSequenceExpressions.doesNotHaveAtIndex(desired, index, charSequenceOperations)
+        );
+    }
+
+    @Override
+    public StringValue lastIndexOfIs(final Character desired, final int index) {
+        return append(
+            OrderedSequenceExpressions.lastIndexOfIs(desired, index, operations)
+        );
+    }
+
+    public StringValue lastIndexOfIs(final CharSequence desired, final int index) {
+        return append(
+            OrderedSequenceExpressions.lastIndexOfIs(desired, index, charSequenceOperations)
+        );
+    }
+
+    @Override
+    public StringValue lastIndexOfIsNot(final Character desired, final int index) {
+        return append(
+            OrderedSequenceExpressions.lastIndexOfIsNot(desired, index, operations)
+        );
+    }
+
+    public StringValue lastIndexOfIsNot(final CharSequence desired, final int index) {
+        return append(
+            OrderedSequenceExpressions.lastIndexOfIsNot(desired, index, charSequenceOperations)
         );
     }
 
     @Override
     public StringValue startsWith(final Character desired) {
         return append(
-            OrderedSequenceValueBuilder.startsWith(desired, operations)
+            OrderedSequenceExpressions.startsWith(desired, operations)
         );
     }
 
     public StringValue startsWith(final CharSequence desired) {
         return append(
-            OrderedSequenceValueBuilder.startsWith(desired, charSequenceOperations)
+            OrderedSequenceExpressions.startsWith(desired, charSequenceOperations)
         );
     }
 
     @Override
     public StringValue doesNotStartWith(final Character desired) {
         return append(
-            OrderedSequenceValueBuilder.doesNotStartWith(desired, operations)
+            OrderedSequenceExpressions.doesNotStartWith(desired, operations)
         );
     }
 
     public StringValue doesNotStartWith(final CharSequence desired) {
         return append(
-            OrderedSequenceValueBuilder.doesNotStartWith(desired, charSequenceOperations)
+            OrderedSequenceExpressions.doesNotStartWith(desired, charSequenceOperations)
         );
     }
 
     @Override
     public StringValue endsWith(final Character desired) {
         return append(
-            OrderedSequenceValueBuilder.endsWith(desired, operations)
+            OrderedSequenceExpressions.endsWith(desired, operations)
         );
     }
 
     public StringValue endsWith(final CharSequence desired) {
         return append(
-            OrderedSequenceValueBuilder.endsWith(desired, charSequenceOperations)
+            OrderedSequenceExpressions.endsWith(desired, charSequenceOperations)
         );
     }
 
     @Override
     public StringValue doesNotEndWith(final Character desired) {
         return append(
-            OrderedSequenceValueBuilder.doesNotEndWith(desired, operations)
+            OrderedSequenceExpressions.doesNotEndWith(desired, operations)
         );
     }
 
     public StringValue doesNotEndWith(final CharSequence desired) {
         return append(
-            OrderedSequenceValueBuilder.doesNotEndWith(desired, charSequenceOperations)
+            OrderedSequenceExpressions.doesNotEndWith(desired, charSequenceOperations)
         );
     }
 
@@ -333,6 +351,7 @@ public class StringValue extends BaseObjectValue<String, StringValue>
             expression(s -> s.matches(regex))
                 .name("matches[" + regex + "]")
                 .expected("matches[" + regex + "]")
+                .build()
         );
     }
 
@@ -349,6 +368,7 @@ public class StringValue extends BaseObjectValue<String, StringValue>
             expression(s -> !s.matches(regex))
                 .name("doesNotMatch[" + regex + "]")
                 .expected("not[matches[" + regex + "]]")
+                .build()
         );
     }
 
@@ -365,48 +385,7 @@ public class StringValue extends BaseObjectValue<String, StringValue>
             expression(s -> s.equalsIgnoreCase(other))
                 .name("caseInsensitiveEqualTo[" + other + "]")
                 .expected(other)
-        );
-    }
-
-    /**
-     * Adds a predicate to the expression that checks if the first index of the
-     * supplied needle in the subject does not
-     * match the supplied index.
-     *
-     * @param needle
-     *     The needle to look for in the subject.
-     * @param index
-     *     The index expected not to match.
-     *
-     * @return This expression (fluent interface).
-     */
-    public StringValue doesNotHaveAtIndex(final char needle, final int index) {
-        return append(
-            expression(s -> s.indexOf(needle) != index)
-                .name(INDEX_OF_PREFIX + "[" + needle + "] " + NOT_EQUALS_OPERATOR + " " + index)
-                .expected(context -> "not[" + index + "]")
-                .actual(context -> String.valueOf(context.subject().indexOf(needle)))
-        );
-    }
-
-    /**
-     * Adds a predicate to the expression that checks if the first index of the
-     * supplied needle in the subject does not
-     * match the supplied index.
-     *
-     * @param needle
-     *     The needle to look for in the subject.
-     * @param index
-     *     The index expected not to match.
-     *
-     * @return This expression (fluent interface).
-     */
-    public StringValue doesNotHaveAtIndex(final String needle, final int index) {
-        return append(
-            expression(s -> s.indexOf(needle) != index)
-                .name(INDEX_OF_PREFIX + "[" + needle + "] " + NOT_EQUALS_OPERATOR + " " + index)
-                .expected(context -> "not[" + index + "]")
-                .actual(context -> String.valueOf(context.subject().indexOf(needle)))
+                .build()
         );
     }
 
@@ -423,12 +402,7 @@ public class StringValue extends BaseObjectValue<String, StringValue>
      * @return This expression (fluent interface).
      */
     public StringValue hasAtLastIndex(final char needle, final int index) {
-        return append(
-            expression(s -> s.lastIndexOf(needle) == index)
-                .name(LAST_INDEX_OF_PREFIX + "[" + needle + "] " + EQUALS_OPERATOR + " " + index)
-                .expected(index)
-                .actual(context -> String.valueOf(context.subject().lastIndexOf(needle)))
-        );
+        return lastIndexOfIs((Character) needle, index);
     }
 
     /**
@@ -444,12 +418,7 @@ public class StringValue extends BaseObjectValue<String, StringValue>
      * @return This expression (fluent interface).
      */
     public StringValue hasAtLastIndex(final String needle, final int index) {
-        return append(
-            expression(s -> s.lastIndexOf(needle) == index)
-                .name(LAST_INDEX_OF_PREFIX + "[" + needle + "] " + EQUALS_OPERATOR + " " + index)
-                .expected(index)
-                .actual(context -> String.valueOf(context.subject().lastIndexOf(needle)))
-        );
+        return lastIndexOfIs((CharSequence) needle, index);
     }
 
     /**
@@ -465,12 +434,7 @@ public class StringValue extends BaseObjectValue<String, StringValue>
      * @return This expression (fluent interface).
      */
     public StringValue doesNotHaveAtLastIndex(final char needle, final int index) {
-        return append(
-            expression(s -> s.lastIndexOf(needle) != index)
-                .name(LAST_INDEX_OF_PREFIX + "[" + needle + "] " + NOT_EQUALS_OPERATOR + " " + index)
-                .expected(context -> "not[" + index + "]")
-                .actual(context -> String.valueOf(context.subject().lastIndexOf(needle)))
-        );
+        return lastIndexOfIsNot((Character) needle, index);
     }
 
     /**
@@ -486,12 +450,7 @@ public class StringValue extends BaseObjectValue<String, StringValue>
      * @return This expression (fluent interface).
      */
     public StringValue doesNotHaveAtLastIndex(final String needle, final int index) {
-        return append(
-            expression(s -> s.lastIndexOf(needle) != index)
-                .name(LAST_INDEX_OF_PREFIX + "[" + needle + "] " + NOT_EQUALS_OPERATOR + " " + index)
-                .expected(context -> "not[" + index + "]")
-                .actual(context -> String.valueOf(context.subject().lastIndexOf(needle)))
-        );
+        return lastIndexOfIsNot((CharSequence) needle, index);
     }
 
     protected static final class StringOperations implements
@@ -525,7 +484,7 @@ public class StringValue extends BaseObjectValue<String, StringValue>
         @Override
         public Element<Character> atIndex(final String haystack, final int index, final Character desired) {
 
-            if (index < haystack.length()) {
+            if (index >= 0 && index < haystack.length()) {
                 return Element.found(haystack.charAt(index));
             }
             else {
@@ -541,6 +500,17 @@ public class StringValue extends BaseObjectValue<String, StringValue>
             }
             else {
                 return haystack.indexOf(needle);
+            }
+        }
+
+        @Override
+        public int lastIndexOf(final String haystack, final Character needle) {
+
+            if (needle == null) {
+                return -1;
+            }
+            else {
+                return haystack.lastIndexOf(needle);
             }
         }
 
@@ -575,11 +545,6 @@ public class StringValue extends BaseObjectValue<String, StringValue>
         }
 
         @Override
-        public boolean isEmpty(final String haystack) {
-            return haystack.isEmpty();
-        }
-
-        @Override
         public boolean includes(final String haystack, final Character needle) {
             return haystack.indexOf(needle) >= 0;
         }
@@ -611,20 +576,25 @@ public class StringValue extends BaseObjectValue<String, StringValue>
 
             final int length = desired.length();
 
-            if (haystack.isEmpty() || index >= haystack.length()) {
+            if (index < 0 || index >= haystack.length()) {
                 return Element.missing();
             }
             else if ((index + length) > haystack.length()) {
                 return Element.found(haystack.substring(index));
             }
             else {
-                return Element.found(haystack.substring(index, length));
+                return Element.found(haystack.substring(index, index + length));
             }
         }
 
         @Override
         public int indexOf(final String haystack, final CharSequence needle) {
             return haystack.indexOf(String.valueOf(needle));
+        }
+
+        @Override
+        public int lastIndexOf(final String haystack, final CharSequence needle) {
+            return haystack.lastIndexOf(String.valueOf(needle));
         }
 
         @Override
@@ -653,11 +623,6 @@ public class StringValue extends BaseObjectValue<String, StringValue>
         @Override
         public int size(final String haystack) {
             return haystack.length();
-        }
-
-        @Override
-        public boolean isEmpty(final String haystack) {
-            return haystack.isEmpty();
         }
 
         @Override

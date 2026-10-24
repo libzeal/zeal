@@ -83,9 +83,7 @@ public class SimpleRationale implements Rationale {
     public boolean equals(final Object o) {
 
         if (this == o) return true;
-        if (!(o instanceof SimpleRationale)) return false;
-
-        final SimpleRationale rationale = (SimpleRationale) o;
+        if (!(o instanceof final SimpleRationale rationale)) return false;
 
         return Objects.equals(expected, rationale.expected) &&
             Objects.equals(actual, rationale.actual) &&

@@ -1,22 +1,155 @@
 package io.github.libzeal.zeal.values.core;
 
+import io.github.libzeal.zeal.values.sdk.BaseValue;
+
 /**
- * An expression used to evaluate {@link Enum} instances.
+ * The abstract base class for all Enum-based expressions.
+ * <p>
+ * This base class should be extended when creating expressions for any specialized enums.
  *
  * @param <T>
- *     The type of the enum being evaluated.
+ *     The type of the enum.
+ * @param <B>
+ *     The type of the subclass. This type is an example of the
+ *     <a href="https://stackoverflow.com/q/4173254/2403253">Curiously Recurring Template Pattern (CRTP)</a>. For more
+ *     information, see {@link BaseValue}.
  *
  * @author Justin Albano
+ * @see BaseValue
+ * @see Enum
  */
-public final class EnumValue<T extends Enum<T>> extends BaseEnumValue<T, EnumValue<T>> {
+public abstract class EnumValue<T extends Enum<T>, B extends EnumValue<T, B>>
+    extends BaseValue<T, B> {
 
     /**
-     * Creates a new expression for the supplied subject.
+     * Creates an object expression with the supplied subject. This constructor uses a default name for the expression.
      *
      * @param subject
      *     The subject of the expression.
      */
-    public EnumValue(final T subject) {
-        super(subject);
+    protected EnumValue(final T subject) {
+        this(subject, "Enum value");
+    }
+
+    /**
+     * Creates an object expression with the supplied subject and name.
+     *
+     * @param subject
+     *     The subject of the expression.
+     * @param name
+     *     The name of the expression.
+     */
+    protected EnumValue(final T subject, final String name) {
+        super(subject, name);
+    }
+
+    /**
+     * Adds a predicate to the expression that checks if the ordinal of the subject matches the supplied value.
+     *
+     * @param ordinal
+     *     The ordinal to test the subject against.
+     *
+     * @return This expression (fluent interface).
+     */
+    public B ordinalIs(final int ordinal) {
+        return append(
+            observing(Enum::ordinal)
+                .passesIf(o -> o == ordinal)
+                .name("ordinalIs[" + ordinal + "]")
+                .expected(ordinal)
+                .build()
+        );
+    }
+
+    /**
+     * Adds a predicate to the expression that checks if the ordinal of the subject does not match the supplied value.
+     *
+     * @param ordinal
+     *     The ordinal to test the subject against.
+     *
+     * @return This expression (fluent interface).
+     */
+    public B ordinalIsNot(final int ordinal) {
+        return append(
+            observing(Enum::ordinal)
+                .passesIf(o -> o != ordinal)
+                .name("not[ordinalIs[" + ordinal + "]]")
+                .expected(context -> "not[" + ordinal + "]")
+                .build()
+        );
+    }
+
+    /**
+     * Adds a predicate to the expression that checks if the name of the subject matches the supplied value.
+     *
+     * @param name
+     *     The name to test the subject against.
+     *
+     * @return This expression (fluent interface).
+     */
+    public B nameIs(final String name) {
+        return append(
+            observing(Enum::name)
+                .passesIf(n -> n.equals(name))
+                .name("nameIs[" + name + "]")
+                .expected(name)
+                .build()
+        );
+    }
+
+    /**
+     * Adds a predicate to the expression that checks if the name of the subject does not match the supplied value.
+     *
+     * @param name
+     *     The name to test the subject against.
+     *
+     * @return This expression (fluent interface).
+     */
+    public B nameIsNot(final String name) {
+        return append(
+            observing(Enum::name)
+                .passesIf(n -> !n.equals(name))
+                .name("not[nameIs[" + name + "]]")
+                .expected("not[" + name + "]")
+                .build()
+        );
+    }
+
+    /**
+     * Adds a predicate to the expression that checks if the name of the subject matches the supplied value, ignoring
+     * case.
+     *
+     * @param name
+     *     The name to test the subject against.
+     *
+     * @return This expression (fluent interface).
+     */
+    public B caseInsensitiveNameIs(final String name) {
+        return append(
+            observing(Enum::name)
+                .passesIf(n -> n.equalsIgnoreCase(name))
+                .name("caseInsensitiveNameIs[" + name + "]")
+                .expected("caseInsensitive[" + name + "]")
+                .build()
+        );
+    }
+
+    /**
+     * Adds a predicate to the expression that checks if the name of the subject does not match the supplied value,
+     * ignoring case.
+     *
+     * @param name
+     *     The name to test the subject against.
+     *
+     * @return This expression (fluent interface).
+     */
+    public B caseInsensitiveNameIsNot(final String name) {
+        return append(
+            observing(Enum::name)
+                .passesIf(n -> !n.equalsIgnoreCase(name))
+                .name("not[caseInsensitiveNameIs[" + name + "]]")
+                .expected("not[caseInsensitive[" + name + "]]")
+                .build()
+        );
     }
 }

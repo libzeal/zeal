@@ -2,20 +2,12 @@ package io.github.libzeal.zeal.logic.test;
 
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.evaluation.TerminalEvaluation;
-import io.github.libzeal.zeal.logic.evaluation.traverse.TraversalContext;
-import io.github.libzeal.zeal.logic.evaluation.traverse.DepthFirstTraverser;
-import io.github.libzeal.zeal.logic.evaluation.traverse.TraverserAction;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
 import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
 
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 
 public class Assertions {
 

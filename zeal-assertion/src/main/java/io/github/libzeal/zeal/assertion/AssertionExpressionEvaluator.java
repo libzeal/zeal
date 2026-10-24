@@ -19,7 +19,6 @@ final class AssertionExpressionEvaluator<N extends Throwable, F extends Throwabl
     interface Messages {
         String NULL_EXPRESSION = "Cannot evaluate null expression";
         String NULL_EVALUATION = "Cannot process null evaluation";
-        String NULL_RESULT = "Cannot process evaluation with null result";
     }
 
     private final Formatter formatter;
@@ -63,9 +62,8 @@ final class AssertionExpressionEvaluator<N extends Throwable, F extends Throwabl
      * @return The subject of the expression if the evaluation succeeds.
      *
      * @throws NullPointerException
-     *     The supplied expression is {@code null}, the evaluation from the supplied expression (when calling
-     *     {@link UnaryExpression#evaluate()}) is {@code null}, or the result of the evaluation (when calling
-     *     {@link Evaluation#result()} is {@code null}.
+     *     The supplied expression is {@code null} or the evaluation from the supplied expression (when calling
+     *     {@link UnaryExpression#evaluate()}) is {@code null}.
      */
     public <T> T evaluate(final UnaryExpression<T> expression, final String message) throws N, F {
 
@@ -80,11 +78,6 @@ final class AssertionExpressionEvaluator<N extends Throwable, F extends Throwabl
         }
 
         final Result result = evaluation.result();
-
-        if (result == null) {
-            throw new NullPointerException(Messages.NULL_RESULT);
-        }
-
         final T subject = expression.subject();
 
         if (result.isFalse()) {

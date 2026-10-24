@@ -1,5 +1,8 @@
 package io.github.libzeal.zeal.values.core.boxed;
 
+import io.github.libzeal.zeal.values.core.boxed.BoxedNumberExpressions.BoxedNumberOperations;
+import io.github.libzeal.zeal.values.sdk.BaseValue;
+
 /**
  * An expression used to evaluate {@link Long} instances.
  * <p>
@@ -7,7 +10,10 @@ package io.github.libzeal.zeal.values.core.boxed;
  *
  * @author Justin Albano
  */
-public class BoxedLongValue extends BoxedWholeNumberValue<Long, BoxedLongValue> {
+public class BoxedLongValue extends BaseValue<Long, BoxedLongValue>
+        implements BoxedWholeNumberValue<Long, BoxedLongValue> {
+
+    private final BoxedLongOperations operations;
 
     /**
      * Creates a new expression.
@@ -17,45 +23,147 @@ public class BoxedLongValue extends BoxedWholeNumberValue<Long, BoxedLongValue> 
      */
     public BoxedLongValue(final Long subject) {
         super(subject, "Long value");
+        this.operations = new BoxedLongOperations();
     }
 
     @Override
-    protected Long zero() {
-        return 0L;
+    public BoxedLongValue isEven() {
+        return append(
+            BoxedWholeNumberExpressions.isEven()
+        );
     }
 
     @Override
-    protected Long min() {
-        return Long.MIN_VALUE;
+    public BoxedLongValue isOdd() {
+        return append(
+            BoxedWholeNumberExpressions.isOdd()
+        );
     }
 
     @Override
-    protected Long max() {
-        return Long.MAX_VALUE;
+    public BoxedLongValue isLessThan(final Long value) {
+        return append(
+            BoxedNumberExpressions.isLessThan(value, operations)
+        );
     }
 
     @Override
-    protected boolean eq(final Long a, final Long b) {
-        return a.equals(b);
+    public BoxedLongValue isGreaterThan(final Long value) {
+        return append(
+            BoxedNumberExpressions.isGreaterThan(value, operations)
+        );
     }
 
     @Override
-    protected boolean lt(final Long a, final Long b) {
-        return a < b;
+    public BoxedLongValue isLessThanOrEqualTo(final Long value) {
+        return append(
+            BoxedNumberExpressions.isLessThanOrEqualTo(value, operations)
+        );
     }
 
     @Override
-    protected boolean gt(final Long a, final Long b) {
-        return a > b;
+    public BoxedLongValue isGreaterThanOrEqualTo(final Long value) {
+        return append(
+            BoxedNumberExpressions.isGreaterThanOrEqualTo(value, operations)
+        );
     }
 
     @Override
-    protected boolean gte(final Long a, final Long b) {
-        return a >= b;
+    public BoxedLongValue isMaxValue() {
+        return append(
+            BoxedNumberExpressions.isMaxValue(operations)
+        );
     }
 
     @Override
-    protected boolean lte(final Long a, final Long b) {
-        return a <= b;
+    public BoxedLongValue isMinValue() {
+        return append(
+            BoxedNumberExpressions.isMinValue(operations)
+        );
+    }
+
+    @Override
+    public BoxedLongValue isZero() {
+        return append(
+            BoxedNumberExpressions.isZero(operations)
+        );
+    }
+
+    @Override
+    public BoxedLongValue isNotZero() {
+        return append(
+            BoxedNumberExpressions.isNotZero(operations)
+        );
+    }
+
+    @Override
+    public BoxedLongValue isPositive() {
+        return append(
+            BoxedNumberExpressions.isPositive(operations)
+        );
+    }
+
+    @Override
+    public BoxedLongValue isNotPositive() {
+        return append(
+            BoxedNumberExpressions.isNotPositive(operations)
+        );
+    }
+
+    @Override
+    public BoxedLongValue isNegative() {
+        return append(
+            BoxedNumberExpressions.isNegative(operations)
+        );
+    }
+
+    @Override
+    public BoxedLongValue isNotNegative() {
+        return append(
+            BoxedNumberExpressions.isNotNegative(operations)
+        );
+    }
+
+    private static final class BoxedLongOperations implements BoxedNumberOperations<Long> {
+
+        @Override
+        public Long zero() {
+            return 0L;
+        }
+
+        @Override
+        public Long min() {
+            return Long.MIN_VALUE;
+        }
+
+        @Override
+        public Long max() {
+            return Long.MAX_VALUE;
+        }
+
+        @Override
+        public boolean eq(final Long a, final Long b) {
+            return a.equals(b);
+        }
+
+        @Override
+        public boolean lt(final Long a, final Long b) {
+            return a < b;
+        }
+
+        @Override
+        public boolean gt(final Long a, final Long b) {
+            return a > b;
+        }
+
+        @Override
+        public boolean gte(final Long a, final Long b) {
+            return a >= b;
+        }
+
+        @Override
+        public boolean lte(final Long a, final Long b) {
+            return a <= b;
+        }
     }
 }

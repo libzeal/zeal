@@ -1,6 +1,5 @@
 package io.github.libzeal.zeal.assertion.examples;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 

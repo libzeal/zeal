@@ -1,9 +1,8 @@
 package io.github.libzeal.zeal.logic.evaluation.format.simple;
 
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
-import io.github.libzeal.zeal.logic.evaluation.cause.Cause;
 
-import java.util.Objects;
+import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
@@ -15,22 +14,22 @@ import static java.util.Objects.requireNonNull;
  */
 class SimpleFormatterContext {
 
-    private final Cause cause;
+    private final List<Evaluation> rootCauses;
     private final int depth;
 
     /**
      * Creates a next context.
      *
-     * @param cause
-     *     The cause of the evaluation.
+     * @param rootCauses
+     *     The root causes of the evaluation being formatted.
      * @param depth
      *     The current depth within the evaluation tree.
      *
      * @throws NullPointerException
-     *     The supplied root cause is {@code null}.
+     *     The supplied root causes are {@code null}.
      */
-    public SimpleFormatterContext(final Cause cause, final int depth) {
-        this.cause = requireNonNull(cause);
+    public SimpleFormatterContext(final List<Evaluation> rootCauses, final int depth) {
+        this.rootCauses = requireNonNull(rootCauses);
 
         if (depth < 0) {
             throw new IllegalArgumentException("Depth cannot be negative");
@@ -40,20 +39,16 @@ class SimpleFormatterContext {
     }
 
     /**
-     * Checks if the supplied evaluation is the root cause.
+     * Checks if the supplied evaluation is a root cause. Evaluations are compared by identity, so an evaluation that is
+     * equal to, but not the same instance as, a root cause is not considered a root cause.
      *
      * @param evaluation
      *     The evaluation to check.
      *
-     * @return True if the supplied evaluation is the root cause; false otherwise.
+     * @return True if the supplied evaluation is a root cause; false otherwise.
      */
     public boolean isRootCause(final Evaluation evaluation) {
-
-        if (evaluation == null) {
-            return false;
-        }
-
-        return cause.rootCause().is(evaluation);
+        return rootCauses.stream().anyMatch(rootCause -> rootCause == evaluation);
     }
 
     /**

@@ -2,7 +2,6 @@ package io.github.libzeal.zeal.logic.evaluation.traverse;
 
 import io.github.libzeal.zeal.logic.evaluation.CompoundEvaluation;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
-import io.github.libzeal.zeal.logic.evaluation.TerminalEvaluation;
 
 /**
  * An entity that traverses the evaluation tree.
@@ -19,19 +18,15 @@ public class DepthFirstTraverser implements Traverser {
     private void traverse(final Evaluation evaluation, final TraverserAction action,
                           final TraversalContext context) {
 
-        if (evaluation instanceof CompoundEvaluation) {
+        action.on(evaluation, context);
 
-            final CompoundEvaluation compoundEvaluation = (CompoundEvaluation) evaluation;
+        if (evaluation instanceof final CompoundEvaluation compoundEvaluation) {
+
             final TraversalContext childContext = context.withIncrementedDepth();
-
-            action.on(evaluation, context);
 
             for (final Evaluation child : compoundEvaluation.children()) {
                 traverse(child, action, childContext);
             }
-        }
-        else {
-            action.on(evaluation, context);
         }
     }
 }

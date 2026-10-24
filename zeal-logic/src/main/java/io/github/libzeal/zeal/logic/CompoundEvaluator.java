@@ -1,8 +1,6 @@
 package io.github.libzeal.zeal.logic;
 
 import io.github.libzeal.zeal.logic.evaluation.*;
-import io.github.libzeal.zeal.logic.evaluation.cause.Cause;
-import io.github.libzeal.zeal.logic.evaluation.cause.CauseGenerator;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
 import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
 import io.github.libzeal.zeal.logic.util.StopWatch;
@@ -21,20 +19,21 @@ import static java.util.Objects.requireNonNull;
  */
 class CompoundEvaluator {
 
+    private static final SkippingEvaluator SKIPPING_EVALUATOR = new SkippingEvaluator();
     private final String name;
+    private final Result shortCircuitResult;
     private final Predicate<Tally> passCondition;
-    private final Predicate<Tally> failCondition;
     private final CompoundRationaleBuilder rationaleBuilder;
 
-    public CompoundEvaluator(final String name, final Predicate<Tally> passCondition, final Predicate<Tally> failCondition,
+    public CompoundEvaluator(final String name, final Result shortCircuitResult, final Predicate<Tally> passCondition,
                              final CompoundRationaleBuilder rationaleBuilder) {
         this.name = requireNonNull(name);
+        this.shortCircuitResult = requireNonNull(shortCircuitResult);
         this.passCondition = requireNonNull(passCondition);
-        this.failCondition = requireNonNull(failCondition);
         this.rationaleBuilder = requireNonNull(rationaleBuilder);
     }
 
-    public Evaluation evaluate(final List<Expression> expressions) {
+    public CompoundEvaluation evaluate(final List<Expression> expressions) {
 
         final StopWatch stopWatch = StopWatch.started();
         final int total = expressions.size();
@@ -42,69 +41,54 @@ class CompoundEvaluator {
         final Tally tally = new Tally(total);
         Evaluation decider = null;
 
-        for (Expression expression : expressions) {
+        for (final Expression expression : expressions) {
 
-            final Evaluation evaluation = evaluate(expression, tally, decider);
+            final Evaluation evaluation = decider == null
+                ? expression.evaluate()
+                : SKIPPING_EVALUATOR.skip(expression, decider);
 
             tally.tally(evaluation.result());
 
-            if (passes(tally) || fails(tally)) {
+            if (decider == null && evaluation.result() == shortCircuitResult) {
                 decider = evaluation;
             }
 
             evaluated.add(evaluation);
         }
 
-        final CauseGenerator cause = findCause(decider);
+        final Cause cause = cause(decider, evaluated);
         final Duration elapsedTime = stopWatch.stop();
 
         return compoundEvaluation(tally, cause, evaluated, elapsedTime);
     }
 
-    private boolean fails(final Tally tally) {
-        return failCondition.test(tally);
-    }
+    private static Cause cause(final Evaluation decider, final List<Evaluation> evaluated) {
 
-    private boolean passes(final Tally tally) {
-        return passCondition.test(tally) && tally.tallySoFar() != tally.total();
-    }
-
-    private Evaluation evaluate(final Expression expression, final Tally tally, final Evaluation decider) {
-
-        if (passCondition.test(tally) || fails(tally)) {
-
-            final Cause cause = new Cause(decider);
-
-            return new SkippingEvaluator().skip(expression, cause);
+        if (decider != null) {
+            return Cause.of(decider);
+        }
+        else if (evaluated.isEmpty()) {
+            return Cause.self();
         }
         else {
-            return expression.evaluate();
+            return Cause.of(evaluated);
         }
     }
 
-    private static CauseGenerator findCause(final Evaluation decider) {
-
-        if (decider == null) {
-            return CauseGenerator.self();
-        }
-        else {
-            return CauseGenerator.withUnderlyingCause(decider.cause());
-        }
-    }
-
-    private Evaluation compoundEvaluation(final Tally tally, final CauseGenerator causeGenerator,
+    private CompoundEvaluation compoundEvaluation(final Tally tally, final Cause cause,
                                                   final List<Evaluation> evaluated, final Duration elapsedTime) {
 
         final Rationale rationale = rationaleBuilder.build(tally);
 
         if (tally.total() == 0 || passCondition.test(tally)) {
-            return EvaluatedCompoundEvaluation.ofTrue(name, rationale, elapsedTime, causeGenerator, evaluated);
+            return new CompoundEvaluation(Result.TRUE, name, rationale, elapsedTime, cause, evaluated);
         }
         else if (tally.skipped() == tally.total()) {
-            return new SkippedCompoundEvaluation(name,causeGenerator, evaluated);
+            return new CompoundEvaluation(Result.SKIPPED, name, SimpleRationale.skipped(), Duration.ZERO, cause,
+                evaluated);
         }
         else {
-            return EvaluatedCompoundEvaluation.ofFalse(name, rationale, elapsedTime, causeGenerator, evaluated);
+            return new CompoundEvaluation(Result.FALSE, name, rationale, elapsedTime, cause, evaluated);
         }
     }
 
@@ -162,20 +146,8 @@ class CompoundEvaluator {
             return total;
         }
 
-        public int tallySoFar() {
-            return passed() + failed() + skipped();
-        }
-
         public boolean anyPassed() {
             return passed() > 0;
-        }
-
-        public boolean anyFailed() {
-            return failed() > 0;
-        }
-
-        public boolean allFailed() {
-            return failed() == total();
         }
 
         public boolean allPassed() {

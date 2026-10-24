@@ -1,8 +1,8 @@
 package io.github.libzeal.zeal.values;
 
 import io.github.libzeal.zeal.values.collection.*;
-import io.github.libzeal.zeal.values.core.EnumValue;
-import io.github.libzeal.zeal.values.core.ObjectValue;
+import io.github.libzeal.zeal.values.core.SimpleEnumValue;
+import io.github.libzeal.zeal.values.core.SimpleObjectValue;
 import io.github.libzeal.zeal.values.core.StringValue;
 import io.github.libzeal.zeal.values.core.boxed.*;
 
@@ -31,8 +31,8 @@ public class Values {
      *
      * @return A value that wraps the supplied value.
      */
-    public static <T> ObjectValue<T> value(final T value) {
-        return new ObjectValue<>(value);
+    public static <T> SimpleObjectValue<T> value(final T value) {
+        return new SimpleObjectValue<>(value);
     }
 
     /**
@@ -45,8 +45,8 @@ public class Values {
      *
      * @return A value that wraps the supplied {@link Enum}.
      */
-    public static <T extends Enum<T>> EnumValue<T> value(final T value) {
-        return new EnumValue<>(value);
+    public static <T extends Enum<T>> SimpleEnumValue<T> value(final T value) {
+        return new SimpleEnumValue<>(value);
     }
 
     /**
@@ -161,8 +161,8 @@ public class Values {
         return new IterableValue<>(value);
     }
 
-    public static <T> CollectionValue<T> value(final Collection<T> value) {
-        return new CollectionValue<>(value);
+    public static <T> SimpleCollectionValue<T> value(final Collection<T> value) {
+        return new SimpleCollectionValue<>(value);
     }
 
     public static <T> ListValue<T> value(final List<T> value) {

@@ -1,6 +1,6 @@
 package io.github.libzeal.zeal.values.core.boxed;
 
-import io.github.libzeal.zeal.values.api.BaseObjectValue;
+import io.github.libzeal.zeal.values.sdk.BaseValue;
 
 /**
  * An expression used to evaluate {@link Character} instances.
@@ -9,7 +9,7 @@ import io.github.libzeal.zeal.values.api.BaseObjectValue;
  *
  * @author Justin Albano
  */
-public class BoxedCharacterValue extends BaseObjectValue<Character, BoxedCharacterValue> {
+public class BoxedCharacterValue extends BaseValue<Character, BoxedCharacterValue> {
 
     private static final String IS_LOWER_CASE = "isLowerCase";
     private static final String IS_UPPER_CASE = "isUpperCase";
@@ -40,6 +40,7 @@ public class BoxedCharacterValue extends BaseObjectValue<Character, BoxedCharact
             expression(Character::isLowerCase)
                 .name(IS_LOWER_CASE)
                 .expected(IS_LOWER_CASE)
+                .build()
         );
     }
 
@@ -55,6 +56,7 @@ public class BoxedCharacterValue extends BaseObjectValue<Character, BoxedCharact
             expression(Character::isUpperCase)
                 .name(IS_UPPER_CASE)
                 .expected(IS_UPPER_CASE)
+                .build()
         );
     }
 
@@ -70,6 +72,7 @@ public class BoxedCharacterValue extends BaseObjectValue<Character, BoxedCharact
             expression(Character::isLetter)
                 .name(IS_LETTER)
                 .expected(IS_LETTER)
+                .build()
         );
     }
 
@@ -85,6 +88,7 @@ public class BoxedCharacterValue extends BaseObjectValue<Character, BoxedCharact
             expression(s -> !Character.isLetter(s))
                 .name("isNotLetter")
                 .expected("not[" + IS_LETTER + "]")
+                .build()
         );
     }
 
@@ -100,6 +104,7 @@ public class BoxedCharacterValue extends BaseObjectValue<Character, BoxedCharact
             expression(Character::isDigit)
                 .name(IS_DIGIT)
                 .expected(IS_DIGIT)
+                .build()
         );
     }
 
@@ -115,6 +120,7 @@ public class BoxedCharacterValue extends BaseObjectValue<Character, BoxedCharact
             expression(s -> !Character.isDigit(s))
                 .name("isNotDigit")
                 .expected("not[" + IS_DIGIT + "]")
+                .build()
         );
     }
 
@@ -130,6 +136,7 @@ public class BoxedCharacterValue extends BaseObjectValue<Character, BoxedCharact
             expression(Character::isLetterOrDigit)
                 .name(IS_LETTER_OR_DIGIT)
                 .expected(IS_LETTER_OR_DIGIT)
+                .build()
         );
     }
 
@@ -145,6 +152,7 @@ public class BoxedCharacterValue extends BaseObjectValue<Character, BoxedCharact
             expression(s -> !Character.isLetterOrDigit(s))
                 .name("isNotLetterOrDigit")
                 .expected("not[" + IS_LETTER_OR_DIGIT + "]")
+                .build()
         );
     }
 
@@ -160,6 +168,7 @@ public class BoxedCharacterValue extends BaseObjectValue<Character, BoxedCharact
             expression(Character::isWhitespace)
                 .name(IS_WHITESPACE)
                 .expected(IS_WHITESPACE)
+                .build()
         );
     }
 
@@ -175,6 +184,7 @@ public class BoxedCharacterValue extends BaseObjectValue<Character, BoxedCharact
             expression(s -> !Character.isWhitespace(s))
                 .name("isNotWhitespace")
                 .expected("not[" + IS_WHITESPACE + "]")
+                .build()
         );
     }
 }

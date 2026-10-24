@@ -1,107 +1,136 @@
 package io.github.libzeal.zeal.values.core.boxed;
 
-import io.github.libzeal.zeal.values.core.test.ExpressionTestCaseBuilder;
+import io.github.libzeal.zeal.values.sdk.BaseValue;
+import org.junit.jupiter.api.Test;
 
 import static io.github.libzeal.zeal.logic.evaluation.Result.FALSE;
 import static io.github.libzeal.zeal.logic.evaluation.Result.TRUE;
 
-public abstract class BoxedWholeNumberValueTest<T extends Number, E extends BoxedWholeNumberValue<T, E>>
+public abstract class BoxedWholeNumberValueTest<T extends Number, E extends BaseValue<T, E> & BoxedWholeNumberValue<T, E>>
     extends BoxedNumberValueTest<T, E> {
 
-    @Override
-    protected void customTestCases(final ExpressionTestCaseBuilder<T, E> builder) {
-        isEvenTestCases(builder);
-        isOddTestCases(builder);
+    // ---- isEven ----
+
+    @Test
+    void givenPositiveEven_whenIsEven_thenTrue() {
+        newTestCase()
+            .subject(add(exampleZeroValue(), (short) 2))
+            .expression(BoxedWholeNumberValue::isEven)
+            .result(TRUE)
+            .name("isEven")
+            .expected("% 2 := 0")
+            .actual("2")
+            .run();
     }
 
-    private void isEvenTestCases(final ExpressionTestCaseBuilder<T, E> builder) {
-
-        final T value0 = exampleZeroValue();
-        final T valueNeg1 = subtract(value0, (short) 1);
-        final T valueNeg2 = subtract(value0, (short) 2);
-        final T value1 = add(value0, (short) 1);
-        final T value2 = add(value0, (short) 2);
-
-        builder.newTest((expression, value) -> expression.isEven())
-                .subject(value2)
-                .expectedState(TRUE)
-                .expectedName("isEven")
-                .expectedExpected("% 2 := 0")
-                .expectedActual("2")
-                .addTest()
-            .newTest((expression, value) -> expression.isEven())
-                .subject(value1)
-                .expectedState(FALSE)
-                .expectedName("isEven")
-                .expectedExpected("% 2 := 0")
-                .expectedActual("1")
-                .addTest()
-            .newTest((expression, value) -> expression.isEven())
-                .subject(value0)
-                .expectedState(TRUE)
-                .expectedName("isEven")
-                .expectedExpected("% 2 := 0")
-                .expectedActual("0")
-                .addTest()
-            .newTest((expression, value) -> expression.isEven())
-                .subject(valueNeg1)
-                .expectedState(FALSE)
-                .expectedName("isEven")
-                .expectedExpected("% 2 := 0")
-                .expectedActual("-1")
-                .addTest()
-            .newTest((expression, value) -> expression.isEven())
-                .subject(valueNeg2)
-                .expectedState(TRUE)
-                .expectedName("isEven")
-                .expectedExpected("% 2 := 0")
-                .expectedActual("-2")
-                .addTest();
+    @Test
+    void givenPositiveOdd_whenIsEven_thenFalse() {
+        newTestCase()
+            .subject(add(exampleZeroValue(), (short) 1))
+            .expression(BoxedWholeNumberValue::isEven)
+            .result(FALSE)
+            .name("isEven")
+            .expected("% 2 := 0")
+            .actual("1")
+            .run();
     }
 
-    private void isOddTestCases(final ExpressionTestCaseBuilder<T, E> builder) {
+    @Test
+    void givenZero_whenIsEven_thenTrue() {
+        newTestCase()
+            .subject(exampleZeroValue())
+            .expression(BoxedWholeNumberValue::isEven)
+            .result(TRUE)
+            .name("isEven")
+            .expected("% 2 := 0")
+            .actual("0")
+            .run();
+    }
 
-        final T value0 = exampleZeroValue();
-        final T valueNeg1 = subtract(value0, (short) 1);
-        final T valueNeg2 = subtract(value0, (short) 2);
-        final T value1 = add(value0, (short) 1);
-        final T value2 = add(value0, (short) 2);
+    @Test
+    void givenNegativeOdd_whenIsEven_thenFalse() {
+        newTestCase()
+            .subject(subtract(exampleZeroValue(), (short) 1))
+            .expression(BoxedWholeNumberValue::isEven)
+            .result(FALSE)
+            .name("isEven")
+            .expected("% 2 := 0")
+            .actual("-1")
+            .run();
+    }
 
-        builder.newTest((expression, value) -> expression.isOdd())
-                .subject(value2)
-                .expectedState(FALSE)
-                .expectedName("isOdd")
-                .expectedExpected("% 2 != 0")
-                .expectedActual("2")
-                .addTest()
-            .newTest((expression, value) -> expression.isOdd())
-                .subject(value1)
-                .expectedState(TRUE)
-                .expectedName("isOdd")
-                .expectedExpected("% 2 != 0")
-                .expectedActual("1")
-                .addTest()
-            .newTest((expression, value) -> expression.isOdd())
-                .subject(value0)
-                .expectedState(FALSE)
-                .expectedName("isOdd")
-                .expectedExpected("% 2 != 0")
-                .expectedActual("0")
-                .addTest()
-            .newTest((expression, value) -> expression.isOdd())
-                .subject(valueNeg1)
-                .expectedState(TRUE)
-                .expectedName("isOdd")
-                .expectedExpected("% 2 != 0")
-                .expectedActual("-1")
-                .addTest()
-            .newTest((expression, value) -> expression.isOdd())
-                .subject(valueNeg2)
-                .expectedState(FALSE)
-                .expectedName("isOdd")
-                .expectedExpected("% 2 != 0")
-                .expectedActual("-2")
-                .addTest();
+    @Test
+    void givenNegativeEven_whenIsEven_thenTrue() {
+        newTestCase()
+            .subject(subtract(exampleZeroValue(), (short) 2))
+            .expression(BoxedWholeNumberValue::isEven)
+            .result(TRUE)
+            .name("isEven")
+            .expected("% 2 := 0")
+            .actual("-2")
+            .run();
+    }
+
+    // ---- isOdd ----
+
+    @Test
+    void givenPositiveEven_whenIsOdd_thenFalse() {
+        newTestCase()
+            .subject(add(exampleZeroValue(), (short) 2))
+            .expression(BoxedWholeNumberValue::isOdd)
+            .result(FALSE)
+            .name("isOdd")
+            .expected("% 2 != 0")
+            .actual("2")
+            .run();
+    }
+
+    @Test
+    void givenPositiveOdd_whenIsOdd_thenTrue() {
+        newTestCase()
+            .subject(add(exampleZeroValue(), (short) 1))
+            .expression(BoxedWholeNumberValue::isOdd)
+            .result(TRUE)
+            .name("isOdd")
+            .expected("% 2 != 0")
+            .actual("1")
+            .run();
+    }
+
+    @Test
+    void givenZero_whenIsOdd_thenFalse() {
+        newTestCase()
+            .subject(exampleZeroValue())
+            .expression(BoxedWholeNumberValue::isOdd)
+            .result(FALSE)
+            .name("isOdd")
+            .expected("% 2 != 0")
+            .actual("0")
+            .run();
+    }
+
+    @Test
+    void givenNegativeOdd_whenIsOdd_thenTrue() {
+        newTestCase()
+            .subject(subtract(exampleZeroValue(), (short) 1))
+            .expression(BoxedWholeNumberValue::isOdd)
+            .result(TRUE)
+            .name("isOdd")
+            .expected("% 2 != 0")
+            .actual("-1")
+            .run();
+    }
+
+    @Test
+    void givenNegativeEven_whenIsOdd_thenFalse() {
+        newTestCase()
+            .subject(subtract(exampleZeroValue(), (short) 2))
+            .expression(BoxedWholeNumberValue::isOdd)
+            .result(FALSE)
+            .name("isOdd")
+            .expected("% 2 != 0")
+            .actual("-2")
+            .run();
     }
 
     protected abstract T add(T a, short b);

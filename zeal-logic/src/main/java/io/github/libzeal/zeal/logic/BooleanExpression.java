@@ -1,7 +1,7 @@
 package io.github.libzeal.zeal.logic;
 
-import io.github.libzeal.zeal.logic.evaluation.Evaluation;
-import io.github.libzeal.zeal.logic.evaluation.EvaluatedTerminalEvaluation;
+import io.github.libzeal.zeal.logic.evaluation.Result;
+import io.github.libzeal.zeal.logic.evaluation.TerminalEvaluation;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
 import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
 import io.github.libzeal.zeal.logic.util.StopWatch;
@@ -18,7 +18,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @author Justin Albano
  */
-public final class BooleanExpression implements Expression {
+public final class BooleanExpression implements TerminalExpression {
 
     private final String name;
     private final BooleanSupplier predicate;
@@ -49,7 +49,7 @@ public final class BooleanExpression implements Expression {
      *         The supplied predicate is {@code null}.
      */
     public BooleanExpression(final BooleanSupplier predicate) {
-        this("(unnamed)", predicate);
+        this(DEFAULT_NAME, predicate);
     }
 
     @Override
@@ -58,18 +58,13 @@ public final class BooleanExpression implements Expression {
     }
 
     @Override
-    public Evaluation evaluate() {
+    public TerminalEvaluation evaluate() {
 
         final StopWatch stopWatch = StopWatch.started();
         final boolean passed = predicate.getAsBoolean();
         final Rationale rationale = new SimpleRationale("true", String.valueOf(passed));
         final Duration elapsedTime = stopWatch.stop();
 
-        if (passed) {
-            return EvaluatedTerminalEvaluation.ofTrue(name, rationale, elapsedTime);
-        }
-        else {
-            return EvaluatedTerminalEvaluation.ofFalse(name, rationale, elapsedTime);
-        }
+        return TerminalEvaluation.of(Result.from(passed), name, rationale, elapsedTime);
     }
 }

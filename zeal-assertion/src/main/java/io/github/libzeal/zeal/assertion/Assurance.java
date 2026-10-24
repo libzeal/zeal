@@ -2,7 +2,6 @@ package io.github.libzeal.zeal.assertion;
 
 import io.github.libzeal.zeal.assertion.error.PostconditionFailedException;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
-import io.github.libzeal.zeal.logic.evaluation.Result;
 import io.github.libzeal.zeal.logic.evaluation.format.simple.SimpleFormatter;
 import io.github.libzeal.zeal.logic.unary.UnaryExpression;
 
@@ -49,7 +48,6 @@ public class Assurance {
      *     <ol>
      *         <li>The supplied expression was {@code null}</li>
      *         <li>The supplied expression provides a {@code null} {@link Evaluation}</li>
-     *         <li>The supplied expression provides a {@code null} evaluation {@link Result}</li>
      *     </ol>
      * @throws PostconditionFailedException
      *     The supplied expression evaluates to false.
@@ -75,7 +73,6 @@ public class Assurance {
      *     <ol>
      *         <li>The supplied expression was {@code null}</li>
      *         <li>The supplied expression provides a {@code null} {@link Evaluation}</li>
-     *         <li>The supplied expression provides a {@code null} evaluation {@link Result}</li>
      *     </ol>
      * @throws PostconditionFailedException
      *     The supplied expression evaluates to false.

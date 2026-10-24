@@ -1,24 +1,26 @@
 package io.github.libzeal.zeal.values.collection;
 
-import io.github.libzeal.zeal.values.api.BaseObjectValue;
-import io.github.libzeal.zeal.values.api.sequence.*;
-import io.github.libzeal.zeal.values.api.sequence.builder.*;
-import io.github.libzeal.zeal.values.api.sequence.builder.InspectableSequenceValueBuilder.InspectableSequenceOperations;
-import io.github.libzeal.zeal.values.api.sequence.builder.OrderedSequenceValueBuilder.OrderedSequenceOperations;
-import io.github.libzeal.zeal.values.api.sequence.builder.RepeatableSequenceValueBuilder.RepeatableSequenceOperations;
-import io.github.libzeal.zeal.values.api.sequence.builder.SizedSequenceValueBuilder.SizedSequenceOperations;
+import io.github.libzeal.zeal.values.sdk.BaseValue;
+import io.github.libzeal.zeal.values.sdk.sequence.*;
+import io.github.libzeal.zeal.values.sdk.sequence.InspectableSequenceExpressions.InspectableSequenceOperations;
+import io.github.libzeal.zeal.values.sdk.sequence.OrderedSequenceExpressions.OrderedSequenceOperations;
+import io.github.libzeal.zeal.values.sdk.sequence.RepeatableSequenceExpressions.RepeatableSequenceOperations;
+import io.github.libzeal.zeal.values.sdk.sequence.SizedSequenceExpressions.SizedSequenceOperations;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
 
 import static java.util.stream.Collectors.toList;
 
-public class ArrayValue<T> extends BaseObjectValue<T[], ArrayValue<T>> implements
+public class ArrayValue<T> extends BaseValue<T[], ArrayValue<T>> implements
     SizedSequenceValue<T[], ArrayValue<T>>,
     InspectableSequenceValue<T, ArrayValue<T>>,
     OrderedSequenceValue<T, ArrayValue<T>>,
     RepeatableSequenceValue<T, ArrayValue<T>> {
 
-    private final ArraySequenceOperations<T> operations = new ArraySequenceOperations<>();
+    private final ArrayOperations<T> operations = new ArrayOperations<>();
 
     public ArrayValue(final T[] subject) {
         super(subject, "Array value");
@@ -27,70 +29,70 @@ public class ArrayValue<T> extends BaseObjectValue<T[], ArrayValue<T>> implement
     @Override
     public ArrayValue<T> isEmpty() {
         return append(
-            SizedSequenceValueBuilder.isEmpty(operations)
+            SizedSequenceExpressions.isEmpty(operations)
         );
     }
 
     @Override
     public ArrayValue<T> isNotEmpty() {
         return append(
-            SizedSequenceValueBuilder.isNotEmpty(operations)
+            SizedSequenceExpressions.isNotEmpty(operations)
         );
     }
 
     @Override
     public ArrayValue<T> hasLengthOf(final int length) {
         return append(
-            SizedSequenceValueBuilder.hasLengthOf(length, operations)
+            SizedSequenceExpressions.hasLengthOf(length, operations)
         );
     }
 
     @Override
     public ArrayValue<T> doesNotHaveLengthOf(final int length) {
         return append(
-            SizedSequenceValueBuilder.doesNotHaveLengthOf(length, operations)
+            SizedSequenceExpressions.doesNotHaveLengthOf(length, operations)
         );
     }
 
     @Override
     public ArrayValue<T> isShorterThan(final int length) {
         return append(
-            SizedSequenceValueBuilder.isShorterThan(length, operations)
+            SizedSequenceExpressions.isShorterThan(length, operations)
         );
     }
 
     @Override
     public ArrayValue<T> isShorterThanOrEqualTo(final int length) {
         return append(
-            SizedSequenceValueBuilder.isShorterThanOrEqualTo(length, operations)
+            SizedSequenceExpressions.isShorterThanOrEqualTo(length, operations)
         );
     }
 
     @Override
     public ArrayValue<T> isLongerThan(final int length) {
         return append(
-            SizedSequenceValueBuilder.isLongerThan(length, operations)
+            SizedSequenceExpressions.isLongerThan(length, operations)
         );
     }
 
     @Override
     public ArrayValue<T> isLongerThanOrEqualTo(final int length) {
         return append(
-            SizedSequenceValueBuilder.isLongerThanOrEqualTo(length, operations)
+            SizedSequenceExpressions.isLongerThanOrEqualTo(length, operations)
         );
     }
 
     @Override
     public ArrayValue<T> includes(final T desired) {
         return append(
-            OrderedSequenceValueBuilder.includes(desired, operations)
+            OrderedSequenceExpressions.includes(desired, operations)
         );
     }
 
     @Override
     public ArrayValue<T> includesAll(final Collection<T> desired) {
         return append(
-            InspectableSequenceValueBuilder.includesAll(desired, operations)
+            InspectableSequenceExpressions.includesAll(desired, operations)
         );
     }
 
@@ -103,7 +105,7 @@ public class ArrayValue<T> extends BaseObjectValue<T[], ArrayValue<T>> implement
     @Override
     public ArrayValue<T> includesAny(final Collection<T> desired) {
         return append(
-            InspectableSequenceValueBuilder.includesAny(desired, operations)
+            InspectableSequenceExpressions.includesAny(desired, operations)
         );
     }
 
@@ -116,49 +118,49 @@ public class ArrayValue<T> extends BaseObjectValue<T[], ArrayValue<T>> implement
     @Override
     public ArrayValue<T> includesExactly(final T desired, final long times) {
         return append(
-            RepeatableSequenceValueBuilder.includesExactly(desired, times, operations)
+            RepeatableSequenceExpressions.includesExactly(desired, times, operations)
         );
     }
 
     @Override
     public ArrayValue<T> includesMoreThan(final T desired, final long times) {
         return append(
-            RepeatableSequenceValueBuilder.includesMoreThan(desired, times, operations)
+            RepeatableSequenceExpressions.includesMoreThan(desired, times, operations)
         );
     }
 
     @Override
     public ArrayValue<T> includesMoreThanOrEqualTo(final T desired, final long times) {
         return append(
-            RepeatableSequenceValueBuilder.includesMoreThanOrEqualTo(desired, times, operations)
+            RepeatableSequenceExpressions.includesMoreThanOrEqualTo(desired, times, operations)
         );
     }
 
     @Override
     public ArrayValue<T> includesLessThan(final T desired, final long times) {
         return append(
-            RepeatableSequenceValueBuilder.includesLessThan(desired, times, operations)
+            RepeatableSequenceExpressions.includesLessThan(desired, times, operations)
         );
     }
 
     @Override
     public ArrayValue<T> includesLessThanOrEqualTo(final T desired, final long times) {
         return append(
-            RepeatableSequenceValueBuilder.includesLessThanOrEqualTo(desired, times, operations)
+            RepeatableSequenceExpressions.includesLessThanOrEqualTo(desired, times, operations)
         );
     }
 
     @Override
     public ArrayValue<T> excludes(final T desired) {
         return append(
-            OrderedSequenceValueBuilder.excludes(desired, operations)
+            OrderedSequenceExpressions.excludes(desired, operations)
         );
     }
 
     @Override
     public ArrayValue<T> excludesAll(final Collection<T> desired) {
         return append(
-            InspectableSequenceValueBuilder.excludesAll(desired, operations)
+            InspectableSequenceExpressions.excludesAll(desired, operations)
         );
     }
 
@@ -171,7 +173,7 @@ public class ArrayValue<T> extends BaseObjectValue<T[], ArrayValue<T>> implement
     @Override
     public ArrayValue<T> excludesAny(final Collection<T> desired) {
         return append(
-            InspectableSequenceValueBuilder.excludesAny(desired, operations)
+            InspectableSequenceExpressions.excludesAny(desired, operations)
         );
     }
 
@@ -184,51 +186,77 @@ public class ArrayValue<T> extends BaseObjectValue<T[], ArrayValue<T>> implement
     @Override
     public ArrayValue<T> hasAtIndex(final T desired, final int index) {
         return append(
-            OrderedSequenceValueBuilder.hasAtIndex(desired, index, operations)
+            OrderedSequenceExpressions.hasAtIndex(desired, index, operations)
         );
     }
 
     @Override
     public ArrayValue<T> doesNotHaveAtIndex(final T desired, final int index) {
         return append(
-            OrderedSequenceValueBuilder.doesNotHaveAtIndex(desired, index, operations)
+            OrderedSequenceExpressions.doesNotHaveAtIndex(desired, index, operations)
+        );
+    }
+
+    @Override
+    public ArrayValue<T> lastIndexOfIs(final T desired, final int index) {
+        return append(
+            OrderedSequenceExpressions.lastIndexOfIs(desired, index, operations)
+        );
+    }
+
+    @Override
+    public ArrayValue<T> lastIndexOfIsNot(final T desired, final int index) {
+        return append(
+            OrderedSequenceExpressions.lastIndexOfIsNot(desired, index, operations)
         );
     }
 
     @Override
     public ArrayValue<T> startsWith(final T desired) {
         return append(
-            OrderedSequenceValueBuilder.startsWith(desired, operations)
+            OrderedSequenceExpressions.startsWith(desired, operations)
         );
     }
 
     @Override
     public ArrayValue<T> doesNotStartWith(final T desired) {
         return append(
-            OrderedSequenceValueBuilder.doesNotStartWith(desired, operations)
+            OrderedSequenceExpressions.doesNotStartWith(desired, operations)
         );
     }
 
     @Override
     public ArrayValue<T> endsWith(final T desired) {
         return append(
-            OrderedSequenceValueBuilder.endsWith(desired, operations)
+            OrderedSequenceExpressions.endsWith(desired, operations)
         );
     }
 
     @Override
     public ArrayValue<T> doesNotEndWith(final T desired) {
         return append(
-            OrderedSequenceValueBuilder.doesNotEndWith(desired, operations)
+            OrderedSequenceExpressions.doesNotEndWith(desired, operations)
         );
     }
 
-    protected static final class ArraySequenceOperations<T>
+    private static final class ArrayOperations<T>
         implements
             SizedSequenceOperations<T[]>,
             InspectableSequenceOperations<T, T[]>,
             OrderedSequenceOperations<T, T[]>,
             RepeatableSequenceOperations<T, T[]> {
+
+        @Override
+        public int lastIndexOf(final T[] haystack, final T needle) {
+
+            for (int index = haystack.length - 1; index >= 0; index--) {
+                if (Objects.equals(haystack[index], needle)) {
+                    return index;
+                }
+            }
+
+            return -1;
+        }
 
         @Override
         public int indexOf(final T[] haystack, final T needle) {
@@ -281,7 +309,7 @@ public class ArrayValue<T> extends BaseObjectValue<T[], ArrayValue<T>> implement
         @Override
         public Element<T> atIndex(final T[] haystack, final int index, final T desired) {
 
-            if (index > 0 && index < haystack.length) {
+            if (index >= 0 && index < haystack.length) {
                 return Element.found(haystack[index]);
             }
             else {
@@ -292,11 +320,6 @@ public class ArrayValue<T> extends BaseObjectValue<T[], ArrayValue<T>> implement
         @Override
         public int size(final T[] haystack) {
             return haystack.length;
-        }
-
-        @Override
-        public boolean isEmpty(final T[] haystack) {
-            return haystack.length == 0;
         }
 
         @Override
