@@ -1,4 +1,4 @@
-package io.github.libzeal.zeal.logic.evaluation.format.simple;
+package io.github.libzeal.zeal.logic.evaluation.format;
 
 import io.github.libzeal.zeal.logic.AndExpression;
 import io.github.libzeal.zeal.logic.Expression;
@@ -9,6 +9,7 @@ import io.github.libzeal.zeal.logic.evaluation.SkippableEvaluation;
 import io.github.libzeal.zeal.logic.evaluation.SkippableEvaluation.Evaluated;
 import io.github.libzeal.zeal.logic.evaluation.SkippableEvaluation.Skipped;
 import io.github.libzeal.zeal.logic.evaluation.TerminalEvaluation;
+import io.github.libzeal.zeal.logic.evaluation.format.SimpleFormatter;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
 import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
 import org.junit.jupiter.api.BeforeEach;

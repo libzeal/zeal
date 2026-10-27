@@ -2,7 +2,7 @@ package io.github.libzeal.zeal.assertion;
 
 import io.github.libzeal.zeal.assertion.error.PostconditionFailedException;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
-import io.github.libzeal.zeal.logic.evaluation.format.simple.SimpleFormatter;
+import io.github.libzeal.zeal.logic.evaluation.format.SimpleFormatter;
 import io.github.libzeal.zeal.logic.unary.UnaryExpression;
 
 /**

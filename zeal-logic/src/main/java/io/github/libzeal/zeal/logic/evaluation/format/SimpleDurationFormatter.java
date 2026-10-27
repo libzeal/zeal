@@ -1,4 +1,4 @@
-package io.github.libzeal.zeal.logic.evaluation.format.simple;
+package io.github.libzeal.zeal.logic.evaluation.format;
 
 import java.time.Duration;
 

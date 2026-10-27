@@ -1,4 +1,4 @@
-package io.github.libzeal.zeal.logic.evaluation.format.simple;
+package io.github.libzeal.zeal.logic.evaluation.format;
 
 import io.github.libzeal.zeal.logic.CompoundExpression;
 import io.github.libzeal.zeal.logic.Expression;
@@ -8,7 +8,6 @@ import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.evaluation.SkippableEvaluation;
 import io.github.libzeal.zeal.logic.evaluation.SkippableEvaluation.Evaluated;
 import io.github.libzeal.zeal.logic.evaluation.SkippableEvaluation.Skipped;
-import io.github.libzeal.zeal.logic.evaluation.format.Formatter;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
 
 import java.util.List;
@@ -77,7 +76,7 @@ public class SimpleFormatter implements Formatter {
     private static void appendEvaluation(final Evaluation evaluation, final List<Evaluation> rootCauses,
                                          final int depth, final StringBuilder builder) {
 
-        builder.append(INDENT.repeat(depth))
+        builder.repeat(INDENT, depth)
             .append(evaluation.result() ? "[T] " : "[F] ")
             .append(evaluation.name())
             .append(" (")
@@ -102,7 +101,7 @@ public class SimpleFormatter implements Formatter {
 
     private static void appendSkipped(final Expression expression, final int depth, final StringBuilder builder) {
 
-        builder.append(INDENT.repeat(depth))
+        builder.repeat(INDENT, depth)
             .append("[ ] ")
             .append(expression.name())
             .append("\n");

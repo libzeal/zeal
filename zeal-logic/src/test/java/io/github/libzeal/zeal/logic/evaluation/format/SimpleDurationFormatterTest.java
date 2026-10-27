@@ -1,5 +1,6 @@
-package io.github.libzeal.zeal.logic.evaluation.format.simple;
+package io.github.libzeal.zeal.logic.evaluation.format;
 
+import io.github.libzeal.zeal.logic.evaluation.format.SimpleDurationFormatter;
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
