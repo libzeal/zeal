@@ -1,14 +1,13 @@
 package io.github.libzeal.zeal.logic.test;
 
+import io.github.libzeal.zeal.logic.CompoundExpression;
+import io.github.libzeal.zeal.logic.Expression;
 import io.github.libzeal.zeal.logic.evaluation.Cause;
 import io.github.libzeal.zeal.logic.evaluation.CompoundEvaluation;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.evaluation.SkippableEvaluation;
 import io.github.libzeal.zeal.logic.evaluation.SkippableEvaluation.Evaluated;
 import io.github.libzeal.zeal.logic.evaluation.SkippableEvaluation.Skipped;
-import io.github.libzeal.zeal.logic.evaluation.traverse.DepthFirstTraverser;
-import io.github.libzeal.zeal.logic.evaluation.traverse.TraversalContext;
-import io.github.libzeal.zeal.logic.evaluation.traverse.TraverserAction;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,19 +40,27 @@ public class CauseAssertions {
 
         final List<Skipped> found = new ArrayList<>();
 
-        new DepthFirstTraverser().traverse(evaluation, new TraverserAction() {
-
-            @Override
-            public void on(final Evaluation visited, final TraversalContext context) {
+        if (evaluation instanceof final CompoundEvaluation compound) {
+            for (final SkippableEvaluation child : compound.children()) {
+                switch (child) {
+                    case Evaluated(Evaluation evaluated) -> found.addAll(skippedDescendants(evaluated));
+                    case Skipped skipped -> addSkipped(skipped, found);
+                }
             }
-
-            @Override
-            public void onSkipped(final Skipped skipped, final TraversalContext context) {
-                found.add(skipped);
-            }
-        });
+        }
 
         return found;
+    }
+
+    private static void addSkipped(final Skipped skipped, final List<Skipped> found) {
+
+        found.add(skipped);
+
+        if (skipped.expression() instanceof final CompoundExpression compound) {
+            for (final Expression child : compound.children()) {
+                addSkipped(new Skipped(child, skipped.cause()), found);
+            }
+        }
     }
 
     public static void assertCauseIsSelf(final Evaluation evaluation) {

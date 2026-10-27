@@ -2,10 +2,12 @@ package io.github.libzeal.zeal.logic.evaluation.format.simple;
 
 import java.time.Duration;
 
-class SimpleDurationFormatter implements ComponentFormatter<Duration> {
+final class SimpleDurationFormatter {
 
-    @Override
-    public String format(final Duration elapsedTime, final SimpleFormatterContext context) {
+    private SimpleDurationFormatter() {
+    }
+
+    static String format(final Duration elapsedTime) {
 
         if (elapsedTime == null) {
             return "";

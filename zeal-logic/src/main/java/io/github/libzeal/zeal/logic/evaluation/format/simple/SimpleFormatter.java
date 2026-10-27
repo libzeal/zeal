@@ -1,17 +1,17 @@
 package io.github.libzeal.zeal.logic.evaluation.format.simple;
 
+import io.github.libzeal.zeal.logic.CompoundExpression;
+import io.github.libzeal.zeal.logic.Expression;
+import io.github.libzeal.zeal.logic.evaluation.Cause;
+import io.github.libzeal.zeal.logic.evaluation.CompoundEvaluation;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
+import io.github.libzeal.zeal.logic.evaluation.SkippableEvaluation;
+import io.github.libzeal.zeal.logic.evaluation.SkippableEvaluation.Evaluated;
 import io.github.libzeal.zeal.logic.evaluation.SkippableEvaluation.Skipped;
-import io.github.libzeal.zeal.logic.evaluation.traverse.TraversalContext;
-import io.github.libzeal.zeal.logic.evaluation.traverse.DepthFirstTraverser;
 import io.github.libzeal.zeal.logic.evaluation.format.Formatter;
-import io.github.libzeal.zeal.logic.evaluation.traverse.Traverser;
-import io.github.libzeal.zeal.logic.evaluation.traverse.TraverserAction;
+import io.github.libzeal.zeal.logic.rationale.Rationale;
 
-import java.time.Duration;
 import java.util.List;
-
-import static java.util.Objects.requireNonNull;
 
 /**
  * A simple formatter that provides information about the root cause of a failed evaluation, as well as a tree-based
@@ -21,79 +21,96 @@ import static java.util.Objects.requireNonNull;
  */
 public class SimpleFormatter implements Formatter {
 
-    static final int INDENTATION = 4;
-    private final ComponentFormatter<Evaluation> evaluationFormatter;
-    private final ComponentFormatter<Skipped> skippedFormatter;
-    private final ComponentFormatter<Evaluation> rootCauseFormatter;
-    private final ComponentFormatter<Heading> headingFormatter;
+    static final String TRUE_ROOT_CAUSE_NOTE = "A true expression may be a root cause if it belongs to a negated " +
+        "expression, such as NOT, NAND, or NOR";
+    private static final String INDENT = "    ";
+    private static final String FIELD_FORMAT = "%-11s : %s\n";
 
     /**
      * Creates a new formatter.
      */
     public SimpleFormatter() {
-
-        final ComponentFormatter<Boolean> resultFormatter = new SimpleResultFormatter();
-        final ComponentFormatter<Duration> durationFormatter = new SimpleDurationFormatter();
-
-        this.evaluationFormatter = new SimpleEvaluationFormatter(INDENTATION, resultFormatter, durationFormatter);
-        this.skippedFormatter = new SimpleSkippedFormatter(INDENTATION);
-        this.rootCauseFormatter = new SimpleRootCauseFormatter(INDENTATION);
-        this.headingFormatter = new SimpleHeadingFormatter(INDENTATION);
     }
 
     @Override
     public String format(final Evaluation evaluation) {
 
-        final List<Evaluation> rootCauses = evaluation.rootCauses();
-        final SimpleFormatterContext context = new SimpleFormatterContext(rootCauses, 0);
         final StringBuilder builder = new StringBuilder();
-        final Traverser traverser = new DepthFirstTraverser();
-        final TraverserAction action = new FormattingTraverser(rootCauses, builder,
-            evaluationFormatter, skippedFormatter);
-        final Heading heading = new Heading("Evaluation");
 
-        builder.append(rootCauseFormatter.format(evaluation, context))
-            .append(headingFormatter.format(heading, context));
+        if (!evaluation.result()) {
+            appendRootCauses(evaluation, builder);
+        }
 
-        traverser.traverse(evaluation, action);
+        builder.append("Evaluation:\n");
+        appendEvaluation(evaluation, evaluation.rootCauses(), 0, builder);
 
         return builder.toString().trim();
     }
 
-    private record FormattingTraverser(List<Evaluation> rootCauses,
-                                       StringBuilder builder,
-                                       ComponentFormatter<Evaluation> evaluationFormatter,
-                                       ComponentFormatter<Skipped> skippedFormatter) implements TraverserAction {
+    private static void appendRootCauses(final Evaluation evaluation, final StringBuilder builder) {
 
-            private FormattingTraverser {
-                requireNonNull(rootCauses);
-                requireNonNull(builder);
-                requireNonNull(evaluationFormatter);
-                requireNonNull(skippedFormatter);
+        builder.append("Root Causes:\n");
+
+        for (final Cause.Trace trace : evaluation.causeTraces()) {
+
+            final Evaluation rootCause = trace.rootCause();
+            final Rationale rationale = rootCause.rationale();
+
+            appendField("Expression", rootCause.name(), builder);
+            appendField("Expected", rationale.expected(), builder);
+            appendField("Actual", rationale.actual(), builder);
+            rationale.hint().ifPresent(hint -> appendField("Hint", hint, builder));
+            appendField("Cause Trace", trace.toString(), builder);
+
+            if (rootCause.result()) {
+                appendField("Notes", TRUE_ROOT_CAUSE_NOTE, builder);
             }
 
-            @Override
-            public void on(final Evaluation evaluation, final TraversalContext context) {
+            builder.append("\n");
+        }
+    }
 
-                final SimpleFormatterContext componentContext = createContext(context);
-                final String formattedText = evaluationFormatter.format(evaluation, componentContext);
+    private static void appendField(final String key, final String value, final StringBuilder builder) {
+        builder.append(String.format(FIELD_FORMAT, key, value));
+    }
 
-                builder.append(formattedText)
-                    .append("\n");
-            }
+    private static void appendEvaluation(final Evaluation evaluation, final List<Evaluation> rootCauses,
+                                         final int depth, final StringBuilder builder) {
 
-            @Override
-            public void onSkipped(final Skipped skipped, final TraversalContext context) {
+        builder.append(INDENT.repeat(depth))
+            .append(evaluation.result() ? "[T] " : "[F] ")
+            .append(evaluation.name())
+            .append(" (")
+            .append(SimpleDurationFormatter.format(evaluation.elapsedTime()))
+            .append(")");
 
-                final SimpleFormatterContext componentContext = createContext(context);
-                final String formattedText = skippedFormatter.format(skipped, componentContext);
+        if (rootCauses.stream().anyMatch(rootCause -> rootCause == evaluation)) {
+            builder.append("  <---[ Root Cause ]");
+        }
 
-                builder.append(formattedText)
-                    .append("\n");
-            }
+        builder.append("\n");
 
-            private SimpleFormatterContext createContext(final TraversalContext context) {
-                return new SimpleFormatterContext(rootCauses, context.depth());
+        if (evaluation instanceof final CompoundEvaluation compound) {
+            for (final SkippableEvaluation child : compound.children()) {
+                switch (child) {
+                    case Evaluated(Evaluation evaluated) -> appendEvaluation(evaluated, rootCauses, depth + 1, builder);
+                    case Skipped skipped -> appendSkipped(skipped.expression(), depth + 1, builder);
+                }
             }
         }
+    }
+
+    private static void appendSkipped(final Expression expression, final int depth, final StringBuilder builder) {
+
+        builder.append(INDENT.repeat(depth))
+            .append("[ ] ")
+            .append(expression.name())
+            .append("\n");
+
+        if (expression instanceof final CompoundExpression compound) {
+            for (final Expression child : compound.children()) {
+                appendSkipped(child, depth + 1, builder);
+            }
+        }
+    }
 }

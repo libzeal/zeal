@@ -1,22 +1,12 @@
 package io.github.libzeal.zeal.logic.evaluation.format.simple;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class SimpleDurationFormatterTest {
-
-    private static final SimpleFormatterContext CONTEXT = new SimpleFormatterContext(List.of(), 0);
-    private SimpleDurationFormatter formatter;
-
-    @BeforeEach
-    void setUp() {
-        formatter = new SimpleDurationFormatter();
-    }
 
     @Test
     void givenNullDuration_whenFormat_thenEmptyStringReturned() {
@@ -32,7 +22,7 @@ class SimpleDurationFormatterTest {
     }
 
     private String format(final Duration duration) {
-        return formatter.format(duration, CONTEXT);
+        return SimpleDurationFormatter.format(duration);
     }
 
     @Test

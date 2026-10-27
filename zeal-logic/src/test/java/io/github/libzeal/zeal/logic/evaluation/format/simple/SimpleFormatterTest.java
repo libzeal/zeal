@@ -126,7 +126,7 @@ class SimpleFormatterTest {
                 "Actual      : " + childRationale.actual() + "\n" +
                 "Hint        : " + childRationale.hint().orElse("") + "\n" +
                 "Cause Trace : " + parentEvaluation.name() + " -> " + childEvaluation.name() + "\n" +
-                "Notes       : " + SimpleRootCauseFormatter.TRUE_ROOT_CAUSE_NOTE + "\n" +
+                "Notes       : " + SimpleFormatter.TRUE_ROOT_CAUSE_NOTE + "\n" +
                 "\n" +
                 EVALUATION_HEADING +
                 "[F] " + parentEvaluation.name() + " (" + parentElapsedTime.toMillis() + "ms)\n" +
