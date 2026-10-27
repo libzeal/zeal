@@ -116,12 +116,12 @@ class ConditionsTest {
         final Evaluation evaluation = expression.evaluate();
 
         assertTrue(evaluation.result());
-        assertEquals(ObjectConditions.exactlyName(subject), expression.name());
-        assertEquals(ObjectConditions.exactlyName(subject), evaluation.name());
+        assertEquals(Conditions.exactlyName(subject), expression.name());
+        assertEquals(Conditions.exactlyName(subject), evaluation.name());
         assertEquals(subject.toString(), evaluation.rationale().expected());
         assertEquals(subject.toString(), evaluation.rationale().actual());
         assertTrue(evaluation.rationale().hint().isPresent());
-        assertEquals(ObjectConditions.exactlyHint(subject), evaluation.rationale().hint().get());
+        assertEquals(Conditions.exactlyHint(subject), evaluation.rationale().hint().get());
     }
 
     @Test
@@ -136,12 +136,12 @@ class ConditionsTest {
         final Evaluation evaluation = expression.evaluate();
 
         assertFalse(evaluation.result());
-        assertEquals(ObjectConditions.exactlyName(desired), expression.name());
-        assertEquals(ObjectConditions.exactlyName(desired), evaluation.name());
+        assertEquals(Conditions.exactlyName(desired), expression.name());
+        assertEquals(Conditions.exactlyName(desired), evaluation.name());
         assertEquals(desired.toString(), evaluation.rationale().expected());
         assertEquals(subject.toString(), evaluation.rationale().actual());
         assertTrue(evaluation.rationale().hint().isPresent());
-        assertEquals(ObjectConditions.exactlyHint(desired), evaluation.rationale().hint().get());
+        assertEquals(Conditions.exactlyHint(desired), evaluation.rationale().hint().get());
     }
 
     private static final class AlwaysUnequalValue {
@@ -164,12 +164,12 @@ class ConditionsTest {
         final Evaluation evaluation = expression.evaluate();
 
         assertFalse(evaluation.result());
-        assertEquals(ObjectConditions.exactlyName(desired), expression.name());
-        assertEquals(ObjectConditions.exactlyName(desired), evaluation.name());
+        assertEquals(Conditions.exactlyName(desired), expression.name());
+        assertEquals(Conditions.exactlyName(desired), evaluation.name());
         assertEquals(desired.toString(), evaluation.rationale().expected());
         assertEquals(subject.toString(), evaluation.rationale().actual());
         assertTrue(evaluation.rationale().hint().isPresent());
-        assertEquals(ObjectConditions.exactlyHint(desired), evaluation.rationale().hint().get());
+        assertEquals(Conditions.exactlyHint(desired), evaluation.rationale().hint().get());
     }
 
     private static final class AlwaysEqualValue {
@@ -196,12 +196,12 @@ class ConditionsTest {
         final Evaluation evaluation = expression.evaluate();
 
         assertTrue(evaluation.result());
-        assertEquals(ObjectConditions.equalToName(desired), expression.name());
-        assertEquals(ObjectConditions.equalToName(desired), evaluation.name());
+        assertEquals(Conditions.equalToName(desired), expression.name());
+        assertEquals(Conditions.equalToName(desired), evaluation.name());
         assertEquals(desired.toString(), evaluation.rationale().expected());
         assertEquals(subject.toString(), evaluation.rationale().actual());
         assertTrue(evaluation.rationale().hint().isPresent());
-        assertEquals(ObjectConditions.equalToHint(desired), evaluation.rationale().hint().get());
+        assertEquals(Conditions.equalToHint(desired), evaluation.rationale().hint().get());
     }
 
     @Test
@@ -216,12 +216,12 @@ class ConditionsTest {
         final Evaluation evaluation = expression.evaluate();
 
         assertFalse(evaluation.result());
-        assertEquals(ObjectConditions.equalToName(desired), expression.name());
-        assertEquals(ObjectConditions.equalToName(desired), evaluation.name());
+        assertEquals(Conditions.equalToName(desired), expression.name());
+        assertEquals(Conditions.equalToName(desired), evaluation.name());
         assertEquals(desired.toString(), evaluation.rationale().expected());
         assertEquals(subject.toString(), evaluation.rationale().actual());
         assertTrue(evaluation.rationale().hint().isPresent());
-        assertEquals(ObjectConditions.equalToHint(desired), evaluation.rationale().hint().get());
+        assertEquals(Conditions.equalToHint(desired), evaluation.rationale().hint().get());
     }
 
     // ------------------------------------------------------------------------

@@ -1,6 +1,21 @@
 package io.github.libzeal.zeal.logic.unary.condition;
 
+import io.github.libzeal.zeal.logic.AndExpression;
+import io.github.libzeal.zeal.logic.Expression;
+import io.github.libzeal.zeal.logic.Expressions;
+import io.github.libzeal.zeal.logic.OrExpression;
+import io.github.libzeal.zeal.logic.unary.ComputableExpression;
+import io.github.libzeal.zeal.logic.unary.ExpressionBuilder;
+
+import java.util.List;
+import java.util.Objects;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
+
+import static io.github.libzeal.zeal.logic.unary.condition.Condition.DEFAULT_NAME;
+import static io.github.libzeal.zeal.logic.format.Formatter.stringify;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A set of common conditions.
@@ -28,7 +43,15 @@ public final class Conditions {
      *     Any of the supplied arguments are {@code null}.
      */
     public static <T> Condition<T> of(final String name, final Predicate<T> predicate) {
-        return ObjectConditions.of(name, predicate);
+
+        final ComputableExpression<T> expression = ExpressionBuilder.of(predicate)
+            .nullable()
+            .name(name)
+            .expected("satisfied")
+            .actual(context -> context.ifPassedOrElse("satisfied", "unsatisfied"))
+            .build();
+
+        return expression::compute;
     }
 
 
@@ -46,7 +69,7 @@ public final class Conditions {
      *     The supplied predicate is {@code null}.
      */
     public static <T> Condition<T> of(final Predicate<T> predicate) {
-        return ObjectConditions.of(predicate);
+        return of(DEFAULT_NAME, predicate);
     }
 
     /**
@@ -60,7 +83,23 @@ public final class Conditions {
      * @return A new condition that evaluates to true if the subject exactly matches the supplied desired value.
      */
     public static <T> Condition<T> exactly(final Object desired) {
-        return ObjectConditions.exactly(desired);
+
+        final ComputableExpression<T> expression = ExpressionBuilder.of((T o) -> o == desired)
+            .nullable()
+            .name(exactlyName(desired))
+            .expected(stringify(desired))
+            .hint(exactlyHint(desired))
+            .build();
+
+        return expression::compute;
+    }
+
+    static <T> String exactlyName(final T desired) {
+        return "isExactly[" + stringify(desired) + "]";
+    }
+
+    static <T> String exactlyHint(final T desired) {
+        return "Actual should be identical to " + desired + " (using ==)";
     }
 
     /**
@@ -74,7 +113,23 @@ public final class Conditions {
      * @return A new condition that evaluates to true if the subject matches the supplied desired value.
      */
     public static <T> Condition<T> equalTo(final Object desired) {
-        return ObjectConditions.equalTo(desired);
+
+        final ComputableExpression<T> expression = ExpressionBuilder.of((T o) -> Objects.equals(o, desired))
+            .nullable()
+            .name(equalToName(desired))
+            .expected(stringify(desired))
+            .hint(equalToHint(desired))
+            .build();
+
+        return expression::compute;
+    }
+
+    static <T> String equalToName(final T desired) {
+        return "isEqualTo[" + stringify(desired) + "]";
+    }
+
+    static <T> String equalToHint(final T desired) {
+        return "Actual should be equal to " + desired + " (using subject.equals(" + desired + "))";
     }
 
     /**
@@ -89,7 +144,16 @@ public final class Conditions {
      */
     @SafeVarargs
     public static <T> Condition<T> anyOf(final Condition<T>... conditions) {
-        return ObjectConditions.anyOf(conditions);
+
+        requireNonNull(conditions);
+
+        return subject -> {
+            final List<Expression> collected = Stream.of(conditions)
+                .map(c -> c.compute(subject))
+                .toList();
+
+            return OrExpression.unnamed(collected);
+        };
     }
 
     /**
@@ -107,7 +171,17 @@ public final class Conditions {
      */
     @SafeVarargs
     public static <T> Condition<T> anyOf(final T... values) {
-        return ObjectConditions.anyOf(values);
+
+        requireNonNull(values);
+
+        return subject -> {
+            final List<Expression> collected = Stream.of(values)
+                .map(Conditions::equalTo)
+                .map(c -> c.compute(subject))
+                .toList();
+
+            return OrExpression.unnamed(collected);
+        };
     }
 
     /**
@@ -124,7 +198,21 @@ public final class Conditions {
      *     The supplied {@link Iterable} is {@code null}.
      */
     public static <T> Condition<T> anyOf(final Iterable<T> values) {
-        return ObjectConditions.anyOf(values);
+
+        requireNonNull(values);
+
+        return subject -> {
+            final List<Expression> collected = streamOf(values)
+                .map(Conditions::equalTo)
+                .map(c -> c.compute(subject))
+                .toList();
+
+            return OrExpression.unnamed(collected);
+        };
+    }
+
+    private static <T> Stream<T> streamOf(final Iterable<T> iterable) {
+        return StreamSupport.stream(iterable.spliterator(), false);
     }
 
     /**
@@ -139,7 +227,16 @@ public final class Conditions {
      */
     @SafeVarargs
     public static <T> Condition<T> allOf(final Condition<T>... conditions) {
-        return ObjectConditions.allOf(conditions);
+
+        requireNonNull(conditions);
+
+        return subject -> {
+            final List<Expression> collected = Stream.of(conditions)
+                .map(c -> c.compute(subject))
+                .toList();
+
+            return AndExpression.unnamed(collected);
+        };
     }
 
     /**
@@ -157,7 +254,17 @@ public final class Conditions {
      */
     @SafeVarargs
     public static <T> Condition<T> allOf(final T... values) {
-        return ObjectConditions.allOf(values);
+
+        requireNonNull(values);
+
+        return subject -> {
+            final List<Expression> collected = Stream.of(values)
+                .map(Conditions::equalTo)
+                .map(c -> c.compute(subject))
+                .toList();
+
+            return AndExpression.unnamed(collected);
+        };
     }
 
     /**
@@ -174,7 +281,17 @@ public final class Conditions {
      *     The supplied {@link Iterable} is {@code null}.
      */
     public static <T> Condition<T> allOf(final Iterable<T> values) {
-        return ObjectConditions.allOf(values);
+
+        requireNonNull(values);
+
+        return subject -> {
+            final List<Expression> collected = streamOf(values)
+                .map(Conditions::equalTo)
+                .map(c -> c.compute(subject))
+                .toList();
+
+            return AndExpression.unnamed(collected);
+        };
     }
 
     /**
@@ -189,7 +306,11 @@ public final class Conditions {
      */
     @SafeVarargs
     public static <T> Condition<T> noneOf(final Condition<T>... conditions) {
-        return ObjectConditions.noneOf(conditions);
+
+        requireNonNull(conditions);
+
+        return subject -> Expressions.nor(Stream.of(conditions)
+                .map(c -> c.compute(subject)).toArray(Expression[]::new));
     }
 
     /**
@@ -207,7 +328,12 @@ public final class Conditions {
      */
     @SafeVarargs
     public static <T> Condition<T> noneOf(final T... values) {
-        return ObjectConditions.noneOf(values);
+
+        requireNonNull(values);
+
+        return subject -> Expressions.nor(Stream.of(values)
+                .map(Conditions::equalTo)
+                .map(c -> c.compute(subject)).toArray(Expression[]::new));
     }
 
     /**
@@ -224,6 +350,11 @@ public final class Conditions {
      *     The supplied {@link Iterable} is {@code null}.
      */
     public static <T> Condition<T> noneOf(final Iterable<T> values) {
-        return ObjectConditions.noneOf(values);
+
+        requireNonNull(values);
+
+        return subject -> Expressions.nor(streamOf(values)
+                .map(Conditions::equalTo)
+                .map(c -> c.compute(subject)).toArray(Expression[]::new));
     }
 }
