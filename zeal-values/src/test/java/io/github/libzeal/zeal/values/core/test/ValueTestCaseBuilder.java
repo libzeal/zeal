@@ -1,6 +1,5 @@
 package io.github.libzeal.zeal.values.core.test;
 
-import io.github.libzeal.zeal.logic.evaluation.Result;
 import io.github.libzeal.zeal.values.core.ObjectValue;
 
 import java.util.function.Function;
@@ -9,7 +8,7 @@ public final class ValueTestCaseBuilder<S, V extends ObjectValue<S, V>> {
 
     private final Function<S, V> expressionFactory;
     private S subject;
-    private Result expectedResult;
+    private Boolean expectedResult;
     private Function<V, V> apply;
     private String expectedName;
     private String expectedExpected;
@@ -29,7 +28,7 @@ public final class ValueTestCaseBuilder<S, V extends ObjectValue<S, V>> {
         return this;
     }
 
-    public ValueTestCaseBuilder<S, V> result(Result result) {
+    public ValueTestCaseBuilder<S, V> result(boolean result) {
         this.expectedResult = result;
         return this;
     }

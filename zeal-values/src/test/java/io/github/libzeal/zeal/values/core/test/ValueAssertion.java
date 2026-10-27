@@ -1,7 +1,6 @@
 package io.github.libzeal.zeal.values.core.test;
 
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
-import io.github.libzeal.zeal.logic.evaluation.Result;
 import org.junit.jupiter.api.Assertions;
 
 public class ValueAssertion<T> {
@@ -12,7 +11,7 @@ public class ValueAssertion<T> {
         this.eval = eval;
     }
 
-    public void assertStateIs(Result expected) {
+    public void assertStateIs(boolean expected) {
         Assertions.assertEquals(expected, eval.result(), "Result is incorrect (" + eval.name() + ")");
     }
 

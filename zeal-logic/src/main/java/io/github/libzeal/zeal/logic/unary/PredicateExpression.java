@@ -1,7 +1,6 @@
 package io.github.libzeal.zeal.logic.unary;
 
 import io.github.libzeal.zeal.logic.evaluation.TerminalEvaluation;
-import io.github.libzeal.zeal.logic.evaluation.Result;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
 import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
 import io.github.libzeal.zeal.logic.util.StopWatch;
@@ -46,7 +45,7 @@ public record PredicateExpression<T, O>(
             hint == null ? null : hint.compute(context)
         );
 
-        return TerminalEvaluation.of(Result.from(passed), name, rationale, elapsedTime);
+        return new TerminalEvaluation(passed, name, rationale, elapsedTime);
     }
 
     public record Context<T, O>(T subject, O observed, boolean passed) {

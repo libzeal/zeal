@@ -1,10 +1,9 @@
 package io.github.libzeal.zeal.values.sdk;
 
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
-import io.github.libzeal.zeal.logic.evaluation.Result;
-import io.github.libzeal.zeal.logic.evaluation.traverse.CollectingTraverserAction;
-import io.github.libzeal.zeal.logic.evaluation.traverse.DepthFirstTraverser;
-import io.github.libzeal.zeal.logic.evaluation.traverse.Traverser;
+import io.github.libzeal.zeal.logic.evaluation.SkippableEvaluation;
+import io.github.libzeal.zeal.logic.evaluation.SkippableEvaluation.Evaluated;
+import io.github.libzeal.zeal.logic.evaluation.SkippableEvaluation.Skipped;
 import io.github.libzeal.zeal.logic.unary.condition.Condition;
 import io.github.libzeal.zeal.values.core.ObjectValue;
 import io.github.libzeal.zeal.values.core.test.ValueAssertion;
@@ -13,12 +12,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
 import java.util.Comparator;
+import java.util.List;
 
-import static io.github.libzeal.zeal.logic.evaluation.Result.FALSE;
-import static io.github.libzeal.zeal.logic.evaluation.Result.TRUE;
 import static io.github.libzeal.zeal.values.sdk.StandardMessages.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
@@ -50,7 +48,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
         final ValueAssertion<?> assertion = new ValueAssertion<>(evaluation);
 
         assertEquals(value, expression.subject());
-        assertion.assertStateIs(TRUE);
+        assertion.assertStateIs(true);
         assertion.assertCompoundExpectedValue("Passed: 0");
         assertion.assertCompoundActualValueIs(0, 0, 0);
     }
@@ -62,23 +60,18 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
 
         expression.isNull().isNotNull();
 
-        final Evaluation eval = expression.evaluate();
-        final Traverser traverser = new DepthFirstTraverser();
-        final CollectingTraverserAction collector = new CollectingTraverserAction();
+        final List<SkippableEvaluation> children = expression.evaluate().children();
 
-        traverser.traverse(eval, collector);
+        assertEquals(2, children.size());
 
-        final Evaluation first = collector.get(1).orElse(null);
-        final Evaluation second = collector.get(2).orElse(null);
+        final Evaluated first = assertInstanceOf(Evaluated.class, children.get(0));
+        final Skipped second = assertInstanceOf(Skipped.class, children.get(1));
+        final ValueAssertion<?> firstAssertion = new ValueAssertion<>(first.evaluation());
 
-        final ValueAssertion<?> firstAssertion = new ValueAssertion<>(first);
-        final ValueAssertion<?> secondAssertion = new ValueAssertion<>(second);
-
-        assertNotNull(first);
-        assertNotNull(second);
-        firstAssertion.assertStateIs(FALSE);
+        firstAssertion.assertStateIs(false);
         firstAssertion.assertNameIs("isNotNull");
-        secondAssertion.assertStateIs(Result.SKIPPED);
+        assertEquals("isNull", second.name());
+        assertEquals(List.of(first.evaluation()), second.cause().evaluations());
     }
 
     // ---- nullity ----
@@ -88,7 +81,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
         newTestCase()
             .subject(null)
             .expression(ObjectValue::isNull)
-            .result(TRUE)
+            .result(true)
             .name("isNull")
             .expected("(null)")
             .actual("(null)")
@@ -100,7 +93,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
         newTestCase()
             .subject(nonNullValueA())
             .expression(ObjectValue::isNull)
-            .result(FALSE)
+            .result(false)
             .name("isNull")
             .expected("(null)")
             .actual(String.valueOf(nonNullValueA()))
@@ -112,7 +105,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
         newTestCase()
             .subject(null)
             .expression(ObjectValue::isNotNull)
-            .result(FALSE)
+            .result(false)
             .name("isNotNull")
             .expected("not[(null)]")
             .actual("(null)")
@@ -124,7 +117,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
         newTestCase()
             .subject(nonNullValueA())
             .expression(ObjectValue::isNotNull)
-            .result(TRUE)
+            .result(true)
             .name("isNotNull")
             .expected("not[(null)]")
             .actual(String.valueOf(nonNullValueA()))
@@ -139,7 +132,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
         newTestCase()
             .subject(v)
             .expression(value -> value.isType(v.getClass()))
-            .result(TRUE)
+            .result(true)
             .name("isType[" + v.getClass() + "]")
             .expected(v.getClass().toString())
             .actual(v.getClass().toString())
@@ -152,7 +145,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
         newTestCase()
             .subject(v)
             .expression(value -> value.isType(otherClass()))
-            .result(FALSE)
+            .result(false)
             .name("isType[" + otherClass() + "]")
             .expected(otherClass().toString())
             .actual(v.getClass().toString())
@@ -165,7 +158,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
         newTestCase()
             .subject(v)
             .expression(value -> value.isType(null))
-            .result(FALSE)
+            .result(false)
             .name("isType[(null)]")
             .expected("Always fail: cannot compare to (null) type")
             .actual(v.getClass().toString())
@@ -178,7 +171,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
         newTestCase()
             .subject(v)
             .expression(value -> value.isNotType(v.getClass()))
-            .result(FALSE)
+            .result(false)
             .name("isNotType[" + v.getClass() + "]")
             .expected("not[" + v.getClass() + "]")
             .actual(v.getClass().toString())
@@ -191,7 +184,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
         newTestCase()
             .subject(v)
             .expression(value -> value.isNotType(otherClass()))
-            .result(TRUE)
+            .result(true)
             .name("isNotType[" + otherClass() + "]")
             .expected("not[" + otherClass() + "]")
             .actual(v.getClass().toString())
@@ -204,7 +197,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
         newTestCase()
             .subject(v)
             .expression(value -> value.isNotType(null))
-            .result(FALSE)
+            .result(false)
             .name("isNotType[(null)]")
             .expected("Always fail: cannot compare to (null) type")
             .actual(v.getClass().toString())
@@ -217,7 +210,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
         newTestCase()
             .subject(v)
             .expression(value -> value.isInstanceOf(v.getClass()))
-            .result(TRUE)
+            .result(true)
             .name("isInstanceOf[" + v.getClass() + "]")
             .expected("instanceof[" + v.getClass() + "]")
             .actual(v.getClass().toString())
@@ -230,7 +223,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
         newTestCase()
             .subject(v)
             .expression(value -> value.isInstanceOf(Object.class))
-            .result(TRUE)
+            .result(true)
             .name("isInstanceOf[" + Object.class + "]")
             .expected("instanceof[" + Object.class + "]")
             .actual(v.getClass().toString())
@@ -243,7 +236,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
         newTestCase()
             .subject(v)
             .expression(value -> value.isInstanceOf(otherClass()))
-            .result(FALSE)
+            .result(false)
             .name("isInstanceOf[" + otherClass() + "]")
             .expected("instanceof[" + otherClass() + "]")
             .actual(v.getClass().toString())
@@ -256,7 +249,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
         newTestCase()
             .subject(v)
             .expression(value -> value.isInstanceOf(null))
-            .result(FALSE)
+            .result(false)
             .name("isInstanceOf[(null)]")
             .expected("Always fail: cannot compare to (null) type")
             .actual(v.getClass().toString())
@@ -269,7 +262,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
         newTestCase()
             .subject(v)
             .expression(value -> value.isNotInstanceOf(v.getClass()))
-            .result(FALSE)
+            .result(false)
             .name("isNotInstanceOf[" + v.getClass() + "]")
             .expected("not[instanceof[" + v.getClass() + "]]")
             .actual(v.getClass().toString())
@@ -282,7 +275,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
         newTestCase()
             .subject(v)
             .expression(value -> value.isNotInstanceOf(Object.class))
-            .result(FALSE)
+            .result(false)
             .name("isNotInstanceOf[" + Object.class + "]")
             .expected("not[instanceof[" + Object.class + "]]")
             .actual(v.getClass().toString())
@@ -295,7 +288,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
         newTestCase()
             .subject(v)
             .expression(value -> value.isNotInstanceOf(otherClass()))
-            .result(TRUE)
+            .result(true)
             .name("isNotInstanceOf[" + otherClass() + "]")
             .expected("not[instanceof[" + otherClass() + "]]")
             .actual(v.getClass().toString())
@@ -308,7 +301,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
         newTestCase()
             .subject(v)
             .expression(value -> value.isNotInstanceOf(null))
-            .result(FALSE)
+            .result(false)
             .name("isNotInstanceOf[(null)]")
             .expected("Always fail: cannot compare to (null) type")
             .actual(v.getClass().toString())
@@ -323,7 +316,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
         newTestCase()
             .subject(v)
             .expression(value -> value.isExactly(v))
-            .result(TRUE)
+            .result(true)
             .name("isExactly[" + v + "]")
             .expected(v.toString())
             .actual(v.toString())
@@ -337,7 +330,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
         newTestCase()
             .subject(b)
             .expression(value -> value.isExactly(a))
-            .result(FALSE)
+            .result(false)
             .name("isExactly[" + a + "]")
             .expected(a.toString())
             .actual(b.toString())
@@ -349,7 +342,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
         newTestCase()
             .subject(null)
             .expression(value -> value.isExactly(null))
-            .result(TRUE)
+            .result(true)
             .name("isExactly[(null)]")
             .expected("(null)")
             .actual("(null)")
@@ -362,7 +355,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
         newTestCase()
             .subject(v)
             .expression(value -> value.isNotExactly(v))
-            .result(FALSE)
+            .result(false)
             .name("isNotExactly[" + v + "]")
             .expected("not[" + v + "]")
             .actual(v.toString())
@@ -376,7 +369,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
         newTestCase()
             .subject(b)
             .expression(value -> value.isNotExactly(a))
-            .result(TRUE)
+            .result(true)
             .name("isNotExactly[" + a + "]")
             .expected("not[" + a + "]")
             .actual(b.toString())
@@ -388,7 +381,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
         newTestCase()
             .subject(null)
             .expression(value -> value.isNotExactly(null))
-            .result(FALSE)
+            .result(false)
             .name("isNotExactly[(null)]")
             .expected("not[(null)]")
             .actual("(null)")
@@ -401,7 +394,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
         newTestCase()
             .subject(v)
             .expression(value -> value.isEqualTo(v))
-            .result(TRUE)
+            .result(true)
             .name("isEqualTo[" + v + "]")
             .expected(v.toString())
             .actual(v.toString())
@@ -415,7 +408,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
         newTestCase()
             .subject(b)
             .expression(value -> value.isEqualTo(a))
-            .result(FALSE)
+            .result(false)
             .name("isEqualTo[" + a + "]")
             .expected(a.toString())
             .actual(b.toString())
@@ -427,7 +420,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
         newTestCase()
             .subject(null)
             .expression(value -> value.isEqualTo(null))
-            .result(TRUE)
+            .result(true)
             .name("isEqualTo[(null)]")
             .expected("(null)")
             .actual("(null)")
@@ -442,7 +435,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
         newTestCase()
             .subject(v)
             .expression(value -> value.is(null))
-            .result(FALSE)
+            .result(false)
             .name("is[condition: (null)]")
             .expected(ALWAYS_FAIL_CANNOT_CHECK_TO_NULL_CONDITION)
             .actual(v.toString())
@@ -457,7 +450,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
         newTestCase()
             .subject(v)
             .expression(value -> value.is(cond))
-            .result(TRUE)
+            .result(true)
             .name(cond.compute(v).name())
             .expected("true")
             .actual("true")
@@ -471,7 +464,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
         newTestCase()
             .subject(v)
             .expression(value -> value.is(cond))
-            .result(FALSE)
+            .result(false)
             .name(cond.compute(v).name())
             .expected("false")
             .actual("false")
@@ -486,7 +479,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
         newTestCase()
             .subject(v)
             .expression(value -> value.hashCodeIs(v.hashCode()))
-            .result(TRUE)
+            .result(true)
             .name("hashCode == " + v.hashCode())
             .expected(String.valueOf(v.hashCode()))
             .actual(String.valueOf(v.hashCode()))
@@ -500,7 +493,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
         newTestCase()
             .subject(b)
             .expression(value -> value.hashCodeIs(a.hashCode()))
-            .result(FALSE)
+            .result(false)
             .name("hashCode == " + a.hashCode())
             .expected(String.valueOf(a.hashCode()))
             .actual(String.valueOf(b.hashCode()))
@@ -513,7 +506,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
         newTestCase()
             .subject(v)
             .expression(value -> value.hashCodeIsNot(v.hashCode()))
-            .result(FALSE)
+            .result(false)
             .name("hashCode != " + v.hashCode())
             .expected("not[" + v.hashCode() + "]")
             .actual(String.valueOf(v.hashCode()))
@@ -527,7 +520,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
         newTestCase()
             .subject(b)
             .expression(value -> value.hashCodeIsNot(a.hashCode()))
-            .result(TRUE)
+            .result(true)
             .name("hashCode != " + a.hashCode())
             .expected("not[" + a.hashCode() + "]")
             .actual(String.valueOf(b.hashCode()))
@@ -542,7 +535,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
         newTestCase()
             .subject(v)
             .expression(value -> value.toStringIs(v.toString()))
-            .result(TRUE)
+            .result(true)
             .name("toString().equals(" + v + ")")
             .expected(v.toString())
             .actual(v.toString())
@@ -556,7 +549,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
         newTestCase()
             .subject(b)
             .expression(value -> value.toStringIs(a.toString()))
-            .result(FALSE)
+            .result(false)
             .name("toString().equals(" + a + ")")
             .expected(a.toString())
             .actual(b.toString())
@@ -569,7 +562,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
         newTestCase()
             .subject(v)
             .expression(value -> value.toStringIsNot(v.toString()))
-            .result(FALSE)
+            .result(false)
             .name("not[toString().equals(" + v + ")]")
             .expected("not[" + v + "]")
             .actual(v.toString())
@@ -583,7 +576,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
         newTestCase()
             .subject(b)
             .expression(value -> value.toStringIsNot(a.toString()))
-            .result(TRUE)
+            .result(true)
             .name("not[toString().equals(" + a + ")]")
             .expected("not[" + a + "]")
             .actual(b.toString())
@@ -597,7 +590,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
         newTestCase()
             .subject(nonNullValueA())
             .expression(value -> value.satisfies(o -> true))
-            .result(TRUE)
+            .result(true)
             .name("predicate")
             .expected("Predicate satisfied")
             .actual("Predicate satisfied")
@@ -609,7 +602,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
         newTestCase()
             .subject(nonNullValueA())
             .expression(value -> value.satisfies(o -> false))
-            .result(FALSE)
+            .result(false)
             .name("predicate")
             .expected("Predicate satisfied")
             .actual("Predicate unsatisfied")
@@ -625,7 +618,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
         newTestCase()
             .subject(b)
             .expression(value -> value.isEqualTo(a, null))
-            .result(FALSE)
+            .result(false)
             .name("isEqualTo[" + a + ", comparator: (null)]")
             .expected(a.toString())
             .actual(b.toString())
@@ -640,7 +633,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
         newTestCase()
             .subject(b)
             .expression(value -> value.isEqualTo(a, equalComparator))
-            .result(TRUE)
+            .result(true)
             .name("isEqualTo[" + a + ", comparator: " + equalComparator + "]")
             .expected(a.toString())
             .actual(b.toString())
@@ -655,7 +648,7 @@ void givenSame_whenIsNotEqualTo_thenFalse() {
     newTestCase()
         .subject(v)
         .expression(value -> value.isNotEqualTo(v))
-        .result(FALSE)
+        .result(false)
         .name("isNotEqualTo[" + v + "]")
         .expected("not[" + v + "]")
         .actual(v.toString())
@@ -669,7 +662,7 @@ void givenSame_whenIsNotEqualTo_thenFalse() {
         newTestCase()
             .subject(b)
             .expression(value -> value.isNotEqualTo(a))
-            .result(TRUE)
+            .result(true)
             .name("isNotEqualTo[" + a + "]")
             .expected("not[" + a + "]")
             .actual(b.toString())
@@ -685,7 +678,7 @@ void givenSame_whenIsNotEqualTo_thenFalse() {
         newTestCase()
             .subject(b)
             .expression(value -> value.isNotEqualTo(a, null))
-            .result(FALSE)
+            .result(false)
             .name("isNotEqualTo[" + a + ", comparator: (null)]")
             .expected(a.toString())
             .actual(b.toString())
@@ -700,7 +693,7 @@ void givenSame_whenIsNotEqualTo_thenFalse() {
         newTestCase()
             .subject(b)
             .expression(value -> value.isNotEqualTo(a, equalComparator))
-            .result(FALSE)
+            .result(false)
             .name("isNotEqualTo[" + a + ", comparator: " + equalComparator + "]")
             .expected(a.toString())
             .actual(b.toString())
@@ -714,7 +707,7 @@ void givenSame_whenIsNotEqualTo_thenFalse() {
         newTestCase()
             .subject(b)
             .expression(value -> value.isNotEqualTo(a, lessThanComparator))
-            .result(TRUE)
+            .result(true)
             .name("isNotEqualTo[" + a + ", comparator: " + lessThanComparator + "]")
             .expected(a.toString())
             .actual(b.toString())
@@ -728,7 +721,7 @@ void givenSame_whenIsNotEqualTo_thenFalse() {
         newTestCase()
             .subject(b)
             .expression(value -> value.isNotEqualTo(a, greaterThanComparator))
-            .result(TRUE)
+            .result(true)
             .name("isNotEqualTo[" + a + ", comparator: " + greaterThanComparator + "]")
             .expected(a.toString())
             .actual(b.toString())
@@ -742,7 +735,7 @@ void givenSame_whenIsNotEqualTo_thenFalse() {
         newTestCase()
             .subject(nonNullValueA())
             .expression(value -> value.doesNotSatisfy(o -> true))
-            .result(FALSE)
+            .result(false)
             .name("not[predicate]")
             .expected("Predicate unsatisfied")
             .actual("Predicate satisfied")
@@ -754,7 +747,7 @@ void givenSame_whenIsNotEqualTo_thenFalse() {
         newTestCase()
             .subject(nonNullValueA())
             .expression(value -> value.doesNotSatisfy(o -> false))
-            .result(TRUE)
+            .result(true)
             .name("not[predicate]")
             .expected("Predicate unsatisfied")
             .actual("Predicate unsatisfied")
@@ -766,7 +759,7 @@ void givenSame_whenIsNotEqualTo_thenFalse() {
         newTestCase()
             .subject(null)
             .expression(value -> value.isNotEqualTo(null))
-            .result(FALSE)
+            .result(false)
             .name("isNotEqualTo[(null)]")
             .expected("not[(null)]")
             .actual("(null)")
@@ -780,7 +773,7 @@ void givenSame_whenIsNotEqualTo_thenFalse() {
         newTestCase()
             .subject(b)
             .expression(value -> value.isEqualTo(a, lessThanComparator))
-            .result(FALSE)
+            .result(false)
             .name("isEqualTo[" + a + ", comparator: " + lessThanComparator + "]")
             .expected(a.toString())
             .actual(b.toString())
@@ -794,7 +787,7 @@ void givenSame_whenIsNotEqualTo_thenFalse() {
         newTestCase()
             .subject(b)
             .expression(value -> value.isEqualTo(a, greaterThanComparator))
-            .result(FALSE)
+            .result(false)
             .name("isEqualTo[" + a + ", comparator: " + greaterThanComparator + "]")
             .expected(a.toString())
             .actual(b.toString())

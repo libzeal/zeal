@@ -1,7 +1,7 @@
 package io.github.libzeal.zeal.logic.evaluation.format.simple;
 
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
-import io.github.libzeal.zeal.logic.evaluation.Result;
+import io.github.libzeal.zeal.logic.evaluation.SkippableEvaluation.Skipped;
 import io.github.libzeal.zeal.logic.evaluation.traverse.TraversalContext;
 import io.github.libzeal.zeal.logic.evaluation.traverse.DepthFirstTraverser;
 import io.github.libzeal.zeal.logic.evaluation.format.Formatter;
@@ -23,6 +23,7 @@ public class SimpleFormatter implements Formatter {
 
     static final int INDENTATION = 4;
     private final ComponentFormatter<Evaluation> evaluationFormatter;
+    private final ComponentFormatter<Skipped> skippedFormatter;
     private final ComponentFormatter<Evaluation> rootCauseFormatter;
     private final ComponentFormatter<Heading> headingFormatter;
 
@@ -31,10 +32,11 @@ public class SimpleFormatter implements Formatter {
      */
     public SimpleFormatter() {
 
-        final ComponentFormatter<Result> resultFormatter = new SimpleResultFormatter();
+        final ComponentFormatter<Boolean> resultFormatter = new SimpleResultFormatter();
         final ComponentFormatter<Duration> durationFormatter = new SimpleDurationFormatter();
 
         this.evaluationFormatter = new SimpleEvaluationFormatter(INDENTATION, resultFormatter, durationFormatter);
+        this.skippedFormatter = new SimpleSkippedFormatter(INDENTATION);
         this.rootCauseFormatter = new SimpleRootCauseFormatter(INDENTATION);
         this.headingFormatter = new SimpleHeadingFormatter(INDENTATION);
     }
@@ -47,7 +49,7 @@ public class SimpleFormatter implements Formatter {
         final StringBuilder builder = new StringBuilder();
         final Traverser traverser = new DepthFirstTraverser();
         final TraverserAction action = new FormattingTraverser(rootCauses, builder,
-            evaluationFormatter);
+            evaluationFormatter, skippedFormatter);
         final Heading heading = new Heading("Evaluation");
 
         builder.append(rootCauseFormatter.format(evaluation, context))
@@ -60,12 +62,14 @@ public class SimpleFormatter implements Formatter {
 
     private record FormattingTraverser(List<Evaluation> rootCauses,
                                        StringBuilder builder,
-                                       ComponentFormatter<Evaluation> evaluationFormatter) implements TraverserAction {
+                                       ComponentFormatter<Evaluation> evaluationFormatter,
+                                       ComponentFormatter<Skipped> skippedFormatter) implements TraverserAction {
 
             private FormattingTraverser {
                 requireNonNull(rootCauses);
                 requireNonNull(builder);
                 requireNonNull(evaluationFormatter);
+                requireNonNull(skippedFormatter);
             }
 
             @Override
@@ -73,6 +77,16 @@ public class SimpleFormatter implements Formatter {
 
                 final SimpleFormatterContext componentContext = createContext(context);
                 final String formattedText = evaluationFormatter.format(evaluation, componentContext);
+
+                builder.append(formattedText)
+                    .append("\n");
+            }
+
+            @Override
+            public void onSkipped(final Skipped skipped, final TraversalContext context) {
+
+                final SimpleFormatterContext componentContext = createContext(context);
+                final String formattedText = skippedFormatter.format(skipped, componentContext);
 
                 builder.append(formattedText)
                     .append("\n");

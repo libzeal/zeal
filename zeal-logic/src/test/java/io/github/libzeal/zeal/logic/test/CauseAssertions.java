@@ -3,7 +3,15 @@ package io.github.libzeal.zeal.logic.test;
 import io.github.libzeal.zeal.logic.evaluation.Cause;
 import io.github.libzeal.zeal.logic.evaluation.CompoundEvaluation;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
+import io.github.libzeal.zeal.logic.evaluation.SkippableEvaluation;
+import io.github.libzeal.zeal.logic.evaluation.SkippableEvaluation.Evaluated;
+import io.github.libzeal.zeal.logic.evaluation.SkippableEvaluation.Skipped;
+import io.github.libzeal.zeal.logic.evaluation.traverse.DepthFirstTraverser;
+import io.github.libzeal.zeal.logic.evaluation.traverse.TraversalContext;
+import io.github.libzeal.zeal.logic.evaluation.traverse.TraverserAction;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -13,14 +21,39 @@ public class CauseAssertions {
     private CauseAssertions() {}
 
     public static Evaluation child(final Evaluation evaluation, final int... path) {
+        return assertInstanceOf(Evaluated.class, slot(evaluation, path)).evaluation();
+    }
 
-        Evaluation current = evaluation;
+    public static Skipped skipped(final Evaluation evaluation, final int... path) {
+        return assertInstanceOf(Skipped.class, slot(evaluation, path));
+    }
 
-        for (final int index : path) {
-            current = ((CompoundEvaluation) current).children().get(index);
-        }
+    private static SkippableEvaluation slot(final Evaluation evaluation, final int... path) {
 
-        return current;
+        final Evaluation parent = path.length == 1 ? evaluation : child(evaluation, Arrays.copyOf(path,
+            path.length - 1));
+        final CompoundEvaluation compound = assertInstanceOf(CompoundEvaluation.class, parent);
+
+        return compound.children().get(path[path.length - 1]);
+    }
+
+    public static List<Skipped> skippedDescendants(final Evaluation evaluation) {
+
+        final List<Skipped> found = new ArrayList<>();
+
+        new DepthFirstTraverser().traverse(evaluation, new TraverserAction() {
+
+            @Override
+            public void on(final Evaluation visited, final TraversalContext context) {
+            }
+
+            @Override
+            public void onSkipped(final Skipped skipped, final TraversalContext context) {
+                found.add(skipped);
+            }
+        });
+
+        return found;
     }
 
     public static void assertCauseIsSelf(final Evaluation evaluation) {
@@ -28,6 +61,10 @@ public class CauseAssertions {
     }
 
     public static void assertCause(final Evaluation evaluation, final Evaluation... expected) {
+        assertCause(new Evaluated(evaluation), expected);
+    }
+
+    public static void assertCause(final SkippableEvaluation evaluation, final Evaluation... expected) {
 
         final Cause.Delegated cause = assertInstanceOf(Cause.Delegated.class, evaluation.cause());
 
@@ -35,6 +72,10 @@ public class CauseAssertions {
     }
 
     public static void assertTraces(final Evaluation evaluation, final String... expected) {
+        assertTraces(new Evaluated(evaluation), expected);
+    }
+
+    public static void assertTraces(final SkippableEvaluation evaluation, final String... expected) {
 
         final List<String> traces = evaluation.causeTraces()
             .stream()
@@ -45,6 +86,10 @@ public class CauseAssertions {
     }
 
     public static void assertRootCauses(final Evaluation evaluation, final Evaluation... expected) {
+        assertRootCauses(new Evaluated(evaluation), expected);
+    }
+
+    public static void assertRootCauses(final SkippableEvaluation evaluation, final Evaluation... expected) {
         assertSameElements(List.of(expected), evaluation.rootCauses());
     }
 

@@ -1,6 +1,5 @@
 package io.github.libzeal.zeal.logic;
 
-import io.github.libzeal.zeal.logic.evaluation.Result;
 import io.github.libzeal.zeal.logic.evaluation.TerminalEvaluation;
 import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
 
@@ -23,6 +22,6 @@ final class Contradiction implements TerminalExpression {
 
     @Override
     public TerminalEvaluation evaluate() {
-        return TerminalEvaluation.of(Result.FALSE, NAME, new SimpleRationale(FALSE, FALSE), Duration.ZERO);
+        return new TerminalEvaluation(false, NAME, new SimpleRationale(FALSE, FALSE), Duration.ZERO);
     }
 }

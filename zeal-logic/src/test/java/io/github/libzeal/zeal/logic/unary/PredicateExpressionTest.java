@@ -1,7 +1,6 @@
 package io.github.libzeal.zeal.logic.unary;
 
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
-import io.github.libzeal.zeal.logic.evaluation.Result;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
 import io.github.libzeal.zeal.logic.unary.PredicateExpression.Field;
 import org.junit.jupiter.api.Test;
@@ -88,7 +87,7 @@ class PredicateExpressionTest {
 
         final Evaluation evaluation = expression.evaluate();
 
-        assertEquals(Result.TRUE, evaluation.result());
+        assertTrue(evaluation.result());
         assertEquals(NAME, evaluation.name());
         assertRationaleIsCorrect(evaluation.rationale());
     }
@@ -101,7 +100,7 @@ class PredicateExpressionTest {
 
         final Evaluation evaluation = expression.evaluate();
 
-        assertEquals(Result.FALSE, evaluation.result());
+        assertFalse(evaluation.result());
         assertRationaleIsCorrect(evaluation.rationale());
     }
 
@@ -122,7 +121,7 @@ class PredicateExpressionTest {
 
         final Evaluation evaluation = expression.evaluate();
 
-        assertEquals(Result.TRUE, evaluation.result());
+        assertTrue(evaluation.result());
         assertEquals("length = 3, subject = abc", evaluation.rationale().actual());
         assertEquals("passed", evaluation.rationale().hint().orElse(null));
     }
@@ -162,7 +161,7 @@ class PredicateExpressionTest {
 
         final Evaluation evaluation = expression.evaluate();
 
-        assertEquals(Result.FALSE, evaluation.result());
+        assertFalse(evaluation.result());
         assertEquals("null", evaluation.rationale().actual());
         assertEquals(0, observations.get());
     }
@@ -175,7 +174,7 @@ class PredicateExpressionTest {
 
         final Evaluation evaluation = expression.evaluate();
 
-        assertEquals(Result.TRUE, evaluation.result());
+        assertTrue(evaluation.result());
         assertRationaleIsCorrect(evaluation.rationale());
     }
 }

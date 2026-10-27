@@ -1,5 +1,11 @@
 package io.github.libzeal.zeal.logic.evaluation;
 
+import io.github.libzeal.zeal.logic.AndExpression;
+import io.github.libzeal.zeal.logic.BooleanExpression;
+import io.github.libzeal.zeal.logic.CompoundExpression;
+import io.github.libzeal.zeal.logic.Expression;
+import io.github.libzeal.zeal.logic.evaluation.SkippableEvaluation.Evaluated;
+import io.github.libzeal.zeal.logic.evaluation.SkippableEvaluation.Skipped;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
 import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
 import org.junit.jupiter.api.Test;
@@ -16,90 +22,88 @@ class CompoundEvaluationTest {
     private static final String NAME = "foo";
     private static final Rationale RATIONALE = new SimpleRationale("expected", "actual");
     private static final Duration ELAPSED_TIME = Duration.ofMillis(7);
-    private static final Evaluation CHILD = TerminalEvaluation.of(Result.FALSE, "child", RATIONALE, ELAPSED_TIME);
-    private static final List<Evaluation> CHILDREN = List.of(CHILD);
+    private static final Expression CHILD_EXPRESSION = new BooleanExpression("child", () -> false);
+    private static final Expression SIBLING_EXPRESSION = new BooleanExpression("sibling", () -> true);
+    private static final CompoundExpression EXPRESSION = new AndExpression(NAME, List.of(CHILD_EXPRESSION));
+    private static final CompoundExpression TWO_CHILD_EXPRESSION = new AndExpression(NAME,
+        List.of(CHILD_EXPRESSION, SIBLING_EXPRESSION));
+    private static final Evaluation CHILD = new TerminalEvaluation(false, "child", RATIONALE, ELAPSED_TIME);
+    private static final List<SkippableEvaluation> CHILDREN = List.of(new Evaluated(CHILD));
 
     @Test
-    void givenNullResult_whenConstruct_thenExceptionThrown() {
+    void givenNullExpression_whenOf_thenExceptionThrown() {
         assertThrows(
             NullPointerException.class,
-            () -> new CompoundEvaluation(null, NAME, RATIONALE, ELAPSED_TIME, Cause.self(), CHILDREN)
+            () -> CompoundEvaluation.of(null, true, RATIONALE, ELAPSED_TIME, Cause.self(), CHILDREN)
         );
     }
 
     @Test
-    void givenNullName_whenConstruct_thenExceptionThrown() {
+    void givenNullRationale_whenOf_thenExceptionThrown() {
         assertThrows(
             NullPointerException.class,
-            () -> new CompoundEvaluation(Result.TRUE, null, RATIONALE, ELAPSED_TIME, Cause.self(), CHILDREN)
+            () -> CompoundEvaluation.of(EXPRESSION, true, null, ELAPSED_TIME, Cause.self(), CHILDREN)
         );
     }
 
     @Test
-    void givenNullRationale_whenConstruct_thenExceptionThrown() {
+    void givenNullElapsedTime_whenOf_thenExceptionThrown() {
         assertThrows(
             NullPointerException.class,
-            () -> new CompoundEvaluation(Result.TRUE, NAME, null, ELAPSED_TIME, Cause.self(), CHILDREN)
+            () -> CompoundEvaluation.of(EXPRESSION, true, RATIONALE, null, Cause.self(), CHILDREN)
         );
     }
 
     @Test
-    void givenNullElapsedTime_whenConstruct_thenExceptionThrown() {
+    void givenNullCause_whenOf_thenExceptionThrown() {
         assertThrows(
             NullPointerException.class,
-            () -> new CompoundEvaluation(Result.TRUE, NAME, RATIONALE, null, Cause.self(), CHILDREN)
+            () -> CompoundEvaluation.of(EXPRESSION, true, RATIONALE, ELAPSED_TIME, null, CHILDREN)
         );
     }
 
     @Test
-    void givenNullCause_whenConstruct_thenExceptionThrown() {
+    void givenNullChildren_whenOf_thenExceptionThrown() {
         assertThrows(
             NullPointerException.class,
-            () -> new CompoundEvaluation(Result.TRUE, NAME, RATIONALE, ELAPSED_TIME, null, CHILDREN)
+            () -> CompoundEvaluation.of(EXPRESSION, true, RATIONALE, ELAPSED_TIME, Cause.self(), null)
         );
     }
 
     @Test
-    void givenNullChildren_whenConstruct_thenExceptionThrown() {
+    void givenNullChild_whenOf_thenExceptionThrown() {
+
+        final List<SkippableEvaluation> children = Arrays.asList(new Evaluated(CHILD), null);
+
         assertThrows(
             NullPointerException.class,
-            () -> new CompoundEvaluation(Result.TRUE, NAME, RATIONALE, ELAPSED_TIME, Cause.self(), null)
+            () -> CompoundEvaluation.of(TWO_CHILD_EXPRESSION, true, RATIONALE, ELAPSED_TIME, Cause.self(), children)
         );
     }
 
     @Test
-    void givenNullChild_whenConstruct_thenExceptionThrown() {
-
-        final List<Evaluation> children = Arrays.asList(CHILD, null);
-
-        assertThrows(
-            NullPointerException.class,
-            () -> new CompoundEvaluation(Result.TRUE, NAME, RATIONALE, ELAPSED_TIME, Cause.self(), children)
-        );
-    }
-
-    @Test
-    void givenValidData_whenConstruct_thenDataIsCorrect() {
+    void givenValidData_whenOf_thenDataIsCorrect() {
 
         final Cause cause = Cause.of(CHILD);
 
-        final CompoundEvaluation evaluation = new CompoundEvaluation(Result.FALSE, NAME, RATIONALE, ELAPSED_TIME,
+        final CompoundEvaluation evaluation = CompoundEvaluation.of(EXPRESSION, false, RATIONALE, ELAPSED_TIME,
             cause, CHILDREN);
 
-        assertEquals(Result.FALSE, evaluation.result());
+        assertFalse(evaluation.result());
         assertEquals(NAME, evaluation.name());
         assertEquals(RATIONALE, evaluation.rationale());
         assertEquals(ELAPSED_TIME, evaluation.elapsedTime());
         assertEquals(cause, evaluation.cause());
         assertEquals(CHILDREN, evaluation.children());
+        assertEquals(List.of(CHILD), evaluation.evaluated());
     }
 
     @Test
-    void givenMutableChildren_whenConstruct_thenChildrenAreCopied() {
+    void givenMutableChildren_whenOf_thenChildrenAreCopied() {
 
-        final List<Evaluation> children = new ArrayList<>(CHILDREN);
+        final List<SkippableEvaluation> children = new ArrayList<>(CHILDREN);
 
-        final CompoundEvaluation evaluation = new CompoundEvaluation(Result.FALSE, NAME, RATIONALE, ELAPSED_TIME,
+        final CompoundEvaluation evaluation = CompoundEvaluation.of(EXPRESSION, false, RATIONALE, ELAPSED_TIME,
             Cause.self(), children);
 
         children.clear();
@@ -109,17 +113,65 @@ class CompoundEvaluationTest {
     }
 
     @Test
-    void givenDecider_whenSkipped_thenDataIsCorrect() {
+    void givenFewerChildrenThanExpressionChildren_whenOf_thenExceptionThrown() {
+        assertThrows(
+            IllegalArgumentException.class,
+            () -> CompoundEvaluation.of(TWO_CHILD_EXPRESSION, false, RATIONALE, ELAPSED_TIME, Cause.self(),
+                CHILDREN)
+        );
+    }
 
-        final Evaluation decider = TerminalEvaluation.of(Result.FALSE, "decider", RATIONALE, ELAPSED_TIME);
+    @Test
+    void givenSkippedChildCausedBySibling_whenOf_thenEvaluatedExcludesSkippedChild() {
 
-        final CompoundEvaluation evaluation = CompoundEvaluation.skipped(NAME, decider, CHILDREN);
+        final List<SkippableEvaluation> children = List.of(
+            new Evaluated(CHILD),
+            new Skipped(SIBLING_EXPRESSION, Cause.of(CHILD))
+        );
 
-        assertEquals(Result.SKIPPED, evaluation.result());
-        assertEquals(NAME, evaluation.name());
-        assertEquals(SimpleRationale.skipped(), evaluation.rationale());
-        assertEquals(Duration.ZERO, evaluation.elapsedTime());
-        assertEquals(Cause.of(decider), evaluation.cause());
-        assertEquals(CHILDREN, evaluation.children());
+        final CompoundEvaluation evaluation = CompoundEvaluation.of(TWO_CHILD_EXPRESSION, false, RATIONALE,
+            ELAPSED_TIME, Cause.of(CHILD), children);
+
+        assertEquals(children, evaluation.children());
+        assertEquals(List.of(CHILD), evaluation.evaluated());
+    }
+
+    @Test
+    void givenSkippedChildCausedByNonSibling_whenOf_thenExceptionThrown() {
+
+        final Evaluation stranger = new TerminalEvaluation(false, "child", RATIONALE, ELAPSED_TIME);
+        final List<SkippableEvaluation> children = List.of(
+            new Evaluated(CHILD),
+            new Skipped(SIBLING_EXPRESSION, Cause.of(stranger))
+        );
+
+        assertThrows(
+            IllegalArgumentException.class,
+            () -> CompoundEvaluation.of(TWO_CHILD_EXPRESSION, false, RATIONALE, ELAPSED_TIME, Cause.of(CHILD),
+                children)
+        );
+    }
+
+    @Test
+    void givenMatchingEvaluations_whenEquals_thenEqual() {
+
+        final CompoundEvaluation evaluation1 = CompoundEvaluation.of(EXPRESSION, false, RATIONALE, ELAPSED_TIME,
+            Cause.of(CHILD), CHILDREN);
+        final CompoundEvaluation evaluation2 = CompoundEvaluation.of(EXPRESSION, false, RATIONALE, ELAPSED_TIME,
+            Cause.of(CHILD), CHILDREN);
+
+        assertEquals(evaluation1, evaluation2);
+        assertEquals(evaluation1.hashCode(), evaluation2.hashCode());
+    }
+
+    @Test
+    void givenDifferentResults_whenEquals_thenNotEqual() {
+
+        final CompoundEvaluation evaluation1 = CompoundEvaluation.of(EXPRESSION, false, RATIONALE, ELAPSED_TIME,
+            Cause.of(CHILD), CHILDREN);
+        final CompoundEvaluation evaluation2 = CompoundEvaluation.of(EXPRESSION, true, RATIONALE, ELAPSED_TIME,
+            Cause.of(CHILD), CHILDREN);
+
+        assertNotEquals(evaluation1, evaluation2);
     }
 }

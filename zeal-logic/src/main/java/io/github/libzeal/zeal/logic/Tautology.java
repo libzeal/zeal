@@ -1,6 +1,5 @@
 package io.github.libzeal.zeal.logic;
 
-import io.github.libzeal.zeal.logic.evaluation.Result;
 import io.github.libzeal.zeal.logic.evaluation.TerminalEvaluation;
 import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
 
@@ -23,6 +22,6 @@ final class Tautology implements TerminalExpression {
 
     @Override
     public TerminalEvaluation evaluate() {
-        return TerminalEvaluation.of(Result.TRUE, NAME, new SimpleRationale(TRUE, TRUE), Duration.ZERO);
+        return new TerminalEvaluation(true, NAME, new SimpleRationale(TRUE, TRUE), Duration.ZERO);
     }
 }

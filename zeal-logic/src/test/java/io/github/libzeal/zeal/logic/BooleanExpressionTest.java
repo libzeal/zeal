@@ -1,7 +1,6 @@
 package io.github.libzeal.zeal.logic;
 
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
-import io.github.libzeal.zeal.logic.evaluation.Result;
 import org.junit.jupiter.api.Test;
 
 import static io.github.libzeal.zeal.logic.test.CauseAssertions.*;
@@ -15,7 +14,7 @@ class BooleanExpressionTest {
 
         final Evaluation evaluation = t("t").evaluate();
 
-        assertEquals(Result.TRUE, evaluation.result());
+        assertTrue(evaluation.result());
         assertCauseIsSelf(evaluation);
         assertTraces(evaluation, "t");
         assertRootCauses(evaluation, evaluation);
@@ -26,7 +25,7 @@ class BooleanExpressionTest {
 
         final Evaluation evaluation = f("f").evaluate();
 
-        assertEquals(Result.FALSE, evaluation.result());
+        assertFalse(evaluation.result());
         assertCauseIsSelf(evaluation);
         assertTraces(evaluation, "f");
         assertRootCauses(evaluation, evaluation);

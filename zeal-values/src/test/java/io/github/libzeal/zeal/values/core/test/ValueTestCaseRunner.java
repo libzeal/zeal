@@ -36,8 +36,8 @@ public class ValueTestCaseRunner {
     private static Evaluation terminalOf(Evaluation evaluation) {
 
         if (evaluation instanceof CompoundEvaluation compound
-                && !compound.children().isEmpty()) {
-            return compound.children().getFirst();
+                && !compound.evaluated().isEmpty()) {
+            return compound.evaluated().getFirst();
         }
         return evaluation;
     }

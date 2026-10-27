@@ -1,9 +1,9 @@
 package io.github.libzeal.zeal.logic;
 
+import io.github.libzeal.zeal.logic.evaluation.CompoundEvaluation;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
-import io.github.libzeal.zeal.logic.evaluation.Result;
+import io.github.libzeal.zeal.logic.evaluation.SkippableEvaluation.Skipped;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
-import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
 import io.github.libzeal.zeal.logic.test.TestExpressions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,8 +11,8 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static io.github.libzeal.zeal.logic.CompoundEvaluator.CompoundRationaleBuilder.format;
-import static io.github.libzeal.zeal.logic.CompoundEvaluator.CompoundRationaleBuilder.formatPassed;
+import static io.github.libzeal.zeal.logic.CompoundEvaluator.format;
+import static io.github.libzeal.zeal.logic.CompoundEvaluator.formatPassed;
 import static io.github.libzeal.zeal.logic.test.Arguments.listWithSingleNull;
 import static io.github.libzeal.zeal.logic.test.CauseAssertions.*;
 import static io.github.libzeal.zeal.logic.test.NamedExpressions.*;
@@ -110,7 +110,7 @@ class AndExpressionTest {
         final Evaluation evaluation = expression.evaluate();
         final Rationale rationale = evaluation.rationale();
 
-        assertEquals(Result.TRUE, evaluation.result());
+        assertTrue(evaluation.result());
         assertEquals(name, evaluation.name());
         assertEquals(formatPassed(0), rationale.expected());
         assertEquals(format(0, 0, 0), rationale.actual());
@@ -120,12 +120,12 @@ class AndExpressionTest {
     @Test
     void givenOnePassingExpression_whenEvaluate_thenEvaluationIsCorrect() {
 
-        final Expression subExpression = TestExpressions.expression(Result.TRUE);
+        final Expression subExpression = TestExpressions.expression(true);
 
         final Evaluation evaluation = new AndExpression(name, List.of(subExpression)).evaluate();
         final Rationale rationale = evaluation.rationale();
 
-        assertEquals(Result.TRUE, evaluation.result());
+        assertTrue(evaluation.result());
         assertEquals(name, evaluation.name());
         assertEquals(formatPassed(1), rationale.expected());
         assertEquals(format(1, 0, 0), rationale.actual());
@@ -135,12 +135,12 @@ class AndExpressionTest {
     @Test
     void givenOneFailingExpression_whenEvaluate_thenEvaluationIsCorrect() {
 
-        final Expression subExpression = TestExpressions.expression(Result.FALSE);
+        final Expression subExpression = TestExpressions.expression(false);
 
         final Evaluation evaluation = new AndExpression(name, List.of(subExpression)).evaluate();
         final Rationale rationale = evaluation.rationale();
 
-        assertEquals(Result.FALSE, evaluation.result());
+        assertFalse(evaluation.result());
         assertEquals(name, evaluation.name());
         assertEquals(formatPassed(1), rationale.expected());
         assertEquals(format(0, 1, 0), rationale.actual());
@@ -148,29 +148,16 @@ class AndExpressionTest {
     }
 
     @Test
-    void givenOneSkippedExpression_whenEvaluate_thenEvaluationIsCorrect() {
-
-        final Expression subExpression = TestExpressions.expression(Result.SKIPPED);
-
-        final Evaluation evaluation = new AndExpression(name, List.of(subExpression)).evaluate();
-        final Rationale rationale = evaluation.rationale();
-
-        assertEquals(Result.SKIPPED, evaluation.result());
-        assertEquals(name, evaluation.name());
-        assertEquals(SimpleRationale.skipped(), rationale);
-    }
-
-    @Test
     void givenOneFailingExpressionBeforePassingExpression_whenEvaluate_thenEvaluationIsCorrect() {
 
-        final Expression passingSubExpression = TestExpressions.expression(Result.TRUE);
-        final Expression failingSubExpression = TestExpressions.expression(Result.FALSE);
+        final Expression passingSubExpression = TestExpressions.expression(true);
+        final Expression failingSubExpression = TestExpressions.expression(false);
 
         final List<Expression> children = List.of(failingSubExpression, passingSubExpression);
         final Evaluation evaluation = new AndExpression(name, children).evaluate();
         final Rationale rationale = evaluation.rationale();
 
-        assertEquals(Result.FALSE, evaluation.result());
+        assertFalse(evaluation.result());
         assertEquals(name, evaluation.name());
         assertEquals(formatPassed(2), rationale.expected());
         assertEquals(format(0, 1, 1), rationale.actual());
@@ -189,14 +176,14 @@ class AndExpressionTest {
     @Test
     void givenOnePassingExpressionBeforeFailingExpression_whenEvaluate_thenEvaluationIsCorrect() {
 
-        final Expression passingSubExpression = TestExpressions.expression(Result.TRUE);
-        final Expression failingSubExpression = TestExpressions.expression(Result.FALSE);
+        final Expression passingSubExpression = TestExpressions.expression(true);
+        final Expression failingSubExpression = TestExpressions.expression(false);
 
         final List<Expression> children = List.of(passingSubExpression, failingSubExpression);
         final Evaluation evaluation = new AndExpression(name, children).evaluate();
         final Rationale rationale = evaluation.rationale();
 
-        assertEquals(Result.FALSE, evaluation.result());
+        assertFalse(evaluation.result());
         assertEquals(name, evaluation.name());
         assertEquals(formatPassed(2), rationale.expected());
         assertEquals(format(1, 1, 0), rationale.actual());
@@ -234,7 +221,7 @@ class AndExpressionTest {
 
         final Evaluation evaluation = and("AND").evaluate();
 
-        assertEquals(Result.TRUE, evaluation.result());
+        assertTrue(evaluation.result());
         assertCauseIsSelf(evaluation);
         assertTraces(evaluation, "AND");
         assertRootCauses(evaluation, evaluation);
@@ -245,7 +232,7 @@ class AndExpressionTest {
 
         final Evaluation evaluation = and("AND", t("t1"), t("t2")).evaluate();
 
-        assertEquals(Result.TRUE, evaluation.result());
+        assertTrue(evaluation.result());
         assertCause(evaluation, child(evaluation, 0), child(evaluation, 1));
         assertTraces(evaluation, "AND -> t1", "AND -> t2");
         assertRootCauses(evaluation, child(evaluation, 0), child(evaluation, 1));
@@ -256,16 +243,16 @@ class AndExpressionTest {
 
         final Evaluation evaluation = and("AND", t("t1"), f("f2"), t("t3")).evaluate();
         final Evaluation f2 = child(evaluation, 1);
-        final Evaluation t3 = child(evaluation, 2);
+        final Skipped t3 = skipped(evaluation, 2);
 
-        assertEquals(Result.FALSE, evaluation.result());
+        assertFalse(evaluation.result());
         assertCause(evaluation, f2);
         assertTraces(evaluation, "AND -> f2");
         assertRootCauses(evaluation, f2);
 
-        assertEquals(Result.SKIPPED, t3.result());
+        assertEquals("t3", t3.name());
         assertCause(t3, f2);
-        assertTraces(t3, "t3 -> f2");
+        assertTraces(t3, "f2");
         assertRootCauses(t3, f2);
     }
 
@@ -274,7 +261,7 @@ class AndExpressionTest {
 
         final Evaluation evaluation = and("AND", f("f1")).evaluate();
 
-        assertEquals(Result.FALSE, evaluation.result());
+        assertFalse(evaluation.result());
         assertCause(evaluation, child(evaluation, 0));
         assertTraces(evaluation, "AND -> f1");
     }
@@ -284,19 +271,9 @@ class AndExpressionTest {
 
         final Evaluation evaluation = and("AND", t("t1"), f("f2")).evaluate();
 
-        assertEquals(Result.FALSE, evaluation.result());
+        assertFalse(evaluation.result());
         assertCause(evaluation, child(evaluation, 1));
         assertTraces(evaluation, "AND -> f2");
-    }
-
-    @Test
-    void givenAndWithChildEvaluatedAsSkipped_whenEvaluate_thenCauseIsSkippedChild() {
-
-        final Evaluation evaluation = and("AND", TestExpressions.expression("s", Result.SKIPPED)).evaluate();
-
-        assertEquals(Result.SKIPPED, evaluation.result());
-        assertCause(evaluation, child(evaluation, 0));
-        assertTraces(evaluation, "AND -> s -> decider");
     }
 
     @Test
@@ -304,7 +281,7 @@ class AndExpressionTest {
 
         final Evaluation evaluation = and("AND", or("OR", f("f1"), t("t2")), f("f3")).evaluate();
 
-        assertEquals(Result.FALSE, evaluation.result());
+        assertFalse(evaluation.result());
         assertTraces(evaluation, "AND -> f3");
         assertTraces(child(evaluation, 0), "OR -> t2");
     }
@@ -313,14 +290,14 @@ class AndExpressionTest {
     void givenAndOfFalseOr_whenEvaluate_thenTracesFollowEveryOrChild() {
 
         final Evaluation evaluation = and("AND", or("OR", f("f1"), f("f2")), t("t3")).evaluate();
-        final Evaluation t3 = child(evaluation, 1);
+        final Skipped t3 = skipped(evaluation, 1);
 
-        assertEquals(Result.FALSE, evaluation.result());
+        assertFalse(evaluation.result());
         assertTraces(evaluation, "AND -> OR -> f1", "AND -> OR -> f2");
         assertRootCauses(evaluation, child(evaluation, 0, 0), child(evaluation, 0, 1));
 
-        assertEquals(Result.SKIPPED, t3.result());
-        assertTraces(t3, "t3 -> OR -> f1", "t3 -> OR -> f2");
+        assertCause(t3, child(evaluation, 0));
+        assertTraces(t3, "OR -> f1", "OR -> f2");
         assertRootCauses(t3, child(evaluation, 0, 0), child(evaluation, 0, 1));
     }
 
@@ -332,24 +309,24 @@ class AndExpressionTest {
             and("AND2", t("t1"), and("AND3", t("t2"), f("f3"))),
             t("t4")
         ).evaluate();
-        final Evaluation t4 = child(evaluation, 1);
+        final Skipped t4 = skipped(evaluation, 1);
 
-        assertEquals(Result.FALSE, evaluation.result());
+        assertFalse(evaluation.result());
         assertTraces(evaluation, "AND1 -> AND2 -> AND3 -> f3");
         assertRootCauses(evaluation, child(evaluation, 0, 1, 1));
-        assertTraces(t4, "t4 -> AND2 -> AND3 -> f3");
+        assertTraces(t4, "AND2 -> AND3 -> f3");
     }
 
     @Test
     void givenAndOfNegatedTrueOr_whenEvaluate_thenTraceReachesTrueRootCause() {
 
         final Evaluation evaluation = and("AND", not("NOT", or("OR", f("f1"), t("t2"))), t("t3")).evaluate();
-        final Evaluation t3 = child(evaluation, 1);
+        final Skipped t3 = skipped(evaluation, 1);
 
-        assertEquals(Result.FALSE, evaluation.result());
+        assertFalse(evaluation.result());
         assertTraces(evaluation, "AND -> NOT -> OR -> t2");
-        assertEquals(Result.TRUE, evaluation.rootCauses().getFirst().result());
-        assertTraces(t3, "t3 -> NOT -> OR -> t2");
+        assertTrue(evaluation.rootCauses().getFirst().result());
+        assertTraces(t3, "NOT -> OR -> t2");
     }
 
     @Test
@@ -362,22 +339,24 @@ class AndExpressionTest {
         ).evaluate();
         final Evaluation or = child(evaluation, 0);
         final Evaluation f3 = child(evaluation, 0, 1, 1);
-        final Evaluation t4 = child(evaluation, 0, 1, 2);
-        final Evaluation not = child(evaluation, 1);
-        final Evaluation t5 = child(evaluation, 1, 0);
+        final Skipped t4 = skipped(evaluation, 0, 1, 2);
+        final Skipped not = skipped(evaluation, 1);
+        final List<Skipped> descendants = skippedDescendants(evaluation);
 
-        assertEquals(Result.FALSE, evaluation.result());
+        assertFalse(evaluation.result());
         assertCause(evaluation, or);
         assertTraces(evaluation, "AND1 -> OR -> f1", "AND1 -> OR -> AND2 -> f3");
         assertRootCauses(evaluation, child(evaluation, 0, 0), f3);
 
         assertCause(t4, f3);
-        assertTraces(t4, "t4 -> f3");
+        assertTraces(t4, "f3");
 
         assertCause(not, or);
-        assertCause(t5, or);
-        assertTraces(not, "NOT -> OR -> f1", "NOT -> OR -> AND2 -> f3");
-        assertTraces(t5, "t5 -> OR -> f1", "t5 -> OR -> AND2 -> f3");
+        assertTraces(not, "OR -> f1", "OR -> AND2 -> f3");
+
+        assertEquals(List.of("t4", "NOT", "t5"), descendants.stream().map(Skipped::name).toList());
+        assertCause(descendants.get(2), or);
+        assertTraces(descendants.get(2), "OR -> f1", "OR -> AND2 -> f3");
     }
 
     @Test
@@ -389,20 +368,15 @@ class AndExpressionTest {
             or("OR", t("t2"), and("AND2", t("t3"), t("t4")))
         ).evaluate();
         final Evaluation f1 = child(evaluation, 0);
-        final List<Evaluation> skipped = List.of(
-            child(evaluation, 1),
-            child(evaluation, 1, 0),
-            child(evaluation, 1, 1),
-            child(evaluation, 1, 1, 0),
-            child(evaluation, 1, 1, 1)
-        );
+        final List<Skipped> descendants = skippedDescendants(evaluation);
 
         assertTraces(evaluation, "AND1 -> f1");
+        assertEquals(List.of("OR", "t2", "AND2", "t3", "t4"), descendants.stream().map(Skipped::name).toList());
 
-        for (final Evaluation descendant : skipped) {
-            assertEquals(Result.SKIPPED, descendant.result());
+        for (final Skipped descendant : descendants) {
             assertCause(descendant, f1);
-            assertTraces(descendant, descendant.name() + " -> f1");
+            assertTraces(descendant, "f1");
+            assertRootCauses(descendant, f1);
         }
     }
 
@@ -411,12 +385,21 @@ class AndExpressionTest {
 
         final Evaluation evaluation = and("AND", f("f1"), not("NOT", t("t2"))).evaluate();
         final Evaluation f1 = child(evaluation, 0);
-        final Evaluation not = child(evaluation, 1);
-        final Evaluation t2 = child(evaluation, 1, 0);
+        final List<Skipped> descendants = skippedDescendants(evaluation);
 
-        assertEquals(Result.SKIPPED, not.result());
-        assertEquals(Result.SKIPPED, t2.result());
-        assertCause(not, f1);
-        assertCause(t2, f1);
+        assertEquals(List.of("NOT", "t2"), descendants.stream().map(Skipped::name).toList());
+        assertCause(descendants.get(0), f1);
+        assertCause(descendants.get(1), f1);
+    }
+
+    @Test
+    void givenFalseBeforeRemainingChildren_whenEvaluate_thenRemainingChildrenAreSkippedInOrder() {
+
+        final Evaluation evaluation = and("AND", t("t1"), f("f2"), t("t3"), f("f4")).evaluate();
+        final CompoundEvaluation compound = assertInstanceOf(CompoundEvaluation.class, evaluation);
+
+        assertEquals(List.of(child(evaluation, 0), child(evaluation, 1)), compound.evaluated());
+        assertEquals("t3", skipped(evaluation, 2).name());
+        assertEquals("f4", skipped(evaluation, 3).name());
     }
 }

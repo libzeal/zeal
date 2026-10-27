@@ -5,8 +5,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static io.github.libzeal.zeal.logic.evaluation.Result.FALSE;
-import static io.github.libzeal.zeal.logic.evaluation.Result.TRUE;
 
 class ListValueTest extends BaseValueTest<List<String>, ListValue<String>>
     implements SizedSequenceValueTest<List<String>, ListValue<String>>,
@@ -41,7 +39,7 @@ class ListValueTest extends BaseValueTest<List<String>, ListValue<String>>
         newTestCase()
             .subject(List.of("a", "a", "b"))
             .expression(value -> value.includesAll(List.of("a", "b")))
-            .result(TRUE)
+            .result(true)
             .name("includesAll")
             .expected("All desired elements in subject")
             .actual("All desired elements in subject")
@@ -54,7 +52,7 @@ class ListValueTest extends BaseValueTest<List<String>, ListValue<String>>
         newTestCase()
             .subject(List.of("a", "a", "b"))
             .expression(value -> value.includesAll(List.of("a", "c")))
-            .result(FALSE)
+            .result(false)
             .name("includesAll")
             .expected("All desired elements in subject")
             .actual("At least one desired element missing in subject")
@@ -67,7 +65,7 @@ class ListValueTest extends BaseValueTest<List<String>, ListValue<String>>
         newTestCase()
             .subject(List.of("a", "a", "b"))
             .expression(value -> value.excludesAny(List.of("a", "c")))
-            .result(TRUE)
+            .result(true)
             .name("excludesAny")
             .expected("At least one desired element missing in subject")
             .actual("At least one desired element missing in subject")
@@ -80,7 +78,7 @@ class ListValueTest extends BaseValueTest<List<String>, ListValue<String>>
         newTestCase()
             .subject(List.of("a", "a", "b"))
             .expression(value -> value.includesExactly("a", 2))
-            .result(TRUE)
+            .result(true)
             .name("includesExactly[desired=a, times=2]")
             .expected("found 'a' 2 times")
             .actual("found 'a' 2 times")

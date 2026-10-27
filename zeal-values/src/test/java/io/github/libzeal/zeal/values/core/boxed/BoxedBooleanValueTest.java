@@ -3,8 +3,6 @@ package io.github.libzeal.zeal.values.core.boxed;
 import io.github.libzeal.zeal.values.sdk.BaseValueTest;
 import org.junit.jupiter.api.Test;
 
-import static io.github.libzeal.zeal.logic.evaluation.Result.FALSE;
-import static io.github.libzeal.zeal.logic.evaluation.Result.TRUE;
 
 public class BoxedBooleanValueTest extends BaseValueTest<Boolean, BoxedBooleanValue> {
 
@@ -30,7 +28,7 @@ public class BoxedBooleanValueTest extends BaseValueTest<Boolean, BoxedBooleanVa
         newTestCase()
             .subject(true)
             .expression(BoxedBooleanValue::isTrue)
-            .result(TRUE)
+            .result(true)
             .name("isTrue")
             .expected("true")
             .actual("true")
@@ -42,7 +40,7 @@ public class BoxedBooleanValueTest extends BaseValueTest<Boolean, BoxedBooleanVa
         newTestCase()
             .subject(false)
             .expression(BoxedBooleanValue::isTrue)
-            .result(FALSE)
+            .result(false)
             .name("isTrue")
             .expected("true")
             .actual("false")
@@ -56,7 +54,7 @@ public class BoxedBooleanValueTest extends BaseValueTest<Boolean, BoxedBooleanVa
         newTestCase()
             .subject(true)
             .expression(BoxedBooleanValue::isFalse)
-            .result(FALSE)
+            .result(false)
             .name("isFalse")
             .expected("false")
             .actual("true")
@@ -68,7 +66,7 @@ public class BoxedBooleanValueTest extends BaseValueTest<Boolean, BoxedBooleanVa
         newTestCase()
             .subject(false)
             .expression(BoxedBooleanValue::isFalse)
-            .result(TRUE)
+            .result(true)
             .name("isFalse")
             .expected("false")
             .actual("false")

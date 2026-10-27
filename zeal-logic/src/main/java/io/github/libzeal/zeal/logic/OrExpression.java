@@ -1,9 +1,6 @@
 package io.github.libzeal.zeal.logic;
 
-import io.github.libzeal.zeal.logic.CompoundEvaluator.CompoundRationaleBuilder;
-import io.github.libzeal.zeal.logic.CompoundEvaluator.Tally;
 import io.github.libzeal.zeal.logic.evaluation.CompoundEvaluation;
-import io.github.libzeal.zeal.logic.evaluation.Result;
 
 import java.util.List;
 
@@ -71,15 +68,6 @@ public record OrExpression(String name,
 
     @Override
     public CompoundEvaluation evaluate() {
-
-        final int expectedPassed = children.isEmpty() ? 0 : 1;
-        final CompoundRationaleBuilder builder = CompoundRationaleBuilder.withExpectedPassed(expectedPassed);
-
-        return new CompoundEvaluator(
-            name,
-            Result.TRUE,
-            Tally::anyPassed,
-            builder
-        ).evaluate(children);
+        return CompoundEvaluator.OR.evaluate(this);
     }
 }

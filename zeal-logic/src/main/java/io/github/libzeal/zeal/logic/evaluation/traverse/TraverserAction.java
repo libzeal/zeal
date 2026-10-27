@@ -1,6 +1,7 @@
 package io.github.libzeal.zeal.logic.evaluation.traverse;
 
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
+import io.github.libzeal.zeal.logic.evaluation.SkippableEvaluation.Skipped;
 
 public interface TraverserAction {
 
@@ -13,4 +14,7 @@ public interface TraverserAction {
      *     The context of the evaluation that was visited, such as the depth of the evaluation.
      */
     void on(Evaluation evaluation, TraversalContext context);
+
+    default void onSkipped(Skipped skipped, TraversalContext context) {
+    }
 }

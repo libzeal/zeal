@@ -1,6 +1,5 @@
 package io.github.libzeal.zeal.logic;
 
-import io.github.libzeal.zeal.logic.evaluation.Result;
 import io.github.libzeal.zeal.logic.evaluation.TerminalEvaluation;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
 import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
@@ -65,6 +64,6 @@ public final class BooleanExpression implements TerminalExpression {
         final Rationale rationale = new SimpleRationale("true", String.valueOf(passed));
         final Duration elapsedTime = stopWatch.stop();
 
-        return TerminalEvaluation.of(Result.from(passed), name, rationale, elapsedTime);
+        return new TerminalEvaluation(passed, name, rationale, elapsedTime);
     }
 }

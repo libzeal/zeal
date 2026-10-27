@@ -1,6 +1,5 @@
 package io.github.libzeal.zeal.values;
 
-import io.github.libzeal.zeal.logic.evaluation.Result;
 import io.github.libzeal.zeal.logic.unary.UnaryExpression;
 import org.junit.jupiter.api.Test;
 
@@ -43,7 +42,7 @@ class ValuesTest {
     @Test
     void givenValidValue_whenValueEnum_thenExpressionReturned() {
 
-        final UnaryExpression<?> expression = Values.value(Result.TRUE);
+        final UnaryExpression<?> expression = Values.value(true);
 
         assertNotNull(expression);
     }

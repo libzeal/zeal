@@ -1,6 +1,5 @@
 package io.github.libzeal.zeal.assertion;
 
-import io.github.libzeal.zeal.logic.evaluation.Result;
 import io.github.libzeal.zeal.logic.evaluation.format.Formatter;
 import io.github.libzeal.zeal.logic.evaluation.format.simple.SimpleFormatter;
 import org.junit.jupiter.api.BeforeEach;
@@ -89,14 +88,14 @@ class AssertionExpressionEvaluatorTest {
                 Arguments.of(
                     new ExceptionTestCaseData(
                         "Failed evaluation and null subject",
-                        expression(Result.FALSE, null),
+                        expression(false, null),
                         TestRuntimeException.class
                     )
                 ),
                 Arguments.of(
                     new ExceptionTestCaseData(
                         "Failed evaluation and non-null subject",
-                        expression(Result.FALSE, new Object()),
+                        expression(false, new Object()),
                         TestRuntimeException.class
                     )
                 )

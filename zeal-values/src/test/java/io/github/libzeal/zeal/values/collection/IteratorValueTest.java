@@ -7,8 +7,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import static io.github.libzeal.zeal.logic.evaluation.Result.FALSE;
-import static io.github.libzeal.zeal.logic.evaluation.Result.TRUE;
 
 class IteratorValueTest extends BaseValueTest<Iterator<String>, IteratorValue<String>> {
 
@@ -38,7 +36,7 @@ class IteratorValueTest extends BaseValueTest<Iterator<String>, IteratorValue<St
         newTestCase()
             .subject(List.of("a").iterator())
             .expression(IteratorValue::hasNext)
-            .result(TRUE)
+            .result(true)
             .name("hasNext")
             .expected("hasNext")
             .actual("hasNext")
@@ -50,7 +48,7 @@ class IteratorValueTest extends BaseValueTest<Iterator<String>, IteratorValue<St
         newTestCase()
             .subject(Collections.emptyIterator())
             .expression(IteratorValue::hasNext)
-            .result(FALSE)
+            .result(false)
             .name("hasNext")
             .expected("hasNext")
             .actual("not[hasNext]")
@@ -64,7 +62,7 @@ class IteratorValueTest extends BaseValueTest<Iterator<String>, IteratorValue<St
         newTestCase()
             .subject(Collections.emptyIterator())
             .expression(IteratorValue::doesNotHaveNext)
-            .result(TRUE)
+            .result(true)
             .name("not[hasNext]")
             .expected("not[hasNext]")
             .actual("not[hasNext]")
@@ -76,7 +74,7 @@ class IteratorValueTest extends BaseValueTest<Iterator<String>, IteratorValue<St
         newTestCase()
             .subject(List.of("a").iterator())
             .expression(IteratorValue::doesNotHaveNext)
-            .result(FALSE)
+            .result(false)
             .name("not[hasNext]")
             .expected("not[hasNext]")
             .actual("hasNext")

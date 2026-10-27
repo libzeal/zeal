@@ -3,8 +3,6 @@ package io.github.libzeal.zeal.values.collection;
 import io.github.libzeal.zeal.values.sdk.BaseValueTest;
 import org.junit.jupiter.api.Test;
 
-import static io.github.libzeal.zeal.logic.evaluation.Result.FALSE;
-import static io.github.libzeal.zeal.logic.evaluation.Result.TRUE;
 
 class ArrayValueTest extends BaseValueTest<String[], ArrayValue<String>>
     implements SizedSequenceValueTest<String[], ArrayValue<String>>,
@@ -43,7 +41,7 @@ class ArrayValueTest extends BaseValueTest<String[], ArrayValue<String>>
         newTestCase()
             .subject(subjectOf("a", "b"))
             .expression(value -> value.includes("b"))
-            .result(TRUE)
+            .result(true)
             .name("includes[b]")
             .expected("includes[b]")
             .actual("includes[b]")
@@ -56,7 +54,7 @@ class ArrayValueTest extends BaseValueTest<String[], ArrayValue<String>>
         newTestCase()
             .subject(subjectOf("a", "b"))
             .expression(value -> value.includes("c"))
-            .result(FALSE)
+            .result(false)
             .name("includes[c]")
             .expected("includes[c]")
             .actual("excludes[c]")
@@ -71,7 +69,7 @@ class ArrayValueTest extends BaseValueTest<String[], ArrayValue<String>>
         newTestCase()
             .subject(subjectOf("a", "b"))
             .expression(value -> value.excludes("c"))
-            .result(TRUE)
+            .result(true)
             .name("excludes[c]")
             .expected("excludes[c]")
             .actual("excludes[c]")
@@ -84,7 +82,7 @@ class ArrayValueTest extends BaseValueTest<String[], ArrayValue<String>>
         newTestCase()
             .subject(subjectOf("a", "b"))
             .expression(value -> value.excludes("b"))
-            .result(FALSE)
+            .result(false)
             .name("excludes[b]")
             .expected("excludes[b]")
             .actual("includes[b]")
@@ -99,7 +97,7 @@ class ArrayValueTest extends BaseValueTest<String[], ArrayValue<String>>
         newTestCase()
             .subject(subjectOf("a", "a", "b"))
             .expression(value -> value.includesExactly("a", 2))
-            .result(TRUE)
+            .result(true)
             .name("includesExactly[desired=a, times=2]")
             .expected("found 'a' 2 times")
             .actual("found 'a' 2 times")
@@ -111,7 +109,7 @@ class ArrayValueTest extends BaseValueTest<String[], ArrayValue<String>>
         newTestCase()
             .subject(subjectOf("a", "a", "b"))
             .expression(value -> value.includesAllOf("a", "c"))
-            .result(FALSE)
+            .result(false)
             .name("includesAll")
             .expected("All desired elements in subject")
             .actual("At least one desired element missing in subject")

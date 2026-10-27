@@ -3,7 +3,7 @@ package io.github.libzeal.zeal.logic;
 import io.github.libzeal.zeal.logic.evaluation.Cause;
 import io.github.libzeal.zeal.logic.evaluation.CompoundEvaluation;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
-import io.github.libzeal.zeal.logic.evaluation.Result;
+import io.github.libzeal.zeal.logic.evaluation.SkippableEvaluation.Evaluated;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
 import io.github.libzeal.zeal.logic.test.TestExpressions;
 import org.junit.jupiter.api.Test;
@@ -35,11 +35,11 @@ class NotExpressionTest {
         final Rationale rationale = evaluation.rationale();
         final Evaluation wrappedEvaluation = trueExpression.evaluate();
 
-        assertEquals(Result.FALSE, evaluation.result());
+        assertFalse(evaluation.result());
         assertEquals(NotExpression.DEFAULT_NAME, evaluation.name());
         assertRationaleEquals(rationale, ACTUAL_VALUE_WRAPPED_FALSE, ACTUAL_VALUE_WRAPPED_TRUE);
         assertEquals(Cause.of(wrappedEvaluation), evaluation.cause());
-        assertEquals(List.of(wrappedEvaluation), ((CompoundEvaluation) evaluation).children());
+        assertEquals(List.of(new Evaluated(wrappedEvaluation)), ((CompoundEvaluation) evaluation).children());
     }
 
     @Test
@@ -51,26 +51,11 @@ class NotExpressionTest {
         final Rationale rationale = evaluation.rationale();
         final Evaluation wrappedEvaluation = falseExpression.evaluate();
 
-        assertEquals(Result.TRUE, evaluation.result());
+        assertTrue(evaluation.result());
         assertEquals(NotExpression.DEFAULT_NAME, evaluation.name());
         assertRationaleEquals(rationale, ACTUAL_VALUE_WRAPPED_FALSE, ACTUAL_VALUE_WRAPPED_FALSE);
         assertEquals(Cause.of(wrappedEvaluation), evaluation.cause());
-        assertEquals(List.of(wrappedEvaluation), ((CompoundEvaluation) evaluation).children());
-    }
-
-    @Test
-    void givenSkippedExpression_whenEvaluate_thenEvaluationIsCorrect() {
-
-        final Expression skippedExpression = TestExpressions.expression("foo", Result.SKIPPED);
-        final NotExpression expression = NotExpression.unnamed(skippedExpression);
-        final Evaluation evaluation = expression.evaluate();
-        final Rationale rationale = evaluation.rationale();
-        final Evaluation wrappedEvaluation = skippedExpression.evaluate();
-
-        assertEquals(Result.FALSE, evaluation.result());
-        assertEquals(NotExpression.DEFAULT_NAME, evaluation.name());
-        assertRationaleEquals(rationale, ACTUAL_VALUE_WRAPPED_FALSE, ACTUAL_VALUE_WRAPPED_SKIPPED);
-        assertEquals(Cause.of(wrappedEvaluation), evaluation.cause());
+        assertEquals(List.of(new Evaluated(wrappedEvaluation)), ((CompoundEvaluation) evaluation).children());
     }
 
     @Test
@@ -78,7 +63,7 @@ class NotExpressionTest {
 
         final Evaluation evaluation = not("NOT", t("t")).evaluate();
 
-        assertEquals(Result.FALSE, evaluation.result());
+        assertFalse(evaluation.result());
         assertCause(evaluation, child(evaluation, 0));
         assertTraces(evaluation, "NOT -> t");
     }
@@ -88,7 +73,7 @@ class NotExpressionTest {
 
         final Evaluation evaluation = not("NOT", f("f")).evaluate();
 
-        assertEquals(Result.TRUE, evaluation.result());
+        assertTrue(evaluation.result());
         assertCause(evaluation, child(evaluation, 0));
         assertTraces(evaluation, "NOT -> f");
     }
@@ -98,7 +83,7 @@ class NotExpressionTest {
 
         final Evaluation evaluation = not("NOT1", not("NOT2", f("f"))).evaluate();
 
-        assertEquals(Result.FALSE, evaluation.result());
+        assertFalse(evaluation.result());
         assertTraces(evaluation, "NOT1 -> NOT2 -> f");
         assertRootCauses(evaluation, child(evaluation, 0, 0));
     }
@@ -108,7 +93,7 @@ class NotExpressionTest {
 
         final Evaluation evaluation = not("NOT", and("AND", t("t1"), t("t2"))).evaluate();
 
-        assertEquals(Result.FALSE, evaluation.result());
+        assertFalse(evaluation.result());
         assertTraces(evaluation, "NOT -> AND -> t1", "NOT -> AND -> t2");
     }
 
@@ -117,7 +102,7 @@ class NotExpressionTest {
 
         final Evaluation evaluation = not("NOT", and("AND", t("t1"), f("f2"))).evaluate();
 
-        assertEquals(Result.TRUE, evaluation.result());
+        assertTrue(evaluation.result());
         assertTraces(evaluation, "NOT -> AND -> f2");
     }
 
@@ -126,7 +111,7 @@ class NotExpressionTest {
 
         final Evaluation evaluation = not("NOT", or("OR", f("f1"), t("t2"))).evaluate();
 
-        assertEquals(Result.FALSE, evaluation.result());
+        assertFalse(evaluation.result());
         assertTraces(evaluation, "NOT -> OR -> t2");
     }
 
@@ -135,7 +120,7 @@ class NotExpressionTest {
 
         final Evaluation evaluation = not("NOT", or("OR", f("f1"), f("f2"))).evaluate();
 
-        assertEquals(Result.TRUE, evaluation.result());
+        assertTrue(evaluation.result());
         assertTraces(evaluation, "NOT -> OR -> f1", "NOT -> OR -> f2");
     }
 }

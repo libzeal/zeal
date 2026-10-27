@@ -1,7 +1,6 @@
 package io.github.libzeal.zeal.assertion;
 
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
-import io.github.libzeal.zeal.logic.evaluation.Result;
 import io.github.libzeal.zeal.logic.evaluation.format.Formatter;
 import io.github.libzeal.zeal.logic.unary.UnaryExpression;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -87,7 +86,7 @@ public class AssertionTestCases {
 
     public void whenCall_thenSubjectReturned(final SubjectReturnedDataSet testData,
                                                     final Function<UnaryExpression<Object>, Object> action) {
-        final Result result = testData.result();
+        final boolean result = testData.result();
         final Object subject = testData.subject();
         final UnaryExpression<Object> expression = expression(result, subject);
 
@@ -99,7 +98,7 @@ public class AssertionTestCases {
     public void whenCallWithMessage_thenSubjectReturned(final SubjectReturnedDataSet testData,
                                                                final EvaluationWithMessageAction action) throws Throwable {
         final String message = "foo";
-        final Result result = testData.result();
+        final boolean result = testData.result();
         final Object subject = testData.subject();
         final UnaryExpression<Object> expression = expression(result, subject);
 
@@ -113,10 +112,8 @@ public class AssertionTestCases {
         @Override
         public Stream<? extends Arguments> provideArguments(final ExtensionContext extensionContext) {
             return Stream.of(
-                Arguments.of( new SubjectReturnedDataSet("Passing with null subject", Result.TRUE, null)),
-                Arguments.of(new SubjectReturnedDataSet("Passing with non-null subject", Result.TRUE, new Object())),
-                Arguments.of(new SubjectReturnedDataSet("Skipped with null subject", Result.SKIPPED, null)),
-                Arguments.of(new SubjectReturnedDataSet("Skipped with non-null subject", Result.SKIPPED, new Object()))
+                Arguments.of( new SubjectReturnedDataSet("Passing with null subject", true, null)),
+                Arguments.of(new SubjectReturnedDataSet("Passing with non-null subject", true, new Object()))
             );
         }
     }
@@ -169,16 +166,16 @@ public class AssertionTestCases {
     public static class SubjectReturnedDataSet {
 
         private final String name;
-        private final Result result;
+        private final boolean result;
         private final Object subject;
 
-        public SubjectReturnedDataSet(final String name, final Result result, final Object subject) {
+        public SubjectReturnedDataSet(final String name, final boolean result, final Object subject) {
             this.name = name;
             this.result = result;
             this.subject = subject;
         }
 
-        public Result result() {
+        public boolean result() {
             return result;
         }
 

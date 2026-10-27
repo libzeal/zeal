@@ -1,6 +1,7 @@
 package io.github.libzeal.zeal.logic.evaluation;
 
 import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
+import io.github.libzeal.zeal.logic.test.TestExpressions;
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
@@ -147,7 +148,26 @@ class CauseTest {
         assertEquals("first -> second", new Cause.Trace(List.of(FIRST, SECOND)).toString());
     }
 
+    @Test
+    void givenDelegatedToTerminals_whenTraces_thenOneTracePerEvaluationStartingAtEvaluation() {
+
+        final Cause.Delegated cause = Cause.of(List.of(FIRST, SECOND));
+
+        assertEquals(List.of(Cause.Trace.of(FIRST), Cause.Trace.of(SECOND)), cause.traces());
+        assertEquals(List.of(FIRST, SECOND), cause.rootCauses());
+    }
+
+    @Test
+    void givenDelegatedToCompound_whenTraces_thenTracesFollowCompoundCause() {
+
+        final Evaluation compound = TestExpressions.compound(false, "compound", Cause.of(FIRST), FIRST);
+        final Cause.Delegated cause = Cause.of(compound);
+
+        assertEquals(List.of(new Cause.Trace(List.of(compound, FIRST))), cause.traces());
+        assertEquals(List.of(FIRST), cause.rootCauses());
+    }
+
     private static Evaluation evaluation(final String name) {
-        return TerminalEvaluation.of(Result.FALSE, name, new SimpleRationale("expected", "actual"), Duration.ZERO);
+        return new TerminalEvaluation(false, name, new SimpleRationale("expected", "actual"), Duration.ZERO);
     }
 }

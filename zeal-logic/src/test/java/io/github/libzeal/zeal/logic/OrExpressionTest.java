@@ -1,9 +1,8 @@
 package io.github.libzeal.zeal.logic;
 
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
-import io.github.libzeal.zeal.logic.evaluation.Result;
+import io.github.libzeal.zeal.logic.evaluation.SkippableEvaluation.Skipped;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
-import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
 import io.github.libzeal.zeal.logic.test.TestExpressions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,8 +10,8 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static io.github.libzeal.zeal.logic.CompoundEvaluator.CompoundRationaleBuilder.format;
-import static io.github.libzeal.zeal.logic.CompoundEvaluator.CompoundRationaleBuilder.formatPassed;
+import static io.github.libzeal.zeal.logic.CompoundEvaluator.format;
+import static io.github.libzeal.zeal.logic.CompoundEvaluator.formatPassed;
 import static io.github.libzeal.zeal.logic.test.Arguments.listWithSingleNull;
 import static io.github.libzeal.zeal.logic.test.CauseAssertions.*;
 import static io.github.libzeal.zeal.logic.test.NamedExpressions.*;
@@ -110,9 +109,9 @@ class OrExpressionTest {
         final Evaluation evaluation = expression.evaluate();
         final Rationale rationale = evaluation.rationale();
 
-        assertEquals(Result.TRUE, evaluation.result());
+        assertFalse(evaluation.result());
         assertEquals(name, evaluation.name());
-        assertEquals(formatPassed(0), rationale.expected());
+        assertEquals(formatPassed(1), rationale.expected());
         assertEquals(format(0, 0, 0), rationale.actual());
         assertFalse(rationale.hint().isPresent());
     }
@@ -125,7 +124,7 @@ class OrExpressionTest {
         final Evaluation evaluation = new OrExpression(name, List.of(subPredicate)).evaluate();
         final Rationale rationale = evaluation.rationale();
 
-        assertEquals(Result.TRUE, evaluation.result());
+        assertTrue(evaluation.result());
         assertEquals(name, evaluation.name());
         assertEquals(formatPassed(1), rationale.expected());
         assertEquals(format(1, 0, 0), rationale.actual());
@@ -135,12 +134,12 @@ class OrExpressionTest {
     @Test
     void givenOneFailingExpression_whenEvaluate_thenEvaluationIsCorrect() {
 
-        final Expression subPredicate = TestExpressions.expression(Result.FALSE);
+        final Expression subPredicate = TestExpressions.expression(false);
 
         final Evaluation evaluation = new OrExpression(name, List.of(subPredicate)).evaluate();
         final Rationale rationale = evaluation.rationale();
 
-        assertEquals(Result.FALSE, evaluation.result());
+        assertFalse(evaluation.result());
         assertEquals(name, evaluation.name());
         assertEquals(formatPassed(1), rationale.expected());
         assertEquals(format(0, 1, 0), rationale.actual());
@@ -148,28 +147,16 @@ class OrExpressionTest {
     }
 
     @Test
-    void givenOneSkippedExpression_whenEvaluate_thenEvaluationIsCorrect() {
-
-        final Expression subPredicate = TestExpressions.expression(Result.SKIPPED);
-
-        final Evaluation evaluation = new OrExpression(name, List.of(subPredicate)).evaluate();
-
-        assertEquals(Result.SKIPPED, evaluation.result());
-        assertEquals(name, evaluation.name());
-        assertEquals(SimpleRationale.skipped(), evaluation.rationale());
-    }
-
-    @Test
     void givenOneFailingPredicateBeforePassingPredicate_whenEvaluate_thenEvaluationIsCorrect() {
 
-        final Expression passingSubPredicate = TestExpressions.expression(Result.TRUE);
-        final Expression failingSubPredicate = TestExpressions.expression(Result.FALSE);
+        final Expression passingSubPredicate = TestExpressions.expression(true);
+        final Expression failingSubPredicate = TestExpressions.expression(false);
 
         final List<Expression> children = List.of(failingSubPredicate, passingSubPredicate);
         final Evaluation evaluation = new OrExpression(name, children).evaluate();
         final Rationale rationale = evaluation.rationale();
 
-        assertEquals(Result.TRUE, evaluation.result());
+        assertTrue(evaluation.result());
         assertEquals(name, evaluation.name());
         assertEquals(formatPassed(1), rationale.expected());
         assertEquals(format(1, 1, 0), rationale.actual());
@@ -188,14 +175,14 @@ class OrExpressionTest {
     @Test
     void givenOnePassingPredicateBeforeFailingPredicate_whenEvaluate_thenEvaluationIsCorrect() {
 
-        final Expression passingSubPredicate = TestExpressions.expression(Result.TRUE);
-        final Expression failingSubPredicate = TestExpressions.expression(Result.FALSE);
+        final Expression passingSubPredicate = TestExpressions.expression(true);
+        final Expression failingSubPredicate = TestExpressions.expression(false);
 
         final List<Expression> children = List.of(passingSubPredicate, failingSubPredicate);
         final Evaluation evaluation = new OrExpression(name, children).evaluate();
         final Rationale rationale = evaluation.rationale();
 
-        assertEquals(Result.TRUE, evaluation.result());
+        assertTrue(evaluation.result());
         assertEquals(name, evaluation.name());
         assertEquals(formatPassed(1), rationale.expected());
         assertEquals(format(1, 0, 1), rationale.actual());
@@ -233,7 +220,7 @@ class OrExpressionTest {
 
         final Evaluation evaluation = or("OR").evaluate();
 
-        assertEquals(Result.TRUE, evaluation.result());
+        assertFalse(evaluation.result());
         assertCauseIsSelf(evaluation);
         assertTraces(evaluation, "OR");
     }
@@ -243,7 +230,7 @@ class OrExpressionTest {
 
         final Evaluation evaluation = or("OR", f("f1"), f("f2")).evaluate();
 
-        assertEquals(Result.FALSE, evaluation.result());
+        assertFalse(evaluation.result());
         assertCause(evaluation, child(evaluation, 0), child(evaluation, 1));
         assertTraces(evaluation, "OR -> f1", "OR -> f2");
         assertRootCauses(evaluation, child(evaluation, 0), child(evaluation, 1));
@@ -254,15 +241,15 @@ class OrExpressionTest {
 
         final Evaluation evaluation = or("OR", f("f1"), t("t2"), f("f3")).evaluate();
         final Evaluation t2 = child(evaluation, 1);
-        final Evaluation f3 = child(evaluation, 2);
+        final Skipped f3 = skipped(evaluation, 2);
 
-        assertEquals(Result.TRUE, evaluation.result());
+        assertTrue(evaluation.result());
         assertCause(evaluation, t2);
         assertTraces(evaluation, "OR -> t2");
 
-        assertEquals(Result.SKIPPED, f3.result());
+        assertEquals("f3", f3.name());
         assertCause(f3, t2);
-        assertTraces(f3, "f3 -> t2");
+        assertTraces(f3, "t2");
     }
 
     @Test
@@ -270,7 +257,7 @@ class OrExpressionTest {
 
         final Evaluation evaluation = or("OR", f("f1"), t("t2")).evaluate();
 
-        assertEquals(Result.TRUE, evaluation.result());
+        assertTrue(evaluation.result());
         assertCause(evaluation, child(evaluation, 1));
         assertTraces(evaluation, "OR -> t2");
     }
@@ -284,7 +271,7 @@ class OrExpressionTest {
             and("AND2", t("t3"), t("t4"))
         ).evaluate();
 
-        assertEquals(Result.TRUE, evaluation.result());
+        assertTrue(evaluation.result());
         assertTraces(evaluation, "OR -> AND2 -> t3", "OR -> AND2 -> t4");
     }
 
@@ -292,12 +279,12 @@ class OrExpressionTest {
     void givenOrOfTrueAnd_whenEvaluate_thenSkippedSiblingTracesFollowTrueAnd() {
 
         final Evaluation evaluation = or("OR", and("AND", t("t1"), t("t2")), f("f3")).evaluate();
-        final Evaluation f3 = child(evaluation, 1);
+        final Skipped f3 = skipped(evaluation, 1);
 
-        assertEquals(Result.TRUE, evaluation.result());
+        assertTrue(evaluation.result());
         assertTraces(evaluation, "OR -> AND -> t1", "OR -> AND -> t2");
 
-        assertEquals(Result.SKIPPED, f3.result());
-        assertTraces(f3, "f3 -> AND -> t1", "f3 -> AND -> t2");
+        assertCause(f3, child(evaluation, 0));
+        assertTraces(f3, "AND -> t1", "AND -> t2");
     }
 }

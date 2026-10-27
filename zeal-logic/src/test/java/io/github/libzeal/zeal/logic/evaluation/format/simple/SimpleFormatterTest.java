@@ -1,9 +1,13 @@
 package io.github.libzeal.zeal.logic.evaluation.format.simple;
 
+import io.github.libzeal.zeal.logic.AndExpression;
+import io.github.libzeal.zeal.logic.Expression;
 import io.github.libzeal.zeal.logic.evaluation.Cause;
 import io.github.libzeal.zeal.logic.evaluation.CompoundEvaluation;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
-import io.github.libzeal.zeal.logic.evaluation.Result;
+import io.github.libzeal.zeal.logic.evaluation.SkippableEvaluation;
+import io.github.libzeal.zeal.logic.evaluation.SkippableEvaluation.Evaluated;
+import io.github.libzeal.zeal.logic.evaluation.SkippableEvaluation.Skipped;
 import io.github.libzeal.zeal.logic.evaluation.TerminalEvaluation;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
 import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
@@ -11,8 +15,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.List;
 
+import static io.github.libzeal.zeal.logic.test.NamedExpressions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class SimpleFormatterTest {
@@ -40,26 +46,10 @@ class SimpleFormatterTest {
         final String name = "foo";
         final Duration elapsedTime = Duration.ofMillis(10);
         final Rationale rationale = new SimpleRationale("someExpected", "someActual", "someHint");
-        final Evaluation evaluation = TerminalEvaluation.of(Result.TRUE, name, rationale, elapsedTime);
+        final Evaluation evaluation = new TerminalEvaluation(true, name, rationale, elapsedTime);
 
         final String expected = EVALUATION_HEADING +
             "[T] " + name + " (" + elapsedTime.toMillis() + "ms)  <---[ Root Cause ]";
-
-        final String result = formatter.format(evaluation);
-
-        assertEquals(expected, result);
-    }
-
-    @Test
-    void givenOneSkippedEvaluation_whenFormat_thenResultIsCorrect() {
-
-        final String name = "foo";
-        final Evaluation decider = TerminalEvaluation.of(Result.FALSE, "decider", SimpleRationale.empty(),
-            Duration.ZERO);
-        final Evaluation evaluation = TerminalEvaluation.skipped(name, decider);
-
-        final String expected = EVALUATION_HEADING +
-            "[ ] " + name + " (0ns)";
 
         final String result = formatter.format(evaluation);
 
@@ -72,7 +62,7 @@ class SimpleFormatterTest {
         final String name = "foo";
         final Duration elapsedTime = Duration.ofMillis(10);
         final Rationale rationale = new SimpleRationale("someExpected", "someActual", "someHint");
-        final Evaluation evaluation = TerminalEvaluation.of(Result.FALSE, name, rationale, elapsedTime);
+        final Evaluation evaluation = new TerminalEvaluation(false, name, rationale, elapsedTime);
 
         final String expected =
             ROOT_CAUSES_HEADING +
@@ -95,7 +85,7 @@ class SimpleFormatterTest {
 
         final Duration childElapsedTime = Duration.ofMillis(10);
         final Rationale childRationale = new SimpleRationale("someExpectedChild", "someActualChild", "someHintChild");
-        final Evaluation childEvaluation = TerminalEvaluation.of(Result.FALSE, "child", childRationale,
+        final Evaluation childEvaluation = new TerminalEvaluation(false, "child", childRationale,
             childElapsedTime);
 
         final Duration parentElapsedTime = Duration.ofMillis(20);
@@ -123,7 +113,7 @@ class SimpleFormatterTest {
 
         final Duration childElapsedTime = Duration.ofMillis(10);
         final Rationale childRationale = new SimpleRationale("someExpectedChild", "someActualChild", "someHintChild");
-        final Evaluation childEvaluation = TerminalEvaluation.of(Result.TRUE, "child", childRationale,
+        final Evaluation childEvaluation = new TerminalEvaluation(true, "child", childRationale,
             childElapsedTime);
 
         final Duration parentElapsedTime = Duration.ofMillis(20);
@@ -153,8 +143,8 @@ class SimpleFormatterTest {
         final Duration childElapsedTime = Duration.ofMillis(10);
         final Rationale firstRationale = new SimpleRationale("firstExpected", "firstActual");
         final Rationale secondRationale = new SimpleRationale("secondExpected", "secondActual", "secondHint");
-        final Evaluation first = TerminalEvaluation.of(Result.FALSE, "first", firstRationale, childElapsedTime);
-        final Evaluation second = TerminalEvaluation.of(Result.FALSE, "second", secondRationale, childElapsedTime);
+        final Evaluation first = new TerminalEvaluation(false, "first", firstRationale, childElapsedTime);
+        final Evaluation second = new TerminalEvaluation(false, "second", secondRationale, childElapsedTime);
 
         final Duration parentElapsedTime = Duration.ofMillis(20);
         final Evaluation parentEvaluation = parent(parentElapsedTime, Cause.of(List.of(first, second)), first,
@@ -188,11 +178,12 @@ class SimpleFormatterTest {
 
         final Duration childElapsedTime = Duration.ofMillis(10);
         final Rationale rationale = new SimpleRationale("someExpected", "someActual");
-        final Evaluation decider = TerminalEvaluation.of(Result.FALSE, "decider", rationale, childElapsedTime);
-        final Evaluation skipped = TerminalEvaluation.skipped("skipped", decider);
+        final Evaluation decider = new TerminalEvaluation(false, "decider", rationale, childElapsedTime);
+        final Skipped skipped = new Skipped(t("skipped"), Cause.of(decider));
 
         final Duration parentElapsedTime = Duration.ofMillis(20);
-        final Evaluation parentEvaluation = parent(parentElapsedTime, Cause.of(decider), decider, skipped);
+        final Evaluation parentEvaluation = parentOf(parentElapsedTime, Cause.of(decider), new Evaluated(decider),
+            skipped);
 
         final String expected =
             ROOT_CAUSES_HEADING +
@@ -204,7 +195,36 @@ class SimpleFormatterTest {
                 EVALUATION_HEADING +
                 "[F] parent (20ms)\n" +
                 "    [F] decider (10ms)  <---[ Root Cause ]\n" +
-                "    [ ] skipped (0ns)";
+                "    [ ] skipped";
+
+        final String result = formatter.format(parentEvaluation);
+
+        assertEquals(expected, result);
+    }
+
+    @Test
+    void givenFailingEvaluationWithSkippedCompoundChild_whenFormat_thenSkippedSubtreeIsShown() {
+
+        final Rationale rationale = new SimpleRationale("someExpected", "someActual");
+        final Evaluation decider = new TerminalEvaluation(false, "decider", rationale, Duration.ofMillis(10));
+        final Skipped skipped = new Skipped(or("OR", t("t1"), not("NOT", t("t2"))), Cause.of(decider));
+        final Evaluation parentEvaluation = parentOf(Duration.ofMillis(20), Cause.of(decider),
+            new Evaluated(decider), skipped);
+
+        final String expected =
+            ROOT_CAUSES_HEADING +
+                "Expression  : decider\n" +
+                "Expected    : someExpected\n" +
+                "Actual      : someActual\n" +
+                "Cause Trace : parent -> decider\n" +
+                "\n" +
+                EVALUATION_HEADING +
+                "[F] parent (20ms)\n" +
+                "    [F] decider (10ms)  <---[ Root Cause ]\n" +
+                "    [ ] OR\n" +
+                "        [ ] t1\n" +
+                "        [ ] NOT\n" +
+                "            [ ] t2";
 
         final String result = formatter.format(parentEvaluation);
 
@@ -212,9 +232,20 @@ class SimpleFormatterTest {
     }
 
     private static Evaluation parent(final Duration elapsedTime, final Cause cause, final Evaluation... children) {
+        return parentOf(elapsedTime, cause, Arrays.stream(children)
+            .map(Evaluated::new)
+            .toArray(SkippableEvaluation[]::new));
+    }
+
+    private static Evaluation parentOf(final Duration elapsedTime, final Cause cause,
+                                       final SkippableEvaluation... children) {
 
         final Rationale rationale = new SimpleRationale("someExpectedParent", "someActualParent", "someHintParent");
+        final List<Expression> expressions = Arrays.stream(children)
+            .map(child -> t(child.name()))
+            .toList();
 
-        return new CompoundEvaluation(Result.FALSE, "parent", rationale, elapsedTime, cause, List.of(children));
+        return CompoundEvaluation.of(new AndExpression("parent", expressions), false, rationale, elapsedTime,
+            cause, List.of(children));
     }
 }

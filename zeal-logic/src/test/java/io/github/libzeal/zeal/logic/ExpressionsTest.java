@@ -2,7 +2,6 @@ package io.github.libzeal.zeal.logic;
 
 import io.github.libzeal.zeal.logic.evaluation.Cause;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
-import io.github.libzeal.zeal.logic.evaluation.Result;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
 import io.github.libzeal.zeal.logic.test.TestExpressions;
 import org.junit.jupiter.api.Test;
@@ -28,7 +27,7 @@ class ExpressionsTest {
         final Evaluation evaluation = expression.evaluate();
         final Rationale rationale = evaluation.rationale();
 
-        assertEquals(Result.FALSE, evaluation.result());
+        assertFalse(evaluation.result());
         assertEquals(Contradiction.NAME, evaluation.name());
         assertRationaleEquals(rationale, FALSE, FALSE);
         assertEquals(Cause.self(), evaluation.cause());
@@ -47,7 +46,7 @@ class ExpressionsTest {
         final Evaluation evaluation = expression.evaluate();
         final Rationale rationale = evaluation.rationale();
 
-        assertEquals(Result.TRUE, evaluation.result());
+        assertTrue(evaluation.result());
         assertEquals(Tautology.NAME, evaluation.name());
         assertRationaleEquals(rationale, TRUE, TRUE);
         assertEquals(Cause.self(), evaluation.cause());
@@ -83,7 +82,7 @@ class ExpressionsTest {
     @Test
     void givenValidWrappedExpressions_whenAnd_thenCorrectExpressionReturned() {
 
-        final Expression wrappedExpression = TestExpressions.expression(Result.TRUE);
+        final Expression wrappedExpression = TestExpressions.expression(true);
         final AndExpression expression = Expressions.and(wrappedExpression);
 
         assertNotNull(expression);

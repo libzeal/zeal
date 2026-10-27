@@ -3,8 +3,6 @@ package io.github.libzeal.zeal.values.core.boxed;
 import io.github.libzeal.zeal.values.sdk.BaseValue;
 import org.junit.jupiter.api.Test;
 
-import static io.github.libzeal.zeal.logic.evaluation.Result.FALSE;
-import static io.github.libzeal.zeal.logic.evaluation.Result.TRUE;
 
 public abstract class BoxedWholeNumberValueTest<T extends Number, E extends BaseValue<T, E> & BoxedWholeNumberValue<T, E>>
     extends BoxedNumberValueTest<T, E> {
@@ -16,7 +14,7 @@ public abstract class BoxedWholeNumberValueTest<T extends Number, E extends Base
         newTestCase()
             .subject(add(exampleZeroValue(), (short) 2))
             .expression(BoxedWholeNumberValue::isEven)
-            .result(TRUE)
+            .result(true)
             .name("isEven")
             .expected("% 2 := 0")
             .actual("2")
@@ -28,7 +26,7 @@ public abstract class BoxedWholeNumberValueTest<T extends Number, E extends Base
         newTestCase()
             .subject(add(exampleZeroValue(), (short) 1))
             .expression(BoxedWholeNumberValue::isEven)
-            .result(FALSE)
+            .result(false)
             .name("isEven")
             .expected("% 2 := 0")
             .actual("1")
@@ -40,7 +38,7 @@ public abstract class BoxedWholeNumberValueTest<T extends Number, E extends Base
         newTestCase()
             .subject(exampleZeroValue())
             .expression(BoxedWholeNumberValue::isEven)
-            .result(TRUE)
+            .result(true)
             .name("isEven")
             .expected("% 2 := 0")
             .actual("0")
@@ -52,7 +50,7 @@ public abstract class BoxedWholeNumberValueTest<T extends Number, E extends Base
         newTestCase()
             .subject(subtract(exampleZeroValue(), (short) 1))
             .expression(BoxedWholeNumberValue::isEven)
-            .result(FALSE)
+            .result(false)
             .name("isEven")
             .expected("% 2 := 0")
             .actual("-1")
@@ -64,7 +62,7 @@ public abstract class BoxedWholeNumberValueTest<T extends Number, E extends Base
         newTestCase()
             .subject(subtract(exampleZeroValue(), (short) 2))
             .expression(BoxedWholeNumberValue::isEven)
-            .result(TRUE)
+            .result(true)
             .name("isEven")
             .expected("% 2 := 0")
             .actual("-2")
@@ -78,7 +76,7 @@ public abstract class BoxedWholeNumberValueTest<T extends Number, E extends Base
         newTestCase()
             .subject(add(exampleZeroValue(), (short) 2))
             .expression(BoxedWholeNumberValue::isOdd)
-            .result(FALSE)
+            .result(false)
             .name("isOdd")
             .expected("% 2 != 0")
             .actual("2")
@@ -90,7 +88,7 @@ public abstract class BoxedWholeNumberValueTest<T extends Number, E extends Base
         newTestCase()
             .subject(add(exampleZeroValue(), (short) 1))
             .expression(BoxedWholeNumberValue::isOdd)
-            .result(TRUE)
+            .result(true)
             .name("isOdd")
             .expected("% 2 != 0")
             .actual("1")
@@ -102,7 +100,7 @@ public abstract class BoxedWholeNumberValueTest<T extends Number, E extends Base
         newTestCase()
             .subject(exampleZeroValue())
             .expression(BoxedWholeNumberValue::isOdd)
-            .result(FALSE)
+            .result(false)
             .name("isOdd")
             .expected("% 2 != 0")
             .actual("0")
@@ -114,7 +112,7 @@ public abstract class BoxedWholeNumberValueTest<T extends Number, E extends Base
         newTestCase()
             .subject(subtract(exampleZeroValue(), (short) 1))
             .expression(BoxedWholeNumberValue::isOdd)
-            .result(TRUE)
+            .result(true)
             .name("isOdd")
             .expected("% 2 != 0")
             .actual("-1")
@@ -126,7 +124,7 @@ public abstract class BoxedWholeNumberValueTest<T extends Number, E extends Base
         newTestCase()
             .subject(subtract(exampleZeroValue(), (short) 2))
             .expression(BoxedWholeNumberValue::isOdd)
-            .result(FALSE)
+            .result(false)
             .name("isOdd")
             .expected("% 2 != 0")
             .actual("-2")

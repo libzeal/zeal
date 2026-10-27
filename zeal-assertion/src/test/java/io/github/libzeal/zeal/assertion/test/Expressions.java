@@ -1,7 +1,6 @@
 package io.github.libzeal.zeal.assertion.test;
 
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
-import io.github.libzeal.zeal.logic.evaluation.Result;
 import io.github.libzeal.zeal.logic.evaluation.TerminalEvaluation;
 import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
 import io.github.libzeal.zeal.logic.unary.TerminalUnaryExpression;
@@ -28,10 +27,10 @@ public class Expressions {
         return expression;
     }
 
-    public static UnaryExpression<Object> expression(final Result result, final Object subject) {
+    public static UnaryExpression<Object> expression(final boolean result, final Object subject) {
 
         final UnaryExpression<Object> expression = expression();
-        final Evaluation evaluation = TerminalEvaluation.of(result, "foo", new SimpleRationale("foo", "bar", "baz"),
+        final Evaluation evaluation = new TerminalEvaluation(result, "foo", new SimpleRationale("foo", "bar", "baz"),
             Duration.ZERO);
 
         doReturn(evaluation).when(expression).evaluate();

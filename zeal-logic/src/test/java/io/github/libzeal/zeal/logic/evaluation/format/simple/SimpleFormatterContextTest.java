@@ -1,7 +1,6 @@
 package io.github.libzeal.zeal.logic.evaluation.format.simple;
 
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
-import io.github.libzeal.zeal.logic.evaluation.Result;
 import io.github.libzeal.zeal.logic.test.TestExpressions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,7 +17,7 @@ class SimpleFormatterContextTest {
     @BeforeEach
     void setUp() {
 
-        rootCause = TestExpressions.evaluation("foo", Result.FALSE);
+        rootCause = TestExpressions.evaluation("foo", false);
 
         context = new SimpleFormatterContext(List.of(rootCause), 0);
     }
@@ -49,13 +48,13 @@ class SimpleFormatterContextTest {
 
     @Test
     void givenNonMatchingEvaluation_whenIsRootCause_thenFalse() {
-        assertFalse(context.isRootCause(TestExpressions.evaluation("bar", Result.FALSE)));
+        assertFalse(context.isRootCause(TestExpressions.evaluation("bar", false)));
     }
 
     @Test
     void givenEqualButDistinctEvaluation_whenIsRootCause_thenFalse() {
 
-        final Evaluation equalEvaluation = TestExpressions.evaluation("foo", Result.FALSE);
+        final Evaluation equalEvaluation = TestExpressions.evaluation("foo", false);
 
         assertEquals(rootCause, equalEvaluation);
         assertFalse(context.isRootCause(equalEvaluation));
@@ -69,7 +68,7 @@ class SimpleFormatterContextTest {
     @Test
     void givenMultipleRootCauses_whenIsRootCause_thenEachIsRootCause() {
 
-        final Evaluation otherRootCause = TestExpressions.evaluation("bar", Result.FALSE);
+        final Evaluation otherRootCause = TestExpressions.evaluation("bar", false);
         final SimpleFormatterContext multipleContext = new SimpleFormatterContext(List.of(rootCause, otherRootCause),
             0);
 

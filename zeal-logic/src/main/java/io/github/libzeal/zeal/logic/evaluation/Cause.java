@@ -10,11 +10,11 @@ public sealed interface Cause {
         return new Self();
     }
 
-    static Cause of(final Evaluation evaluation) {
+    static Delegated of(final Evaluation evaluation) {
         return new Delegated(List.of(evaluation));
     }
 
-    static Cause of(final List<Evaluation> evaluations) {
+    static Delegated of(final List<Evaluation> evaluations) {
         return new Delegated(evaluations);
     }
 
@@ -29,6 +29,18 @@ public sealed interface Cause {
             }
 
             evaluations = List.copyOf(evaluations);
+        }
+
+        public List<Trace> traces() {
+            return evaluations.stream()
+                .flatMap(evaluation -> evaluation.causeTraces().stream())
+                .toList();
+        }
+
+        public List<Evaluation> rootCauses() {
+            return traces().stream()
+                .map(Trace::rootCause)
+                .toList();
         }
     }
 

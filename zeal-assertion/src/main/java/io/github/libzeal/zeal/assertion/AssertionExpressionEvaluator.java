@@ -1,7 +1,6 @@
 package io.github.libzeal.zeal.assertion;
 
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
-import io.github.libzeal.zeal.logic.evaluation.Result;
 import io.github.libzeal.zeal.logic.evaluation.format.Formatter;
 import io.github.libzeal.zeal.logic.unary.UnaryExpression;
 
@@ -77,10 +76,9 @@ final class AssertionExpressionEvaluator<N extends Throwable, F extends Throwabl
             throw new NullPointerException(Messages.NULL_EVALUATION);
         }
 
-        final Result result = evaluation.result();
         final T subject = expression.subject();
 
-        if (result.isFalse()) {
+        if (!evaluation.result()) {
 
             String formattedMessage = formatMessage(formatter, message, evaluation);
 

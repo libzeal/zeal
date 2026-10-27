@@ -20,7 +20,7 @@ public sealed interface Evaluation permits TerminalEvaluation, CompoundEvaluatio
      *
      * @return The state of the evaluation.
      */
-    Result result();
+    boolean result();
 
     /**
      * Obtains the name of the evaluation that was preformed.
@@ -57,8 +57,8 @@ public sealed interface Evaluation permits TerminalEvaluation, CompoundEvaluatio
     default List<Cause.Trace> causeTraces() {
         return switch (cause()) {
             case Cause.Self() -> List.of(Cause.Trace.of(this));
-            case Cause.Delegated(List<Evaluation> causes) -> causes.stream()
-                .flatMap(cause -> cause.causeTraces().stream())
+            case final Cause.Delegated delegated -> delegated.traces()
+                .stream()
                 .map(trace -> trace.prepend(this))
                 .toList();
         };

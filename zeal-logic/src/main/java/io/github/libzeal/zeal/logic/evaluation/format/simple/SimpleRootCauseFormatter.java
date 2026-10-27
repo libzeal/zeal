@@ -22,7 +22,7 @@ class SimpleRootCauseFormatter implements ComponentFormatter<Evaluation> {
     @Override
     public String format(final Evaluation evaluation, final SimpleFormatterContext context) {
 
-        if (!evaluation.result().isFalse()) {
+        if (evaluation.result()) {
             return "";
         }
 
@@ -50,7 +50,7 @@ class SimpleRootCauseFormatter implements ComponentFormatter<Evaluation> {
             .append("\n")
             .append(rootCauseLine("Cause Trace", trace.toString(), context));
 
-        if (rootCause.result().isTrue()) {
+        if (rootCause.result()) {
             builder.append("\n")
                 .append(rootCauseLine("Notes", TRUE_ROOT_CAUSE_NOTE, context));
         }

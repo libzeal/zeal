@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static io.github.libzeal.zeal.logic.evaluation.Result.TRUE;
 
 class IterableValueTest extends BaseValueTest<Iterable<String>, IterableValue<String>>
     implements SizedSequenceValueTest<Iterable<String>, IterableValue<String>>,
@@ -48,7 +47,7 @@ class IterableValueTest extends BaseValueTest<Iterable<String>, IterableValue<St
         newTestCase()
             .subject(subjectOf("a", "a", "b"))
             .expression(value -> value.includesExactly("a", 2))
-            .result(TRUE)
+            .result(true)
             .name("includesExactly[desired=a, times=2]")
             .expected("found 'a' 2 times")
             .actual("found 'a' 2 times")

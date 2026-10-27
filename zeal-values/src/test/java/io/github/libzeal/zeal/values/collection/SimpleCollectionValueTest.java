@@ -7,7 +7,6 @@ import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.List;
 
-import static io.github.libzeal.zeal.logic.evaluation.Result.TRUE;
 
 class SimpleCollectionValueTest extends BaseValueTest<Collection<String>, SimpleCollectionValue<String>>
     implements SizedSequenceValueTest<Collection<String>, SimpleCollectionValue<String>>,
@@ -46,7 +45,7 @@ class SimpleCollectionValueTest extends BaseValueTest<Collection<String>, Simple
         newTestCase()
             .subject(subjectOf("a", "a", "b"))
             .expression(value -> value.includesExactly("a", 2))
-            .result(TRUE)
+            .result(true)
             .name("includesExactly[desired=a, times=2]")
             .expected("found 'a' 2 times")
             .actual("found 'a' 2 times")

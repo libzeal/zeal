@@ -1,7 +1,6 @@
 package io.github.libzeal.zeal.logic.evaluation.format.simple;
 
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
-import io.github.libzeal.zeal.logic.evaluation.Result;
 
 import java.time.Duration;
 
@@ -10,10 +9,10 @@ import static java.util.Objects.requireNonNull;
 class SimpleEvaluationFormatter implements ComponentFormatter<Evaluation> {
 
     private final int indentation;
-    private final ComponentFormatter<Result> resultFormatter;
+    private final ComponentFormatter<Boolean> resultFormatter;
     private final ComponentFormatter<Duration> elapsedTimeFormatter;
 
-    public SimpleEvaluationFormatter(final int indentation, final ComponentFormatter<Result> resultFormatter,
+    public SimpleEvaluationFormatter(final int indentation, final ComponentFormatter<Boolean> resultFormatter,
                                      final ComponentFormatter<Duration> elapsedTimeFormatter) {
         this.indentation = indentation;
         this.resultFormatter = requireNonNull(resultFormatter);

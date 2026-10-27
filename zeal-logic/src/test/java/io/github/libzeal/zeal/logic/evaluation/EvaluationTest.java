@@ -1,6 +1,7 @@
 package io.github.libzeal.zeal.logic.evaluation;
 
 import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
+import io.github.libzeal.zeal.logic.test.TestExpressions;
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
@@ -72,22 +73,11 @@ class EvaluationTest {
         assertEquals(List.of(a, b, c), outer.rootCauses());
     }
 
-    @Test
-    void givenCauseThatIsNotChild_whenCauseTraces_thenTraceFollowsCause() {
-
-        final Evaluation decider = terminal("decider");
-        final Evaluation skipped = TerminalEvaluation.skipped("skipped", decider);
-
-        assertEquals(List.of(new Cause.Trace(List.of(skipped, decider))), skipped.causeTraces());
-        assertSame(decider, skipped.rootCauses().getFirst());
-    }
-
     private static Evaluation terminal(final String name) {
-        return TerminalEvaluation.of(Result.FALSE, name, new SimpleRationale("expected", "actual"), Duration.ZERO);
+        return new TerminalEvaluation(false, name, new SimpleRationale("expected", "actual"), Duration.ZERO);
     }
 
     private static Evaluation compound(final String name, final Cause cause, final Evaluation... children) {
-        return new CompoundEvaluation(Result.FALSE, name, new SimpleRationale("expected", "actual"), Duration.ZERO,
-            cause, List.of(children));
+        return TestExpressions.compound(false, name, cause, children);
     }
 }

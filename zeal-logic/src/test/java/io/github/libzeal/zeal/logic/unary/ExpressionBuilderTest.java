@@ -1,7 +1,6 @@
 package io.github.libzeal.zeal.logic.unary;
 
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
-import io.github.libzeal.zeal.logic.evaluation.Result;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -36,7 +35,7 @@ class ExpressionBuilderTest {
             .compute("foo")
             .evaluate();
 
-        assertEquals(Result.TRUE, evaluation.result());
+        assertTrue(evaluation.result());
         assertEquals("<unnamed>", evaluation.name());
         assertEquals("<not set>", evaluation.rationale().expected());
         assertEquals("foo", evaluation.rationale().actual());
@@ -55,7 +54,7 @@ class ExpressionBuilderTest {
             .compute("subject")
             .evaluate();
 
-        assertEquals(Result.FALSE, evaluation.result());
+        assertFalse(evaluation.result());
         assertEquals("someName", evaluation.name());
         assertEquals("foo", evaluation.rationale().expected());
         assertEquals("bar", evaluation.rationale().actual());
@@ -83,7 +82,7 @@ class ExpressionBuilderTest {
             .compute("abc")
             .evaluate();
 
-        assertEquals(Result.TRUE, evaluation.result());
+        assertTrue(evaluation.result());
         assertEquals("3", evaluation.rationale().actual());
     }
 
@@ -96,7 +95,7 @@ class ExpressionBuilderTest {
             .compute(null)
             .evaluate();
 
-        assertEquals(Result.FALSE, evaluation.result());
+        assertFalse(evaluation.result());
         assertEquals("(null)", evaluation.rationale().actual());
     }
 
@@ -109,7 +108,7 @@ class ExpressionBuilderTest {
             .compute(null)
             .evaluate();
 
-        assertEquals(Result.TRUE, evaluation.result());
+        assertTrue(evaluation.result());
     }
 
     @Test

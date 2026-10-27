@@ -1,6 +1,5 @@
 package io.github.libzeal.zeal.values.core.test;
 
-import io.github.libzeal.zeal.logic.evaluation.Result;
 import io.github.libzeal.zeal.values.core.ObjectValue;
 
 import java.util.function.BiFunction;
@@ -9,7 +8,7 @@ import java.util.function.Function;
 public record ValueTestCase<S, V extends ObjectValue<S, V>>(
     Function<S, V> expressionFactory,
     S subject,
-    Result expectedResult,
+    Boolean expectedResult,
     Function<V, V> apply,
     String expectedName,
     String expectedExpected,

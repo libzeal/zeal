@@ -15,18 +15,10 @@ class TerminalEvaluationTest {
     private static final Duration ELAPSED_TIME = Duration.ofMillis(7);
 
     @Test
-    void givenNullResult_whenConstruct_thenExceptionThrown() {
-        assertThrows(
-            NullPointerException.class,
-            () -> new TerminalEvaluation(null, NAME, RATIONALE, ELAPSED_TIME, Cause.self())
-        );
-    }
-
-    @Test
     void givenNullName_whenConstruct_thenExceptionThrown() {
         assertThrows(
             NullPointerException.class,
-            () -> new TerminalEvaluation(Result.TRUE, null, RATIONALE, ELAPSED_TIME, Cause.self())
+            () -> new TerminalEvaluation(true, null, RATIONALE, ELAPSED_TIME)
         );
     }
 
@@ -34,7 +26,7 @@ class TerminalEvaluationTest {
     void givenNullRationale_whenConstruct_thenExceptionThrown() {
         assertThrows(
             NullPointerException.class,
-            () -> new TerminalEvaluation(Result.TRUE, NAME, null, ELAPSED_TIME, Cause.self())
+            () -> new TerminalEvaluation(true, NAME, null, ELAPSED_TIME)
         );
     }
 
@@ -42,24 +34,16 @@ class TerminalEvaluationTest {
     void givenNullElapsedTime_whenConstruct_thenExceptionThrown() {
         assertThrows(
             NullPointerException.class,
-            () -> new TerminalEvaluation(Result.TRUE, NAME, RATIONALE, null, Cause.self())
+            () -> new TerminalEvaluation(true, NAME, RATIONALE, null)
         );
     }
 
     @Test
-    void givenNullCause_whenConstruct_thenExceptionThrown() {
-        assertThrows(
-            NullPointerException.class,
-            () -> new TerminalEvaluation(Result.TRUE, NAME, RATIONALE, ELAPSED_TIME, null)
-        );
-    }
+    void givenTrueResult_whenConstruct_thenDataIsCorrect() {
 
-    @Test
-    void givenTrueResult_whenOf_thenDataIsCorrect() {
+        final TerminalEvaluation evaluation = new TerminalEvaluation(true, NAME, RATIONALE, ELAPSED_TIME);
 
-        final TerminalEvaluation evaluation = TerminalEvaluation.of(Result.TRUE, NAME, RATIONALE, ELAPSED_TIME);
-
-        assertEquals(Result.TRUE, evaluation.result());
+        assertTrue(evaluation.result());
         assertEquals(NAME, evaluation.name());
         assertEquals(RATIONALE, evaluation.rationale());
         assertEquals(ELAPSED_TIME, evaluation.elapsedTime());
@@ -67,41 +51,19 @@ class TerminalEvaluationTest {
     }
 
     @Test
-    void givenFalseResult_whenOf_thenDataIsCorrect() {
+    void givenFalseResult_whenConstruct_thenDataIsCorrect() {
 
-        final TerminalEvaluation evaluation = TerminalEvaluation.of(Result.FALSE, NAME, RATIONALE, ELAPSED_TIME);
+        final TerminalEvaluation evaluation = new TerminalEvaluation(false, NAME, RATIONALE, ELAPSED_TIME);
 
-        assertEquals(Result.FALSE, evaluation.result());
+        assertFalse(evaluation.result());
         assertEquals(Cause.self(), evaluation.cause());
-    }
-
-    @Test
-    void givenDecider_whenSkipped_thenDataIsCorrect() {
-
-        final TerminalEvaluation decider = TerminalEvaluation.of(Result.FALSE, "decider", RATIONALE, ELAPSED_TIME);
-
-        final TerminalEvaluation evaluation = TerminalEvaluation.skipped(NAME, decider);
-
-        assertEquals(Result.SKIPPED, evaluation.result());
-        assertEquals(NAME, evaluation.name());
-        assertEquals(SimpleRationale.skipped(), evaluation.rationale());
-        assertEquals(Duration.ZERO, evaluation.elapsedTime());
-        assertEquals(Cause.of(decider), evaluation.cause());
-    }
-
-    @Test
-    void givenNullDecider_whenSkipped_thenExceptionThrown() {
-        assertThrows(
-            NullPointerException.class,
-            () -> TerminalEvaluation.skipped(NAME, null)
-        );
     }
 
     @Test
     void givenMatchingEvaluations_whenEquals_thenEqual() {
 
-        final TerminalEvaluation evaluation1 = TerminalEvaluation.of(Result.TRUE, NAME, RATIONALE, ELAPSED_TIME);
-        final TerminalEvaluation evaluation2 = TerminalEvaluation.of(Result.TRUE, NAME, RATIONALE, ELAPSED_TIME);
+        final TerminalEvaluation evaluation1 = new TerminalEvaluation(true, NAME, RATIONALE, ELAPSED_TIME);
+        final TerminalEvaluation evaluation2 = new TerminalEvaluation(true, NAME, RATIONALE, ELAPSED_TIME);
 
         assertEquals(evaluation1, evaluation2);
         assertEquals(evaluation1.hashCode(), evaluation2.hashCode());
@@ -110,8 +72,8 @@ class TerminalEvaluationTest {
     @Test
     void givenDifferentResults_whenEquals_thenNotEqual() {
 
-        final TerminalEvaluation evaluation1 = TerminalEvaluation.of(Result.TRUE, NAME, RATIONALE, ELAPSED_TIME);
-        final TerminalEvaluation evaluation2 = TerminalEvaluation.of(Result.FALSE, NAME, RATIONALE, ELAPSED_TIME);
+        final TerminalEvaluation evaluation1 = new TerminalEvaluation(true, NAME, RATIONALE, ELAPSED_TIME);
+        final TerminalEvaluation evaluation2 = new TerminalEvaluation(false, NAME, RATIONALE, ELAPSED_TIME);
 
         assertNotEquals(evaluation1, evaluation2);
     }
