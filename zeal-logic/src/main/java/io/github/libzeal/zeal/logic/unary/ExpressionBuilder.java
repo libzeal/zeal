@@ -72,7 +72,7 @@ public final class ExpressionBuilder<T, O> {
         return hint(context -> hint);
     }
 
-    public ComputableExpression<T> build() {
+    public Condition<T> build() {
 
         final String name = this.name;
         final boolean nullable = this.nullable;

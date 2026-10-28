@@ -1,7 +1,7 @@
-package io.github.libzeal.zeal.logic.unary.condition;
+package io.github.libzeal.zeal.logic.unary;
 
+import io.github.libzeal.zeal.logic.Expression;
 import io.github.libzeal.zeal.logic.Expressions;
-import io.github.libzeal.zeal.logic.unary.ComputableExpression;
 
 /**
  * An object that creates an expression based on a subject.
@@ -12,12 +12,14 @@ import io.github.libzeal.zeal.logic.unary.ComputableExpression;
  * @author Justin Albano
  */
 @FunctionalInterface
-public interface Condition<T> extends ComputableExpression<T> {
+public interface Condition<T> {
 
     /**
      * The default name for unnamed conditions.
      */
     String DEFAULT_NAME = "unnamed";
+
+    Expression bind(T subject);
 
     /**
      * A type-safe tautological condition that always results in a true expression.
@@ -30,7 +32,6 @@ public interface Condition<T> extends ComputableExpression<T> {
     static <T> Condition<T> tautology() {
         return subject -> Expressions.tautology();
     }
-
 
     /**
      * A type-safe contradictory condition that always results in a false expression.

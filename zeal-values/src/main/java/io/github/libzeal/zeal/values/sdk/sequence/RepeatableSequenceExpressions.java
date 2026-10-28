@@ -1,6 +1,6 @@
 package io.github.libzeal.zeal.values.sdk.sequence;
 
-import io.github.libzeal.zeal.logic.unary.ComputableExpression;
+import io.github.libzeal.zeal.logic.unary.Condition;
 import io.github.libzeal.zeal.logic.unary.ExpressionBuilder;
 
 import static io.github.libzeal.zeal.logic.format.Formatter.stringify;
@@ -8,7 +8,7 @@ import static io.github.libzeal.zeal.values.sdk.StandardRationales.Names.withPai
 
 public class RepeatableSequenceExpressions {
 
-    public static <T, S> ComputableExpression<S> includesExactly(final T desired, final long times, final RepeatableSequenceOperations<T, S> ops) {
+    public static <T, S> Condition<S> includesExactly(final T desired, final long times, final RepeatableSequenceOperations<T, S> ops) {
 
         final String desiredAsString = stringify(desired);
 
@@ -31,7 +31,7 @@ public class RepeatableSequenceExpressions {
         return times == 1 ? "time" : "times";
     }
 
-    public static <T, S> ComputableExpression<S> includesMoreThan(final T desired, final long times, final RepeatableSequenceOperations<T, S> ops) {
+    public static <T, S> Condition<S> includesMoreThan(final T desired, final long times, final RepeatableSequenceOperations<T, S> ops) {
 
         final String desiredAsString = stringify(desired);
 
@@ -50,7 +50,7 @@ public class RepeatableSequenceExpressions {
             .build();
     }
 
-    public static <T, S> ComputableExpression<S> includesMoreThanOrEqualTo(final T desired, final long times, final RepeatableSequenceOperations<T, S> ops) {
+    public static <T, S> Condition<S> includesMoreThanOrEqualTo(final T desired, final long times, final RepeatableSequenceOperations<T, S> ops) {
 
         final String desiredAsString = stringify(desired);
 
@@ -69,7 +69,7 @@ public class RepeatableSequenceExpressions {
             .build();
     }
 
-    public static <T, S> ComputableExpression<S> includesLessThan(final T desired, final long times, final RepeatableSequenceOperations<T, S> ops) {
+    public static <T, S> Condition<S> includesLessThan(final T desired, final long times, final RepeatableSequenceOperations<T, S> ops) {
 
         final String desiredAsString = stringify(desired);
 
@@ -88,7 +88,7 @@ public class RepeatableSequenceExpressions {
             .build();
     }
 
-    public static <T, S> ComputableExpression<S> includesLessThanOrEqualTo(final T desired, final long times, final RepeatableSequenceOperations<T, S> ops) {
+    public static <T, S> Condition<S> includesLessThanOrEqualTo(final T desired, final long times, final RepeatableSequenceOperations<T, S> ops) {
 
         final String desiredAsString = stringify(desired);
 

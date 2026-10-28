@@ -3,10 +3,9 @@ package io.github.libzeal.zeal.values.sdk;
 import io.github.libzeal.zeal.logic.AndExpression;
 import io.github.libzeal.zeal.logic.Expression;
 import io.github.libzeal.zeal.logic.evaluation.CompoundEvaluation;
-import io.github.libzeal.zeal.logic.unary.ComputableExpression;
+import io.github.libzeal.zeal.logic.unary.Condition;
 import io.github.libzeal.zeal.logic.unary.ExpressionBuilder;
 import io.github.libzeal.zeal.logic.unary.ExpressionBuilder.Observing;
-import io.github.libzeal.zeal.logic.unary.condition.Condition;
 import io.github.libzeal.zeal.values.core.ObjectValue;
 
 import java.util.Comparator;
@@ -15,8 +14,8 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static io.github.libzeal.zeal.logic.unary.condition.Conditions.equalTo;
-import static io.github.libzeal.zeal.logic.unary.condition.Conditions.exactly;
+import static io.github.libzeal.zeal.logic.unary.Conditions.equalTo;
+import static io.github.libzeal.zeal.logic.unary.Conditions.exactly;
 import static io.github.libzeal.zeal.logic.format.Formatter.stringify;
 import static io.github.libzeal.zeal.values.sdk.StandardMessages.PREDICATE_SATISFIED;
 import static io.github.libzeal.zeal.values.sdk.StandardMessages.PREDICATE_UNSATISFIED;
@@ -88,7 +87,7 @@ public abstract class BaseValue<T, E extends BaseValue<T, E>> implements ObjectV
     }
 
     @SuppressWarnings("unchecked")
-    protected final E append(final ComputableExpression<T> expression) {
+    protected final E append(final Condition<T> expression) {
 
         chain.append(expression);
 
@@ -96,7 +95,7 @@ public abstract class BaseValue<T, E extends BaseValue<T, E>> implements ObjectV
     }
 
     @SuppressWarnings("unchecked")
-    protected final E prepend(final ComputableExpression<T> expression) {
+    protected final E prepend(final Condition<T> expression) {
 
         chain.prepend(expression);
 

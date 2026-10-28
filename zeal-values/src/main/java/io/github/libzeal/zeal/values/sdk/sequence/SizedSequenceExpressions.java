@@ -1,6 +1,6 @@
 package io.github.libzeal.zeal.values.sdk.sequence;
 
-import io.github.libzeal.zeal.logic.unary.ComputableExpression;
+import io.github.libzeal.zeal.logic.unary.Condition;
 import io.github.libzeal.zeal.logic.unary.ExpressionBuilder;
 import io.github.libzeal.zeal.logic.unary.PredicateExpression.Field;
 import io.github.libzeal.zeal.values.sdk.StandardRationales.Operators;
@@ -15,7 +15,7 @@ public class SizedSequenceExpressions {
         int size(S haystack);
     }
 
-    public static <S> ComputableExpression<S> isEmpty(final SizedSequenceOperations<S> ops) {
+    public static <S> Condition<S> isEmpty(final SizedSequenceOperations<S> ops) {
         return ExpressionBuilder.observing(ops::size)
             .passesIf(size -> size == 0)
             .name("isEmpty")
@@ -28,7 +28,7 @@ public class SizedSequenceExpressions {
         return context -> Operators.EQ.display(LENGTH, context.observed());
     }
 
-    public static <S> ComputableExpression<S> isNotEmpty(final SizedSequenceOperations<S> ops) {
+    public static <S> Condition<S> isNotEmpty(final SizedSequenceOperations<S> ops) {
         return ExpressionBuilder.observing(ops::size)
             .passesIf(size -> size > 0)
             .name("isNotEmpty")
@@ -37,7 +37,7 @@ public class SizedSequenceExpressions {
             .build();
     }
 
-    public static <S> ComputableExpression<S> hasLengthOf(final int length, final SizedSequenceOperations<S> ops) {
+    public static <S> Condition<S> hasLengthOf(final int length, final SizedSequenceOperations<S> ops) {
         return ExpressionBuilder.observing(ops::size)
             .passesIf(size -> size == length)
             .name("hasLengthOf[" + length + "]")
@@ -46,7 +46,7 @@ public class SizedSequenceExpressions {
             .build();
     }
 
-    public static <S> ComputableExpression<S> doesNotHaveLengthOf(final int length, final SizedSequenceOperations<S> ops) {
+    public static <S> Condition<S> doesNotHaveLengthOf(final int length, final SizedSequenceOperations<S> ops) {
         return ExpressionBuilder.observing(ops::size)
             .passesIf(size -> size != length)
             .name(withValue("doesNotHaveLengthOf", length))
@@ -55,7 +55,7 @@ public class SizedSequenceExpressions {
             .build();
     }
 
-    public static <S> ComputableExpression<S> isShorterThan(final int length, final SizedSequenceOperations<S> ops) {
+    public static <S> Condition<S> isShorterThan(final int length, final SizedSequenceOperations<S> ops) {
         return ExpressionBuilder.observing(ops::size)
             .passesIf(size -> size < length)
             .name(withValue("isShorterThan", length))
@@ -64,7 +64,7 @@ public class SizedSequenceExpressions {
             .build();
     }
 
-    public static <S> ComputableExpression<S> isShorterThanOrEqualTo(final int length, final SizedSequenceOperations<S> ops) {
+    public static <S> Condition<S> isShorterThanOrEqualTo(final int length, final SizedSequenceOperations<S> ops) {
         return ExpressionBuilder.observing(ops::size)
             .passesIf(size -> size <= length)
             .name(withValue("isShorterThanOrEqualTo", length))
@@ -73,7 +73,7 @@ public class SizedSequenceExpressions {
             .build();
     }
 
-    public static <S> ComputableExpression<S> isLongerThan(final int length, final SizedSequenceOperations<S> ops) {
+    public static <S> Condition<S> isLongerThan(final int length, final SizedSequenceOperations<S> ops) {
         return ExpressionBuilder.observing(ops::size)
             .passesIf(size -> size > length)
             .name(withValue("isLongerThan", length))
@@ -82,7 +82,7 @@ public class SizedSequenceExpressions {
             .build();
     }
 
-    public static <S> ComputableExpression<S> isLongerThanOrEqualTo(final int length, final SizedSequenceOperations<S> ops) {
+    public static <S> Condition<S> isLongerThanOrEqualTo(final int length, final SizedSequenceOperations<S> ops) {
         return ExpressionBuilder.observing(ops::size)
             .passesIf(size -> size >= length)
             .name(withValue("isLongerThanOrEqualTo", length))

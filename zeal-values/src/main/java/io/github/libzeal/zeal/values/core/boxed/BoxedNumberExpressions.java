@@ -1,6 +1,6 @@
 package io.github.libzeal.zeal.values.core.boxed;
 
-import io.github.libzeal.zeal.logic.unary.ComputableExpression;
+import io.github.libzeal.zeal.logic.unary.Condition;
 import io.github.libzeal.zeal.logic.format.Formatter;
 import io.github.libzeal.zeal.logic.unary.ExpressionBuilder;
 
@@ -12,7 +12,7 @@ class BoxedNumberExpressions {
 
     private BoxedNumberExpressions() {}
 
-    public static <T extends Number> ComputableExpression<T> isLessThan(
+    public static <T extends Number> Condition<T> isLessThan(
         final T value, final BoxedNumberOperations<T> operations) {
 
         return nullProtectedValueExpression(
@@ -23,7 +23,7 @@ class BoxedNumberExpressions {
         );
     }
 
-    static <T extends Number> ComputableExpression<T> nullProtectedValueExpression(
+    static <T extends Number> Condition<T> nullProtectedValueExpression(
         final T value, final String name,
         final String expectedValue,
         final Predicate<T> longPredicate) {
@@ -41,7 +41,7 @@ class BoxedNumberExpressions {
         return builder.build();
     }
 
-    public static <T extends Number> ComputableExpression<T> isGreaterThan(
+    public static <T extends Number> Condition<T> isGreaterThan(
             final T value, final BoxedNumberOperations<T> operations) {
         return nullProtectedValueExpression(
             value,
@@ -51,7 +51,7 @@ class BoxedNumberExpressions {
         );
     }
 
-    public static <T extends Number> ComputableExpression<T> isLessThanOrEqualTo(
+    public static <T extends Number> Condition<T> isLessThanOrEqualTo(
             final T value, final BoxedNumberOperations<T> operations) {
         return nullProtectedValueExpression(
             value,
@@ -61,7 +61,7 @@ class BoxedNumberExpressions {
         );
     }
 
-    public static <T extends Number> ComputableExpression<T> isGreaterThanOrEqualTo(
+    public static <T extends Number> Condition<T> isGreaterThanOrEqualTo(
             final T value, final BoxedNumberOperations<T> operations) {
         return nullProtectedValueExpression(
             value,
@@ -71,7 +71,7 @@ class BoxedNumberExpressions {
         );
     }
 
-    public static <T extends Number> ComputableExpression<T> isMaxValue(
+    public static <T extends Number> Condition<T> isMaxValue(
             final BoxedNumberOperations<T> operations) {
 
         final T max = operations.max();
@@ -87,7 +87,7 @@ class BoxedNumberExpressions {
         return ExpressionBuilder.of(test);
     }
 
-    public static <T extends Number> ComputableExpression<T> isMinValue(
+    public static <T extends Number> Condition<T> isMinValue(
         final BoxedNumberOperations<T> operations) {
 
         final T min = operations.min();
@@ -98,7 +98,7 @@ class BoxedNumberExpressions {
             .build();
     }
 
-    public static <T extends Number> ComputableExpression<T> isZero(
+    public static <T extends Number> Condition<T> isZero(
         final BoxedNumberOperations<T> operations) {
 
         final T zero = operations.zero();
@@ -109,7 +109,7 @@ class BoxedNumberExpressions {
             .build();
     }
 
-    public static <T extends Number> ComputableExpression<T> isNotZero(
+    public static <T extends Number> Condition<T> isNotZero(
         final BoxedNumberOperations<T> operations) {
 
         final T zero = operations.zero();
@@ -120,7 +120,7 @@ class BoxedNumberExpressions {
             .build();
     }
 
-    public static <T extends Number> ComputableExpression<T> isPositive(
+    public static <T extends Number> Condition<T> isPositive(
         final BoxedNumberOperations<T> operations) {
 
         final T zero = operations.zero();
@@ -131,7 +131,7 @@ class BoxedNumberExpressions {
             .build();
     }
 
-    public static <T extends Number> ComputableExpression<T> isNotPositive(
+    public static <T extends Number> Condition<T> isNotPositive(
         final BoxedNumberOperations<T> operations) {
 
         final T zero = operations.zero();
@@ -142,7 +142,7 @@ class BoxedNumberExpressions {
             .build();
     }
 
-    public static <T extends Number> ComputableExpression<T> isNegative(
+    public static <T extends Number> Condition<T> isNegative(
         final BoxedNumberOperations<T> operations) {
 
         final T zero = operations.zero();
@@ -153,7 +153,7 @@ class BoxedNumberExpressions {
             .build();
     }
 
-    public static <T extends Number> ComputableExpression<T> isNotNegative(
+    public static <T extends Number> Condition<T> isNotNegative(
         final BoxedNumberOperations<T> operations) {
 
         final T zero = operations.zero();

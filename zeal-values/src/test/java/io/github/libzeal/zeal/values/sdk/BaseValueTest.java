@@ -4,7 +4,7 @@ import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.evaluation.SkippableEvaluation;
 import io.github.libzeal.zeal.logic.evaluation.SkippableEvaluation.Evaluated;
 import io.github.libzeal.zeal.logic.evaluation.SkippableEvaluation.Skipped;
-import io.github.libzeal.zeal.logic.unary.condition.Condition;
+import io.github.libzeal.zeal.logic.unary.Condition;
 import io.github.libzeal.zeal.values.core.ObjectValue;
 import io.github.libzeal.zeal.values.core.test.ValueAssertion;
 import io.github.libzeal.zeal.values.core.test.ValueTestCaseBuilder;
@@ -451,7 +451,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
             .subject(v)
             .expression(value -> value.is(cond))
             .result(true)
-            .name(cond.compute(v).name())
+            .name(cond.bind(v).name())
             .expected("true")
             .actual("true")
             .run();
@@ -465,7 +465,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
             .subject(v)
             .expression(value -> value.is(cond))
             .result(false)
-            .name(cond.compute(v).name())
+            .name(cond.bind(v).name())
             .expected("false")
             .actual("false")
             .run();

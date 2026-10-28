@@ -1,7 +1,7 @@
 package io.github.libzeal.zeal.values.sdk.sequence;
 
 import io.github.libzeal.zeal.logic.format.Formatter;
-import io.github.libzeal.zeal.logic.unary.ComputableExpression;
+import io.github.libzeal.zeal.logic.unary.Condition;
 import io.github.libzeal.zeal.logic.unary.ExpressionBuilder;
 import io.github.libzeal.zeal.values.sdk.StandardRationales;
 import io.github.libzeal.zeal.values.sdk.StandardRationales.Operators;
@@ -20,7 +20,7 @@ public class OrderedSequenceExpressions {
         Element<T> firstElement(S haystack, T desired);
     }
 
-    public static <T, S> ComputableExpression<S> lastIndexOfIs(final T desired, final int index, final OrderedSequenceOperations<T, S> ops) {
+    public static <T, S> Condition<S> lastIndexOfIs(final T desired, final int index, final OrderedSequenceOperations<T, S> ops) {
         return ExpressionBuilder.observing((S s) -> ops.lastIndexOf(s, desired))
             .passesIf(lastIndex -> lastIndex == index)
             .name(Operators.EQ.display(lastIndexOfName(desired), index))
@@ -28,7 +28,7 @@ public class OrderedSequenceExpressions {
             .build();
     }
 
-    public static <T, S> ComputableExpression<S> lastIndexOfIsNot(final T desired, final int index, final OrderedSequenceOperations<T, S> ops) {
+    public static <T, S> Condition<S> lastIndexOfIsNot(final T desired, final int index, final OrderedSequenceOperations<T, S> ops) {
         return ExpressionBuilder.observing((S s) -> ops.lastIndexOf(s, desired))
             .passesIf(lastIndex -> lastIndex != index)
             .name(Operators.NE.display(lastIndexOfName(desired), index))
@@ -40,7 +40,7 @@ public class OrderedSequenceExpressions {
         return "lastIndexOf[" + stringify(desired) + "]";
     }
 
-    public static <T, S> ComputableExpression<S> hasAtIndex(final T desired, final int index, final OrderedSequenceOperations<T, S> ops) {
+    public static <T, S> Condition<S> hasAtIndex(final T desired, final int index, final OrderedSequenceOperations<T, S> ops) {
 
         final String desiredName = stringify(desired);
 
@@ -67,7 +67,7 @@ public class OrderedSequenceExpressions {
             .build();
     }
 
-    public static <T, S> ComputableExpression<S> doesNotHaveAtIndex(final T desired, final int index, final OrderedSequenceOperations<T, S> ops) {
+    public static <T, S> Condition<S> doesNotHaveAtIndex(final T desired, final int index, final OrderedSequenceOperations<T, S> ops) {
 
         final String desiredName = stringify(desired);
 
@@ -83,7 +83,7 @@ public class OrderedSequenceExpressions {
             .build();
     }
 
-    public static <T, S> ComputableExpression<S> startsWith(final T desired, final OrderedSequenceOperations<T, S> ops) {
+    public static <T, S> Condition<S> startsWith(final T desired, final OrderedSequenceOperations<T, S> ops) {
 
         final String desiredName = stringify(desired);
 
@@ -108,7 +108,7 @@ public class OrderedSequenceExpressions {
             .build();
     }
 
-    public static <T, S> ComputableExpression<S> doesNotStartWith(final T desired, final OrderedSequenceOperations<T, S> ops) {
+    public static <T, S> Condition<S> doesNotStartWith(final T desired, final OrderedSequenceOperations<T, S> ops) {
 
         final String desiredName = stringify(desired);
 
@@ -128,7 +128,7 @@ public class OrderedSequenceExpressions {
             .build();
     }
 
-    public static <T, S> ComputableExpression<S> endsWith(final T desired, final OrderedSequenceOperations<T, S> ops) {
+    public static <T, S> Condition<S> endsWith(final T desired, final OrderedSequenceOperations<T, S> ops) {
 
         final String desiredName = stringify(desired);
 
@@ -153,7 +153,7 @@ public class OrderedSequenceExpressions {
             .build();
     }
 
-    public static <T, S> ComputableExpression<S> doesNotEndWith(final T desired, final OrderedSequenceOperations<T, S> ops) {
+    public static <T, S> Condition<S> doesNotEndWith(final T desired, final OrderedSequenceOperations<T, S> ops) {
 
         final String desiredName = stringify(desired);
 
@@ -173,7 +173,7 @@ public class OrderedSequenceExpressions {
             .build();
     }
 
-    public static <T, S> ComputableExpression<S> includes(final T desired, final OrderedSequenceOperations<T, S> ops) {
+    public static <T, S> Condition<S> includes(final T desired, final OrderedSequenceOperations<T, S> ops) {
         return ExpressionBuilder.observing((S s) -> ops.indexOf(s, desired))
             .passesIf(index -> index > -1)
             .name(StandardRationales.includes(desired))
@@ -183,7 +183,7 @@ public class OrderedSequenceExpressions {
             .build();
     }
 
-    public static <T, S> ComputableExpression<S> excludes(final T desired, final OrderedSequenceOperations<T, S> ops) {
+    public static <T, S> Condition<S> excludes(final T desired, final OrderedSequenceOperations<T, S> ops) {
         return ExpressionBuilder.observing((S s) -> ops.indexOf(s, desired))
             .passesIf(index -> index == -1)
             .name(StandardRationales.excludes(desired))

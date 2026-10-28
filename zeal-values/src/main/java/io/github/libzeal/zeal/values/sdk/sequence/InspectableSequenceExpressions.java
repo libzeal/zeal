@@ -1,7 +1,7 @@
 package io.github.libzeal.zeal.values.sdk.sequence;
 
 import io.github.libzeal.zeal.logic.format.Formatter;
-import io.github.libzeal.zeal.logic.unary.ComputableExpression;
+import io.github.libzeal.zeal.logic.unary.Condition;
 import io.github.libzeal.zeal.logic.unary.ExpressionBuilder;
 import io.github.libzeal.zeal.values.config.Configuration;
 import io.github.libzeal.zeal.values.sdk.StandardRationales;
@@ -22,7 +22,7 @@ public class InspectableSequenceExpressions {
         boolean includes(S haystack, T needle);
     }
 
-    public static <T, S> ComputableExpression<S> includes(final T desired, final InspectableSequenceOperations<T, S> ops) {
+    public static <T, S> Condition<S> includes(final T desired, final InspectableSequenceOperations<T, S> ops) {
         return ExpressionBuilder.of((S s) -> ops.includes(s, desired))
             .name(StandardRationales.includes(desired))
             .expected(StandardRationales.includes(desired))
@@ -30,7 +30,7 @@ public class InspectableSequenceExpressions {
             .build();
     }
 
-    public static <T, S> ComputableExpression<S> includesAll(final Collection<T> desired,
+    public static <T, S> Condition<S> includesAll(final Collection<T> desired,
                                                      final InspectableSequenceOperations<T, S> ops) {
 
         if (desired == null) {
@@ -55,7 +55,7 @@ public class InspectableSequenceExpressions {
             .build();
     }
 
-    public static <T, S> ComputableExpression<S> includesAny(final Collection<T> desired, final InspectableSequenceOperations<T, S> ops) {
+    public static <T, S> Condition<S> includesAny(final Collection<T> desired, final InspectableSequenceOperations<T, S> ops) {
 
         if (desired == null) {
             return passesForNullDesired("includesAny", "Any desired elements in subject",
@@ -79,7 +79,7 @@ public class InspectableSequenceExpressions {
             .build();
     }
 
-    private static <T, S> ComputableExpression<S> passesForNullDesired(final String name, final String expected,
+    private static <T, S> Condition<S> passesForNullDesired(final String name, final String expected,
                                                                       final String actual) {
         return ExpressionBuilder.of((S s) -> true)
             .nullable()
@@ -113,7 +113,7 @@ public class InspectableSequenceExpressions {
             .toList();
     }
 
-    public static <T, S> ComputableExpression<S> excludes(final T desired, final InspectableSequenceOperations<T, S> ops) {
+    public static <T, S> Condition<S> excludes(final T desired, final InspectableSequenceOperations<T, S> ops) {
         return ExpressionBuilder.of((S s) -> !ops.includes(s, desired))
             .name(StandardRationales.excludes(desired))
             .expected(StandardRationales.excludes(desired))
@@ -121,7 +121,7 @@ public class InspectableSequenceExpressions {
             .build();
     }
 
-    public static <T, S> ComputableExpression<S> excludesAll(final Collection<T> desired, final InspectableSequenceOperations<T, S> ops) {
+    public static <T, S> Condition<S> excludesAll(final Collection<T> desired, final InspectableSequenceOperations<T, S> ops) {
 
         if (desired == null) {
             return passesForNullDesired("excludesAll", "All desired elements missing in subject",
@@ -145,7 +145,7 @@ public class InspectableSequenceExpressions {
             .build();
     }
 
-    public static <T, S> ComputableExpression<S> excludesAny(final Collection<T> desired, final InspectableSequenceOperations<T, S> ops) {
+    public static <T, S> Condition<S> excludesAny(final Collection<T> desired, final InspectableSequenceOperations<T, S> ops) {
 
         if (desired == null) {
             return passesForNullDesired("excludesAny", "At least one desired element missing in subject",

@@ -1,43 +1,42 @@
 package io.github.libzeal.zeal.values.sdk;
 
 import io.github.libzeal.zeal.logic.Expression;
-import io.github.libzeal.zeal.logic.unary.ComputableExpression;
+import io.github.libzeal.zeal.logic.unary.Condition;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 
 class UnaryExpressionChain<T> {
 
-    private final List<ComputableExpression<T>> expressions;
+    private final List<Condition<T>> conditions;
 
-    private UnaryExpressionChain(final List<ComputableExpression<T>> expressions) {
-        this.expressions = requireNonNull(expressions);
+    private UnaryExpressionChain(final List<Condition<T>> conditions) {
+        this.conditions = requireNonNull(conditions);
     }
 
     public UnaryExpressionChain() {
         this(new ArrayList<>());
     }
 
-    public UnaryExpressionChain<T> append(final ComputableExpression<T> computable) {
+    public UnaryExpressionChain<T> append(final Condition<T> condition) {
 
-        expressions.add(computable);
+        conditions.add(condition);
 
         return this;
     }
 
-    public UnaryExpressionChain<T> prepend(final ComputableExpression<T> computable) {
+    public UnaryExpressionChain<T> prepend(final Condition<T> condition) {
 
-        expressions.addFirst(computable);
+        conditions.addFirst(condition);
 
         return this;
     }
 
     public List<Expression> bind(final T subject) {
-        return expressions.stream()
-                .map(e -> e.compute(subject))
-                .collect(Collectors.toList());
+        return conditions.stream()
+                .map(condition -> condition.bind(subject))
+                .toList();
     }
 }

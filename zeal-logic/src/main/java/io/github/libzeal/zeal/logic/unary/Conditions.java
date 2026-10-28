@@ -1,11 +1,9 @@
-package io.github.libzeal.zeal.logic.unary.condition;
+package io.github.libzeal.zeal.logic.unary;
 
 import io.github.libzeal.zeal.logic.AndExpression;
 import io.github.libzeal.zeal.logic.Expression;
 import io.github.libzeal.zeal.logic.Expressions;
 import io.github.libzeal.zeal.logic.OrExpression;
-import io.github.libzeal.zeal.logic.unary.ComputableExpression;
-import io.github.libzeal.zeal.logic.unary.ExpressionBuilder;
 
 import java.util.List;
 import java.util.Objects;
@@ -13,7 +11,7 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import static io.github.libzeal.zeal.logic.unary.condition.Condition.DEFAULT_NAME;
+import static io.github.libzeal.zeal.logic.unary.Condition.DEFAULT_NAME;
 import static io.github.libzeal.zeal.logic.format.Formatter.stringify;
 import static java.util.Objects.requireNonNull;
 
@@ -43,15 +41,12 @@ public final class Conditions {
      *     Any of the supplied arguments are {@code null}.
      */
     public static <T> Condition<T> of(final String name, final Predicate<T> predicate) {
-
-        final ComputableExpression<T> expression = ExpressionBuilder.of(predicate)
+        return ExpressionBuilder.of(predicate)
             .nullable()
             .name(name)
             .expected("satisfied")
             .actual(context -> context.ifPassedOrElse("satisfied", "unsatisfied"))
             .build();
-
-        return expression::compute;
     }
 
 
@@ -83,15 +78,12 @@ public final class Conditions {
      * @return A new condition that evaluates to true if the subject exactly matches the supplied desired value.
      */
     public static <T> Condition<T> exactly(final Object desired) {
-
-        final ComputableExpression<T> expression = ExpressionBuilder.of((T o) -> o == desired)
+        return ExpressionBuilder.of((T o) -> o == desired)
             .nullable()
             .name(exactlyName(desired))
             .expected(stringify(desired))
             .hint(exactlyHint(desired))
             .build();
-
-        return expression::compute;
     }
 
     static <T> String exactlyName(final T desired) {
@@ -113,15 +105,12 @@ public final class Conditions {
      * @return A new condition that evaluates to true if the subject matches the supplied desired value.
      */
     public static <T> Condition<T> equalTo(final Object desired) {
-
-        final ComputableExpression<T> expression = ExpressionBuilder.of((T o) -> Objects.equals(o, desired))
+        return ExpressionBuilder.of((T o) -> Objects.equals(o, desired))
             .nullable()
             .name(equalToName(desired))
             .expected(stringify(desired))
             .hint(equalToHint(desired))
             .build();
-
-        return expression::compute;
     }
 
     static <T> String equalToName(final T desired) {
@@ -149,7 +138,7 @@ public final class Conditions {
 
         return subject -> {
             final List<Expression> collected = Stream.of(conditions)
-                .map(c -> c.compute(subject))
+                .map(c -> c.bind(subject))
                 .toList();
 
             return OrExpression.unnamed(collected);
@@ -177,7 +166,7 @@ public final class Conditions {
         return subject -> {
             final List<Expression> collected = Stream.of(values)
                 .map(Conditions::equalTo)
-                .map(c -> c.compute(subject))
+                .map(c -> c.bind(subject))
                 .toList();
 
             return OrExpression.unnamed(collected);
@@ -204,7 +193,7 @@ public final class Conditions {
         return subject -> {
             final List<Expression> collected = streamOf(values)
                 .map(Conditions::equalTo)
-                .map(c -> c.compute(subject))
+                .map(c -> c.bind(subject))
                 .toList();
 
             return OrExpression.unnamed(collected);
@@ -232,7 +221,7 @@ public final class Conditions {
 
         return subject -> {
             final List<Expression> collected = Stream.of(conditions)
-                .map(c -> c.compute(subject))
+                .map(c -> c.bind(subject))
                 .toList();
 
             return AndExpression.unnamed(collected);
@@ -260,7 +249,7 @@ public final class Conditions {
         return subject -> {
             final List<Expression> collected = Stream.of(values)
                 .map(Conditions::equalTo)
-                .map(c -> c.compute(subject))
+                .map(c -> c.bind(subject))
                 .toList();
 
             return AndExpression.unnamed(collected);
@@ -287,7 +276,7 @@ public final class Conditions {
         return subject -> {
             final List<Expression> collected = streamOf(values)
                 .map(Conditions::equalTo)
-                .map(c -> c.compute(subject))
+                .map(c -> c.bind(subject))
                 .toList();
 
             return AndExpression.unnamed(collected);
@@ -310,7 +299,7 @@ public final class Conditions {
         requireNonNull(conditions);
 
         return subject -> Expressions.nor(Stream.of(conditions)
-                .map(c -> c.compute(subject)).toArray(Expression[]::new));
+                .map(c -> c.bind(subject)).toArray(Expression[]::new));
     }
 
     /**
@@ -333,7 +322,7 @@ public final class Conditions {
 
         return subject -> Expressions.nor(Stream.of(values)
                 .map(Conditions::equalTo)
-                .map(c -> c.compute(subject)).toArray(Expression[]::new));
+                .map(c -> c.bind(subject)).toArray(Expression[]::new));
     }
 
     /**
@@ -355,6 +344,6 @@ public final class Conditions {
 
         return subject -> Expressions.nor(streamOf(values)
                 .map(Conditions::equalTo)
-                .map(c -> c.compute(subject)).toArray(Expression[]::new));
+                .map(c -> c.bind(subject)).toArray(Expression[]::new));
     }
 }

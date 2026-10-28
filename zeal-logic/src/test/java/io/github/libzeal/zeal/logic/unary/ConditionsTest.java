@@ -1,4 +1,4 @@
-package io.github.libzeal.zeal.logic.unary.condition;
+package io.github.libzeal.zeal.logic.unary;
 
 import io.github.libzeal.zeal.logic.Expression;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
@@ -40,7 +40,7 @@ class ConditionsTest {
 
         Condition<Object> condition = Conditions.of(name, s -> true);
 
-        assertEquals(name, condition.compute(subject).name());
+        assertEquals(name, condition.bind(subject).name());
     }
 
     @Test
@@ -49,7 +49,7 @@ class ConditionsTest {
         final Object subject = new Object();
         final Condition<Object> condition = Conditions.of("foo", s -> true);
 
-        assertTrue(condition.compute(subject).evaluate().result());
+        assertTrue(condition.bind(subject).evaluate().result());
     }
 
     @Test
@@ -58,7 +58,7 @@ class ConditionsTest {
         final Object subject = new Object();
         final Condition<Object> condition = Conditions.of("foo", s -> false);
 
-        assertFalse(condition.compute(subject).evaluate().result());
+        assertFalse(condition.bind(subject).evaluate().result());
     }
 
     // ------------------------------------------------------------------------
@@ -80,7 +80,7 @@ class ConditionsTest {
 
         Condition<Object> condition = Conditions.of(s -> true);
 
-        assertEquals(Condition.DEFAULT_NAME, condition.compute(subject).name());
+        assertEquals(Condition.DEFAULT_NAME, condition.bind(subject).name());
     }
 
     @Test
@@ -89,7 +89,7 @@ class ConditionsTest {
         final Object subject = new Object();
         final Condition<Object> condition = Conditions.of(s -> true);
 
-        assertTrue(condition.compute(subject).evaluate().result());
+        assertTrue(condition.bind(subject).evaluate().result());
     }
 
     @Test
@@ -98,7 +98,7 @@ class ConditionsTest {
         final Object subject = new Object();
         final Condition<Object> condition = Conditions.of(s -> false);
 
-        assertFalse(condition.compute(subject).evaluate().result());
+        assertFalse(condition.bind(subject).evaluate().result());
     }
 
     // ------------------------------------------------------------------------
@@ -112,7 +112,7 @@ class ConditionsTest {
 
         final Condition<Object> condition = Conditions.exactly(subject);
 
-        final Expression expression = condition.compute(subject);
+        final Expression expression = condition.bind(subject);
         final Evaluation evaluation = expression.evaluate();
 
         assertTrue(evaluation.result());
@@ -132,7 +132,7 @@ class ConditionsTest {
 
         final Condition<Object> condition = Conditions.exactly(desired);
 
-        final Expression expression = condition.compute(subject);
+        final Expression expression = condition.bind(subject);
         final Evaluation evaluation = expression.evaluate();
 
         assertFalse(evaluation.result());
@@ -160,7 +160,7 @@ class ConditionsTest {
 
         final Condition<Object> condition = Conditions.exactly(desired);
 
-        final Expression expression = condition.compute(subject);
+        final Expression expression = condition.bind(subject);
         final Evaluation evaluation = expression.evaluate();
 
         assertFalse(evaluation.result());
@@ -192,7 +192,7 @@ class ConditionsTest {
 
         final Condition<Object> condition = Conditions.equalTo(desired);
 
-        final Expression expression = condition.compute(subject);
+        final Expression expression = condition.bind(subject);
         final Evaluation evaluation = expression.evaluate();
 
         assertTrue(evaluation.result());
@@ -212,7 +212,7 @@ class ConditionsTest {
 
         final Condition<Object> condition = Conditions.equalTo(desired);
 
-        final Expression expression = condition.compute(subject);
+        final Expression expression = condition.bind(subject);
         final Evaluation evaluation = expression.evaluate();
 
         assertFalse(evaluation.result());
@@ -243,7 +243,7 @@ class ConditionsTest {
 
         final Condition<Object> condition = Conditions.anyOf(alwaysTrue);
 
-        final Evaluation evaluation = condition.compute(new EqualityEvaluatingValue()).evaluate();
+        final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
         assertTrue(evaluation.result());
     }
@@ -270,7 +270,7 @@ class ConditionsTest {
 
         final Condition<Object> condition = Conditions.anyOf(alwaysFalse);
 
-        final Evaluation evaluation = condition.compute(new EqualityEvaluatingValue()).evaluate();
+        final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
         assertFalse(evaluation.result());
     }
@@ -283,7 +283,7 @@ class ConditionsTest {
 
         final Condition<Object> condition = Conditions.anyOf(alwaysTrue, alwaysFalse);
 
-        final Evaluation evaluation = condition.compute(new EqualityEvaluatingValue()).evaluate();
+        final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
         assertTrue(evaluation.result());
     }
@@ -296,7 +296,7 @@ class ConditionsTest {
 
         final Condition<Object> condition = Conditions.anyOf(alwaysFalse, alwaysTrue);
 
-        final Evaluation evaluation = condition.compute(new EqualityEvaluatingValue()).evaluate();
+        final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
         assertTrue(evaluation.result());
     }
@@ -309,7 +309,7 @@ class ConditionsTest {
 
         final Condition<Object> condition = Conditions.anyOf(alwaysTrue1, alwaysTrue2);
 
-        final Evaluation evaluation = condition.compute(new EqualityEvaluatingValue()).evaluate();
+        final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
         assertTrue(evaluation.result());
     }
@@ -322,7 +322,7 @@ class ConditionsTest {
 
         final Condition<Object> condition = Conditions.anyOf(alwaysFalse1, alwaysFalse2);
 
-        final Evaluation evaluation = condition.compute(new EqualityEvaluatingValue()).evaluate();
+        final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
         assertFalse(evaluation.result());
     }
@@ -346,7 +346,7 @@ class ConditionsTest {
 
         final Condition<Object> condition = Conditions.anyOf(match);
 
-        final Evaluation evaluation = condition.compute(new EqualityEvaluatingValue()).evaluate();
+        final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
         assertTrue(evaluation.result());
     }
@@ -358,7 +358,7 @@ class ConditionsTest {
 
         final Condition<Object> condition = Conditions.anyOf(nonMatch);
 
-        final Evaluation evaluation = condition.compute(new EqualityEvaluatingValue()).evaluate();
+        final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
         assertFalse(evaluation.result());
     }
@@ -371,7 +371,7 @@ class ConditionsTest {
 
         final Condition<Object> condition = Conditions.anyOf(match, nonMatch);
 
-        final Evaluation evaluation = condition.compute(new EqualityEvaluatingValue()).evaluate();
+        final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
         assertTrue(evaluation.result());
     }
@@ -384,7 +384,7 @@ class ConditionsTest {
 
         final Condition<Object> condition = Conditions.anyOf(nonMatch, match);
 
-        final Evaluation evaluation = condition.compute(new EqualityEvaluatingValue()).evaluate();
+        final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
         assertTrue(evaluation.result());
     }
@@ -397,7 +397,7 @@ class ConditionsTest {
 
         final Condition<Object> condition = Conditions.anyOf(match1, match2);
 
-        final Evaluation evaluation = condition.compute(new EqualityEvaluatingValue()).evaluate();
+        final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
         assertTrue(evaluation.result());
     }
@@ -410,7 +410,7 @@ class ConditionsTest {
 
         final Condition<Object> condition = Conditions.anyOf(nonMatch1, nonMatch2);
 
-        final Evaluation evaluation = condition.compute(new EqualityEvaluatingValue()).evaluate();
+        final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
         assertFalse(evaluation.result());
     }
@@ -434,7 +434,7 @@ class ConditionsTest {
 
         final Condition<Object> condition = Conditions.anyOf(singletonList(match));
 
-        final Evaluation evaluation = condition.compute(new EqualityEvaluatingValue()).evaluate();
+        final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
         assertTrue(evaluation.result());
     }
@@ -446,7 +446,7 @@ class ConditionsTest {
 
         final Condition<Object> condition = Conditions.anyOf(singletonList(nonMatch));
 
-        final Evaluation evaluation = condition.compute(new EqualityEvaluatingValue()).evaluate();
+        final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
         assertFalse(evaluation.result());
     }
@@ -459,7 +459,7 @@ class ConditionsTest {
 
         final Condition<Object> condition = Conditions.anyOf(asList(match, nonMatch));
 
-        final Evaluation evaluation = condition.compute(new EqualityEvaluatingValue()).evaluate();
+        final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
         assertTrue(evaluation.result());
     }
@@ -472,7 +472,7 @@ class ConditionsTest {
 
         final Condition<Object> condition = Conditions.anyOf(asList(nonMatch, match));
 
-        final Evaluation evaluation = condition.compute(new EqualityEvaluatingValue()).evaluate();
+        final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
         assertTrue(evaluation.result());
     }
@@ -485,7 +485,7 @@ class ConditionsTest {
 
         final Condition<Object> condition = Conditions.anyOf(asList(match1, match2));
 
-        final Evaluation evaluation = condition.compute(new EqualityEvaluatingValue()).evaluate();
+        final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
         assertTrue(evaluation.result());
     }
@@ -498,7 +498,7 @@ class ConditionsTest {
 
         final Condition<Object> condition = Conditions.anyOf(asList(nonMatch1, nonMatch2));
 
-        final Evaluation evaluation = condition.compute(new EqualityEvaluatingValue()).evaluate();
+        final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
         assertFalse(evaluation.result());
     }
@@ -522,7 +522,7 @@ class ConditionsTest {
 
         final Condition<Object> condition = Conditions.allOf(alwaysTrue);
 
-        final Evaluation evaluation = condition.compute(new EqualityEvaluatingValue()).evaluate();
+        final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
         assertTrue(evaluation.result());
     }
@@ -534,7 +534,7 @@ class ConditionsTest {
 
         final Condition<Object> condition = Conditions.allOf(alwaysFalse);
 
-        final Evaluation evaluation = condition.compute(new EqualityEvaluatingValue()).evaluate();
+        final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
         assertFalse(evaluation.result());
     }
@@ -547,7 +547,7 @@ class ConditionsTest {
 
         final Condition<Object> condition = Conditions.allOf(alwaysTrue, alwaysFalse);
 
-        final Evaluation evaluation = condition.compute(new EqualityEvaluatingValue()).evaluate();
+        final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
         assertFalse(evaluation.result());
     }
@@ -560,7 +560,7 @@ class ConditionsTest {
 
         final Condition<Object> condition = Conditions.allOf(alwaysFalse, alwaysTrue);
 
-        final Evaluation evaluation = condition.compute(new EqualityEvaluatingValue()).evaluate();
+        final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
         assertFalse(evaluation.result());
     }
@@ -573,7 +573,7 @@ class ConditionsTest {
 
         final Condition<Object> condition = Conditions.allOf(alwaysTrue1, alwaysTrue2);
 
-        final Evaluation evaluation = condition.compute(new EqualityEvaluatingValue()).evaluate();
+        final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
         assertTrue(evaluation.result());
     }
@@ -586,7 +586,7 @@ class ConditionsTest {
 
         final Condition<Object> condition = Conditions.allOf(alwaysFalse1, alwaysFalse2);
 
-        final Evaluation evaluation = condition.compute(new EqualityEvaluatingValue()).evaluate();
+        final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
         assertFalse(evaluation.result());
     }
@@ -610,7 +610,7 @@ class ConditionsTest {
 
         final Condition<Object> condition = Conditions.allOf(match);
 
-        final Evaluation evaluation = condition.compute(match).evaluate();
+        final Evaluation evaluation = condition.bind(match).evaluate();
 
         assertTrue(evaluation.result());
     }
@@ -622,7 +622,7 @@ class ConditionsTest {
 
         final Condition<Object> condition = Conditions.allOf(nonMatch);
 
-        final Evaluation evaluation = condition.compute(new EqualityEvaluatingValue()).evaluate();
+        final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
         assertFalse(evaluation.result());
     }
@@ -635,7 +635,7 @@ class ConditionsTest {
 
         final Condition<Object> condition = Conditions.allOf(match, nonMatch);
 
-        final Evaluation evaluation = condition.compute(new EqualityEvaluatingValue()).evaluate();
+        final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
         assertFalse(evaluation.result());
     }
@@ -648,7 +648,7 @@ class ConditionsTest {
 
         final Condition<Object> condition = Conditions.allOf(nonMatch, match);
 
-        final Evaluation evaluation = condition.compute(new EqualityEvaluatingValue()).evaluate();
+        final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
         assertFalse(evaluation.result());
     }
@@ -661,7 +661,7 @@ class ConditionsTest {
 
         final Condition<Object> condition = Conditions.allOf(match1, match2);
 
-        final Evaluation evaluation = condition.compute(new EqualityEvaluatingValue()).evaluate();
+        final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
         assertTrue(evaluation.result());
     }
@@ -674,7 +674,7 @@ class ConditionsTest {
 
         final Condition<Object> condition = Conditions.allOf(nonMatch1, nonMatch2);
 
-        final Evaluation evaluation = condition.compute(new EqualityEvaluatingValue()).evaluate();
+        final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
         assertFalse(evaluation.result());
     }
@@ -698,7 +698,7 @@ class ConditionsTest {
 
         final Condition<Object> condition = Conditions.allOf(singletonList(match));
 
-        final Evaluation evaluation = condition.compute(new EqualityEvaluatingValue()).evaluate();
+        final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
         assertTrue(evaluation.result());
     }
@@ -710,7 +710,7 @@ class ConditionsTest {
 
         final Condition<Object> condition = Conditions.allOf(singletonList(nonMatch));
 
-        final Evaluation evaluation = condition.compute(new EqualityEvaluatingValue()).evaluate();
+        final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
         assertFalse(evaluation.result());
     }
@@ -723,7 +723,7 @@ class ConditionsTest {
 
         final Condition<Object> condition = Conditions.allOf(asList(match, nonMatch));
 
-        final Evaluation evaluation = condition.compute(new EqualityEvaluatingValue()).evaluate();
+        final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
         assertFalse(evaluation.result());
     }
@@ -736,7 +736,7 @@ class ConditionsTest {
 
         final Condition<Object> condition = Conditions.allOf(asList(nonMatch, match));
 
-        final Evaluation evaluation = condition.compute(new EqualityEvaluatingValue()).evaluate();
+        final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
         assertFalse(evaluation.result());
     }
@@ -749,7 +749,7 @@ class ConditionsTest {
 
         final Condition<Object> condition = Conditions.allOf(asList(match1, match2));
 
-        final Evaluation evaluation = condition.compute(new EqualityEvaluatingValue()).evaluate();
+        final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
         assertTrue(evaluation.result());
     }
@@ -762,7 +762,7 @@ class ConditionsTest {
 
         final Condition<Object> condition = Conditions.allOf(asList(nonMatch1, nonMatch2));
 
-        final Evaluation evaluation = condition.compute(new EqualityEvaluatingValue()).evaluate();
+        final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
         assertFalse(evaluation.result());
     }
@@ -786,7 +786,7 @@ class ConditionsTest {
 
         final Condition<Object> condition = Conditions.noneOf(alwaysTrue);
 
-        final Evaluation evaluation = condition.compute(new EqualityEvaluatingValue()).evaluate();
+        final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
         assertFalse(evaluation.result());
     }
@@ -798,7 +798,7 @@ class ConditionsTest {
 
         final Condition<Object> condition = Conditions.noneOf(alwaysFalse);
 
-        final Evaluation evaluation = condition.compute(new EqualityEvaluatingValue()).evaluate();
+        final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
         assertTrue(evaluation.result());
     }
@@ -811,7 +811,7 @@ class ConditionsTest {
 
         final Condition<Object> condition = Conditions.noneOf(alwaysTrue, alwaysFalse);
 
-        final Evaluation evaluation = condition.compute(new EqualityEvaluatingValue()).evaluate();
+        final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
         assertFalse(evaluation.result());
     }
@@ -824,7 +824,7 @@ class ConditionsTest {
 
         final Condition<Object> condition = Conditions.noneOf(alwaysFalse, alwaysTrue);
 
-        final Evaluation evaluation = condition.compute(new EqualityEvaluatingValue()).evaluate();
+        final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
         assertFalse(evaluation.result());
     }
@@ -837,7 +837,7 @@ class ConditionsTest {
 
         final Condition<Object> condition = Conditions.noneOf(alwaysTrue1, alwaysTrue2);
 
-        final Evaluation evaluation = condition.compute(new EqualityEvaluatingValue()).evaluate();
+        final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
         assertFalse(evaluation.result());
     }
@@ -850,7 +850,7 @@ class ConditionsTest {
 
         final Condition<Object> condition = Conditions.noneOf(alwaysFalse1, alwaysFalse2);
 
-        final Evaluation evaluation = condition.compute(new EqualityEvaluatingValue()).evaluate();
+        final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
         assertTrue(evaluation.result());
     }
@@ -874,7 +874,7 @@ class ConditionsTest {
 
         final Condition<Object> condition = Conditions.noneOf(match);
 
-        final Evaluation evaluation = condition.compute(match).evaluate();
+        final Evaluation evaluation = condition.bind(match).evaluate();
 
         assertFalse(evaluation.result());
     }
@@ -886,7 +886,7 @@ class ConditionsTest {
 
         final Condition<Object> condition = Conditions.noneOf(nonMatch);
 
-        final Evaluation evaluation = condition.compute(new EqualityEvaluatingValue()).evaluate();
+        final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
         assertTrue(evaluation.result());
     }
@@ -899,7 +899,7 @@ class ConditionsTest {
 
         final Condition<Object> condition = Conditions.noneOf(match, nonMatch);
 
-        final Evaluation evaluation = condition.compute(new EqualityEvaluatingValue()).evaluate();
+        final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
         assertFalse(evaluation.result());
     }
@@ -912,7 +912,7 @@ class ConditionsTest {
 
         final Condition<Object> condition = Conditions.noneOf(nonMatch, match);
 
-        final Evaluation evaluation = condition.compute(new EqualityEvaluatingValue()).evaluate();
+        final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
         assertFalse(evaluation.result());
     }
@@ -925,7 +925,7 @@ class ConditionsTest {
 
         final Condition<Object> condition = Conditions.noneOf(match1, match2);
 
-        final Evaluation evaluation = condition.compute(new EqualityEvaluatingValue()).evaluate();
+        final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
         assertFalse(evaluation.result());
     }
@@ -938,7 +938,7 @@ class ConditionsTest {
 
         final Condition<Object> condition = Conditions.noneOf(nonMatch1, nonMatch2);
 
-        final Evaluation evaluation = condition.compute(new EqualityEvaluatingValue()).evaluate();
+        final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
         assertTrue(evaluation.result());
     }
@@ -962,7 +962,7 @@ class ConditionsTest {
 
         final Condition<Object> condition = Conditions.noneOf(singletonList(match));
 
-        final Evaluation evaluation = condition.compute(new EqualityEvaluatingValue()).evaluate();
+        final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
         assertFalse(evaluation.result());
     }
@@ -974,7 +974,7 @@ class ConditionsTest {
 
         final Condition<Object> condition = Conditions.noneOf(singletonList(nonMatch));
 
-        final Evaluation evaluation = condition.compute(new EqualityEvaluatingValue()).evaluate();
+        final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
         assertTrue(evaluation.result());
     }
@@ -987,7 +987,7 @@ class ConditionsTest {
 
         final Condition<Object> condition = Conditions.noneOf(asList(match, nonMatch));
 
-        final Evaluation evaluation = condition.compute(new EqualityEvaluatingValue()).evaluate();
+        final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
         assertFalse(evaluation.result());
     }
@@ -1000,7 +1000,7 @@ class ConditionsTest {
 
         final Condition<Object> condition = Conditions.noneOf(asList(nonMatch, match));
 
-        final Evaluation evaluation = condition.compute(new EqualityEvaluatingValue()).evaluate();
+        final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
         assertFalse(evaluation.result());
     }
@@ -1013,7 +1013,7 @@ class ConditionsTest {
 
         final Condition<Object> condition = Conditions.noneOf(asList(match1, match2));
 
-        final Evaluation evaluation = condition.compute(new EqualityEvaluatingValue()).evaluate();
+        final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
         assertFalse(evaluation.result());
     }
@@ -1026,7 +1026,7 @@ class ConditionsTest {
 
         final Condition<Object> condition = Conditions.noneOf(asList(nonMatch1, nonMatch2));
 
-        final Evaluation evaluation = condition.compute(new EqualityEvaluatingValue()).evaluate();
+        final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
         assertTrue(evaluation.result());
     }

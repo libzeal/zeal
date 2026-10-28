@@ -32,7 +32,7 @@ class ExpressionBuilderTest {
 
         final Evaluation evaluation = ExpressionBuilder.of((String s) -> true)
             .build()
-            .compute("foo")
+            .bind("foo")
             .evaluate();
 
         assertTrue(evaluation.result());
@@ -51,7 +51,7 @@ class ExpressionBuilderTest {
             .actual("bar")
             .hint("baz")
             .build()
-            .compute("subject")
+            .bind("subject")
             .evaluate();
 
         assertFalse(evaluation.result());
@@ -67,7 +67,7 @@ class ExpressionBuilderTest {
         final Evaluation evaluation = ExpressionBuilder.of((String s) -> true)
             .expected(42L)
             .build()
-            .compute("foo")
+            .bind("foo")
             .evaluate();
 
         assertEquals("42", evaluation.rationale().expected());
@@ -79,7 +79,7 @@ class ExpressionBuilderTest {
         final Evaluation evaluation = ExpressionBuilder.observing(String::length)
             .passesIf(length -> length == 3)
             .build()
-            .compute("abc")
+            .bind("abc")
             .evaluate();
 
         assertTrue(evaluation.result());
@@ -92,7 +92,7 @@ class ExpressionBuilderTest {
         final Evaluation evaluation = ExpressionBuilder.observing(String::length)
             .passesIf(length -> true)
             .build()
-            .compute(null)
+            .bind(null)
             .evaluate();
 
         assertFalse(evaluation.result());
@@ -105,7 +105,7 @@ class ExpressionBuilderTest {
         final Evaluation evaluation = ExpressionBuilder.of((String s) -> s == null)
             .nullable()
             .build()
-            .compute(null)
+            .bind(null)
             .evaluate();
 
         assertTrue(evaluation.result());
@@ -116,10 +116,10 @@ class ExpressionBuilderTest {
 
         final ExpressionBuilder<String, String> builder = ExpressionBuilder.of((String s) -> true)
             .name("before");
-        final ComputableExpression<String> expression = builder.build();
+        final Condition<String> expression = builder.build();
 
         builder.name("after");
 
-        assertEquals("before", expression.compute("foo").evaluate().name());
+        assertEquals("before", expression.bind("foo").evaluate().name());
     }
 }

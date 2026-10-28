@@ -2,7 +2,7 @@ package io.github.libzeal.zeal.values.core;
 
 import io.github.libzeal.zeal.logic.Expression;
 import io.github.libzeal.zeal.logic.unary.CompoundUnaryExpression;
-import io.github.libzeal.zeal.logic.unary.condition.Condition;
+import io.github.libzeal.zeal.logic.unary.Condition;
 import io.github.libzeal.zeal.logic.unary.ExpressionBuilder;
 import io.github.libzeal.zeal.values.sdk.StandardMessages;
 
