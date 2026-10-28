@@ -122,7 +122,7 @@ class ExpressionsTest {
         final Expression expression = Expressions.nand(wrappedExpression);
 
         assertNotNull(expression);
-        assertInstanceOf(NotExpression.class, expression);
+        assertInstanceOf(NandExpression.class, expression);
     }
 
     @Test
@@ -140,6 +140,24 @@ class ExpressionsTest {
         final Expression expression = Expressions.nor(wrappedExpression);
 
         assertNotNull(expression);
-        assertInstanceOf(NotExpression.class, expression);
+        assertInstanceOf(NorExpression.class, expression);
+    }
+
+    @Test
+    void givenNullExpression_whenXor_thenExceptionThrown() {
+        assertThrows(
+            NullPointerException.class,
+            () -> Expressions.xor((Expression[]) null)
+        );
+    }
+
+    @Test
+    void givenValidWrappedExpressions_whenXor_thenCorrectExpressionReturned() {
+
+        final Expression wrappedExpression = TestExpressions.tautology();
+        final Expression expression = Expressions.xor(wrappedExpression);
+
+        assertNotNull(expression);
+        assertInstanceOf(XorExpression.class, expression);
     }
 }

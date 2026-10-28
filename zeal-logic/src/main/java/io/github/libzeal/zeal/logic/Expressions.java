@@ -106,8 +106,8 @@ public final class Expressions {
      * @throws NullPointerException
      *     Any of the supplied expressions is {@code null}.
      */
-    public static NotExpression nand(final Expression... expressions) {
-        return NotExpression.unnamed(AndExpression.unnamed(expressions));
+    public static NandExpression nand(final Expression... expressions) {
+        return NandExpression.unnamed(expressions);
     }
 
     /**
@@ -121,7 +121,11 @@ public final class Expressions {
      * @throws NullPointerException
      *     Any of the supplied expressions is {@code null}.
      */
-    public static NotExpression nor(final Expression... expressions) {
-        return NotExpression.unnamed(OrExpression.unnamed(expressions));
+    public static NorExpression nor(final Expression... expressions) {
+        return NorExpression.unnamed(expressions);
+    }
+
+    public static XorExpression xor(final Expression... expressions) {
+        return XorExpression.unnamed(expressions);
     }
 }
