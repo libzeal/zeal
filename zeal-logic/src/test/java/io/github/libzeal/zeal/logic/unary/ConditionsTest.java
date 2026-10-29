@@ -49,7 +49,7 @@ class ConditionsTest {
         final Object subject = new Object();
         final Condition<Object> condition = Conditions.of("foo", s -> true);
 
-        assertTrue(condition.bind(subject).evaluate().result());
+        assertTrue(condition.bind(subject).evaluate().isTrue());
     }
 
     @Test
@@ -58,7 +58,7 @@ class ConditionsTest {
         final Object subject = new Object();
         final Condition<Object> condition = Conditions.of("foo", s -> false);
 
-        assertFalse(condition.bind(subject).evaluate().result());
+        assertFalse(condition.bind(subject).evaluate().isTrue());
     }
 
     // ------------------------------------------------------------------------
@@ -89,7 +89,7 @@ class ConditionsTest {
         final Object subject = new Object();
         final Condition<Object> condition = Conditions.of(s -> true);
 
-        assertTrue(condition.bind(subject).evaluate().result());
+        assertTrue(condition.bind(subject).evaluate().isTrue());
     }
 
     @Test
@@ -98,7 +98,7 @@ class ConditionsTest {
         final Object subject = new Object();
         final Condition<Object> condition = Conditions.of(s -> false);
 
-        assertFalse(condition.bind(subject).evaluate().result());
+        assertFalse(condition.bind(subject).evaluate().isTrue());
     }
 
     // ------------------------------------------------------------------------
@@ -115,7 +115,7 @@ class ConditionsTest {
         final Expression expression = condition.bind(subject);
         final Evaluation evaluation = expression.evaluate();
 
-        assertTrue(evaluation.result());
+        assertTrue(evaluation.isTrue());
         assertEquals(Conditions.exactlyName(subject), expression.name());
         assertEquals(Conditions.exactlyName(subject), evaluation.name());
         assertEquals(subject.toString(), evaluation.rationale().expected());
@@ -135,7 +135,7 @@ class ConditionsTest {
         final Expression expression = condition.bind(subject);
         final Evaluation evaluation = expression.evaluate();
 
-        assertFalse(evaluation.result());
+        assertFalse(evaluation.isTrue());
         assertEquals(Conditions.exactlyName(desired), expression.name());
         assertEquals(Conditions.exactlyName(desired), evaluation.name());
         assertEquals(desired.toString(), evaluation.rationale().expected());
@@ -163,7 +163,7 @@ class ConditionsTest {
         final Expression expression = condition.bind(subject);
         final Evaluation evaluation = expression.evaluate();
 
-        assertFalse(evaluation.result());
+        assertFalse(evaluation.isTrue());
         assertEquals(Conditions.exactlyName(desired), expression.name());
         assertEquals(Conditions.exactlyName(desired), evaluation.name());
         assertEquals(desired.toString(), evaluation.rationale().expected());
@@ -195,7 +195,7 @@ class ConditionsTest {
         final Expression expression = condition.bind(subject);
         final Evaluation evaluation = expression.evaluate();
 
-        assertTrue(evaluation.result());
+        assertTrue(evaluation.isTrue());
         assertEquals(Conditions.equalToName(desired), expression.name());
         assertEquals(Conditions.equalToName(desired), evaluation.name());
         assertEquals(desired.toString(), evaluation.rationale().expected());
@@ -215,7 +215,7 @@ class ConditionsTest {
         final Expression expression = condition.bind(subject);
         final Evaluation evaluation = expression.evaluate();
 
-        assertFalse(evaluation.result());
+        assertFalse(evaluation.isTrue());
         assertEquals(Conditions.equalToName(desired), expression.name());
         assertEquals(Conditions.equalToName(desired), evaluation.name());
         assertEquals(desired.toString(), evaluation.rationale().expected());
@@ -245,7 +245,7 @@ class ConditionsTest {
 
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
-        assertTrue(evaluation.result());
+        assertTrue(evaluation.isTrue());
     }
 
     /**
@@ -272,7 +272,7 @@ class ConditionsTest {
 
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
-        assertFalse(evaluation.result());
+        assertFalse(evaluation.isTrue());
     }
 
     @Test
@@ -285,7 +285,7 @@ class ConditionsTest {
 
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
-        assertTrue(evaluation.result());
+        assertTrue(evaluation.isTrue());
     }
 
     @Test
@@ -298,7 +298,7 @@ class ConditionsTest {
 
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
-        assertTrue(evaluation.result());
+        assertTrue(evaluation.isTrue());
     }
 
     @Test
@@ -311,7 +311,7 @@ class ConditionsTest {
 
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
-        assertTrue(evaluation.result());
+        assertTrue(evaluation.isTrue());
     }
 
     @Test
@@ -324,7 +324,7 @@ class ConditionsTest {
 
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
-        assertFalse(evaluation.result());
+        assertFalse(evaluation.isTrue());
     }
 
     // ------------------------------------------------------------------------
@@ -348,7 +348,7 @@ class ConditionsTest {
 
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
-        assertTrue(evaluation.result());
+        assertTrue(evaluation.isTrue());
     }
 
     @Test
@@ -360,7 +360,7 @@ class ConditionsTest {
 
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
-        assertFalse(evaluation.result());
+        assertFalse(evaluation.isTrue());
     }
 
     @Test
@@ -373,7 +373,7 @@ class ConditionsTest {
 
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
-        assertTrue(evaluation.result());
+        assertTrue(evaluation.isTrue());
     }
 
     @Test
@@ -386,7 +386,7 @@ class ConditionsTest {
 
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
-        assertTrue(evaluation.result());
+        assertTrue(evaluation.isTrue());
     }
 
     @Test
@@ -399,7 +399,7 @@ class ConditionsTest {
 
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
-        assertTrue(evaluation.result());
+        assertTrue(evaluation.isTrue());
     }
 
     @Test
@@ -412,7 +412,7 @@ class ConditionsTest {
 
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
-        assertFalse(evaluation.result());
+        assertFalse(evaluation.isTrue());
     }
 
     // ------------------------------------------------------------------------
@@ -436,7 +436,7 @@ class ConditionsTest {
 
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
-        assertTrue(evaluation.result());
+        assertTrue(evaluation.isTrue());
     }
 
     @Test
@@ -448,7 +448,7 @@ class ConditionsTest {
 
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
-        assertFalse(evaluation.result());
+        assertFalse(evaluation.isTrue());
     }
 
     @Test
@@ -461,7 +461,7 @@ class ConditionsTest {
 
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
-        assertTrue(evaluation.result());
+        assertTrue(evaluation.isTrue());
     }
 
     @Test
@@ -474,7 +474,7 @@ class ConditionsTest {
 
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
-        assertTrue(evaluation.result());
+        assertTrue(evaluation.isTrue());
     }
 
     @Test
@@ -487,7 +487,7 @@ class ConditionsTest {
 
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
-        assertTrue(evaluation.result());
+        assertTrue(evaluation.isTrue());
     }
 
     @Test
@@ -500,7 +500,7 @@ class ConditionsTest {
 
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
-        assertFalse(evaluation.result());
+        assertFalse(evaluation.isTrue());
     }
 
     // ------------------------------------------------------------------------
@@ -524,7 +524,7 @@ class ConditionsTest {
 
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
-        assertTrue(evaluation.result());
+        assertTrue(evaluation.isTrue());
     }
 
     @Test
@@ -536,7 +536,7 @@ class ConditionsTest {
 
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
-        assertFalse(evaluation.result());
+        assertFalse(evaluation.isTrue());
     }
 
     @Test
@@ -549,7 +549,7 @@ class ConditionsTest {
 
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
-        assertFalse(evaluation.result());
+        assertFalse(evaluation.isTrue());
     }
 
     @Test
@@ -562,7 +562,7 @@ class ConditionsTest {
 
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
-        assertFalse(evaluation.result());
+        assertFalse(evaluation.isTrue());
     }
 
     @Test
@@ -575,7 +575,7 @@ class ConditionsTest {
 
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
-        assertTrue(evaluation.result());
+        assertTrue(evaluation.isTrue());
     }
 
     @Test
@@ -588,7 +588,7 @@ class ConditionsTest {
 
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
-        assertFalse(evaluation.result());
+        assertFalse(evaluation.isTrue());
     }
 
     // ------------------------------------------------------------------------
@@ -612,7 +612,7 @@ class ConditionsTest {
 
         final Evaluation evaluation = condition.bind(match).evaluate();
 
-        assertTrue(evaluation.result());
+        assertTrue(evaluation.isTrue());
     }
 
     @Test
@@ -624,7 +624,7 @@ class ConditionsTest {
 
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
-        assertFalse(evaluation.result());
+        assertFalse(evaluation.isTrue());
     }
 
     @Test
@@ -637,7 +637,7 @@ class ConditionsTest {
 
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
-        assertFalse(evaluation.result());
+        assertFalse(evaluation.isTrue());
     }
 
     @Test
@@ -650,7 +650,7 @@ class ConditionsTest {
 
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
-        assertFalse(evaluation.result());
+        assertFalse(evaluation.isTrue());
     }
 
     @Test
@@ -663,7 +663,7 @@ class ConditionsTest {
 
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
-        assertTrue(evaluation.result());
+        assertTrue(evaluation.isTrue());
     }
 
     @Test
@@ -676,7 +676,7 @@ class ConditionsTest {
 
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
-        assertFalse(evaluation.result());
+        assertFalse(evaluation.isTrue());
     }
 
     // ------------------------------------------------------------------------
@@ -700,7 +700,7 @@ class ConditionsTest {
 
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
-        assertTrue(evaluation.result());
+        assertTrue(evaluation.isTrue());
     }
 
     @Test
@@ -712,7 +712,7 @@ class ConditionsTest {
 
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
-        assertFalse(evaluation.result());
+        assertFalse(evaluation.isTrue());
     }
 
     @Test
@@ -725,7 +725,7 @@ class ConditionsTest {
 
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
-        assertFalse(evaluation.result());
+        assertFalse(evaluation.isTrue());
     }
 
     @Test
@@ -738,7 +738,7 @@ class ConditionsTest {
 
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
-        assertFalse(evaluation.result());
+        assertFalse(evaluation.isTrue());
     }
 
     @Test
@@ -751,7 +751,7 @@ class ConditionsTest {
 
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
-        assertTrue(evaluation.result());
+        assertTrue(evaluation.isTrue());
     }
 
     @Test
@@ -764,7 +764,7 @@ class ConditionsTest {
 
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
-        assertFalse(evaluation.result());
+        assertFalse(evaluation.isTrue());
     }
 
     // ------------------------------------------------------------------------
@@ -788,7 +788,7 @@ class ConditionsTest {
 
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
-        assertFalse(evaluation.result());
+        assertFalse(evaluation.isTrue());
     }
 
     @Test
@@ -800,7 +800,7 @@ class ConditionsTest {
 
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
-        assertTrue(evaluation.result());
+        assertTrue(evaluation.isTrue());
     }
 
     @Test
@@ -813,7 +813,7 @@ class ConditionsTest {
 
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
-        assertFalse(evaluation.result());
+        assertFalse(evaluation.isTrue());
     }
 
     @Test
@@ -826,7 +826,7 @@ class ConditionsTest {
 
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
-        assertFalse(evaluation.result());
+        assertFalse(evaluation.isTrue());
     }
 
     @Test
@@ -839,7 +839,7 @@ class ConditionsTest {
 
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
-        assertFalse(evaluation.result());
+        assertFalse(evaluation.isTrue());
     }
 
     @Test
@@ -852,7 +852,7 @@ class ConditionsTest {
 
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
-        assertTrue(evaluation.result());
+        assertTrue(evaluation.isTrue());
     }
 
     // ------------------------------------------------------------------------
@@ -876,7 +876,7 @@ class ConditionsTest {
 
         final Evaluation evaluation = condition.bind(match).evaluate();
 
-        assertFalse(evaluation.result());
+        assertFalse(evaluation.isTrue());
     }
 
     @Test
@@ -888,7 +888,7 @@ class ConditionsTest {
 
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
-        assertTrue(evaluation.result());
+        assertTrue(evaluation.isTrue());
     }
 
     @Test
@@ -901,7 +901,7 @@ class ConditionsTest {
 
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
-        assertFalse(evaluation.result());
+        assertFalse(evaluation.isTrue());
     }
 
     @Test
@@ -914,7 +914,7 @@ class ConditionsTest {
 
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
-        assertFalse(evaluation.result());
+        assertFalse(evaluation.isTrue());
     }
 
     @Test
@@ -927,7 +927,7 @@ class ConditionsTest {
 
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
-        assertFalse(evaluation.result());
+        assertFalse(evaluation.isTrue());
     }
 
     @Test
@@ -940,7 +940,7 @@ class ConditionsTest {
 
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
-        assertTrue(evaluation.result());
+        assertTrue(evaluation.isTrue());
     }
 
     // ------------------------------------------------------------------------
@@ -964,7 +964,7 @@ class ConditionsTest {
 
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
-        assertFalse(evaluation.result());
+        assertFalse(evaluation.isTrue());
     }
 
     @Test
@@ -976,7 +976,7 @@ class ConditionsTest {
 
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
-        assertTrue(evaluation.result());
+        assertTrue(evaluation.isTrue());
     }
 
     @Test
@@ -989,7 +989,7 @@ class ConditionsTest {
 
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
-        assertFalse(evaluation.result());
+        assertFalse(evaluation.isTrue());
     }
 
     @Test
@@ -1002,7 +1002,7 @@ class ConditionsTest {
 
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
-        assertFalse(evaluation.result());
+        assertFalse(evaluation.isTrue());
     }
 
     @Test
@@ -1015,7 +1015,7 @@ class ConditionsTest {
 
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
-        assertFalse(evaluation.result());
+        assertFalse(evaluation.isTrue());
     }
 
     @Test
@@ -1028,6 +1028,6 @@ class ConditionsTest {
 
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
-        assertTrue(evaluation.result());
+        assertTrue(evaluation.isTrue());
     }
 }

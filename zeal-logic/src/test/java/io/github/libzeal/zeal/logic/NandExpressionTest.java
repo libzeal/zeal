@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static io.github.libzeal.zeal.logic.CompoundEvaluator.format;
-import static io.github.libzeal.zeal.logic.CompoundEvaluator.formatFailed;
 import static io.github.libzeal.zeal.logic.test.Arguments.listWithSingleNull;
 import static io.github.libzeal.zeal.logic.test.CauseAssertions.*;
 import static io.github.libzeal.zeal.logic.test.NamedExpressions.*;
@@ -82,9 +81,9 @@ class NandExpressionTest {
         final Evaluation evaluation = nand("NAND").evaluate();
         final Rationale rationale = evaluation.rationale();
 
-        assertFalse(evaluation.result());
+        assertFalse(evaluation.isTrue());
         assertEquals("NAND", evaluation.name());
-        assertEquals(formatFailed(1), rationale.expected());
+        assertEquals(NandExpression.EXPECTED, rationale.expected());
         assertEquals(format(0, 0, 0), rationale.actual());
         assertCauseIsSelf(evaluation);
         assertTraces(evaluation, "NAND");
@@ -96,8 +95,8 @@ class NandExpressionTest {
         final Evaluation evaluation = nand("NAND", t("t1"), t("t2")).evaluate();
         final Rationale rationale = evaluation.rationale();
 
-        assertFalse(evaluation.result());
-        assertEquals(formatFailed(1), rationale.expected());
+        assertFalse(evaluation.isTrue());
+        assertEquals(NandExpression.EXPECTED, rationale.expected());
         assertEquals(format(2, 0, 0), rationale.actual());
         assertCause(evaluation, child(evaluation, 0), child(evaluation, 1));
         assertTraces(evaluation, "NAND -> t1", "NAND -> t2");
@@ -111,7 +110,7 @@ class NandExpressionTest {
         final Evaluation f2 = child(evaluation, 1);
         final Skipped t3 = skipped(evaluation, 2);
 
-        assertTrue(evaluation.result());
+        assertTrue(evaluation.isTrue());
         assertEquals(format(1, 1, 1), evaluation.rationale().actual());
         assertCause(evaluation, f2);
         assertTraces(evaluation, "NAND -> f2");
@@ -129,7 +128,7 @@ class NandExpressionTest {
 
         final Evaluation evaluation = new NandExpression("NAND", List.of(failing, passing)).evaluate();
 
-        assertTrue(evaluation.result());
+        assertTrue(evaluation.isTrue());
         verify(failing, times(1)).evaluate();
         verify(passing, never()).evaluate();
     }
@@ -149,8 +148,8 @@ class NandExpressionTest {
 
         for (final List<Expression> children : cases) {
             assertEquals(
-                !new AndExpression("AND", children).evaluate().result(),
-                new NandExpression("NAND", children).evaluate().result()
+                !new AndExpression("AND", children).evaluate().isTrue(),
+                new NandExpression("NAND", children).evaluate().isTrue()
             );
         }
     }

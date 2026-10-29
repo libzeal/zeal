@@ -1,38 +1,44 @@
 package io.github.libzeal.zeal.logic;
 
+import io.github.libzeal.zeal.logic.CompoundEvaluator.Tally;
 import io.github.libzeal.zeal.logic.evaluation.CompoundEvaluation;
+import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 
 import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
 /**
- * A compound expression where all sub-expression must be pass for the compound
- * expression to pass.
+ * An expression whose children are ANDed together.
  *
  * @param name
- *     The name of the expression.
+ *         The name of the expression.
  * @param children
- *     The expressions used to initialize the compound expression.
+ *         The sub-expressions that are ANDed together. If no children are
+ *         provided, the ANDed expression evaluates to true.
  *
  * @author Justin Albano
+ * @since 0.5.0
  */
-public record AndExpression(String name,
-                            List<Expression> children) implements CompoundExpression {
+public record AndExpression(
+        String name,
+        List<Expression> children
+) implements CompoundExpression {
 
     static final String DEFAULT_NAME = "AND";
+    static final String EXPECTED = "false = 0";
 
     /**
-     * Creates a new conjunctive expression.
+     * Creates a new AND expression.
      *
      * @param name
-     *     The name of the expression.
+     *         The name of the expression.
      * @param children
-     *     The expressions used to initialize the compound expression.
+     *         The sub-expressions to be ANDed together.
      *
      * @throws NullPointerException
-     *     The supplied name is {@code null} or the children contains a
-     *     {@code null} value.
+     *         The supplied name or children is {@code null} or the children
+     *         contains any {@code null}s.
      */
     public AndExpression {
         requireNonNull(name);
@@ -40,32 +46,32 @@ public record AndExpression(String name,
     }
 
     /**
-     * Creates a new conjunctive expression using a default name.
+     * Creates an AND expression with a default name.
      *
      * @param children
-     *     The expressions used to initialize the compound expression.
+     *         The sub-expressions to be ANDed together.
      *
-     * @return A conjunctive expression with a default name.
+     * @return An AND expression with a default name.
      *
      * @throws NullPointerException
-     *     The supplied name is {@code null} or the children contains a
-     *     {@code null} value.
+     *         The supplied children list is {@code null} or the list contains
+     *         any {@code null}s.
      */
     public static AndExpression unnamed(final List<Expression> children) {
         return new AndExpression(DEFAULT_NAME, children);
     }
 
     /**
-     * Creates a new conjunctive expression using a default name.
+     * Creates an AND expression with a default name.
      *
      * @param children
-     *     The expressions used to initialize the compound expression.
+     *         The sub-expressions to be ANDed together.
      *
-     * @return A conjunctive expression with a default name.
+     * @return An AND expression with a default name.
      *
      * @throws NullPointerException
-     *     The supplied name is {@code null} or the children contains a
-     *     {@code null} value.
+     *         The supplied children list is {@code null} or the list contains
+     *         any {@code null}s.
      */
     public static AndExpression unnamed(final Expression... children) {
         return new AndExpression(DEFAULT_NAME, List.of(children));
@@ -73,6 +79,10 @@ public record AndExpression(String name,
 
     @Override
     public CompoundEvaluation evaluate() {
-        return CompoundEvaluator.AND.evaluate(this);
+        return CompoundEvaluator.evaluate(
+                this, EXPECTED,
+                Evaluation::isFalse,
+                Tally::hasNoFalse
+        );
     }
 }

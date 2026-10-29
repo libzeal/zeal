@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import static io.github.libzeal.zeal.logic.test.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 
 class ContradictionTest {
@@ -32,7 +33,7 @@ class ContradictionTest {
         final Evaluation evaluation = contradiction.evaluate();
         final Rationale rationale = evaluation.rationale();
 
-        assertFalse(evaluation.result());
+        assertFalse(evaluation.isTrue());
         assertEquals(Contradiction.NAME, evaluation.name());
         assertRationaleEquals(rationale, FALSE, FALSE);
         assertEquals(Cause.self(), evaluation.cause());
@@ -42,5 +43,28 @@ class ContradictionTest {
     @Test
     void givenDefault_whenEvaluateTwice_thenDistinctEvaluationsReturned() {
         assertNotSame(contradiction.evaluate(), contradiction.evaluate());
+    }
+
+    @Test
+    void givenTwoContradictions_whenEquals_thenEqual() {
+
+        final Contradiction other = new Contradiction();
+
+        assertNotSame(contradiction, other);
+        assertEquals(contradiction, other);
+        assertEquals(contradiction.hashCode(), other.hashCode());
+    }
+
+    @Test
+    void givenTautology_whenEquals_thenNotEqual() {
+        assertNotEquals(contradiction, new Tautology());
+    }
+
+    @Test
+    void givenCompoundsOfContradictions_whenEquals_thenEqual() {
+        assertEquals(
+            OrExpression.unnamed(new Contradiction()),
+            OrExpression.unnamed(new Contradiction())
+        );
     }
 }

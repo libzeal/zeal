@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static io.github.libzeal.zeal.logic.CompoundEvaluator.format;
-import static io.github.libzeal.zeal.logic.CompoundEvaluator.formatFailed;
 import static io.github.libzeal.zeal.logic.test.Arguments.listWithSingleNull;
 import static io.github.libzeal.zeal.logic.test.CauseAssertions.*;
 import static io.github.libzeal.zeal.logic.test.NamedExpressions.*;
@@ -82,9 +81,9 @@ class NorExpressionTest {
         final Evaluation evaluation = nor("NOR").evaluate();
         final Rationale rationale = evaluation.rationale();
 
-        assertTrue(evaluation.result());
+        assertTrue(evaluation.isTrue());
         assertEquals("NOR", evaluation.name());
-        assertEquals(formatFailed(0), rationale.expected());
+        assertEquals(NorExpression.EXPECTED, rationale.expected());
         assertEquals(format(0, 0, 0), rationale.actual());
         assertCauseIsSelf(evaluation);
         assertTraces(evaluation, "NOR");
@@ -96,8 +95,8 @@ class NorExpressionTest {
         final Evaluation evaluation = nor("NOR", f("f1"), f("f2")).evaluate();
         final Rationale rationale = evaluation.rationale();
 
-        assertTrue(evaluation.result());
-        assertEquals(formatFailed(2), rationale.expected());
+        assertTrue(evaluation.isTrue());
+        assertEquals(NorExpression.EXPECTED, rationale.expected());
         assertEquals(format(0, 2, 0), rationale.actual());
         assertCause(evaluation, child(evaluation, 0), child(evaluation, 1));
         assertTraces(evaluation, "NOR -> f1", "NOR -> f2");
@@ -111,7 +110,7 @@ class NorExpressionTest {
         final Evaluation t2 = child(evaluation, 1);
         final Skipped f3 = skipped(evaluation, 2);
 
-        assertFalse(evaluation.result());
+        assertFalse(evaluation.isTrue());
         assertEquals(format(1, 1, 1), evaluation.rationale().actual());
         assertCause(evaluation, t2);
         assertTraces(evaluation, "NOR -> t2");
@@ -129,7 +128,7 @@ class NorExpressionTest {
 
         final Evaluation evaluation = new NorExpression("NOR", List.of(passing, failing)).evaluate();
 
-        assertFalse(evaluation.result());
+        assertFalse(evaluation.isTrue());
         verify(passing, times(1)).evaluate();
         verify(failing, never()).evaluate();
     }
@@ -149,8 +148,8 @@ class NorExpressionTest {
 
         for (final List<Expression> children : cases) {
             assertEquals(
-                !new OrExpression("OR", children).evaluate().result(),
-                new NorExpression("NOR", children).evaluate().result()
+                !new OrExpression("OR", children).evaluate().isTrue(),
+                new NorExpression("NOR", children).evaluate().isTrue()
             );
         }
     }

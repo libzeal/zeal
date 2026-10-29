@@ -6,7 +6,7 @@ import java.time.Duration;
 
 import static java.util.Objects.requireNonNull;
 
-public record TerminalEvaluation(boolean result, String name, Rationale rationale,
+public record TerminalEvaluation(boolean isTrue, String name, Rationale rationale,
                                  Duration elapsedTime) implements Evaluation {
 
     public TerminalEvaluation {

@@ -43,7 +43,8 @@ class TerminalEvaluationTest {
 
         final TerminalEvaluation evaluation = new TerminalEvaluation(true, NAME, RATIONALE, ELAPSED_TIME);
 
-        assertTrue(evaluation.result());
+        assertTrue(evaluation.isTrue());
+        assertFalse(evaluation.isFalse());
         assertEquals(NAME, evaluation.name());
         assertEquals(RATIONALE, evaluation.rationale());
         assertEquals(ELAPSED_TIME, evaluation.elapsedTime());
@@ -55,7 +56,8 @@ class TerminalEvaluationTest {
 
         final TerminalEvaluation evaluation = new TerminalEvaluation(false, NAME, RATIONALE, ELAPSED_TIME);
 
-        assertFalse(evaluation.result());
+        assertFalse(evaluation.isTrue());
+        assertTrue(evaluation.isFalse());
         assertEquals(Cause.self(), evaluation.cause());
     }
 

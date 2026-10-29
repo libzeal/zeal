@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static io.github.libzeal.zeal.logic.CompoundEvaluator.EXPECTED_ODD_PASSED;
 import static io.github.libzeal.zeal.logic.CompoundEvaluator.format;
 import static io.github.libzeal.zeal.logic.test.Arguments.listWithSingleNull;
 import static io.github.libzeal.zeal.logic.test.CauseAssertions.*;
@@ -83,9 +82,9 @@ class XorExpressionTest {
         final Evaluation evaluation = xor("XOR").evaluate();
         final Rationale rationale = evaluation.rationale();
 
-        assertFalse(evaluation.result());
+        assertFalse(evaluation.isTrue());
         assertEquals("XOR", evaluation.name());
-        assertEquals(EXPECTED_ODD_PASSED, rationale.expected());
+        assertEquals(XorExpression.EXPECTED, rationale.expected());
         assertEquals(format(0, 0, 0), rationale.actual());
         assertCauseIsSelf(evaluation);
         assertTraces(evaluation, "XOR");
@@ -93,16 +92,16 @@ class XorExpressionTest {
 
     @Test
     void givenTwoChildren_whenEvaluate_thenTrueOnlyWhenExactlyOneIsTrue() {
-        assertFalse(xor("XOR", t("a"), t("b")).evaluate().result());
-        assertTrue(xor("XOR", t("a"), f("b")).evaluate().result());
-        assertTrue(xor("XOR", f("a"), t("b")).evaluate().result());
-        assertFalse(xor("XOR", f("a"), f("b")).evaluate().result());
+        assertFalse(xor("XOR", t("a"), t("b")).evaluate().isTrue());
+        assertTrue(xor("XOR", t("a"), f("b")).evaluate().isTrue());
+        assertTrue(xor("XOR", f("a"), t("b")).evaluate().isTrue());
+        assertFalse(xor("XOR", f("a"), f("b")).evaluate().isTrue());
     }
 
     @Test
     void givenOneChild_whenEvaluate_thenResultIsChildResult() {
-        assertTrue(xor("XOR", t("a")).evaluate().result());
-        assertFalse(xor("XOR", f("a")).evaluate().result());
+        assertTrue(xor("XOR", t("a")).evaluate().isTrue());
+        assertFalse(xor("XOR", f("a")).evaluate().isTrue());
     }
 
     @Test
@@ -110,15 +109,15 @@ class XorExpressionTest {
 
         final Evaluation evaluation = xor("XOR", t("t1"), t("t2"), t("t3")).evaluate();
 
-        assertTrue(evaluation.result());
+        assertTrue(evaluation.isTrue());
         assertEquals(format(3, 0, 0), evaluation.rationale().actual());
     }
 
     @Test
     void givenNestedXor_whenEvaluate_thenResultMatchesFlatXor() {
 
-        final boolean nested = xor("XOR", xor("XOR", t("a"), t("b")), t("c")).evaluate().result();
-        final boolean flat = xor("XOR", t("a"), t("b"), t("c")).evaluate().result();
+        final boolean nested = xor("XOR", xor("XOR", t("a"), t("b")), t("c")).evaluate().isTrue();
+        final boolean flat = xor("XOR", t("a"), t("b"), t("c")).evaluate().isTrue();
 
         assertEquals(flat, nested);
     }
@@ -132,7 +131,7 @@ class XorExpressionTest {
 
         final CompoundEvaluation evaluation = new XorExpression("XOR", List.of(first, second, third)).evaluate();
 
-        assertFalse(evaluation.result());
+        assertFalse(evaluation.isTrue());
         verify(first, times(1)).evaluate();
         verify(second, times(1)).evaluate();
         verify(third, times(1)).evaluate();
@@ -144,8 +143,8 @@ class XorExpressionTest {
 
         final Evaluation evaluation = xor("XOR", t("t1"), f("f2")).evaluate();
 
-        assertTrue(evaluation.result());
-        assertEquals(EXPECTED_ODD_PASSED, evaluation.rationale().expected());
+        assertTrue(evaluation.isTrue());
+        assertEquals(XorExpression.EXPECTED, evaluation.rationale().expected());
         assertEquals(format(1, 1, 0), evaluation.rationale().actual());
         assertCause(evaluation, child(evaluation, 0), child(evaluation, 1));
         assertTraces(evaluation, "XOR -> t1", "XOR -> f2");

@@ -36,7 +36,7 @@ public class SimpleFormatter implements Formatter {
 
         final StringBuilder builder = new StringBuilder();
 
-        if (!evaluation.result()) {
+        if (!evaluation.isTrue()) {
             appendRootCauses(evaluation, builder);
         }
 
@@ -61,7 +61,7 @@ public class SimpleFormatter implements Formatter {
             rationale.hint().ifPresent(hint -> appendField("Hint", hint, builder));
             appendField("Cause Trace", trace.toString(), builder);
 
-            if (rootCause.result()) {
+            if (rootCause.isTrue()) {
                 appendField("Notes", TRUE_ROOT_CAUSE_NOTE, builder);
             }
 
@@ -77,7 +77,7 @@ public class SimpleFormatter implements Formatter {
                                          final int depth, final StringBuilder builder) {
 
         builder.repeat(INDENT, depth)
-            .append(evaluation.result() ? "[T] " : "[F] ")
+            .append(evaluation.isTrue() ? "[T] " : "[F] ")
             .append(evaluation.name())
             .append(" (")
             .append(SimpleDurationFormatter.format(evaluation.elapsedTime()))

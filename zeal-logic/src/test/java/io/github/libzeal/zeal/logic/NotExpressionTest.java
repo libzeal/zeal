@@ -35,7 +35,7 @@ class NotExpressionTest {
         final Rationale rationale = evaluation.rationale();
         final Evaluation wrappedEvaluation = trueExpression.evaluate();
 
-        assertFalse(evaluation.result());
+        assertFalse(evaluation.isTrue());
         assertEquals(NotExpression.DEFAULT_NAME, evaluation.name());
         assertRationaleEquals(rationale, ACTUAL_VALUE_WRAPPED_FALSE, ACTUAL_VALUE_WRAPPED_TRUE);
         assertEquals(Cause.of(wrappedEvaluation), evaluation.cause());
@@ -51,7 +51,7 @@ class NotExpressionTest {
         final Rationale rationale = evaluation.rationale();
         final Evaluation wrappedEvaluation = falseExpression.evaluate();
 
-        assertTrue(evaluation.result());
+        assertTrue(evaluation.isTrue());
         assertEquals(NotExpression.DEFAULT_NAME, evaluation.name());
         assertRationaleEquals(rationale, ACTUAL_VALUE_WRAPPED_FALSE, ACTUAL_VALUE_WRAPPED_FALSE);
         assertEquals(Cause.of(wrappedEvaluation), evaluation.cause());
@@ -63,7 +63,7 @@ class NotExpressionTest {
 
         final Evaluation evaluation = not("NOT", t("t")).evaluate();
 
-        assertFalse(evaluation.result());
+        assertFalse(evaluation.isTrue());
         assertCause(evaluation, child(evaluation, 0));
         assertTraces(evaluation, "NOT -> t");
     }
@@ -73,7 +73,7 @@ class NotExpressionTest {
 
         final Evaluation evaluation = not("NOT", f("f")).evaluate();
 
-        assertTrue(evaluation.result());
+        assertTrue(evaluation.isTrue());
         assertCause(evaluation, child(evaluation, 0));
         assertTraces(evaluation, "NOT -> f");
     }
@@ -83,7 +83,7 @@ class NotExpressionTest {
 
         final Evaluation evaluation = not("NOT1", not("NOT2", f("f"))).evaluate();
 
-        assertFalse(evaluation.result());
+        assertFalse(evaluation.isTrue());
         assertTraces(evaluation, "NOT1 -> NOT2 -> f");
         assertRootCauses(evaluation, child(evaluation, 0, 0));
     }
@@ -93,7 +93,7 @@ class NotExpressionTest {
 
         final Evaluation evaluation = not("NOT", and("AND", t("t1"), t("t2"))).evaluate();
 
-        assertFalse(evaluation.result());
+        assertFalse(evaluation.isTrue());
         assertTraces(evaluation, "NOT -> AND -> t1", "NOT -> AND -> t2");
     }
 
@@ -102,7 +102,7 @@ class NotExpressionTest {
 
         final Evaluation evaluation = not("NOT", and("AND", t("t1"), f("f2"))).evaluate();
 
-        assertTrue(evaluation.result());
+        assertTrue(evaluation.isTrue());
         assertTraces(evaluation, "NOT -> AND -> f2");
     }
 
@@ -111,7 +111,7 @@ class NotExpressionTest {
 
         final Evaluation evaluation = not("NOT", or("OR", f("f1"), t("t2"))).evaluate();
 
-        assertFalse(evaluation.result());
+        assertFalse(evaluation.isTrue());
         assertTraces(evaluation, "NOT -> OR -> t2");
     }
 
@@ -120,7 +120,7 @@ class NotExpressionTest {
 
         final Evaluation evaluation = not("NOT", or("OR", f("f1"), f("f2"))).evaluate();
 
-        assertTrue(evaluation.result());
+        assertTrue(evaluation.isTrue());
         assertTraces(evaluation, "NOT -> OR -> f1", "NOT -> OR -> f2");
     }
 }

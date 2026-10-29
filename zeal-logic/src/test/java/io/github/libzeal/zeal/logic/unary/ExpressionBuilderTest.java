@@ -35,7 +35,7 @@ class ExpressionBuilderTest {
             .bind("foo")
             .evaluate();
 
-        assertTrue(evaluation.result());
+        assertTrue(evaluation.isTrue());
         assertEquals("<unnamed>", evaluation.name());
         assertEquals("<not set>", evaluation.rationale().expected());
         assertEquals("foo", evaluation.rationale().actual());
@@ -54,7 +54,7 @@ class ExpressionBuilderTest {
             .bind("subject")
             .evaluate();
 
-        assertFalse(evaluation.result());
+        assertFalse(evaluation.isTrue());
         assertEquals("someName", evaluation.name());
         assertEquals("foo", evaluation.rationale().expected());
         assertEquals("bar", evaluation.rationale().actual());
@@ -82,7 +82,7 @@ class ExpressionBuilderTest {
             .bind("abc")
             .evaluate();
 
-        assertTrue(evaluation.result());
+        assertTrue(evaluation.isTrue());
         assertEquals("3", evaluation.rationale().actual());
     }
 
@@ -95,7 +95,7 @@ class ExpressionBuilderTest {
             .bind(null)
             .evaluate();
 
-        assertFalse(evaluation.result());
+        assertFalse(evaluation.isTrue());
         assertEquals("(null)", evaluation.rationale().actual());
     }
 
@@ -108,7 +108,7 @@ class ExpressionBuilderTest {
             .bind(null)
             .evaluate();
 
-        assertTrue(evaluation.result());
+        assertTrue(evaluation.isTrue());
     }
 
     @Test

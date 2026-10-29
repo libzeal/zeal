@@ -89,13 +89,24 @@ class CompoundEvaluationTest {
         final CompoundEvaluation evaluation = CompoundEvaluation.of(EXPRESSION, false, RATIONALE, ELAPSED_TIME,
             cause, CHILDREN);
 
-        assertFalse(evaluation.result());
+        assertFalse(evaluation.isTrue());
+        assertTrue(evaluation.isFalse());
         assertEquals(NAME, evaluation.name());
         assertEquals(RATIONALE, evaluation.rationale());
         assertEquals(ELAPSED_TIME, evaluation.elapsedTime());
         assertEquals(cause, evaluation.cause());
         assertEquals(CHILDREN, evaluation.children());
         assertEquals(List.of(CHILD), evaluation.evaluated());
+    }
+
+    @Test
+    void givenTrueResult_whenOf_thenIsTrueAndNotFalse() {
+
+        final CompoundEvaluation evaluation = CompoundEvaluation.of(EXPRESSION, true, RATIONALE, ELAPSED_TIME,
+            Cause.self(), CHILDREN);
+
+        assertTrue(evaluation.isTrue());
+        assertFalse(evaluation.isFalse());
     }
 
     @Test

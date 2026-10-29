@@ -7,20 +7,30 @@ import java.time.Duration;
 import java.util.List;
 
 /**
- * An {@link Expression} that has been evaluated. An evaluated expression contains a state, the name of the evaluation
- * that was performed, and a rationale that describes how the state was reached (the rationale used to reach the
- * state).
+ * An {@link Expression} that has been evaluated. An evaluated expression
+ * contains a state, the name of the evaluation that was performed, and a
+ * rationale that describes how the state was reached (the rationale used to
+ * reach the state).
  *
  * @author Justin Albano
  */
 public sealed interface Evaluation permits TerminalEvaluation, CompoundEvaluation {
 
     /**
-     * Obtains the state of the evaluation (i.e., pass or fail).
+     * Checks whether the evaluation is true.
      *
-     * @return The state of the evaluation.
+     * @return True if the evaluation is true; false otherwise.
      */
-    boolean result();
+    boolean isTrue();
+
+    /**
+     * Checks whether the evaluation is false.
+     *
+     * @return True if the evaluation is false; false otherwise.
+     */
+    default boolean isFalse() {
+        return !isTrue();
+    }
 
     /**
      * Obtains the name of the evaluation that was preformed.
@@ -37,7 +47,8 @@ public sealed interface Evaluation permits TerminalEvaluation, CompoundEvaluatio
     Rationale rationale();
 
     /**
-     * Obtains the elapsed time the evaluation (how long the evaluation took to complete).
+     * Obtains the elapsed time the evaluation (how long the evaluation took to
+     * complete).
      *
      * @return The elapsed time of the evaluation.
      *
@@ -58,15 +69,15 @@ public sealed interface Evaluation permits TerminalEvaluation, CompoundEvaluatio
         return switch (cause()) {
             case Cause.Self() -> List.of(Cause.Trace.of(this));
             case final Cause.Delegated delegated -> delegated.traces()
-                .stream()
-                .map(trace -> trace.prepend(this))
-                .toList();
+                    .stream()
+                    .map(trace -> trace.prepend(this))
+                    .toList();
         };
     }
 
     default List<Evaluation> rootCauses() {
         return causeTraces().stream()
-            .map(Cause.Trace::rootCause)
-            .toList();
+                .map(Cause.Trace::rootCause)
+                .toList();
     }
 }

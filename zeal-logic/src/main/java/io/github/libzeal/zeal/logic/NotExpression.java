@@ -14,19 +14,21 @@ import java.util.List;
 import static java.util.Objects.requireNonNull;
 
 /**
- * An expression that negates a wrapped expression (a logical <em>not</em>).
- * This expression evaluates to true if and only if the wrapped expression is
- * false; otherwise, the expression evaluates to false.
+ * An expression whose wrapped expression is negated. The NOT expression
+ * evaluates to true only if the wrapped expression evaluates to false.
  *
  * @param name
- *     The name of the expression.
+ *         The name of the expression.
  * @param wrapped
- *     The expression to negate.
+ *         The expression to negate.
  *
  * @author Justin Albano
+ * @since 0.5.0
  */
-public record NotExpression(String name,
-                            Expression wrapped) implements CompoundExpression {
+public record NotExpression(
+        String name,
+        Expression wrapped
+) implements CompoundExpression {
 
     static final String ACTUAL_VALUE_WRAPPED_TRUE = "Wrapped: true";
     static final String ACTUAL_VALUE_WRAPPED_FALSE = "Wrapped: false";
@@ -36,12 +38,12 @@ public record NotExpression(String name,
      * Creates a new expression that negates the supplied expression.
      *
      * @param name
-     *     The name of the expression.
+     *         The name of the expression.
      * @param wrapped
-     *     The expression to negate.
+     *         The expression to negate.
      *
      * @throws NullPointerException
-     *     The supplied name or wrapped expression is {@code null}.
+     *         The supplied name or wrapped expression is {@code null}.
      */
     public NotExpression {
         requireNonNull(name);
@@ -49,16 +51,16 @@ public record NotExpression(String name,
     }
 
     /**
-     * Creates a new expression that negates the supplied expression.
+     * Creates a NOT expression with a default name.
      *
      * @param wrapped
-     *     The expression to negate.
+     *         The expression to negate.
      *
      * @return A negated expression that evaluates to the negative of the
      * supplied expression.
      *
      * @throws NullPointerException
-     *     The supplied wrapped expression is {@code null}.
+     *         The supplied wrapped expression is {@code null}.
      */
     public static NotExpression unnamed(final Expression wrapped) {
         return new NotExpression(DEFAULT_NAME, wrapped);
@@ -74,11 +76,13 @@ public record NotExpression(String name,
 
         final StopWatch stopWatch = StopWatch.started();
         final Evaluation wrappedEvaluation = wrapped.evaluate();
-        final String actualValue = wrappedEvaluation.result() ? ACTUAL_VALUE_WRAPPED_TRUE : ACTUAL_VALUE_WRAPPED_FALSE;
+        final String actualValue = wrappedEvaluation.isTrue() ? ACTUAL_VALUE_WRAPPED_TRUE : ACTUAL_VALUE_WRAPPED_FALSE;
         final Rationale rationale = new SimpleRationale(ACTUAL_VALUE_WRAPPED_FALSE, actualValue);
         final Duration elapsedTime = stopWatch.stop();
 
-        return CompoundEvaluation.of(this, !wrappedEvaluation.result(), rationale, elapsedTime,
-            Cause.of(wrappedEvaluation), List.of(new Evaluated(wrappedEvaluation)));
+        return CompoundEvaluation.of(
+                this, !wrappedEvaluation.isTrue(), rationale, elapsedTime,
+                Cause.of(wrappedEvaluation), List.of(new Evaluated(wrappedEvaluation))
+        );
     }
 }

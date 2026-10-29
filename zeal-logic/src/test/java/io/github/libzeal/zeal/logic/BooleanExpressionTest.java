@@ -14,7 +14,7 @@ class BooleanExpressionTest {
 
         final Evaluation evaluation = t("t").evaluate();
 
-        assertTrue(evaluation.result());
+        assertTrue(evaluation.isTrue());
         assertCauseIsSelf(evaluation);
         assertTraces(evaluation, "t");
         assertRootCauses(evaluation, evaluation);
@@ -25,7 +25,7 @@ class BooleanExpressionTest {
 
         final Evaluation evaluation = f("f").evaluate();
 
-        assertFalse(evaluation.result());
+        assertFalse(evaluation.isTrue());
         assertCauseIsSelf(evaluation);
         assertTraces(evaluation, "f");
         assertRootCauses(evaluation, evaluation);

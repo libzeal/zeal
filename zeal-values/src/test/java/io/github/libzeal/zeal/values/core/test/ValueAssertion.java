@@ -12,7 +12,7 @@ public class ValueAssertion<T> {
     }
 
     public void assertStateIs(boolean expected) {
-        Assertions.assertEquals(expected, eval.result(), "Result is incorrect (" + eval.name() + ")");
+        Assertions.assertEquals(expected, eval.isTrue(), "Result is incorrect (" + eval.name() + ")");
     }
 
     public void assertNameIs(String name) {
@@ -31,8 +31,8 @@ public class ValueAssertion<T> {
         Assertions.assertEquals(actual, eval.rationale().actual(), "Actual value is incorrect (" + eval.name() + ")");
     }
 
-    public void assertCompoundActualValueIs(final int passed, final int failed, final int skipped) {
-        assertActualIs("Passed: " + passed + ", Failed: " + failed + ", Skipped: " + skipped);
+    public void assertCompoundActualValueIs(final int trueCount, final int falseCount, final int skippedCount) {
+        assertActualIs("True: " + trueCount + ", False: " + falseCount + ", Skipped: " + skippedCount);
     }
 
     public void assertHintIs(final String hint) {

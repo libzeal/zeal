@@ -6,11 +6,12 @@ import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
 import java.time.Duration;
 
 /**
- * ` An expression that is always true.
+ * An expression that is always true.
  *
  * @author Justin Albano
+ * @since 0.5.0
  */
-final class Tautology implements TerminalExpression {
+public record Tautology() implements TerminalExpression {
 
     static final String NAME = "Tautology";
     private static final String TRUE = "true";
@@ -22,6 +23,11 @@ final class Tautology implements TerminalExpression {
 
     @Override
     public TerminalEvaluation evaluate() {
-        return new TerminalEvaluation(true, NAME, new SimpleRationale(TRUE, TRUE), Duration.ZERO);
+        return new TerminalEvaluation(
+                true,
+                NAME,
+                new SimpleRationale(TRUE, TRUE),
+                Duration.ZERO
+        );
     }
 }

@@ -87,7 +87,7 @@ class PredicateExpressionTest {
 
         final Evaluation evaluation = expression.evaluate();
 
-        assertTrue(evaluation.result());
+        assertTrue(evaluation.isTrue());
         assertEquals(NAME, evaluation.name());
         assertRationaleIsCorrect(evaluation.rationale());
     }
@@ -100,7 +100,7 @@ class PredicateExpressionTest {
 
         final Evaluation evaluation = expression.evaluate();
 
-        assertFalse(evaluation.result());
+        assertFalse(evaluation.isTrue());
         assertRationaleIsCorrect(evaluation.rationale());
     }
 
@@ -121,7 +121,7 @@ class PredicateExpressionTest {
 
         final Evaluation evaluation = expression.evaluate();
 
-        assertTrue(evaluation.result());
+        assertTrue(evaluation.isTrue());
         assertEquals("length = 3, subject = abc", evaluation.rationale().actual());
         assertEquals("passed", evaluation.rationale().hint().orElse(null));
     }
@@ -161,7 +161,7 @@ class PredicateExpressionTest {
 
         final Evaluation evaluation = expression.evaluate();
 
-        assertFalse(evaluation.result());
+        assertFalse(evaluation.isTrue());
         assertEquals("null", evaluation.rationale().actual());
         assertEquals(0, observations.get());
     }
@@ -174,7 +174,7 @@ class PredicateExpressionTest {
 
         final Evaluation evaluation = expression.evaluate();
 
-        assertTrue(evaluation.result());
+        assertTrue(evaluation.isTrue());
         assertRationaleIsCorrect(evaluation.rationale());
     }
 }

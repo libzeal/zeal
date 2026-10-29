@@ -13,33 +13,28 @@ import io.github.libzeal.zeal.logic.util.StopWatch;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 /**
  * A common evaluator used to evaluate {@link CompoundExpression}s.
  *
  * @author Justin Albano
+ * @since 0.5.0
  */
-enum CompoundEvaluator {
+final class CompoundEvaluator {
 
-    AND(false, false),
-    OR(true, true),
-    NAND(false, true),
-    NOR(true, false);
-
-    private static final String PASSED_PREFIX = "Passed: ";
-    private static final String FAILED_PREFIX = "Failed: ";
+    private static final String TRUE_PREFIX = "True: ";
+    private static final String FALSE_PREFIX = "False: ";
     private static final String SKIPPED_PREFIX = "Skipped: ";
     private static final String SEPARATOR = ", ";
-    static final String EXPECTED_ODD_PASSED = PASSED_PREFIX + "odd";
-    private final boolean shortCircuitResult;
-    private final boolean decidedResult;
 
-    CompoundEvaluator(final boolean shortCircuitResult, final boolean decidedResult) {
-        this.shortCircuitResult = shortCircuitResult;
-        this.decidedResult = decidedResult;
+    private CompoundEvaluator() {
     }
 
-    CompoundEvaluation evaluate(final CompoundExpression expression) {
+    static CompoundEvaluation evaluate(
+            final CompoundExpression expression, final String expected,
+            final Predicate<Evaluation> stopWhen, final Predicate<Tally> isTrue
+    ) {
 
         final StopWatch stopWatch = StopWatch.started();
         final List<SkippableEvaluation> children = new ArrayList<>();
@@ -57,51 +52,19 @@ enum CompoundEvaluator {
             children.add(new Evaluated(evaluation));
             evaluated.add(evaluation);
 
-            if (evaluation.result() == shortCircuitResult) {
+            if (stopWhen.test(evaluation)) {
                 decidedBy = Cause.of(evaluation);
             }
         }
 
         final Duration elapsedTime = stopWatch.stop();
-        final boolean result = (decidedBy != null) == decidedResult;
         final Tally tally = Tally.of(children);
-        final Rationale rationale = new SimpleRationale(
-            expected(children.size()),
-            format(tally)
+        final Rationale rationale = new SimpleRationale(expected, format(tally));
+
+        return CompoundEvaluation.of(
+                expression, isTrue.test(tally), rationale, elapsedTime,
+                cause(decidedBy, evaluated), children
         );
-
-        return CompoundEvaluation.of(expression, result, rationale, elapsedTime, cause(decidedBy, evaluated),
-            children);
-    }
-
-    private String expected(final int total) {
-        return switch (this) {
-            case AND -> formatPassed(total);
-            case OR -> formatPassed(1);
-            case NAND -> formatFailed(1);
-            case NOR -> formatFailed(total);
-        };
-    }
-
-    static CompoundEvaluation evaluateXor(final CompoundExpression expression) {
-
-        final StopWatch stopWatch = StopWatch.started();
-        final List<SkippableEvaluation> children = new ArrayList<>();
-        final List<Evaluation> evaluated = new ArrayList<>();
-
-        for (final Expression child : expression.children()) {
-
-            final Evaluation evaluation = child.evaluate();
-            children.add(new Evaluated(evaluation));
-            evaluated.add(evaluation);
-        }
-
-        final Duration elapsedTime = stopWatch.stop();
-        final Tally tally = Tally.of(children);
-        final boolean result = tally.passed() % 2 == 1;
-        final Rationale rationale = new SimpleRationale(EXPECTED_ODD_PASSED, format(tally));
-
-        return CompoundEvaluation.of(expression, result, rationale, elapsedTime, cause(null, evaluated), children);
     }
 
     private static Cause cause(final Cause.Delegated decidedBy, final List<Evaluation> evaluated) {
@@ -117,44 +80,53 @@ enum CompoundEvaluator {
         }
     }
 
-    static String formatPassed(final int passed) {
-        return PASSED_PREFIX + passed;
-    }
-
-    static String formatFailed(final int failed) {
-        return FAILED_PREFIX + failed;
-    }
-
     private static String format(final Tally tally) {
-        return format(tally.passed(), tally.failed(), tally.skipped());
+        return format(tally.trueCount(), tally.falseCount(), tally.skippedCount());
     }
 
-    static String format(final int passed, final int failed, final int skipped) {
+    static String format(final int trueCount, final int falseCount, final int skippedCount) {
 
-        final String formattedPassed = PASSED_PREFIX + passed;
-        final String formattedFailed = FAILED_PREFIX + failed;
-        final String formattedSkipped = SKIPPED_PREFIX + skipped;
+        final String formattedTrue = TRUE_PREFIX + trueCount;
+        final String formattedFalse = FALSE_PREFIX + falseCount;
+        final String formattedSkipped = SKIPPED_PREFIX + skippedCount;
 
-        return String.join(SEPARATOR, formattedPassed, formattedFailed, formattedSkipped);
+        return String.join(SEPARATOR, formattedTrue, formattedFalse, formattedSkipped);
     }
 
-    private record Tally(int passed, int failed, int skipped) {
+    record Tally(int trueCount, int falseCount, int skippedCount) {
 
-        static Tally of(final List<SkippableEvaluation> children) {
+        public static Tally of(final List<SkippableEvaluation> children) {
 
-            int passed = 0;
-            int failed = 0;
-            int skipped = 0;
+            int trueCount = 0;
+            int falseCount = 0;
+            int skippedCount = 0;
 
             for (final SkippableEvaluation child : children) {
                 switch (child) {
-                    case Evaluated(Evaluation evaluation) when evaluation.result() -> passed++;
-                    case Evaluated ignored -> failed++;
-                    case Skipped ignored -> skipped++;
+                    case Evaluated(Evaluation evaluation)
+                            when evaluation.isTrue() -> trueCount++;
+                    case Evaluated ignored -> falseCount++;
+                    case Skipped ignored -> skippedCount++;
                 }
             }
 
-            return new Tally(passed, failed, skipped);
+            return new Tally(trueCount, falseCount, skippedCount);
+        }
+
+        public boolean hasAtLeastOneTrue() {
+            return trueCount > 0;
+        }
+
+        public boolean hasAtLeastOneFalse() {
+            return falseCount > 0;
+        }
+
+        public boolean hasNoTrue() {
+            return trueCount == 0;
+        }
+
+        public boolean hasNoFalse() {
+            return falseCount == 0;
         }
     }
 }

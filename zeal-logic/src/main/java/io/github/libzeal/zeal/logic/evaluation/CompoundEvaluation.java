@@ -13,17 +13,17 @@ import static java.util.Objects.requireNonNull;
 
 public final class CompoundEvaluation implements Evaluation {
 
-    private final boolean result;
+    private final boolean isTrue;
     private final String name;
     private final Rationale rationale;
     private final Duration elapsedTime;
     private final Cause cause;
     private final List<SkippableEvaluation> children;
 
-    private CompoundEvaluation(final boolean result, final String name, final Rationale rationale,
+    private CompoundEvaluation(final boolean isTrue, final String name, final Rationale rationale,
                                final Duration elapsedTime, final Cause cause,
                                final List<SkippableEvaluation> children) {
-        this.result = result;
+        this.isTrue = isTrue;
         this.name = requireNonNull(name);
         this.rationale = requireNonNull(rationale);
         this.elapsedTime = requireNonNull(elapsedTime);
@@ -31,11 +31,11 @@ public final class CompoundEvaluation implements Evaluation {
         this.children = List.copyOf(children);
     }
 
-    public static CompoundEvaluation of(final CompoundExpression expression, final boolean result,
+    public static CompoundEvaluation of(final CompoundExpression expression, final boolean isTrue,
                                         final Rationale rationale, final Duration elapsedTime, final Cause cause,
                                         final List<SkippableEvaluation> children) {
 
-        final CompoundEvaluation evaluation = new CompoundEvaluation(result, expression.name(), rationale,
+        final CompoundEvaluation evaluation = new CompoundEvaluation(isTrue, expression.name(), rationale,
             elapsedTime, cause, children);
 
         evaluation.requireChildPerExpression(expression);
@@ -71,8 +71,8 @@ public final class CompoundEvaluation implements Evaluation {
     }
 
     @Override
-    public boolean result() {
-        return result;
+    public boolean isTrue() {
+        return isTrue;
     }
 
     @Override
@@ -113,7 +113,7 @@ public final class CompoundEvaluation implements Evaluation {
         if (this == o) return true;
         if (!(o instanceof final CompoundEvaluation that)) return false;
 
-        return result == that.result &&
+        return isTrue == that.isTrue &&
             name.equals(that.name) &&
             rationale.equals(that.rationale) &&
             elapsedTime.equals(that.elapsedTime) &&
@@ -123,13 +123,13 @@ public final class CompoundEvaluation implements Evaluation {
 
     @Override
     public int hashCode() {
-        return Objects.hash(result, name, rationale, elapsedTime, cause, children);
+        return Objects.hash(isTrue, name, rationale, elapsedTime, cause, children);
     }
 
     @Override
     public String toString() {
         return "CompoundEvaluation[" +
-            "result=" + result +
+            "isTrue=" + isTrue +
             ", name=" + name +
             ", rationale=" + rationale +
             ", elapsedTime=" + elapsedTime +

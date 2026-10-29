@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static io.github.libzeal.zeal.logic.CompoundEvaluator.format;
-import static io.github.libzeal.zeal.logic.CompoundEvaluator.formatPassed;
 import static io.github.libzeal.zeal.logic.test.Arguments.listWithSingleNull;
 import static io.github.libzeal.zeal.logic.test.CauseAssertions.*;
 import static io.github.libzeal.zeal.logic.test.NamedExpressions.*;
@@ -109,9 +108,9 @@ class OrExpressionTest {
         final Evaluation evaluation = expression.evaluate();
         final Rationale rationale = evaluation.rationale();
 
-        assertFalse(evaluation.result());
+        assertFalse(evaluation.isTrue());
         assertEquals(name, evaluation.name());
-        assertEquals(formatPassed(1), rationale.expected());
+        assertEquals(OrExpression.EXPECTED, rationale.expected());
         assertEquals(format(0, 0, 0), rationale.actual());
         assertFalse(rationale.hint().isPresent());
     }
@@ -124,9 +123,9 @@ class OrExpressionTest {
         final Evaluation evaluation = new OrExpression(name, List.of(subPredicate)).evaluate();
         final Rationale rationale = evaluation.rationale();
 
-        assertTrue(evaluation.result());
+        assertTrue(evaluation.isTrue());
         assertEquals(name, evaluation.name());
-        assertEquals(formatPassed(1), rationale.expected());
+        assertEquals(OrExpression.EXPECTED, rationale.expected());
         assertEquals(format(1, 0, 0), rationale.actual());
         assertFalse(rationale.hint().isPresent());
     }
@@ -139,9 +138,9 @@ class OrExpressionTest {
         final Evaluation evaluation = new OrExpression(name, List.of(subPredicate)).evaluate();
         final Rationale rationale = evaluation.rationale();
 
-        assertFalse(evaluation.result());
+        assertFalse(evaluation.isTrue());
         assertEquals(name, evaluation.name());
-        assertEquals(formatPassed(1), rationale.expected());
+        assertEquals(OrExpression.EXPECTED, rationale.expected());
         assertEquals(format(0, 1, 0), rationale.actual());
         assertFalse(rationale.hint().isPresent());
     }
@@ -156,9 +155,9 @@ class OrExpressionTest {
         final Evaluation evaluation = new OrExpression(name, children).evaluate();
         final Rationale rationale = evaluation.rationale();
 
-        assertTrue(evaluation.result());
+        assertTrue(evaluation.isTrue());
         assertEquals(name, evaluation.name());
-        assertEquals(formatPassed(1), rationale.expected());
+        assertEquals(OrExpression.EXPECTED, rationale.expected());
         assertEquals(format(1, 1, 0), rationale.actual());
         assertFalse(rationale.hint().isPresent());
         assertIsNotSkipped(failingSubPredicate);
@@ -182,9 +181,9 @@ class OrExpressionTest {
         final Evaluation evaluation = new OrExpression(name, children).evaluate();
         final Rationale rationale = evaluation.rationale();
 
-        assertTrue(evaluation.result());
+        assertTrue(evaluation.isTrue());
         assertEquals(name, evaluation.name());
-        assertEquals(formatPassed(1), rationale.expected());
+        assertEquals(OrExpression.EXPECTED, rationale.expected());
         assertEquals(format(1, 0, 1), rationale.actual());
         assertFalse(rationale.hint().isPresent());
         assertIsSkipped(failingSubPredicate);
@@ -220,7 +219,7 @@ class OrExpressionTest {
 
         final Evaluation evaluation = or("OR").evaluate();
 
-        assertFalse(evaluation.result());
+        assertFalse(evaluation.isTrue());
         assertCauseIsSelf(evaluation);
         assertTraces(evaluation, "OR");
     }
@@ -230,7 +229,7 @@ class OrExpressionTest {
 
         final Evaluation evaluation = or("OR", f("f1"), f("f2")).evaluate();
 
-        assertFalse(evaluation.result());
+        assertFalse(evaluation.isTrue());
         assertCause(evaluation, child(evaluation, 0), child(evaluation, 1));
         assertTraces(evaluation, "OR -> f1", "OR -> f2");
         assertRootCauses(evaluation, child(evaluation, 0), child(evaluation, 1));
@@ -243,7 +242,7 @@ class OrExpressionTest {
         final Evaluation t2 = child(evaluation, 1);
         final Skipped f3 = skipped(evaluation, 2);
 
-        assertTrue(evaluation.result());
+        assertTrue(evaluation.isTrue());
         assertCause(evaluation, t2);
         assertTraces(evaluation, "OR -> t2");
 
@@ -257,7 +256,7 @@ class OrExpressionTest {
 
         final Evaluation evaluation = or("OR", f("f1"), t("t2")).evaluate();
 
-        assertTrue(evaluation.result());
+        assertTrue(evaluation.isTrue());
         assertCause(evaluation, child(evaluation, 1));
         assertTraces(evaluation, "OR -> t2");
     }
@@ -271,7 +270,7 @@ class OrExpressionTest {
             and("AND2", t("t3"), t("t4"))
         ).evaluate();
 
-        assertTrue(evaluation.result());
+        assertTrue(evaluation.isTrue());
         assertTraces(evaluation, "OR -> AND2 -> t3", "OR -> AND2 -> t4");
     }
 
@@ -281,7 +280,7 @@ class OrExpressionTest {
         final Evaluation evaluation = or("OR", and("AND", t("t1"), t("t2")), f("f3")).evaluate();
         final Skipped f3 = skipped(evaluation, 1);
 
-        assertTrue(evaluation.result());
+        assertTrue(evaluation.isTrue());
         assertTraces(evaluation, "OR -> AND -> t1", "OR -> AND -> t2");
 
         assertCause(f3, child(evaluation, 0));
