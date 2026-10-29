@@ -1,6 +1,6 @@
 package io.github.libzeal.zeal.logic;
 
-import io.github.libzeal.zeal.logic.evaluation.Cause;
+import io.github.libzeal.zeal.logic.evaluation.DirectCause;
 import io.github.libzeal.zeal.logic.evaluation.CompoundEvaluation;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.evaluation.SkippableEvaluation.Evaluated;
@@ -38,7 +38,7 @@ class NotExpressionTest {
         assertFalse(evaluation.isTrue());
         assertEquals(NotExpression.DEFAULT_NAME, evaluation.name());
         assertRationaleEquals(rationale, ACTUAL_VALUE_WRAPPED_FALSE, ACTUAL_VALUE_WRAPPED_TRUE);
-        assertEquals(Cause.of(wrappedEvaluation), evaluation.cause());
+        assertEquals(DirectCause.of(wrappedEvaluation), evaluation.cause().direct());
         assertEquals(List.of(new Evaluated(wrappedEvaluation)), ((CompoundEvaluation) evaluation).children());
     }
 
@@ -54,7 +54,7 @@ class NotExpressionTest {
         assertTrue(evaluation.isTrue());
         assertEquals(NotExpression.DEFAULT_NAME, evaluation.name());
         assertRationaleEquals(rationale, ACTUAL_VALUE_WRAPPED_FALSE, ACTUAL_VALUE_WRAPPED_FALSE);
-        assertEquals(Cause.of(wrappedEvaluation), evaluation.cause());
+        assertEquals(DirectCause.of(wrappedEvaluation), evaluation.cause().direct());
         assertEquals(List.of(new Evaluated(wrappedEvaluation)), ((CompoundEvaluation) evaluation).children());
     }
 

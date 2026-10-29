@@ -16,15 +16,6 @@ public class StopWatch {
     }
 
     /**
-     * Creates a stop watch that is not started.
-     *
-     * @return A new unstarted stop watch.
-     */
-    public static StopWatch unstarted() {
-        return new StopWatch();
-    }
-
-    /**
      * Creates a stop watch that is started.
      *
      * @return A new started stop watch.
@@ -44,7 +35,8 @@ public class StopWatch {
     }
 
     /**
-     * Stops the stop watch and returns the time elapsed since the last time {@link StopWatch#started()}.
+     * Stops the stop watch and returns the time elapsed since the last time
+     * {@link StopWatch#started()}.
      *
      * @return The time elapsed since the stop watch was started.
      */

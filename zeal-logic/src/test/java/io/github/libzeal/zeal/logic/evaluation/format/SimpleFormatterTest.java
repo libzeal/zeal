@@ -2,7 +2,7 @@ package io.github.libzeal.zeal.logic.evaluation.format;
 
 import io.github.libzeal.zeal.logic.AndExpression;
 import io.github.libzeal.zeal.logic.Expression;
-import io.github.libzeal.zeal.logic.evaluation.Cause;
+import io.github.libzeal.zeal.logic.evaluation.DirectCause;
 import io.github.libzeal.zeal.logic.evaluation.CompoundEvaluation;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.evaluation.SkippableEvaluation;
@@ -90,7 +90,7 @@ class SimpleFormatterTest {
             childElapsedTime);
 
         final Duration parentElapsedTime = Duration.ofMillis(20);
-        final Evaluation parentEvaluation = parent(parentElapsedTime, Cause.of(childEvaluation), childEvaluation);
+        final Evaluation parentEvaluation = parent(parentElapsedTime, DirectCause.of(childEvaluation), childEvaluation);
 
         final String expected =
             ROOT_CAUSES_HEADING +
@@ -118,7 +118,7 @@ class SimpleFormatterTest {
             childElapsedTime);
 
         final Duration parentElapsedTime = Duration.ofMillis(20);
-        final Evaluation parentEvaluation = parent(parentElapsedTime, Cause.of(childEvaluation), childEvaluation);
+        final Evaluation parentEvaluation = parent(parentElapsedTime, DirectCause.of(childEvaluation), childEvaluation);
 
         final String expected =
             ROOT_CAUSES_HEADING +
@@ -148,7 +148,7 @@ class SimpleFormatterTest {
         final Evaluation second = new TerminalEvaluation(false, "second", secondRationale, childElapsedTime);
 
         final Duration parentElapsedTime = Duration.ofMillis(20);
-        final Evaluation parentEvaluation = parent(parentElapsedTime, Cause.of(List.of(first, second)), first,
+        final Evaluation parentEvaluation = parent(parentElapsedTime, DirectCause.of(List.of(first, second)), first,
             second);
 
         final String expected =
@@ -180,10 +180,10 @@ class SimpleFormatterTest {
         final Duration childElapsedTime = Duration.ofMillis(10);
         final Rationale rationale = new SimpleRationale("someExpected", "someActual");
         final Evaluation decider = new TerminalEvaluation(false, "decider", rationale, childElapsedTime);
-        final Skipped skipped = new Skipped(t("skipped"), Cause.of(decider));
+        final Skipped skipped = new Skipped(t("skipped"), DirectCause.of(decider));
 
         final Duration parentElapsedTime = Duration.ofMillis(20);
-        final Evaluation parentEvaluation = parentOf(parentElapsedTime, Cause.of(decider), new Evaluated(decider),
+        final Evaluation parentEvaluation = parentOf(parentElapsedTime, DirectCause.of(decider), new Evaluated(decider),
             skipped);
 
         final String expected =
@@ -208,8 +208,8 @@ class SimpleFormatterTest {
 
         final Rationale rationale = new SimpleRationale("someExpected", "someActual");
         final Evaluation decider = new TerminalEvaluation(false, "decider", rationale, Duration.ofMillis(10));
-        final Skipped skipped = new Skipped(or("OR", t("t1"), not("NOT", t("t2"))), Cause.of(decider));
-        final Evaluation parentEvaluation = parentOf(Duration.ofMillis(20), Cause.of(decider),
+        final Skipped skipped = new Skipped(or("OR", t("t1"), not("NOT", t("t2"))), DirectCause.of(decider));
+        final Evaluation parentEvaluation = parentOf(Duration.ofMillis(20), DirectCause.of(decider),
             new Evaluated(decider), skipped);
 
         final String expected =
@@ -232,13 +232,13 @@ class SimpleFormatterTest {
         assertEquals(expected, result);
     }
 
-    private static Evaluation parent(final Duration elapsedTime, final Cause cause, final Evaluation... children) {
+    private static Evaluation parent(final Duration elapsedTime, final DirectCause cause, final Evaluation... children) {
         return parentOf(elapsedTime, cause, Arrays.stream(children)
             .map(Evaluated::new)
             .toArray(SkippableEvaluation[]::new));
     }
 
-    private static Evaluation parentOf(final Duration elapsedTime, final Cause cause,
+    private static Evaluation parentOf(final Duration elapsedTime, final DirectCause cause,
                                        final SkippableEvaluation... children) {
 
         final Rationale rationale = new SimpleRationale("someExpectedParent", "someActualParent", "someHintParent");

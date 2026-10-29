@@ -1,13 +1,12 @@
 package io.github.libzeal.zeal.logic.evaluation.format;
 
-import io.github.libzeal.zeal.logic.evaluation.format.SimpleDurationFormatter;
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class SimpleDurationFormatterTest {
+class DurationFormatterTest {
 
     @Test
     void givenNullDuration_whenFormat_thenEmptyStringReturned() {
@@ -23,17 +22,17 @@ class SimpleDurationFormatterTest {
     }
 
     private String format(final Duration duration) {
-        return SimpleDurationFormatter.format(duration);
+        return DurationFormatter.format(duration);
     }
 
     @Test
     void givenOneHourWithCarry_whenFormat_thenCorrectFormatIsCorrect() {
 
         final Duration duration = Duration.ofHours(1)
-            .plus(Duration.ofMinutes(1))
-            .plus(Duration.ofSeconds(1))
-            .plus(Duration.ofMillis(1))
-            .plus(Duration.ofNanos(1001));
+                .plus(Duration.ofMinutes(1))
+                .plus(Duration.ofSeconds(1))
+                .plus(Duration.ofMillis(1))
+                .plus(Duration.ofNanos(1001));
 
         assertEquals("1h 1m 1s", format(duration));
     }
@@ -50,9 +49,9 @@ class SimpleDurationFormatterTest {
     void givenOneMinuteWithCarry_whenFormat_thenCorrectFormatIsCorrect() {
 
         final Duration duration = Duration.ofMinutes(1)
-            .plus(Duration.ofSeconds(1))
-            .plus(Duration.ofMillis(1))
-            .plus(Duration.ofNanos(1001));
+                .plus(Duration.ofSeconds(1))
+                .plus(Duration.ofMillis(1))
+                .plus(Duration.ofNanos(1001));
 
         assertEquals("1m 1s", format(duration));
     }
@@ -69,8 +68,8 @@ class SimpleDurationFormatterTest {
     void givenOneSecondWithCarry_whenFormat_thenCorrectFormatIsCorrect() {
 
         final Duration duration = Duration.ofSeconds(1)
-            .plus(Duration.ofMillis(1))
-            .plus(Duration.ofNanos(1001));
+                .plus(Duration.ofMillis(1))
+                .plus(Duration.ofNanos(1001));
 
         assertEquals("1s 1ms", format(duration));
     }
@@ -87,7 +86,7 @@ class SimpleDurationFormatterTest {
     void givenOneMillisecondWithCarry_whenFormat_thenCorrectFormatIsCorrect() {
 
         final Duration duration = Duration.ofMillis(1)
-            .plus(Duration.ofNanos(1001));
+                .plus(Duration.ofNanos(1001));
 
         assertEquals("1ms 1us 1ns", format(duration));
     }

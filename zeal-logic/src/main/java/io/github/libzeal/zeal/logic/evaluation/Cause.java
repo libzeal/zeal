@@ -1,138 +1,90 @@
 package io.github.libzeal.zeal.logic.evaluation;
 
+import io.github.libzeal.zeal.logic.evaluation.DirectCause.Delegated;
+import io.github.libzeal.zeal.logic.evaluation.DirectCause.Self;
+
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.util.Objects.requireNonNull;
+
 /**
- * The evaluation that determines the result of an evaluation. For example, if
- * compound evaluation is false, the cause would be the child that caused the
- * compound evaluation to be false.
+ * The causal information for an evaluation that represents the logic that
+ * caused the evaluation result. This information includes the direct cause of
+ * the evaluation, the root causes, and the traces that show the chain of
+ * evaluations that led to the result of the evaluation.
  *
- * @author Justin Albano
- * @since 0.5.0
+ * @param evaluation
+ *         The evaluation associated with this cause.
+ * @param direct
+ *         The direct cause of the evaluation.
  */
-public sealed interface Cause {
+public record Cause(Evaluation evaluation, DirectCause direct) {
 
     /**
-     * Creates a self-referential cause. This is used for evaluations whose
-     * cause was determined by the evaluation only and is common with terminal
-     * evaluations.
-     *
-     * @return A self-referential cause.
-     */
-    static Cause self() {
-        return new Self();
-    }
-
-    /**
-     * Creates a delegated cause, where one evaluation references another
-     * evaluation as its cause. This common with compound evaluations and
-     * skipped expressions.
+     * Creates a new cause.
      *
      * @param evaluation
-     *         The referenced evaluation (the delegated cause).
-     *
-     * @return A deleted cause that references the supplied evaluation.
-     *
-     * @throws NullPointerException
-     *         The supplied evaluation is {@code null}.
-     */
-    static Delegated of(final Evaluation evaluation) {
-        return new Delegated(List.of(evaluation));
-    }
-
-    /**
-     * Creates a delegated cause, where one evaluation references the supplied
-     * evaluations as its causes. This common with compound evaluations and
-     * skipped expressions.
-     *
-     * @param evaluations
-     *         The referenced evaluations (the delegated causes).
-     *
-     * @return A deleted cause that references the supplied evaluations.
+     *         The evaluation associated with this cause.
+     * @param direct
+     *         The direct cause of the evaluation.
      *
      * @throws NullPointerException
-     *         The supplied evaluations is {@code null} or any of the
-     *         evaluations in the supplied list are {@code null}.
+     *         The supplied evaluation or direct cause are {@code null}.
      */
-    static Delegated of(final List<Evaluation> evaluations) {
-        return new Delegated(evaluations);
+    public Cause {
+        requireNonNull(evaluation);
+        requireNonNull(direct);
     }
 
     /**
-     * A self-referential cause, where an evaluation is determined only by
-     * itself. This is common with terminal evaluations.
-     */
-    record Self() implements Cause {
-    }
-
-    /**
-     * A cause that references one or more delegated evaluations.
+     * The traces from the original evaluation, through the chain of causation,
+     * to the root cause of the evaluation. For example, if evaluation A is
+     * caused by B and B is caused by C, the trace would be A -> B -> C.
+     * <p>
+     * A new trace is created for each path through the causation tree. For
+     * example, if the causation tree is [A -> B, B -> C, B -> D], two traces
+     * will be included:
+     * <ol>
+     *     <li>A -> B -> C</li>
+     *     <li>A -> B -> D</li>
+     * </ol>
+     * Likewise, an evaluation with a {@link Self} direct cause will have a
+     * single trace with the evaluation itself as the only evaluation in the
+     * trace.
      *
-     * @param evaluations
-     *         The referenced evaluations.
+     * @return The traces associated with the cause.
      */
-    record Delegated(List<Evaluation> evaluations) implements Cause {
+    public List<Trace> traces() {
+        return switch (direct) {
+            case DirectCause.Self() -> List.of(Trace.of(evaluation));
+            case final DirectCause.Delegated delegated ->
+                    delegated.evaluations()
+                            .stream()
+                            .flatMap(delegate -> delegate.cause().traces().stream())
+                            .map(trace -> trace.prepend(evaluation))
+                            .toList();
+        };
+    }
 
-        /**
-         * Creates a new delegated cause.
-         *
-         * @param evaluations
-         *         The reference evaluations (delegated causes).
-         *
-         * @throws NullPointerException
-         *         The supplied evaluations is {@code null} or any of the
-         *         evaluations in the supplied list are {@code null}.
-         * @throws IllegalArgumentException
-         *         The supplied evaluations list is empty.
-         */
-        public Delegated {
-            if (evaluations.isEmpty()) {
-                throw new IllegalArgumentException("A delegated cause requires at least one evaluation");
-            }
-
-            evaluations = List.copyOf(evaluations);
-        }
-
-        /**
-         * The traces from the original evaluation, through the chain of
-         * causation, to the root cause of the evaluation. For example, if
-         * evaluation A is caused by B and B is caused by C, the trace would be
-         * A -> B -> C.
-         * <p>
-         * A new trace is created for each path through the causation tree. For
-         * example, if the causation tree is [A -> B, B -> C, B -> D], two
-         * traces will be included:
-         * <ol>
-         *     <li>A -> B -> C</li>
-         *     <li>A -> B -> D</li>
-         * </ol>
-         *
-         * @return The traces associated with the cause.
-         */
-        public List<Trace> traces() {
-            return evaluations.stream()
-                    .flatMap(evaluation -> evaluation.causeTraces().stream())
-                    .toList();
-        }
-
-        /**
-         * The root cause of the evaluation. The root cause is determined by
-         * following the delegated cause to its terminal cause. For example, if
-         * the causation tree looks like A -> B -> C, then C is the root cause.
-         * <p>
-         * Note that more than one evaluation can be a root cause. For example,
-         * if the causation tree is [A -> B, B -> C, B -> D], then the root
-         * causes will be [C, D].
-         *
-         * @return The
-         */
-        public List<Evaluation> rootCauses() {
-            return traces().stream()
-                    .map(Trace::rootCause)
-                    .toList();
-        }
+    /**
+     * The root cause of the evaluation. For {@link Self} direct causes, the
+     * root cause is the evaluation itself. For {@link Delegated} direct causes,
+     * the root cause is determined by following the delegated cause to its
+     * terminal cause. For example, if the causation tree looks like A -> B ->
+     * C, then C is the root cause.
+     * <p>
+     * Note that more than one evaluation can be a root cause. For example, if
+     * the causation tree is [A -> B, B -> C, B -> D], then the root causes will
+     * be [C, D].
+     *
+     * @return The evaluations that represent the root causes of the evaluation.
+     */
+    public List<Evaluation> rootCauses() {
+        return traces().stream()
+                .map(Trace::rootCause)
+                .toList();
     }
 
     /**
@@ -156,7 +108,7 @@ public sealed interface Cause {
      * @author Justin Albano
      * @since 0.5.0
      */
-    record Trace(List<Evaluation> evaluations) {
+    public record Trace(List<Evaluation> evaluations) {
 
         /**
          * Creates a new trace.
@@ -171,6 +123,7 @@ public sealed interface Cause {
          *         The supplied evaluation list is empty.
          */
         public Trace {
+
             if (evaluations.isEmpty()) {
                 throw new IllegalArgumentException("A cause trace requires at least one evaluation");
             }
@@ -197,10 +150,10 @@ public sealed interface Cause {
         /**
          * Creates a new trace with the supplied evaluation prepended to the
          * beginning of this trace. For example, if the current trace is B -> C
-         * and A is appended, a new trace of A -> B -> C will be returned.
+         * and A is prepended, a new trace of A -> B -> C will be returned.
          *
          * @param evaluation
-         *         The evaluation to append.
+         *         The evaluation to prepend.
          *
          * @return A new trace with the supplied evaluation prepended.
          *
@@ -208,7 +161,11 @@ public sealed interface Cause {
          *         The supplied evaluation is {@code null}.
          */
         Trace prepend(final Evaluation evaluation) {
-            return new Trace(Stream.concat(Stream.of(evaluation), evaluations.stream()).toList());
+
+            final Stream<Evaluation> stream = Stream.concat(Stream.of(evaluation), this.evaluations.stream());
+            final List<Evaluation> evaluations = stream.toList();
+
+            return new Trace(evaluations);
         }
 
         /**

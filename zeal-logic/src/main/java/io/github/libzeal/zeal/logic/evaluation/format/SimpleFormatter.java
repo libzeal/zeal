@@ -13,15 +13,15 @@ import io.github.libzeal.zeal.logic.rationale.Rationale;
 import java.util.List;
 
 /**
- * A simple formatter that provides information about the root cause of a failed evaluation, as well as a tree-based
- * view of the evaluation.
+ * A simple formatter that provides information about the root cause of a failed
+ * evaluation, as well as a tree-based view of the evaluation.
  *
  * @author Justin Albano
  */
 public class SimpleFormatter implements Formatter {
 
     static final String TRUE_ROOT_CAUSE_NOTE = "A true expression may be a root cause if it belongs to a negated " +
-        "expression, such as NOT, NAND, or NOR";
+            "expression, such as NOT, NAND, or NOR";
     private static final String INDENT = "    ";
     private static final String FIELD_FORMAT = "%-11s : %s\n";
 
@@ -41,7 +41,7 @@ public class SimpleFormatter implements Formatter {
         }
 
         builder.append("Evaluation:\n");
-        appendEvaluation(evaluation, evaluation.rootCauses(), 0, builder);
+        appendEvaluation(evaluation, evaluation.cause().rootCauses(), 0, builder);
 
         return builder.toString().trim();
     }
@@ -50,7 +50,7 @@ public class SimpleFormatter implements Formatter {
 
         builder.append("Root Causes:\n");
 
-        for (final Cause.Trace trace : evaluation.causeTraces()) {
+        for (final Cause.Trace trace : evaluation.cause().traces()) {
 
             final Evaluation rootCause = trace.rootCause();
             final Rationale rationale = rootCause.rationale();
@@ -73,15 +73,17 @@ public class SimpleFormatter implements Formatter {
         builder.append(String.format(FIELD_FORMAT, key, value));
     }
 
-    private static void appendEvaluation(final Evaluation evaluation, final List<Evaluation> rootCauses,
-                                         final int depth, final StringBuilder builder) {
+    private static void appendEvaluation(
+            final Evaluation evaluation, final List<Evaluation> rootCauses,
+            final int depth, final StringBuilder builder
+    ) {
 
         builder.repeat(INDENT, depth)
-            .append(evaluation.isTrue() ? "[T] " : "[F] ")
-            .append(evaluation.name())
-            .append(" (")
-            .append(SimpleDurationFormatter.format(evaluation.elapsedTime()))
-            .append(")");
+                .append(evaluation.isTrue() ? "[T] " : "[F] ")
+                .append(evaluation.name())
+                .append(" (")
+                .append(DurationFormatter.format(evaluation.duration()))
+                .append(")");
 
         if (rootCauses.stream().anyMatch(rootCause -> rootCause == evaluation)) {
             builder.append("  <---[ Root Cause ]");
@@ -92,8 +94,10 @@ public class SimpleFormatter implements Formatter {
         if (evaluation instanceof final CompoundEvaluation compound) {
             for (final SkippableEvaluation child : compound.children()) {
                 switch (child) {
-                    case Evaluated(Evaluation evaluated) -> appendEvaluation(evaluated, rootCauses, depth + 1, builder);
-                    case Skipped skipped -> appendSkipped(skipped.expression(), depth + 1, builder);
+                    case Evaluated(Evaluation evaluated) ->
+                            appendEvaluation(evaluated, rootCauses, depth + 1, builder);
+                    case Skipped skipped ->
+                            appendSkipped(skipped.expression(), depth + 1, builder);
                 }
             }
         }
@@ -102,9 +106,9 @@ public class SimpleFormatter implements Formatter {
     private static void appendSkipped(final Expression expression, final int depth, final StringBuilder builder) {
 
         builder.repeat(INDENT, depth)
-            .append("[ ] ")
-            .append(expression.name())
-            .append("\n");
+                .append("[ ] ")
+                .append(expression.name())
+                .append("\n");
 
         if (expression instanceof final CompoundExpression compound) {
             for (final Expression child : compound.children()) {

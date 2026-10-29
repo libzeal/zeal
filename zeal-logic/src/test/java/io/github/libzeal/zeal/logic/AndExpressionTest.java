@@ -324,7 +324,7 @@ class AndExpressionTest {
 
         assertFalse(evaluation.isTrue());
         assertTraces(evaluation, "AND -> NOT -> OR -> t2");
-        assertTrue(evaluation.rootCauses().getFirst().isTrue());
+        assertTrue(evaluation.cause().rootCauses().getFirst().isTrue());
         assertTraces(t3, "NOT -> OR -> t2");
     }
 

@@ -10,6 +10,40 @@ import static org.junit.jupiter.api.Assertions.*;
 class BooleanExpressionTest {
 
     @Test
+    void givenNullName_whenConstruct_thenExceptionThrown() {
+        assertThrows(
+                NullPointerException.class,
+                () -> new BooleanExpression(null, () -> true)
+        );
+    }
+
+    @Test
+    void givenNullSupplier_whenConstruct_thenExceptionThrown() {
+        assertThrows(
+                NullPointerException.class,
+                () -> new BooleanExpression("foo", null)
+        );
+    }
+
+    @Test
+    void givenNullSupplier_whenConstructWithDefaultName_thenExceptionThrown() {
+        assertThrows(
+                NullPointerException.class,
+                () -> new BooleanExpression(null)
+        );
+    }
+
+    @Test
+    void givenValidSupplier_whenConstructWithDefaultName_thenNameIsDefault() {
+        assertEquals(Expression.DEFAULT_NAME, new BooleanExpression(() -> true).name());
+    }
+
+    @Test
+    void givenName_whenName_thenNameIsCorrect() {
+        assertEquals("foo", new BooleanExpression("foo", () -> true).name());
+    }
+
+    @Test
     void givenTrueTerminal_whenEvaluate_thenCauseIsSelf() {
 
         final Evaluation evaluation = t("t").evaluate();

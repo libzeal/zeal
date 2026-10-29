@@ -1,6 +1,6 @@
 package io.github.libzeal.zeal.logic;
 
-import io.github.libzeal.zeal.logic.evaluation.Cause;
+import io.github.libzeal.zeal.logic.evaluation.DirectCause;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,7 +36,7 @@ class TautologyTest {
         assertTrue(evaluation.isTrue());
         assertEquals(Tautology.NAME, evaluation.name());
         assertRationaleEquals(rationale, TRUE, TRUE);
-        assertEquals(Cause.self(), evaluation.cause());
+        assertEquals(DirectCause.self(), evaluation.cause().direct());
         assertDepthFirstTraversalIsTerminal(evaluation);
     }
 

@@ -17,24 +17,24 @@ class TerminalEvaluationTest {
     @Test
     void givenNullName_whenConstruct_thenExceptionThrown() {
         assertThrows(
-            NullPointerException.class,
-            () -> new TerminalEvaluation(true, null, RATIONALE, ELAPSED_TIME)
+                NullPointerException.class,
+                () -> new TerminalEvaluation(true, null, RATIONALE, ELAPSED_TIME)
         );
     }
 
     @Test
     void givenNullRationale_whenConstruct_thenExceptionThrown() {
         assertThrows(
-            NullPointerException.class,
-            () -> new TerminalEvaluation(true, NAME, null, ELAPSED_TIME)
+                NullPointerException.class,
+                () -> new TerminalEvaluation(true, NAME, null, ELAPSED_TIME)
         );
     }
 
     @Test
-    void givenNullElapsedTime_whenConstruct_thenExceptionThrown() {
+    void givenNullDuration_whenConstruct_thenExceptionThrown() {
         assertThrows(
-            NullPointerException.class,
-            () -> new TerminalEvaluation(true, NAME, RATIONALE, null)
+                NullPointerException.class,
+                () -> new TerminalEvaluation(true, NAME, RATIONALE, null)
         );
     }
 
@@ -47,8 +47,8 @@ class TerminalEvaluationTest {
         assertFalse(evaluation.isFalse());
         assertEquals(NAME, evaluation.name());
         assertEquals(RATIONALE, evaluation.rationale());
-        assertEquals(ELAPSED_TIME, evaluation.elapsedTime());
-        assertEquals(Cause.self(), evaluation.cause());
+        assertEquals(ELAPSED_TIME, evaluation.duration());
+        assertEquals(DirectCause.self(), evaluation.cause().direct());
     }
 
     @Test
@@ -58,7 +58,7 @@ class TerminalEvaluationTest {
 
         assertFalse(evaluation.isTrue());
         assertTrue(evaluation.isFalse());
-        assertEquals(Cause.self(), evaluation.cause());
+        assertEquals(DirectCause.self(), evaluation.cause().direct());
     }
 
     @Test

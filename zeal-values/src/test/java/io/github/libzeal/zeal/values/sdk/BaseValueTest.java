@@ -74,7 +74,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
         firstAssertion.assertStateIs(false);
         firstAssertion.assertNameIs("isNotNull");
         assertEquals("isNull", second.name());
-        assertEquals(List.of(first.evaluation()), second.cause().evaluations());
+        assertEquals(List.of(first.evaluation()), second.directCause().evaluations());
     }
 
     // ---- nullity ----

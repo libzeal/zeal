@@ -4,13 +4,18 @@ import io.github.libzeal.zeal.logic.Expression;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
 
 import java.time.Duration;
-import java.util.List;
 
 /**
- * An {@link Expression} that has been evaluated. An evaluated expression
- * contains a state, the name of the evaluation that was performed, and a
- * rationale that describes how the state was reached (the rationale used to
- * reach the state).
+ * An {@link Expression} that has been evaluated. An evaluation contains:
+ * <ul>
+ *     <li>A boolean result {@link #isTrue()}</li>
+ *     <li>The name of the evaluation (commonly the name of the expression that
+ *     was evaluated</li>
+ *     <li>A rationale that describes the expected and actual values of the
+ *     evaluation</li>
+ *     <li>The cause of the evaluation (that describes the evaluations that led
+ *     to the true or false value of this evaluation)</li>
+ * </ul>
  *
  * @author Justin Albano
  */
@@ -47,14 +52,14 @@ public sealed interface Evaluation permits TerminalEvaluation, CompoundEvaluatio
     Rationale rationale();
 
     /**
-     * Obtains the elapsed time the evaluation (how long the evaluation took to
+     * Obtains the duration the evaluation (how long the evaluation took to
      * complete).
      *
-     * @return The elapsed time of the evaluation.
+     * @return The duration of the evaluation.
      *
      * @since 0.2.1
      */
-    Duration elapsedTime();
+    Duration duration();
 
     /**
      * Obtains the cause of the evaluation.
@@ -64,20 +69,4 @@ public sealed interface Evaluation permits TerminalEvaluation, CompoundEvaluatio
      * @since 0.2.1
      */
     Cause cause();
-
-    default List<Cause.Trace> causeTraces() {
-        return switch (cause()) {
-            case Cause.Self() -> List.of(Cause.Trace.of(this));
-            case final Cause.Delegated delegated -> delegated.traces()
-                    .stream()
-                    .map(trace -> trace.prepend(this))
-                    .toList();
-        };
-    }
-
-    default List<Evaluation> rootCauses() {
-        return causeTraces().stream()
-                .map(Cause.Trace::rootCause)
-                .toList();
-    }
 }

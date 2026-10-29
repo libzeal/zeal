@@ -4,7 +4,7 @@ import io.github.libzeal.zeal.logic.AndExpression;
 import io.github.libzeal.zeal.logic.BooleanExpression;
 import io.github.libzeal.zeal.logic.Expression;
 import io.github.libzeal.zeal.logic.TerminalExpression;
-import io.github.libzeal.zeal.logic.evaluation.Cause;
+import io.github.libzeal.zeal.logic.evaluation.DirectCause;
 import io.github.libzeal.zeal.logic.evaluation.CompoundEvaluation;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.evaluation.SkippableEvaluation;
@@ -49,14 +49,14 @@ public class TestExpressions {
         return new TerminalEvaluation(result, name, new SimpleRationale("expected", "actual"), Duration.ZERO);
     }
 
-    public static CompoundEvaluation compound(final boolean result, final String name, final Cause cause,
+    public static CompoundEvaluation compound(final boolean result, final String name, final DirectCause cause,
                                               final Evaluation... children) {
         return compoundOf(result, name, cause, Arrays.stream(children)
             .map(Evaluated::new)
             .toArray(SkippableEvaluation[]::new));
     }
 
-    public static CompoundEvaluation compoundOf(final boolean result, final String name, final Cause cause,
+    public static CompoundEvaluation compoundOf(final boolean result, final String name, final DirectCause cause,
                                                 final SkippableEvaluation... children) {
 
         final List<Expression> expressions = Arrays.stream(children)

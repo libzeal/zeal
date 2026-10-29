@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -15,76 +14,62 @@ class CauseTest {
 
     private static final Evaluation FIRST = evaluation("first");
     private static final Evaluation SECOND = evaluation("second");
+    private static final Evaluation OWNER = evaluation("owner");
 
     @Test
-    void whenSelf_thenSelfReturned() {
-        assertInstanceOf(Cause.Self.class, Cause.self());
-    }
+    void givenNullEvaluation_whenConstruct_thenExceptionThrown() {
 
-    @Test
-    void givenEvaluation_whenOf_thenDelegatedToEvaluation() {
-
-        final Cause.Delegated cause = assertInstanceOf(Cause.Delegated.class, Cause.of(FIRST));
-
-        assertEquals(List.of(FIRST), cause.evaluations());
-    }
-
-    @Test
-    void givenEvaluations_whenOf_thenDelegatedToEvaluations() {
-
-        final Cause.Delegated cause = assertInstanceOf(Cause.Delegated.class, Cause.of(List.of(FIRST, SECOND)));
-
-        assertEquals(List.of(FIRST, SECOND), cause.evaluations());
-    }
-
-    @Test
-    void givenNullEvaluation_whenOf_thenExceptionThrown() {
-        assertThrows(
-            NullPointerException.class,
-            () -> Cause.of((Evaluation) null)
-        );
-    }
-
-    @Test
-    void givenNullEvaluations_whenConstructDelegated_thenExceptionThrown() {
-        assertThrows(
-            NullPointerException.class,
-            () -> new Cause.Delegated(null)
-        );
-    }
-
-    @Test
-    void givenNullElement_whenConstructDelegated_thenExceptionThrown() {
-
-        final List<Evaluation> evaluations = Arrays.asList(FIRST, null);
+        final DirectCause direct = DirectCause.self();
 
         assertThrows(
             NullPointerException.class,
-            () -> new Cause.Delegated(evaluations)
+            () -> new Cause(null, direct)
         );
     }
 
     @Test
-    void givenNoEvaluations_whenConstructDelegated_thenExceptionThrown() {
-
-        final List<Evaluation> evaluations = List.of();
-
+    void givenNullDirect_whenConstruct_thenExceptionThrown() {
         assertThrows(
-            IllegalArgumentException.class,
-            () -> new Cause.Delegated(evaluations)
+            NullPointerException.class,
+            () -> new Cause(FIRST, null)
         );
     }
 
     @Test
-    void givenMutableEvaluations_whenConstructDelegated_thenEvaluationsAreCopied() {
+    void givenSelf_whenTraces_thenTraceAndRootCauseAreEvaluation() {
 
-        final List<Evaluation> evaluations = new ArrayList<>(List.of(FIRST));
+        final Cause cause = new Cause(FIRST, DirectCause.self());
 
-        final Cause.Delegated cause = new Cause.Delegated(evaluations);
+        assertEquals(DirectCause.self(), cause.direct());
+        assertEquals(List.of(Cause.Trace.of(FIRST)), cause.traces());
+        assertEquals(List.of(FIRST), cause.rootCauses());
+    }
 
-        evaluations.add(SECOND);
+    @Test
+    void givenDelegatedToTerminals_whenTraces_thenOneTracePerEvaluationStartingAtOwner() {
 
-        assertEquals(List.of(FIRST), cause.evaluations());
+        final DirectCause.Delegated direct = DirectCause.of(List.of(FIRST, SECOND));
+        final Cause cause = new Cause(OWNER, direct);
+
+        assertEquals(direct, cause.direct());
+        assertEquals(
+            List.of(
+                new Cause.Trace(List.of(OWNER, FIRST)),
+                new Cause.Trace(List.of(OWNER, SECOND))
+            ),
+            cause.traces()
+        );
+        assertEquals(List.of(FIRST, SECOND), cause.rootCauses());
+    }
+
+    @Test
+    void givenDelegatedToCompound_whenTraces_thenTracesFollowCompoundCause() {
+
+        final Evaluation compound = TestExpressions.compound(false, "compound", DirectCause.of(FIRST), FIRST);
+        final Cause cause = new Cause(OWNER, DirectCause.of(compound));
+
+        assertEquals(List.of(new Cause.Trace(List.of(OWNER, compound, FIRST))), cause.traces());
+        assertEquals(List.of(FIRST), cause.rootCauses());
     }
 
     @Test
@@ -146,25 +131,6 @@ class CauseTest {
     @Test
     void givenMultipleEvaluationTrace_whenToString_thenNamesJoined() {
         assertEquals("first -> second", new Cause.Trace(List.of(FIRST, SECOND)).toString());
-    }
-
-    @Test
-    void givenDelegatedToTerminals_whenTraces_thenOneTracePerEvaluationStartingAtEvaluation() {
-
-        final Cause.Delegated cause = Cause.of(List.of(FIRST, SECOND));
-
-        assertEquals(List.of(Cause.Trace.of(FIRST), Cause.Trace.of(SECOND)), cause.traces());
-        assertEquals(List.of(FIRST, SECOND), cause.rootCauses());
-    }
-
-    @Test
-    void givenDelegatedToCompound_whenTraces_thenTracesFollowCompoundCause() {
-
-        final Evaluation compound = TestExpressions.compound(false, "compound", Cause.of(FIRST), FIRST);
-        final Cause.Delegated cause = Cause.of(compound);
-
-        assertEquals(List.of(new Cause.Trace(List.of(compound, FIRST))), cause.traces());
-        assertEquals(List.of(FIRST), cause.rootCauses());
     }
 
     private static Evaluation evaluation(final String name) {

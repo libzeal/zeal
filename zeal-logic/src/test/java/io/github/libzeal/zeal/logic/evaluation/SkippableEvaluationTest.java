@@ -30,24 +30,22 @@ class SkippableEvaluationTest {
         final Evaluated evaluated = new Evaluated(DECIDER);
 
         assertEquals(DECIDER.name(), evaluated.name());
-        assertEquals(DECIDER.cause(), evaluated.cause());
-        assertEquals(DECIDER.causeTraces(), evaluated.causeTraces());
-        assertEquals(DECIDER.rootCauses(), evaluated.rootCauses());
+        assertSame(DECIDER, evaluated.evaluation());
     }
 
     @Test
     void givenNullExpression_whenSkipped_thenExceptionThrown() {
 
-        final Cause.Delegated cause = Cause.of(DECIDER);
+        final DirectCause.Delegated directCause = DirectCause.of(DECIDER);
 
         assertThrows(
             NullPointerException.class,
-            () -> new Skipped(null, cause)
+            () -> new Skipped(null, directCause)
         );
     }
 
     @Test
-    void givenNullCause_whenSkipped_thenExceptionThrown() {
+    void givenNullDirectCause_whenSkipped_thenExceptionThrown() {
         assertThrows(
             NullPointerException.class,
             () -> new Skipped(EXPRESSION, null)
@@ -55,24 +53,11 @@ class SkippableEvaluationTest {
     }
 
     @Test
-    void givenTerminalDecider_whenSkipped_thenTracesStartAtDecider() {
+    void givenDecider_whenSkipped_thenNameIsExpressionNameAndDirectCauseIsDecider() {
 
-        final Skipped skipped = new Skipped(EXPRESSION, Cause.of(DECIDER));
+        final Skipped skipped = new Skipped(EXPRESSION, DirectCause.of(DECIDER));
 
         assertEquals("skipped", skipped.name());
-        assertEquals(Cause.of(DECIDER), skipped.cause());
-        assertEquals(List.of(Cause.Trace.of(DECIDER)), skipped.causeTraces());
-        assertEquals(List.of(DECIDER), skipped.rootCauses());
-    }
-
-    @Test
-    void givenCompoundDecider_whenSkipped_thenTracesReachDeciderRootCause() {
-
-        final Evaluation rootCause = TestExpressions.evaluation("root", false);
-        final Evaluation decider = TestExpressions.compound(false, "decider", Cause.of(rootCause), rootCause);
-        final Skipped skipped = new Skipped(EXPRESSION, Cause.of(decider));
-
-        assertEquals(List.of(new Cause.Trace(List.of(decider, rootCause))), skipped.causeTraces());
-        assertEquals(List.of(rootCause), skipped.rootCauses());
+        assertEquals(List.of(DECIDER), skipped.directCause().evaluations());
     }
 }

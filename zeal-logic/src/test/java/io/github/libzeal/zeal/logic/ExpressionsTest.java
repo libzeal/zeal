@@ -1,6 +1,6 @@
 package io.github.libzeal.zeal.logic;
 
-import io.github.libzeal.zeal.logic.evaluation.Cause;
+import io.github.libzeal.zeal.logic.evaluation.DirectCause;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
 import io.github.libzeal.zeal.logic.test.TestExpressions;
@@ -14,25 +14,6 @@ class ExpressionsTest {
 
     private static final String TRUE = "true";
     private static final String FALSE = "false";
-
-    @Test
-    void givenContradiction_whenName_thenNameIsCorrect() {
-        assertEquals(Contradiction.NAME, Expressions.contradiction().name());
-    }
-
-    @Test
-    void givenContradiction_whenEvaluate_thenEvaluationIsCorrect() {
-
-        final Expression expression = Expressions.contradiction();
-        final Evaluation evaluation = expression.evaluate();
-        final Rationale rationale = evaluation.rationale();
-
-        assertFalse(evaluation.isTrue());
-        assertEquals(Contradiction.NAME, evaluation.name());
-        assertRationaleEquals(rationale, FALSE, FALSE);
-        assertEquals(Cause.self(), evaluation.cause());
-        assertDepthFirstTraversalIsTerminal(evaluation);
-    }
 
     @Test
     void givenTautology_whenName_thenNameIsCorrect() {
@@ -49,8 +30,45 @@ class ExpressionsTest {
         assertTrue(evaluation.isTrue());
         assertEquals(Tautology.NAME, evaluation.name());
         assertRationaleEquals(rationale, TRUE, TRUE);
-        assertEquals(Cause.self(), evaluation.cause());
+        assertEquals(DirectCause.self(), evaluation.cause().direct());
         assertDepthFirstTraversalIsTerminal(evaluation);
+    }
+
+    @Test
+    void givenContradiction_whenName_thenNameIsCorrect() {
+        assertEquals(Contradiction.NAME, Expressions.contradiction().name());
+    }
+
+    @Test
+    void givenContradiction_whenEvaluate_thenEvaluationIsCorrect() {
+
+        final Expression expression = Expressions.contradiction();
+        final Evaluation evaluation = expression.evaluate();
+        final Rationale rationale = evaluation.rationale();
+
+        assertFalse(evaluation.isTrue());
+        assertEquals(Contradiction.NAME, evaluation.name());
+        assertRationaleEquals(rationale, FALSE, FALSE);
+        assertEquals(DirectCause.self(), evaluation.cause().direct());
+        assertDepthFirstTraversalIsTerminal(evaluation);
+    }
+
+    @Test
+    void givenNullSupplier_whenOf_thenExceptionThrown() {
+        assertThrows(
+            NullPointerException.class,
+            () -> Expressions.of(null)
+        );
+    }
+
+    @Test
+    void givenValidSupplier_whenOf_thenCorrectExpressionReturned() {
+
+        final BooleanExpression expression = Expressions.of(() -> true);
+        final Evaluation evaluation = expression.evaluate();
+
+        assertEquals(Expression.DEFAULT_NAME, expression.name());
+        assertTrue(evaluation.isTrue());
     }
 
     @Test

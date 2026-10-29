@@ -1,6 +1,6 @@
 package io.github.libzeal.zeal.logic;
 
-import io.github.libzeal.zeal.logic.evaluation.Cause;
+import io.github.libzeal.zeal.logic.evaluation.DirectCause;
 import io.github.libzeal.zeal.logic.evaluation.CompoundEvaluation;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.evaluation.SkippableEvaluation;
@@ -39,7 +39,7 @@ final class CompoundEvaluator {
         final StopWatch stopWatch = StopWatch.started();
         final List<SkippableEvaluation> children = new ArrayList<>();
         final List<Evaluation> evaluated = new ArrayList<>();
-        Cause.Delegated decidedBy = null;
+        DirectCause.Delegated decidedBy = null;
 
         for (final Expression child : expression.children()) {
 
@@ -53,7 +53,7 @@ final class CompoundEvaluator {
             evaluated.add(evaluation);
 
             if (stopWhen.test(evaluation)) {
-                decidedBy = Cause.of(evaluation);
+                decidedBy = DirectCause.of(evaluation);
             }
         }
 
@@ -63,20 +63,20 @@ final class CompoundEvaluator {
 
         return CompoundEvaluation.of(
                 expression, isTrue.test(tally), rationale, elapsedTime,
-                cause(decidedBy, evaluated), children
+                directCause(decidedBy, evaluated), children
         );
     }
 
-    private static Cause cause(final Cause.Delegated decidedBy, final List<Evaluation> evaluated) {
+    private static DirectCause directCause(final DirectCause.Delegated decidedBy, final List<Evaluation> evaluated) {
 
         if (decidedBy != null) {
             return decidedBy;
         }
         else if (evaluated.isEmpty()) {
-            return Cause.self();
+            return DirectCause.self();
         }
         else {
-            return Cause.of(evaluated);
+            return DirectCause.of(evaluated);
         }
     }
 

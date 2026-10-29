@@ -19,7 +19,7 @@ public class Formatter {
      * Formats an object as a string.
      *
      * @param o
-     *     The object to format.
+     *         The object to format.
      *
      * @return A formatted object (as a string).
      */
@@ -31,13 +31,15 @@ public class Formatter {
      * Formats all supplied objects as a string.
      *
      * @param o
-     *     The objects to format.
-     *
-     * @since 0.5.0
+     *         The objects to format.
+     * @param <T>
+     *         The type of the elements in the supplied collection.
      *
      * @return A list of formatted objects (as strings).
+     *
+     * @since 0.5.0
      */
-    public static <T> List<String> stringifyAll(Collection<T> o) {
+    public static <T> List<String> stringifyAll(Collection<? extends T> o) {
         return o.stream()
                 .map(Formatter::stringify)
                 .collect(toList());

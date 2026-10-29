@@ -4,6 +4,7 @@ import io.github.libzeal.zeal.logic.CompoundExpression;
 import io.github.libzeal.zeal.logic.Expression;
 import io.github.libzeal.zeal.logic.evaluation.Cause;
 import io.github.libzeal.zeal.logic.evaluation.CompoundEvaluation;
+import io.github.libzeal.zeal.logic.evaluation.DirectCause;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.evaluation.SkippableEvaluation;
 import io.github.libzeal.zeal.logic.evaluation.SkippableEvaluation.Evaluated;
@@ -58,46 +59,63 @@ public class CauseAssertions {
 
         if (skipped.expression() instanceof final CompoundExpression compound) {
             for (final Expression child : compound.children()) {
-                addSkipped(new Skipped(child, skipped.cause()), found);
+                addSkipped(new Skipped(child, skipped.directCause()), found);
             }
         }
     }
 
     public static void assertCauseIsSelf(final Evaluation evaluation) {
-        assertInstanceOf(Cause.Self.class, evaluation.cause());
+        assertInstanceOf(DirectCause.Self.class, evaluation.cause().direct());
     }
 
     public static void assertCause(final Evaluation evaluation, final Evaluation... expected) {
-        assertCause(new Evaluated(evaluation), expected);
-    }
 
-    public static void assertCause(final SkippableEvaluation evaluation, final Evaluation... expected) {
-
-        final Cause.Delegated cause = assertInstanceOf(Cause.Delegated.class, evaluation.cause());
+        final DirectCause.Delegated cause = assertInstanceOf(DirectCause.Delegated.class, evaluation.cause().direct());
 
         assertSameElements(List.of(expected), cause.evaluations());
     }
 
-    public static void assertTraces(final Evaluation evaluation, final String... expected) {
-        assertTraces(new Evaluated(evaluation), expected);
+    public static void assertCause(final Skipped skipped, final Evaluation... expected) {
+        assertSameElements(List.of(expected), skipped.directCause().evaluations());
     }
 
-    public static void assertTraces(final SkippableEvaluation evaluation, final String... expected) {
+    public static void assertTraces(final Evaluation evaluation, final String... expected) {
+        assertTraceNames(evaluation.cause().traces(), expected);
+    }
 
-        final List<String> traces = evaluation.causeTraces()
-            .stream()
-            .map(Cause.Trace::toString)
-            .toList();
-
-        assertEquals(List.of(expected), traces);
+    public static void assertTraces(final Skipped skipped, final String... expected) {
+        assertTraceNames(tracesOf(skipped), expected);
     }
 
     public static void assertRootCauses(final Evaluation evaluation, final Evaluation... expected) {
-        assertRootCauses(new Evaluated(evaluation), expected);
+        assertSameElements(List.of(expected), evaluation.cause().rootCauses());
     }
 
-    public static void assertRootCauses(final SkippableEvaluation evaluation, final Evaluation... expected) {
-        assertSameElements(List.of(expected), evaluation.rootCauses());
+    public static void assertRootCauses(final Skipped skipped, final Evaluation... expected) {
+
+        final List<Evaluation> rootCauses = tracesOf(skipped)
+            .stream()
+            .map(Cause.Trace::rootCause)
+            .toList();
+
+        assertSameElements(List.of(expected), rootCauses);
+    }
+
+    private static List<Cause.Trace> tracesOf(final Skipped skipped) {
+        return skipped.directCause()
+            .evaluations()
+            .stream()
+            .flatMap(decider -> decider.cause().traces().stream())
+            .toList();
+    }
+
+    private static void assertTraceNames(final List<Cause.Trace> traces, final String... expected) {
+
+        final List<String> names = traces.stream()
+            .map(Cause.Trace::toString)
+            .toList();
+
+        assertEquals(List.of(expected), names);
     }
 
     private static void assertSameElements(final List<Evaluation> expected, final List<Evaluation> actual) {

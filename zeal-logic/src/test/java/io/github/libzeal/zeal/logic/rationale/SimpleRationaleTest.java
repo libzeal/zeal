@@ -7,16 +7,6 @@ import static org.junit.jupiter.api.Assertions.*;
 class SimpleRationaleTest {
 
     @Test
-    void whenEmpty_thenFieldsAreAllBlank() {
-
-        final Rationale rationale = SimpleRationale.empty();
-
-        assertEquals("", rationale.expected());
-        assertEquals("", rationale.actual());
-        assertFalse(rationale.hint().isPresent());
-    }
-
-    @Test
     void givenExpectedAndActualValues_whenConstruct_thenFieldsAreAllCorrect() {
 
         final String expected = "foo";
@@ -42,6 +32,16 @@ class SimpleRationaleTest {
         assertEquals(actual, rationale.actual());
         assertTrue(rationale.hint().isPresent());
         assertEquals(hint, rationale.hint().get());
+    }
+
+    @Test
+    void whenEmpty_thenFieldsAreAllBlank() {
+
+        final Rationale rationale = SimpleRationale.empty();
+
+        assertEquals("", rationale.expected());
+        assertEquals("", rationale.actual());
+        assertFalse(rationale.hint().isPresent());
     }
 
     @Test
@@ -78,7 +78,7 @@ class SimpleRationaleTest {
 
         Rationale a = new SimpleRationale(expected, actual, hint);
 
-        assertNotEquals(new Object(), a);
+        assertNotEquals(a, new Object());
     }
 
     @Test

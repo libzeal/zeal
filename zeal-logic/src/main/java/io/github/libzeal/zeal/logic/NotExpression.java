@@ -1,6 +1,6 @@
 package io.github.libzeal.zeal.logic;
 
-import io.github.libzeal.zeal.logic.evaluation.Cause;
+import io.github.libzeal.zeal.logic.evaluation.DirectCause;
 import io.github.libzeal.zeal.logic.evaluation.CompoundEvaluation;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.evaluation.SkippableEvaluation.Evaluated;
@@ -82,7 +82,7 @@ public record NotExpression(
 
         return CompoundEvaluation.of(
                 this, !wrappedEvaluation.isTrue(), rationale, elapsedTime,
-                Cause.of(wrappedEvaluation), List.of(new Evaluated(wrappedEvaluation))
+                DirectCause.of(wrappedEvaluation), List.of(new Evaluated(wrappedEvaluation))
         );
     }
 }
