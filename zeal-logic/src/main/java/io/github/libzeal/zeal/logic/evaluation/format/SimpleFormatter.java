@@ -23,7 +23,7 @@ public class SimpleFormatter implements Formatter {
     static final String TRUE_ROOT_CAUSE_NOTE = "A true expression may be a root cause if it belongs to a negated " +
             "expression, such as NOT, NAND, or NOR";
     private static final String INDENT = "    ";
-    private static final String FIELD_FORMAT = "%-11s : %s\n";
+    private static final String FIELD_FORMAT = "%-13s : %s\n";
 
     /**
      * Creates a new formatter.
@@ -55,18 +55,18 @@ public class SimpleFormatter implements Formatter {
             final Evaluation rootCause = trace.rootCause();
             final Rationale rationale = rootCause.rationale();
 
-            appendField("Expression", rootCause.name(), builder);
-            appendField("Expected", rationale.expected(), builder);
-            appendField("Actual", rationale.actual(), builder);
-            rationale.hint().ifPresent(hint -> appendField("Hint", hint, builder));
-            appendField("Cause Trace", trace.toString(), builder);
+            appendField("- Expression", rootCause.name(), builder);
+            appendField("  Expected", rationale.expected(), builder);
+            appendField("  Actual", rationale.actual(), builder);
+            rationale.hint().ifPresent(hint -> appendField("  Hint", hint, builder));
+            appendField("  Cause Trace", trace.toString(), builder);
 
             if (rootCause.isTrue()) {
-                appendField("Notes", TRUE_ROOT_CAUSE_NOTE, builder);
+                appendField("  Notes", TRUE_ROOT_CAUSE_NOTE, builder);
             }
-
-            builder.append("\n");
         }
+        
+        builder.append("\n");
     }
 
     private static void appendField(final String key, final String value, final StringBuilder builder) {
