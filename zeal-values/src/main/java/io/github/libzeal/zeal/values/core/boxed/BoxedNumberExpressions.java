@@ -1,6 +1,6 @@
 package io.github.libzeal.zeal.values.core.boxed;
 
-import io.github.libzeal.zeal.logic.format.Formatter;
+import io.github.libzeal.zeal.logic.format.ObjectFormatter;
 import io.github.libzeal.zeal.logic.unary.Condition;
 import io.github.libzeal.zeal.logic.unary.ConditionBuilder;
 
@@ -18,7 +18,7 @@ class BoxedNumberExpressions {
 
         return nullProtectedValueExpression(
                 value,
-                "isLessThan[" + Formatter.stringify(value) + "]",
+                "isLessThan[" + ObjectFormatter.stringify(value) + "]",
                 "< " + value,
                 t -> value != null && operations.lt(t, value)
         );
@@ -47,7 +47,7 @@ class BoxedNumberExpressions {
             final T value, final BoxedNumberOperations<T> operations) {
         return nullProtectedValueExpression(
                 value,
-                "isGreaterThan[" + Formatter.stringify(value) + "]",
+                "isGreaterThan[" + ObjectFormatter.stringify(value) + "]",
                 "> " + value,
                 t -> value != null && operations.gt(t, value)
         );
@@ -57,7 +57,7 @@ class BoxedNumberExpressions {
             final T value, final BoxedNumberOperations<T> operations) {
         return nullProtectedValueExpression(
                 value,
-                "isLessThanOrEqualTo[" + Formatter.stringify(value) + "]",
+                "isLessThanOrEqualTo[" + ObjectFormatter.stringify(value) + "]",
                 "<= " + value,
                 t -> value != null && operations.lte(t, value)
         );
@@ -67,7 +67,7 @@ class BoxedNumberExpressions {
             final T value, final BoxedNumberOperations<T> operations) {
         return nullProtectedValueExpression(
                 value,
-                "isGreaterThanOrEqualTo[" + Formatter.stringify(value) + "]",
+                "isGreaterThanOrEqualTo[" + ObjectFormatter.stringify(value) + "]",
                 ">= " + value,
                 t -> value != null && operations.gte(t, value)
         );

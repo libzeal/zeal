@@ -1,6 +1,6 @@
 package io.github.libzeal.zeal.values.core.boxed;
 
-import io.github.libzeal.zeal.logic.format.Formatter;
+import io.github.libzeal.zeal.logic.format.ObjectFormatter;
 import org.junit.jupiter.api.Test;
 
 
@@ -41,73 +41,73 @@ class BoxedFloatValueTest extends BoxedNumberValueTest<Float, BoxedFloatValue> {
     @Test
     void givenBelowRange_whenIsEqualToWithTolerance_thenFalse() {
         newTestCase()
-            .subject(-0.1f)
-            .expression(value -> value.isEqualTo(1.0f, 1.0f))
-            .result(false)
-            .name("isEqualTo[1.0 +/- 1.0]")
-            .expected("1.0 +/- 1.0")
-            .actual(Formatter.stringify(-0.1f))
-            .run();
+                .subject(-0.1f)
+                .expression(value -> value.isEqualTo(1.0f, 1.0f))
+                .result(false)
+                .name("isEqualTo[1.0 +/- 1.0]")
+                .expected("1.0 +/- 1.0")
+                .actual(ObjectFormatter.stringify(-0.1f))
+                .run();
     }
 
     @Test
     void givenLowerBound_whenIsEqualToWithTolerance_thenTrue() {
         newTestCase()
-            .subject(0.0f)
-            .expression(value -> value.isEqualTo(1.0f, 1.0f))
-            .result(true)
-            .name("isEqualTo[1.0 +/- 1.0]")
-            .expected("1.0 +/- 1.0")
-            .actual(Formatter.stringify(0.0f))
-            .run();
+                .subject(0.0f)
+                .expression(value -> value.isEqualTo(1.0f, 1.0f))
+                .result(true)
+                .name("isEqualTo[1.0 +/- 1.0]")
+                .expected("1.0 +/- 1.0")
+                .actual(ObjectFormatter.stringify(0.0f))
+                .run();
     }
 
     @Test
     void givenNearLowerBound_whenIsEqualToWithTolerance_thenTrue() {
         newTestCase()
-            .subject(0.1f)
-            .expression(value -> value.isEqualTo(1.0f, 1.0f))
-            .result(true)
-            .name("isEqualTo[1.0 +/- 1.0]")
-            .expected("1.0 +/- 1.0")
-            .actual(Formatter.stringify(0.1f))
-            .run();
+                .subject(0.1f)
+                .expression(value -> value.isEqualTo(1.0f, 1.0f))
+                .result(true)
+                .name("isEqualTo[1.0 +/- 1.0]")
+                .expected("1.0 +/- 1.0")
+                .actual(ObjectFormatter.stringify(0.1f))
+                .run();
     }
 
     @Test
     void givenNearUpperBound_whenIsEqualToWithTolerance_thenTrue() {
         newTestCase()
-            .subject(1.9f)
-            .expression(value -> value.isEqualTo(1.0f, 1.0f))
-            .result(true)
-            .name("isEqualTo[1.0 +/- 1.0]")
-            .expected("1.0 +/- 1.0")
-            .actual(Formatter.stringify(1.9f))
-            .run();
+                .subject(1.9f)
+                .expression(value -> value.isEqualTo(1.0f, 1.0f))
+                .result(true)
+                .name("isEqualTo[1.0 +/- 1.0]")
+                .expected("1.0 +/- 1.0")
+                .actual(ObjectFormatter.stringify(1.9f))
+                .run();
     }
 
     @Test
     void givenUpperBound_whenIsEqualToWithTolerance_thenTrue() {
         newTestCase()
-            .subject(2.0f)
-            .expression(value -> value.isEqualTo(1.0f, 1.0f))
-            .result(true)
-            .name("isEqualTo[1.0 +/- 1.0]")
-            .expected("1.0 +/- 1.0")
-            .actual(Formatter.stringify(2.0f))
-            .run();
+                .subject(2.0f)
+                .expression(value -> value.isEqualTo(1.0f, 1.0f))
+                .result(true)
+                .name("isEqualTo[1.0 +/- 1.0]")
+                .expected("1.0 +/- 1.0")
+                .actual(ObjectFormatter.stringify(2.0f))
+                .run();
     }
 
     @Test
     void givenAboveRange_whenIsEqualToWithTolerance_thenFalse() {
         newTestCase()
-            .subject(2.1f)
-            .expression(value -> value.isEqualTo(1.0f, 1.0f))
-            .result(false)
-            .name("isEqualTo[1.0 +/- 1.0]")
-            .expected("1.0 +/- 1.0")
-            .actual(Formatter.stringify(2.1f))
-            .run();
+                .subject(2.1f)
+                .expression(value -> value.isEqualTo(1.0f, 1.0f))
+                .result(false)
+                .name("isEqualTo[1.0 +/- 1.0]")
+                .expected("1.0 +/- 1.0")
+                .actual(ObjectFormatter.stringify(2.1f))
+                .run();
     }
 
     // ---- isFinite ----
@@ -115,37 +115,37 @@ class BoxedFloatValueTest extends BoxedNumberValueTest<Float, BoxedFloatValue> {
     @Test
     void givenPositiveInfinity_whenIsFinite_thenFalse() {
         newTestCase()
-            .subject(Float.POSITIVE_INFINITY)
-            .expression(BoxedFloatValue::isFinite)
-            .result(false)
-            .name("isFinite")
-            .expected("finite")
-            .actual(Formatter.stringify(Float.POSITIVE_INFINITY))
-            .run();
+                .subject(Float.POSITIVE_INFINITY)
+                .expression(BoxedFloatValue::isFinite)
+                .result(false)
+                .name("isFinite")
+                .expected("finite")
+                .actual(ObjectFormatter.stringify(Float.POSITIVE_INFINITY))
+                .run();
     }
 
     @Test
     void givenNegativeInfinity_whenIsFinite_thenFalse() {
         newTestCase()
-            .subject(Float.NEGATIVE_INFINITY)
-            .expression(BoxedFloatValue::isFinite)
-            .result(false)
-            .name("isFinite")
-            .expected("finite")
-            .actual(Formatter.stringify(Float.NEGATIVE_INFINITY))
-            .run();
+                .subject(Float.NEGATIVE_INFINITY)
+                .expression(BoxedFloatValue::isFinite)
+                .result(false)
+                .name("isFinite")
+                .expected("finite")
+                .actual(ObjectFormatter.stringify(Float.NEGATIVE_INFINITY))
+                .run();
     }
 
     @Test
     void givenZero_whenIsFinite_thenTrue() {
         newTestCase()
-            .subject(exampleZeroValue())
-            .expression(BoxedFloatValue::isFinite)
-            .result(true)
-            .name("isFinite")
-            .expected("finite")
-            .actual(Formatter.stringify(exampleZeroValue()))
-            .run();
+                .subject(exampleZeroValue())
+                .expression(BoxedFloatValue::isFinite)
+                .result(true)
+                .name("isFinite")
+                .expected("finite")
+                .actual(ObjectFormatter.stringify(exampleZeroValue()))
+                .run();
     }
 
     // ---- isInfinite ----
@@ -153,37 +153,37 @@ class BoxedFloatValueTest extends BoxedNumberValueTest<Float, BoxedFloatValue> {
     @Test
     void givenPositiveInfinity_whenIsInfinite_thenTrue() {
         newTestCase()
-            .subject(Float.POSITIVE_INFINITY)
-            .expression(BoxedFloatValue::isInfinite)
-            .result(true)
-            .name("isInfinite")
-            .expected("infinite")
-            .actual(Formatter.stringify(Float.POSITIVE_INFINITY))
-            .run();
+                .subject(Float.POSITIVE_INFINITY)
+                .expression(BoxedFloatValue::isInfinite)
+                .result(true)
+                .name("isInfinite")
+                .expected("infinite")
+                .actual(ObjectFormatter.stringify(Float.POSITIVE_INFINITY))
+                .run();
     }
 
     @Test
     void givenNegativeInfinity_whenIsInfinite_thenTrue() {
         newTestCase()
-            .subject(Float.NEGATIVE_INFINITY)
-            .expression(BoxedFloatValue::isInfinite)
-            .result(true)
-            .name("isInfinite")
-            .expected("infinite")
-            .actual(Formatter.stringify(Float.NEGATIVE_INFINITY))
-            .run();
+                .subject(Float.NEGATIVE_INFINITY)
+                .expression(BoxedFloatValue::isInfinite)
+                .result(true)
+                .name("isInfinite")
+                .expected("infinite")
+                .actual(ObjectFormatter.stringify(Float.NEGATIVE_INFINITY))
+                .run();
     }
 
     @Test
     void givenZero_whenIsInfinite_thenFalse() {
         newTestCase()
-            .subject(exampleZeroValue())
-            .expression(BoxedFloatValue::isInfinite)
-            .result(false)
-            .name("isInfinite")
-            .expected("infinite")
-            .actual(Formatter.stringify(exampleZeroValue()))
-            .run();
+                .subject(exampleZeroValue())
+                .expression(BoxedFloatValue::isInfinite)
+                .result(false)
+                .name("isInfinite")
+                .expected("infinite")
+                .actual(ObjectFormatter.stringify(exampleZeroValue()))
+                .run();
     }
 
     // ---- isNaN ----
@@ -191,24 +191,24 @@ class BoxedFloatValueTest extends BoxedNumberValueTest<Float, BoxedFloatValue> {
     @Test
     void givenNaN_whenIsNaN_thenTrue() {
         newTestCase()
-            .subject(Float.NaN)
-            .expression(BoxedFloatValue::isNaN)
-            .result(true)
-            .name("isNaN")
-            .expected("NaN")
-            .actual(Formatter.stringify(Float.NaN))
-            .run();
+                .subject(Float.NaN)
+                .expression(BoxedFloatValue::isNaN)
+                .result(true)
+                .name("isNaN")
+                .expected("NaN")
+                .actual(ObjectFormatter.stringify(Float.NaN))
+                .run();
     }
 
     @Test
     void givenZero_whenIsNaN_thenFalse() {
         newTestCase()
-            .subject(exampleZeroValue())
-            .expression(BoxedFloatValue::isNaN)
-            .result(false)
-            .name("isNaN")
-            .expected("NaN")
-            .actual(Formatter.stringify(exampleZeroValue()))
-            .run();
+                .subject(exampleZeroValue())
+                .expression(BoxedFloatValue::isNaN)
+                .result(false)
+                .name("isNaN")
+                .expected("NaN")
+                .actual(ObjectFormatter.stringify(exampleZeroValue()))
+                .run();
     }
 }

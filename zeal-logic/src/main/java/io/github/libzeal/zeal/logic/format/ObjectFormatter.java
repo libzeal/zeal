@@ -10,9 +10,9 @@ import static java.util.stream.Collectors.toList;
  *
  * @author Justin Albano
  */
-public class Formatter {
+public class ObjectFormatter {
 
-    private Formatter() {
+    private ObjectFormatter() {
     }
 
     /**
@@ -41,7 +41,7 @@ public class Formatter {
      */
     public static <T> List<String> stringifyAll(Collection<? extends T> o) {
         return o.stream()
-                .map(Formatter::stringify)
+                .map(ObjectFormatter::stringify)
                 .collect(toList());
     }
 }

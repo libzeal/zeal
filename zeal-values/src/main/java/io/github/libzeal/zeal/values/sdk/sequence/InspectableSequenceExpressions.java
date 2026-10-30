@@ -1,6 +1,6 @@
 package io.github.libzeal.zeal.values.sdk.sequence;
 
-import io.github.libzeal.zeal.logic.format.Formatter;
+import io.github.libzeal.zeal.logic.format.ObjectFormatter;
 import io.github.libzeal.zeal.logic.unary.Condition;
 import io.github.libzeal.zeal.logic.unary.ConditionBuilder;
 import io.github.libzeal.zeal.values.config.Configuration;
@@ -105,7 +105,7 @@ public class InspectableSequenceExpressions {
         final List<String> missing = desired.stream()
                 .filter(d -> !found.contains(d))
                 .limit(Configuration.MAX_LIST_DISPLAY_LENGTH)
-                .map(Formatter::stringify)
+                .map(ObjectFormatter::stringify)
                 .collect(toList());
 
         if (truncated) {
@@ -117,7 +117,7 @@ public class InspectableSequenceExpressions {
 
     private static <T> List<String> stringifyAll(final List<T> elements) {
         return elements.stream()
-                .map(Formatter::stringify)
+                .map(ObjectFormatter::stringify)
                 .toList();
     }
 

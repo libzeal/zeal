@@ -1,6 +1,6 @@
 package io.github.libzeal.zeal.logic.unary;
 
-import io.github.libzeal.zeal.logic.format.Formatter;
+import io.github.libzeal.zeal.logic.format.ObjectFormatter;
 import io.github.libzeal.zeal.logic.unary.ObservableUnaryExpression.Field;
 
 import java.util.function.Function;
@@ -24,7 +24,7 @@ public final class ConditionBuilder<S, O> {
     private boolean nullable = false;
     private String name = "<unnamed>";
     private Field<S, O> expected = context -> "<not set>";
-    private Field<S, O> actual = context -> Formatter.stringify(context.observed());
+    private Field<S, O> actual = context -> ObjectFormatter.stringify(context.observed());
     private Field<S, O> hint = null;
 
     private ConditionBuilder(final Function<S, O> observe, final Predicate<O> condition) {

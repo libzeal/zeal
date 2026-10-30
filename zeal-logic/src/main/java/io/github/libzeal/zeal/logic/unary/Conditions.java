@@ -11,7 +11,7 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import static io.github.libzeal.zeal.logic.format.Formatter.stringify;
+import static io.github.libzeal.zeal.logic.format.ObjectFormatter.stringify;
 import static io.github.libzeal.zeal.logic.unary.Condition.DEFAULT_NAME;
 import static java.util.Objects.requireNonNull;
 

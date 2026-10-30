@@ -3,7 +3,7 @@ package io.github.libzeal.zeal.values.sdk;
 import java.util.Arrays;
 import java.util.Collection;
 
-import static io.github.libzeal.zeal.logic.format.Formatter.stringify;
+import static io.github.libzeal.zeal.logic.format.ObjectFormatter.stringify;
 
 public class StandardRationales {
 
@@ -58,7 +58,8 @@ public class StandardRationales {
 
     public static final class Names {
 
-        private Names() {}
+        private Names() {
+        }
 
         public static String name(final String name) {
             return name;

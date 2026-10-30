@@ -1,4 +1,4 @@
-package io.github.libzeal.zeal.logic.evaluation.format;
+package io.github.libzeal.zeal.logic.format;
 
 import io.github.libzeal.zeal.logic.CompoundExpression;
 import io.github.libzeal.zeal.logic.Expression;
@@ -21,7 +21,7 @@ import java.util.Set;
  *
  * @author Justin Albano
  */
-public class SimpleFormatter implements Formatter {
+public class SimpleEvaluationFormatter implements EvaluationFormatter {
 
     static final String TRUE_ROOT_CAUSE_NOTE = "A true expression may be a root cause if it belongs to a negated " +
             "expression, such as NOT, NAND, or NOR";
@@ -31,7 +31,7 @@ public class SimpleFormatter implements Formatter {
     /**
      * Creates a new formatter.
      */
-    public SimpleFormatter() {
+    public SimpleEvaluationFormatter() {
     }
 
     @Override

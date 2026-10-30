@@ -14,7 +14,7 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static io.github.libzeal.zeal.logic.format.Formatter.stringify;
+import static io.github.libzeal.zeal.logic.format.ObjectFormatter.stringify;
 import static io.github.libzeal.zeal.logic.unary.Conditions.equalTo;
 import static io.github.libzeal.zeal.logic.unary.Conditions.exactly;
 import static io.github.libzeal.zeal.values.sdk.StandardMessages.PREDICATE_SATISFIED;
@@ -47,7 +47,7 @@ import static java.util.Objects.requireNonNull;
  *         method called {@code includesCharacter(char)}, the following would
  *         cause an error:
  *         <pre><code>new
- *                     StringExpression("foo").isNotNull().includeCharacter('c');</code></pre>
+ *                             StringExpression("foo").isNotNull().includeCharacter('c');</code></pre>
  *         Since the {@code isNotNull()} method would return a {@link BaseValue}
  *         object, rather than a {@code StringExpression}, thus hiding the
  *         {@code includesCharacter(char)} method of {@code  StringExpression}.

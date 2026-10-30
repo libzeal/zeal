@@ -3,7 +3,7 @@ package io.github.libzeal.zeal.values.sdk.sequence;
 import io.github.libzeal.zeal.logic.unary.Condition;
 import io.github.libzeal.zeal.logic.unary.ConditionBuilder;
 
-import static io.github.libzeal.zeal.logic.format.Formatter.stringify;
+import static io.github.libzeal.zeal.logic.format.ObjectFormatter.stringify;
 import static io.github.libzeal.zeal.values.sdk.StandardRationales.Names.withPairs;
 
 public class RepeatableSequenceExpressions {

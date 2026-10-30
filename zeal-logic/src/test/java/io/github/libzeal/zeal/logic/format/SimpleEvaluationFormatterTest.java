@@ -1,4 +1,4 @@
-package io.github.libzeal.zeal.logic.evaluation.format;
+package io.github.libzeal.zeal.logic.format;
 
 import io.github.libzeal.zeal.logic.AndExpression;
 import io.github.libzeal.zeal.logic.Expression;
@@ -18,15 +18,15 @@ import static io.github.libzeal.zeal.logic.test.NamedExpressions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class SimpleFormatterTest {
+class SimpleEvaluationFormatterTest {
 
     private static final String EVALUATION_HEADING = "Evaluation:\n";
     private static final String ROOT_CAUSES_HEADING = "Root Causes:\n";
-    private SimpleFormatter formatter;
+    private SimpleEvaluationFormatter formatter;
 
     @BeforeEach
     void setUp() {
-        formatter = new SimpleFormatter();
+        formatter = new SimpleEvaluationFormatter();
     }
 
     @Test
@@ -127,7 +127,7 @@ class SimpleFormatterTest {
                         "  Actual      : " + childRationale.actual() + "\n" +
                         "  Hint        : " + childRationale.hint().orElse("") + "\n" +
                         "  Cause Trace : " + parentEvaluation.name() + " -> " + childEvaluation.name() + "\n" +
-                        "  Notes       : " + SimpleFormatter.TRUE_ROOT_CAUSE_NOTE + "\n" +
+                        "  Notes       : " + SimpleEvaluationFormatter.TRUE_ROOT_CAUSE_NOTE + "\n" +
                         "\n" +
                         EVALUATION_HEADING +
                         "[F] " + parentEvaluation.name() + " (" + parentElapsedTime.toMillis() + "ms)\n" +

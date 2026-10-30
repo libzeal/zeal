@@ -1,12 +1,12 @@
 package io.github.libzeal.zeal.values.sdk.sequence;
 
-import io.github.libzeal.zeal.logic.format.Formatter;
+import io.github.libzeal.zeal.logic.format.ObjectFormatter;
 import io.github.libzeal.zeal.logic.unary.Condition;
 import io.github.libzeal.zeal.logic.unary.ConditionBuilder;
 import io.github.libzeal.zeal.values.sdk.StandardRationales;
 import io.github.libzeal.zeal.values.sdk.StandardRationales.Operators;
 
-import static io.github.libzeal.zeal.logic.format.Formatter.stringify;
+import static io.github.libzeal.zeal.logic.format.ObjectFormatter.stringify;
 import static io.github.libzeal.zeal.values.sdk.StandardRationales.Names.withPairs;
 import static io.github.libzeal.zeal.values.sdk.StandardRationales.Names.withValue;
 
@@ -54,7 +54,7 @@ public class OrderedSequenceExpressions {
                 .expected(desiredName)
                 .actual(context ->
                         context.observed().ifPresentOrElseGet(
-                                Formatter::stringify,
+                                ObjectFormatter::stringify,
                                 () -> "Index " + index + " is out of bounds"
                         ))
                 .hint(context -> {
@@ -81,7 +81,7 @@ public class OrderedSequenceExpressions {
                 .expected("not[" + desiredName + "]")
                 .actual(context ->
                         context.observed().ifPresentOrElseGet(
-                                Formatter::stringify,
+                                ObjectFormatter::stringify,
                                 () -> "Index " + index + " is out of bounds"
                         ))
                 .build();
@@ -96,7 +96,7 @@ public class OrderedSequenceExpressions {
                 .name(withValue("startsWith", desiredName))
                 .expected(desiredName)
                 .actual(context ->
-                        context.observed().ifPresentOrElseGet(Formatter::stringify, () -> "Value is empty")
+                        context.observed().ifPresentOrElseGet(ObjectFormatter::stringify, () -> "Value is empty")
                 )
                 .hint(context -> {
                     if (context.passed()) {
@@ -121,7 +121,7 @@ public class OrderedSequenceExpressions {
                 .name(withValue("doesNotStartWith", desiredName))
                 .expected("not[" + desiredName + "]")
                 .actual(context ->
-                        context.observed().ifPresentOrElseGet(Formatter::stringify, () -> "Value is empty")
+                        context.observed().ifPresentOrElseGet(ObjectFormatter::stringify, () -> "Value is empty")
                 )
                 .hint(context ->
                         context.observed().ifPresentOrElseGet(
@@ -141,7 +141,7 @@ public class OrderedSequenceExpressions {
                 .name(withValue("endsWith", desiredName))
                 .expected(desiredName)
                 .actual(context ->
-                        context.observed().ifPresentOrElseGet(Formatter::stringify, () -> "Value is empty")
+                        context.observed().ifPresentOrElseGet(ObjectFormatter::stringify, () -> "Value is empty")
                 )
                 .hint(context -> {
                     if (context.passed()) {
@@ -166,7 +166,7 @@ public class OrderedSequenceExpressions {
                 .name(withValue("doesNotEndWith", desiredName))
                 .expected("not[" + desiredName + "]")
                 .actual(context ->
-                        context.observed().ifPresentOrElseGet(Formatter::stringify, () -> "Value is empty")
+                        context.observed().ifPresentOrElseGet(ObjectFormatter::stringify, () -> "Value is empty")
                 )
                 .hint(context ->
                         context.observed().ifPresentOrElseGet(
