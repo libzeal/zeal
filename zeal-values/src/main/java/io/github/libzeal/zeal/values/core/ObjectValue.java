@@ -3,7 +3,7 @@ package io.github.libzeal.zeal.values.core;
 import io.github.libzeal.zeal.logic.Expression;
 import io.github.libzeal.zeal.logic.unary.CompoundUnaryExpression;
 import io.github.libzeal.zeal.logic.unary.Condition;
-import io.github.libzeal.zeal.logic.unary.ExpressionBuilder;
+import io.github.libzeal.zeal.logic.unary.ConditionBuilder;
 import io.github.libzeal.zeal.values.sdk.StandardMessages;
 
 import java.util.Comparator;
@@ -28,10 +28,10 @@ public interface ObjectValue<T, E extends ObjectValue<T, E>>
      * Note: This evaluation takes precedent over all other evaluations. For
      * example, if the chain
      * <code>expression.someFooCheck().isNotNull()</code> were created, the
-     * {@code #isNotNull()} evaluation would
-     * be evaluated before the {@code someFooCheck()} evaluation when the
-     * expression is evaluated (using the {@link Expression#evaluate()} method), even
-     * though it was second in the chain.
+     * {@code #isNotNull()} evaluation would be evaluated before the
+     * {@code someFooCheck()} evaluation when the expression is evaluated (using
+     * the {@link Expression#evaluate()} method), even though it was second in
+     * the chain.
      * <p>
      * Note: The precedence of this evaluation is due to the nature of
      * evaluations on objects. Every evaluation, expect for nullity evaluations
@@ -64,8 +64,8 @@ public interface ObjectValue<T, E extends ObjectValue<T, E>>
      * fail.
      *
      * @param type
-     *     The type to test the subject against. This evaluation will always
-     *     fail if the supplied type is {@code null}
+     *         The type to test the subject against. This evaluation will always
+     *         fail if the supplied type is {@code null}
      *
      * @return This expression (fluent interface).
      */
@@ -76,8 +76,8 @@ public interface ObjectValue<T, E extends ObjectValue<T, E>>
      * exact match of the supplied type.
      *
      * @param type
-     *     The type to test the subject against. This evaluation will always
-     *     fail if the supplied type is {@code null}.
+     *         The type to test the subject against. This evaluation will always
+     *         fail if the supplied type is {@code null}.
      *
      * @return This expression (fluent interface).
      */
@@ -95,8 +95,8 @@ public interface ObjectValue<T, E extends ObjectValue<T, E>>
      * </code></pre>
      *
      * @param type
-     *     The type to test the subject against. This evaluation will always
-     *     fail if the supplied type is {@code null}.
+     *         The type to test the subject against. This evaluation will always
+     *         fail if the supplied type is {@code null}.
      *
      * @return This expression (fluent interface).
      *
@@ -116,8 +116,8 @@ public interface ObjectValue<T, E extends ObjectValue<T, E>>
      * </code></pre>
      *
      * @param type
-     *     The type to test the subject against. This evaluation will always
-     *     fail if the supplied type is {@code null}.
+     *         The type to test the subject against. This evaluation will always
+     *         fail if the supplied type is {@code null}.
      *
      * @return This expression (fluent interface).
      *
@@ -140,7 +140,7 @@ public interface ObjectValue<T, E extends ObjectValue<T, E>>
      * </code></pre>
      *
      * @param other
-     *     The object to test against.
+     *         The object to test against.
      *
      * @return This expression (fluent interface).
      */
@@ -161,7 +161,7 @@ public interface ObjectValue<T, E extends ObjectValue<T, E>>
      * </code></pre>
      *
      * @param other
-     *     The object to test against.
+     *         The object to test against.
      *
      * @return This expression (fluent interface).
      */
@@ -172,7 +172,7 @@ public interface ObjectValue<T, E extends ObjectValue<T, E>>
      * the supplied condition.
      *
      * @param condition
-     *     The condition to check.
+     *         The condition to check.
      *
      * @return This expression (fluent interface).
      */
@@ -193,7 +193,7 @@ public interface ObjectValue<T, E extends ObjectValue<T, E>>
      * </code></pre>
      *
      * @param other
-     *     The object to test against.
+     *         The object to test against.
      *
      * @return This expression (fluent interface).
      *
@@ -210,10 +210,10 @@ public interface ObjectValue<T, E extends ObjectValue<T, E>>
      * subject and supplied object are both {@code null}.
      *
      * @param other
-     *     The object to test against.
+     *         The object to test against.
      * @param comparator
-     *     The {@link Comparator} to use when checking the equality of the
-     *     supplied object and the subject.
+     *         The {@link Comparator} to use when checking the equality of the
+     *         supplied object and the subject.
      *
      * @return This expression (fluent interface).
      *
@@ -221,14 +221,14 @@ public interface ObjectValue<T, E extends ObjectValue<T, E>>
      */
     E isEqualTo(T other, Comparator<T> comparator);
 
-    default ExpressionBuilder<T, T> comparableEquals(T other, Comparator<T> comparator) {
+    default ConditionBuilder<T, T> comparableEquals(T other, Comparator<T> comparator) {
 
         if (comparator == null) {
-            return ExpressionBuilder.of((T s) -> false).nullable()
-                .hint(StandardMessages.CANNOT_COMPARE_USING_NULL_COMPARATOR);
+            return ConditionBuilder.of((T s) -> false).nullable()
+                    .hint(StandardMessages.CANNOT_COMPARE_USING_NULL_COMPARATOR);
         }
         else {
-            return ExpressionBuilder.of((T s) -> comparator.compare(s, other) == 0).nullable();
+            return ConditionBuilder.of((T s) -> comparator.compare(s, other) == 0).nullable();
         }
     }
 
@@ -247,7 +247,7 @@ public interface ObjectValue<T, E extends ObjectValue<T, E>>
      * </code></pre>
      *
      * @param other
-     *     The object to test against.
+     *         The object to test against.
      *
      * @return This expression (fluent interface).
      *
@@ -264,10 +264,10 @@ public interface ObjectValue<T, E extends ObjectValue<T, E>>
      * subject and supplied object are both {@code null}.
      *
      * @param other
-     *     The object to test against.
+     *         The object to test against.
      * @param comparator
-     *     The {@link Comparator} to use when checking the equality of the
-     *     supplied object and the subject.
+     *         The {@link Comparator} to use when checking the equality of the
+     *         supplied object and the subject.
      *
      * @return This expression (fluent interface).
      *
@@ -275,14 +275,14 @@ public interface ObjectValue<T, E extends ObjectValue<T, E>>
      */
     E isNotEqualTo(T other, Comparator<T> comparator);
 
-    default ExpressionBuilder<T, T> comparableNotEquals(T other, Comparator<T> comparator) {
+    default ConditionBuilder<T, T> comparableNotEquals(T other, Comparator<T> comparator) {
 
         if (comparator == null) {
-            return ExpressionBuilder.of((T s) -> false).nullable()
-                .hint(StandardMessages.CANNOT_COMPARE_USING_NULL_COMPARATOR);
+            return ConditionBuilder.of((T s) -> false).nullable()
+                    .hint(StandardMessages.CANNOT_COMPARE_USING_NULL_COMPARATOR);
         }
         else {
-            return ExpressionBuilder.of((T s) -> comparator.compare(s, other) != 0).nullable();
+            return ConditionBuilder.of((T s) -> comparator.compare(s, other) != 0).nullable();
         }
     }
 
@@ -298,7 +298,7 @@ public interface ObjectValue<T, E extends ObjectValue<T, E>>
      * </code></pre>
      *
      * @param hashCode
-     *     The hash code to test against.
+     *         The hash code to test against.
      *
      * @return This expression (fluent interface).
      */
@@ -316,7 +316,7 @@ public interface ObjectValue<T, E extends ObjectValue<T, E>>
      * </code></pre>
      *
      * @param hashCode
-     *     The hash code to test against.
+     *         The hash code to test against.
      *
      * @return This expression (fluent interface).
      */
@@ -334,7 +334,7 @@ public interface ObjectValue<T, E extends ObjectValue<T, E>>
      * </code></pre>
      *
      * @param expected
-     *     The string to test against.
+     *         The string to test against.
      *
      * @return This expression (fluent interface).
      */
@@ -352,7 +352,7 @@ public interface ObjectValue<T, E extends ObjectValue<T, E>>
      * </code></pre>
      *
      * @param expected
-     *     The string to test against.
+     *         The string to test against.
      *
      * @return This expression (fluent interface).
      */
@@ -363,7 +363,7 @@ public interface ObjectValue<T, E extends ObjectValue<T, E>>
      * is true.
      *
      * @param predicate
-     *     The predicate to test.
+     *         The predicate to test.
      *
      * @return This expression (fluent interface).
      */
@@ -374,7 +374,7 @@ public interface ObjectValue<T, E extends ObjectValue<T, E>>
      * is false.
      *
      * @param predicate
-     *     The predicate to test.
+     *         The predicate to test.
      *
      * @return This expression (fluent interface).
      */

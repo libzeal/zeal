@@ -4,8 +4,9 @@ import java.util.Objects;
 import java.util.Optional;
 
 /**
- * A simple {@link Rationale} implementation that stores strings for the expected value, actual value, and hint (the
- * strings are already constructed without any indirection).
+ * A simple {@link Rationale} implementation that stores strings for the
+ * expected value, actual value, and hint (the strings are already constructed
+ * without any indirection).
  *
  * @author Justin Albano
  */
@@ -17,7 +18,8 @@ public class SimpleRationale implements Rationale {
     private final String hint;
 
     /**
-     * Creates an empty rationale, where the expected value, actual value, and hint are all blank strings.
+     * Creates an empty rationale, where the expected value, actual value, and
+     * hint are all blank strings.
      *
      * @return An empty rationale.
      */
@@ -29,9 +31,9 @@ public class SimpleRationale implements Rationale {
      * Creates a new rationale without a hint.
      *
      * @param expected
-     *     The expected value.
+     *         The expected value.
      * @param actual
-     *     The actual value.
+     *         The actual value.
      */
     public SimpleRationale(String expected, String actual) {
         this(expected, actual, null);
@@ -41,11 +43,11 @@ public class SimpleRationale implements Rationale {
      * Creates a new rationale without a hint.
      *
      * @param expected
-     *     The expected value.
+     *         The expected value.
      * @param actual
-     *     The actual value.
+     *         The actual value.
      * @param hint
-     *     A hint as to how the expected and actual values should match.
+     *         A hint as to how the expected and actual values should match.
      */
     public SimpleRationale(String expected, String actual, String hint) {
         this.expected = expected;
@@ -71,12 +73,16 @@ public class SimpleRationale implements Rationale {
     @Override
     public boolean equals(final Object o) {
 
-        if (this == o) return true;
-        if (!(o instanceof final SimpleRationale rationale)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof final SimpleRationale rationale)) {
+            return false;
+        }
 
         return Objects.equals(expected, rationale.expected) &&
-            Objects.equals(actual, rationale.actual) &&
-            Objects.equals(hint, rationale.hint);
+                Objects.equals(actual, rationale.actual) &&
+                Objects.equals(hint, rationale.hint);
     }
 
     @Override
