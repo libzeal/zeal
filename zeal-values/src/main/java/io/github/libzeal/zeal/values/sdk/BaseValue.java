@@ -17,8 +17,8 @@ import java.util.function.Predicate;
 import static io.github.libzeal.zeal.logic.format.ObjectFormatter.stringify;
 import static io.github.libzeal.zeal.logic.unary.Conditions.equalTo;
 import static io.github.libzeal.zeal.logic.unary.Conditions.exactly;
-import static io.github.libzeal.zeal.values.sdk.StandardMessages.PREDICATE_SATISFIED;
-import static io.github.libzeal.zeal.values.sdk.StandardMessages.PREDICATE_UNSATISFIED;
+import static io.github.libzeal.zeal.values.sdk.StandardMessages.CONDITION_SATISFIED;
+import static io.github.libzeal.zeal.values.sdk.StandardMessages.CONDITION_UNSATISFIED;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -29,15 +29,15 @@ import static java.util.Objects.requireNonNull;
  * the {@code StringExpression} class should extend this class, with {@code T}
  * set to {@link String}. An example of a proper extension of this class (to
  * create a {@code StringExpression} for example) would be:
- * <pre><code>class StringExpression extends ObjectExpression&lt;String,
- * StringExpression&gt;</code></pre>
+ * <pre>{@code class StringExpression extends ObjectExpression<String,
+ * StringExpression>}</pre>
  *
  * @param <T>
  *         The type of the subject.
  * @param <E>
  *         The type of the subclass. This type is an example of the
  *         <a href="https://stackoverflow.com/q/4173254/2403253">Curiously
- *         Recurring Template Pattern (CRTP)</a> . This type allows for the
+ *         Recurring Template Pattern (CRTP)</a>. This type allows for the
  *         fluent interface methods of this class to return the subtype object,
  *         rather than {@link BaseValue}. If {@link BaseValue} were returned
  *         from the fluent interface methods, then the subclass type would be
@@ -46,8 +46,8 @@ import static java.util.Objects.requireNonNull;
  *         example, if a {@code StringExpression} (extending this class) had a
  *         method called {@code includesCharacter(char)}, the following would
  *         cause an error:
- *         <pre><code>new
- *                             StringExpression("foo").isNotNull().includeCharacter('c');</code></pre>
+ *         <pre>{@code new
+ *                                         StringExpression("foo").isNotNull().includeCharacter('c');}</pre>
  *         Since the {@code isNotNull()} method would return a {@link BaseValue}
  *         object, rather than a {@code StringExpression}, thus hiding the
  *         {@code includesCharacter(char)} method of {@code  StringExpression}.
@@ -144,9 +144,9 @@ public abstract class BaseValue<T, E extends BaseValue<T, E>> implements ObjectV
      * Creates a builder for a new expression, where the supplied test may
      * receive a {@code null} subject.
      * <p>
-     * For example, if the supplied test is <code>subject, passed) -&gt;
-     * subject.toString().equals("hi")</code>, the value of {@code o} may be
-     * {@code null} and should be handled accordingly.
+     * For example, if the supplied test is
+     * {@code subject, passed) -> subject.toString().equals("hi")}, the value of
+     * {@code o} may be {@code null} and should be handled accordingly.
      *
      * @param test
      *         The predicate (test) for the expression. The subject supplied to
@@ -308,19 +308,14 @@ public abstract class BaseValue<T, E extends BaseValue<T, E>> implements ObjectV
 
     @Override
     public E is(final Condition<T> condition) {
-
-        if (condition == null) {
-            return append(
-                    expression(s -> false)
-                            .name("is[condition: (null)]")
-                            .expected(StandardMessages.ALWAYS_FAIL_CANNOT_CHECK_TO_NULL_CONDITION)
-                            .hint(StandardMessages.CANNOT_CHECK_USING_NULL_CONDITION)
-                            .build()
-            );
-        }
-        else {
-            return append(condition);
-        }
+        return append(Objects.requireNonNullElseGet(
+                condition,
+                () -> expression(s -> false)
+                        .name("is[condition: (null)]")
+                        .expected(StandardMessages.ALWAYS_FAIL_CANNOT_CHECK_TO_NULL_CONDITION)
+                        .hint(StandardMessages.CANNOT_CHECK_USING_NULL_CONDITION)
+                        .build()
+        ));
     }
 
     @Override
@@ -408,8 +403,8 @@ public abstract class BaseValue<T, E extends BaseValue<T, E>> implements ObjectV
         return append(
                 expression(predicate)
                         .name("predicate")
-                        .expected(StandardMessages.PREDICATE_SATISFIED)
-                        .actual(context -> context.ifPassedOrElse(PREDICATE_SATISFIED, PREDICATE_UNSATISFIED))
+                        .expected(StandardMessages.CONDITION_SATISFIED)
+                        .actual(context -> context.ifPassedOrElse(CONDITION_SATISFIED, CONDITION_UNSATISFIED))
                         .build()
         );
     }
@@ -419,8 +414,8 @@ public abstract class BaseValue<T, E extends BaseValue<T, E>> implements ObjectV
         return append(
                 expression(o -> !predicate.test(o))
                         .name("not[predicate]")
-                        .expected(StandardMessages.PREDICATE_UNSATISFIED)
-                        .actual(context -> context.ifPassedOrElse(PREDICATE_UNSATISFIED, PREDICATE_SATISFIED))
+                        .expected(StandardMessages.CONDITION_UNSATISFIED)
+                        .actual(context -> context.ifPassedOrElse(CONDITION_UNSATISFIED, CONDITION_SATISFIED))
                         .build()
         );
     }

@@ -5,7 +5,8 @@ import io.github.libzeal.zeal.values.sdk.BaseValue;
 /**
  * An expression used to evaluate {@link Character} instances.
  * <p>
- * Note:  Many of the predicates of this expression require unboxing, resulting in some performance loss.
+ * Note:  Many of the predicates of this expression require unboxing, resulting
+ * in some performance loss.
  *
  * @author Justin Albano
  */
@@ -22,14 +23,15 @@ public class BoxedCharacterValue extends BaseValue<Character, BoxedCharacterValu
      * Creates a new expression.
      *
      * @param subject
-     *     The subject of the expression.
+     *         The subject of the expression.
      */
     public BoxedCharacterValue(final Character subject) {
         super(subject, "Character value");
     }
 
     /**
-     * Adds a predicate to the expression that checks if the subject is lower case.
+     * Adds a predicate to the expression that checks if the subject is lower
+     * case.
      *
      * @return This expression (fluent interface).
      *
@@ -37,15 +39,16 @@ public class BoxedCharacterValue extends BaseValue<Character, BoxedCharacterValu
      */
     public BoxedCharacterValue isLowerCase() {
         return append(
-            expression(Character::isLowerCase)
-                .name(IS_LOWER_CASE)
-                .expected(IS_LOWER_CASE)
-                .build()
+                expression(Character::isLowerCase)
+                        .name(IS_LOWER_CASE)
+                        .expected(IS_LOWER_CASE)
+                        .build()
         );
     }
 
     /**
-     * Adds a predicate to the expression that checks if the subject is upper case.
+     * Adds a predicate to the expression that checks if the subject is upper
+     * case.
      *
      * @return This expression (fluent interface).
      *
@@ -53,15 +56,16 @@ public class BoxedCharacterValue extends BaseValue<Character, BoxedCharacterValu
      */
     public BoxedCharacterValue isUpperCase() {
         return append(
-            expression(Character::isUpperCase)
-                .name(IS_UPPER_CASE)
-                .expected(IS_UPPER_CASE)
-                .build()
+                expression(Character::isUpperCase)
+                        .name(IS_UPPER_CASE)
+                        .expected(IS_UPPER_CASE)
+                        .build()
         );
     }
 
     /**
-     * Adds a predicate to the expression that checks if the subject is a letter.
+     * Adds a predicate to the expression that checks if the subject is a
+     * letter.
      *
      * @return This expression (fluent interface).
      *
@@ -69,15 +73,16 @@ public class BoxedCharacterValue extends BaseValue<Character, BoxedCharacterValu
      */
     public BoxedCharacterValue isLetter() {
         return append(
-            expression(Character::isLetter)
-                .name(IS_LETTER)
-                .expected(IS_LETTER)
-                .build()
+                expression(Character::isLetter)
+                        .name(IS_LETTER)
+                        .expected(IS_LETTER)
+                        .build()
         );
     }
 
     /**
-     * Adds a predicate to the expression that checks if the subject is not a letter.
+     * Adds a predicate to the expression that checks if the subject is not a
+     * letter.
      *
      * @return This expression (fluent interface).
      *
@@ -85,15 +90,16 @@ public class BoxedCharacterValue extends BaseValue<Character, BoxedCharacterValu
      */
     public BoxedCharacterValue isNotLetter() {
         return append(
-            expression(s -> !Character.isLetter(s))
-                .name("isNotLetter")
-                .expected("not[" + IS_LETTER + "]")
-                .build()
+                expression(s -> !Character.isLetter(s))
+                        .name("isNotLetter")
+                        .expected("not[" + IS_LETTER + "]")
+                        .build()
         );
     }
 
     /**
-     * Adds a predicate to the expression that checks if the subject is a digit.
+     * Adds a predicate to the expression that checks if the subject is a
+     * digit.
      *
      * @return This expression (fluent interface).
      *
@@ -101,15 +107,16 @@ public class BoxedCharacterValue extends BaseValue<Character, BoxedCharacterValu
      */
     public BoxedCharacterValue isDigit() {
         return append(
-            expression(Character::isDigit)
-                .name(IS_DIGIT)
-                .expected(IS_DIGIT)
-                .build()
+                expression(Character::isDigit)
+                        .name(IS_DIGIT)
+                        .expected(IS_DIGIT)
+                        .build()
         );
     }
 
     /**
-     * Adds a predicate to the expression that checks if the subject is not a digit.
+     * Adds a predicate to the expression that checks if the subject is not a
+     * digit.
      *
      * @return This expression (fluent interface).
      *
@@ -117,15 +124,16 @@ public class BoxedCharacterValue extends BaseValue<Character, BoxedCharacterValu
      */
     public BoxedCharacterValue isNotDigit() {
         return append(
-            expression(s -> !Character.isDigit(s))
-                .name("isNotDigit")
-                .expected("not[" + IS_DIGIT + "]")
-                .build()
+                expression(s -> !Character.isDigit(s))
+                        .name("isNotDigit")
+                        .expected("not[" + IS_DIGIT + "]")
+                        .build()
         );
     }
 
     /**
-     * Adds a predicate to the expression that checks if the subject is a letter or a digit.
+     * Adds a predicate to the expression that checks if the subject is a letter
+     * or a digit.
      *
      * @return This expression (fluent interface).
      *
@@ -133,15 +141,16 @@ public class BoxedCharacterValue extends BaseValue<Character, BoxedCharacterValu
      */
     public BoxedCharacterValue isLetterOrDigit() {
         return append(
-            expression(Character::isLetterOrDigit)
-                .name(IS_LETTER_OR_DIGIT)
-                .expected(IS_LETTER_OR_DIGIT)
-                .build()
+                expression(Character::isLetterOrDigit)
+                        .name(IS_LETTER_OR_DIGIT)
+                        .expected(IS_LETTER_OR_DIGIT)
+                        .build()
         );
     }
 
     /**
-     * Adds a predicate to the expression that checks if the subject is not a letter or a digit.
+     * Adds a predicate to the expression that checks if the subject is not a
+     * letter or a digit.
      *
      * @return This expression (fluent interface).
      *
@@ -149,15 +158,16 @@ public class BoxedCharacterValue extends BaseValue<Character, BoxedCharacterValu
      */
     public BoxedCharacterValue isNotLetterOrDigit() {
         return append(
-            expression(s -> !Character.isLetterOrDigit(s))
-                .name("isNotLetterOrDigit")
-                .expected("not[" + IS_LETTER_OR_DIGIT + "]")
-                .build()
+                expression(s -> !Character.isLetterOrDigit(s))
+                        .name("isNotLetterOrDigit")
+                        .expected("not[" + IS_LETTER_OR_DIGIT + "]")
+                        .build()
         );
     }
 
     /**
-     * Adds a predicate to the expression that checks if the subject is a whitespace.
+     * Adds a predicate to the expression that checks if the subject is a
+     * whitespace.
      *
      * @return This expression (fluent interface).
      *
@@ -165,15 +175,16 @@ public class BoxedCharacterValue extends BaseValue<Character, BoxedCharacterValu
      */
     public BoxedCharacterValue isWhitespace() {
         return append(
-            expression(Character::isWhitespace)
-                .name(IS_WHITESPACE)
-                .expected(IS_WHITESPACE)
-                .build()
+                expression(Character::isWhitespace)
+                        .name(IS_WHITESPACE)
+                        .expected(IS_WHITESPACE)
+                        .build()
         );
     }
 
     /**
-     * Adds a predicate to the expression that checks if the subject is not a whitespace.
+     * Adds a predicate to the expression that checks if the subject is not a
+     * whitespace.
      *
      * @return This expression (fluent interface).
      *
@@ -181,10 +192,10 @@ public class BoxedCharacterValue extends BaseValue<Character, BoxedCharacterValu
      */
     public BoxedCharacterValue isNotWhitespace() {
         return append(
-            expression(s -> !Character.isWhitespace(s))
-                .name("isNotWhitespace")
-                .expected("not[" + IS_WHITESPACE + "]")
-                .build()
+                expression(s -> !Character.isWhitespace(s))
+                        .name("isNotWhitespace")
+                        .expected("not[" + IS_WHITESPACE + "]")
+                        .build()
         );
     }
 }

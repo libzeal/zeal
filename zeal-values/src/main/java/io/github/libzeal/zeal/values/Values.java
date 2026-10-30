@@ -12,7 +12,8 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * A class containing static methods that wrap common values as unary expressions.
+ * A class containing static methods that wrap common values as unary
+ * expressions.
  *
  * @author Justin Albano
  */
@@ -21,13 +22,14 @@ public class Values {
     private Values() {
     }
 
-    /**Integer
-     * Wraps an object as a value. This method is used when a more-specific expression is not available.
+    /**
+     * Integer Wraps an object as a value. This method is used when a
+     * more-specific expression is not available.
      *
      * @param value
-     *     The value to wrap.
+     *         The value to wrap.
      * @param <T>
-     *     The type of the object being wrapped.
+     *         The type of the object being wrapped.
      *
      * @return A value that wraps the supplied value.
      */
@@ -39,9 +41,9 @@ public class Values {
      * Wraps a {@link Enum} as a value.
      *
      * @param value
-     *     The {@link Enum} to wrap.
+     *         The {@link Enum} to wrap.
      * @param <T>
-     *     The type of the enum.
+     *         The type of the enum.
      *
      * @return A value that wraps the supplied {@link Enum}.
      */
@@ -53,7 +55,7 @@ public class Values {
      * Wraps a {@link String} as a value.
      *
      * @param value
-     *     The {@link String} to wrap.
+     *         The {@link String} to wrap.
      *
      * @return A value that wraps the supplied {@link String}.
      */
@@ -65,7 +67,7 @@ public class Values {
      * Wraps a {@link Long} as a value.
      *
      * @param value
-     *     The {@link Long} to wrap.
+     *         The {@link Long} to wrap.
      *
      * @return A value that wraps the supplied {@link Long}.
      */
@@ -77,7 +79,7 @@ public class Values {
      * Wraps a {@link Integer} as a value.
      *
      * @param value
-     *     The {@link Integer} to wrap.
+     *         The {@link Integer} to wrap.
      *
      * @return A value that wraps the supplied {@link Integer}.
      */
@@ -89,7 +91,7 @@ public class Values {
      * Wraps a {@link Double} as a value.
      *
      * @param value
-     *     The {@link Double} to wrap.
+     *         The {@link Double} to wrap.
      *
      * @return A value that wraps the supplied {@link Double}.
      */
@@ -101,7 +103,7 @@ public class Values {
      * Wraps a {@link Float} as a value.
      *
      * @param value
-     *     The {@link Float} to wrap.
+     *         The {@link Float} to wrap.
      *
      * @return A value that wraps the supplied {@link Float}.
      */
@@ -113,7 +115,7 @@ public class Values {
      * Wraps a {@link Boolean} as a value.
      *
      * @param value
-     *     The {@link Boolean} to wrap.
+     *         The {@link Boolean} to wrap.
      *
      * @return A value that wraps the supplied {@link Boolean}.
      */
@@ -125,7 +127,7 @@ public class Values {
      * Wraps a {@link Byte} as a value.
      *
      * @param value
-     *     The {@link Byte} to wrap.
+     *         The {@link Byte} to wrap.
      *
      * @return A value that wraps the supplied {@link Byte}.
      */
@@ -137,7 +139,7 @@ public class Values {
      * Wraps a {@link Character} as a value.
      *
      * @param value
-     *     The {@link Character} to wrap.
+     *         The {@link Character} to wrap.
      *
      * @return A value that wraps the supplied {@link Character}.
      */
@@ -149,26 +151,86 @@ public class Values {
     // Arrays & Collections
     // -------------------------------------------------------------------------
 
+    /**
+     * Wraps an object array as a value.
+     *
+     * @param value
+     *         The object array to wrap.
+     * @param <T>
+     *         The type of the elements in the array.
+     *
+     * @return A value that wraps the supplied object array.
+     */
     public static <T> ArrayValue<T> value(final T[] value) {
         return new ArrayValue<>(value);
     }
 
+    /**
+     * Wraps an {@link Iterator} as a value.
+     *
+     * @param value
+     *         The {@link Iterator} to wrap.
+     * @param <T>
+     *         The type of the elements in the {@link Iterator}.
+     *
+     * @return A value that wraps the supplied {@link Iterator}.
+     */
     public static <T> IteratorValue<T> value(final Iterator<T> value) {
         return new IteratorValue<>(value);
     }
 
+    /**
+     * Wraps an {@link Iterable} as a value.
+     *
+     * @param value
+     *         The {@link Iterable} to wrap.
+     * @param <T>
+     *         The type of the elements in the {@link Iterable}.
+     *
+     * @return A value that wraps the supplied {@link Iterable}.
+     */
     public static <T> IterableValue<T> value(final Iterable<T> value) {
         return new IterableValue<>(value);
     }
 
+    /**
+     * Wraps a {@link Collection} as a value.
+     *
+     * @param value
+     *         The {@link Collection} to wrap.
+     * @param <T>
+     *         The type of the elements in the {@link Collection}.
+     *
+     * @return A value that wraps the supplied {@link Collection}.
+     */
     public static <T> SimpleCollectionValue<T> value(final Collection<T> value) {
         return new SimpleCollectionValue<>(value);
     }
 
+    /**
+     * Wraps an {@link List} as a value.
+     *
+     * @param value
+     *         The {@link List} to wrap.
+     * @param <T>
+     *         The type of the elements in the {@link List}.
+     *
+     * @return A value that wraps the supplied {@link List}.
+     */
     public static <T> ListValue<T> value(final List<T> value) {
         return new ListValue<>(value);
     }
 
+    /**
+     * Wraps an {@link Set} as a value.
+     *
+     * @param value
+     *         The {@link Set} to wrap.
+     * @param <T>
+     *         The type of the elements in the {@link Set}.
+     *
+     * @return A value that wraps the supplied {@link Set}.
+     */
     public static <T> SetValue<T> value(final Set<T> value) {
         return new SetValue<>(value);
     }

@@ -6,7 +6,7 @@
  */
 module zeal.values {
 
-    requires zeal.logic;
+    requires transitive zeal.logic;
 
     exports io.github.libzeal.zeal.values;
     exports io.github.libzeal.zeal.values.collection;
