@@ -122,4 +122,12 @@ class DurationFormatterTest {
 
         assertEquals("0ns", format(duration));
     }
+
+    @Test
+    void givenNegative_whenFormat_thenEmptyStringReturned() {
+
+        final Duration duration = Duration.ofNanos(-168);
+
+        assertEquals("", format(duration));
+    }
 }

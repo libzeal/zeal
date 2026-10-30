@@ -1,7 +1,6 @@
 package io.github.libzeal.zeal.logic.util;
 
 import java.time.Duration;
-import java.time.Instant;
 
 /**
  * A utility class that tracks time.
@@ -10,7 +9,7 @@ import java.time.Instant;
  */
 public class StopWatch {
 
-    private Instant start;
+    private long startNanos;
 
     private StopWatch() {
     }
@@ -30,7 +29,7 @@ public class StopWatch {
      * @return This stop watch (fluent interface).
      */
     public StopWatch start() {
-        this.start = Instant.now();
+        this.startNanos = System.nanoTime();
         return this;
     }
 
@@ -41,6 +40,6 @@ public class StopWatch {
      * @return The time elapsed since the stop watch was started.
      */
     public Duration stop() {
-        return Duration.between(start, Instant.now());
+        return Duration.ofNanos(System.nanoTime() - startNanos);
     }
 }

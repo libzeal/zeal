@@ -10,7 +10,10 @@ import io.github.libzeal.zeal.logic.evaluation.SkippableEvaluation.Evaluated;
 import io.github.libzeal.zeal.logic.evaluation.SkippableEvaluation.Skipped;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
 
+import java.util.Collections;
+import java.util.IdentityHashMap;
 import java.util.List;
+import java.util.Set;
 
 /**
  * A simple formatter that provides information about the root cause of a failed
@@ -35,22 +38,23 @@ public class SimpleFormatter implements Formatter {
     public String format(final Evaluation evaluation) {
 
         final StringBuilder builder = new StringBuilder();
+        final List<Cause.Trace> traces = evaluation.cause().traces();
 
         if (!evaluation.isTrue()) {
-            appendRootCauses(evaluation, builder);
+            appendRootCauses(traces, builder);
         }
 
         builder.append("Evaluation:\n");
-        appendEvaluation(evaluation, evaluation.cause().rootCauses(), 0, builder);
+        appendEvaluation(evaluation, rootCausesOf(traces), 0, builder);
 
         return builder.toString().trim();
     }
 
-    private static void appendRootCauses(final Evaluation evaluation, final StringBuilder builder) {
+    private static void appendRootCauses(final List<Cause.Trace> traces, final StringBuilder builder) {
 
         builder.append("Root Causes:\n");
 
-        for (final Cause.Trace trace : evaluation.cause().traces()) {
+        for (final Cause.Trace trace : traces) {
 
             final Evaluation rootCause = trace.rootCause();
             final Rationale rationale = rootCause.rationale();
@@ -65,16 +69,44 @@ public class SimpleFormatter implements Formatter {
                 appendField("  Notes", TRUE_ROOT_CAUSE_NOTE, builder);
             }
         }
-        
+
         builder.append("\n");
     }
 
-    private static void appendField(final String key, final String value, final StringBuilder builder) {
+    private static void appendField(
+            final String key, final String value,
+            final StringBuilder builder
+    ) {
         builder.append(String.format(FIELD_FORMAT, key, value));
     }
 
+    private static Set<Evaluation> rootCausesOf(final List<Cause.Trace> traces) {
+
+        // An identity set is used so that the Set is constructed of unique
+        // Evaluations by identity rather than according to equals(), which
+        // might match for Evaluations with the same field values, like two
+        // Tautologies. This is critical when marking the exact instance that is
+        // a root cause during formatting, since the comparison will be done by
+        // identity, not by field comparisons.
+        //
+        // This set also reduces lookup to O(1) rather than O(n) for a List. A
+        // HashSet is not used because it relies on equals() and hashCode() to
+        // compare, requiring a CompoundEvaluation to hash its entire tree.
+        final Set<Evaluation> rootCauses = identitySet();
+
+        for (final Cause.Trace trace : traces) {
+            rootCauses.add(trace.rootCause());
+        }
+
+        return rootCauses;
+    }
+
+    private static Set<Evaluation> identitySet() {
+        return Collections.newSetFromMap(new IdentityHashMap<>());
+    }
+
     private static void appendEvaluation(
-            final Evaluation evaluation, final List<Evaluation> rootCauses,
+            final Evaluation evaluation, final Set<Evaluation> rootCauses,
             final int depth, final StringBuilder builder
     ) {
 
@@ -85,7 +117,7 @@ public class SimpleFormatter implements Formatter {
                 .append(DurationFormatter.format(evaluation.duration()))
                 .append(")");
 
-        if (rootCauses.stream().anyMatch(rootCause -> rootCause == evaluation)) {
+        if (rootCauses.contains(evaluation)) {
             builder.append("  <---[ Root Cause ]");
         }
 

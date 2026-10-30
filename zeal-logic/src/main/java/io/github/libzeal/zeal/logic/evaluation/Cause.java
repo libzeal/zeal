@@ -82,9 +82,14 @@ public record Cause(Evaluation evaluation, DirectCause direct) {
      * @return The evaluations that represent the root causes of the evaluation.
      */
     public List<Evaluation> rootCauses() {
-        return traces().stream()
-                .map(Trace::rootCause)
-                .toList();
+        return switch (direct) {
+            case DirectCause.Self() -> List.of(evaluation);
+            case final DirectCause.Delegated delegated ->
+                    delegated.evaluations()
+                            .stream()
+                            .flatMap(delegate -> delegate.cause().rootCauses().stream())
+                            .toList();
+        };
     }
 
     /**
