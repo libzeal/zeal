@@ -1,30 +1,18 @@
 package io.github.libzeal.zeal.values.collection;
 
-import io.github.libzeal.zeal.values.collection.BaseIterableValue.IterableSequenceOperations;
+import io.github.libzeal.zeal.values.sdk.sequence.BaseSequenceValue;
+import io.github.libzeal.zeal.values.sdk.sequence.SequenceOperations;
 
-import java.util.Collection;
-import java.util.List;
 import java.util.Objects;
-import java.util.stream.StreamSupport;
 
-import static java.util.stream.Collectors.toList;
-
-public final class IterableValue<T> extends
-    BaseIterableValue<T, Iterable<T>, IterableSequenceOperations<T, Iterable<T>>, IterableValue<T>> {
+public final class IterableValue<T> extends BaseSequenceValue<Iterable<T>, T, IterableValue<T>> {
 
     public IterableValue(final Iterable<T> subject) {
         super(subject, "Iterable value", new ConcreteIterableSequenceOperations<>());
     }
 
     private static class ConcreteIterableSequenceOperations<T, I extends Iterable<T>>
-        implements IterableSequenceOperations<T, I> {
-
-        @Override
-        public List<T> findAllIn(final I haystack, final Collection<T> needles) {
-            return StreamSupport.stream(haystack.spliterator(), false)
-                .filter(needles::contains)
-                .collect(toList());
-        }
+        implements SequenceOperations<T, I> {
 
         @Override
         public int size(final I haystack) {
@@ -37,11 +25,6 @@ public final class IterableValue<T> extends
 
             return count;
 
-        }
-
-        @Override
-        public boolean isEmpty(final I haystack) {
-            return haystack.iterator().hasNext();
         }
 
         @Override

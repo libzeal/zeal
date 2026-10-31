@@ -1,11 +1,14 @@
 package io.github.libzeal.zeal.values.collection;
 
-import io.github.libzeal.zeal.logic.unary.future.rationale.ComputableField;
-import io.github.libzeal.zeal.values.api.BaseObjectValue;
+import io.github.libzeal.zeal.logic.unary.ObservableUnaryExpression.Field;
+import io.github.libzeal.zeal.values.sdk.BaseValue;
 
 import java.util.Iterator;
 
-public class IteratorValue<T> extends BaseObjectValue<Iterator<T>, IteratorValue<T>> {
+public class IteratorValue<T> extends BaseValue<Iterator<T>, IteratorValue<T>> {
+
+    private static final String HAS_NEXT_NAME = "hasNext";
+    private static final String NOT_HAS_NEXT_NAME = "not[hasNext]";
 
     public IteratorValue(final Iterator<T> subject) {
         super(subject, "Iterator value");
@@ -13,31 +16,27 @@ public class IteratorValue<T> extends BaseObjectValue<Iterator<T>, IteratorValue
 
     public IteratorValue<T> hasNext() {
         return append(
-                expression(Iterator::hasNext)
-                        .name(hasNextName())
-                        .expected(hasNextName())
+                observing(Iterator::hasNext)
+                        .passesIf(hasNext -> hasNext)
+                        .name(HAS_NEXT_NAME)
+                        .expected(HAS_NEXT_NAME)
                         .actual(hasNextActual())
+                        .build()
         );
     }
 
-    private static String hasNextName() {
-        return "hasNext";
-    }
-
-    private static <T> ComputableField<Iterator<T>> hasNextActual() {
-        return context -> context.ifPassedOrElse(hasNextName(), doesNotHaveNextName());
-    }
-
-    private static String doesNotHaveNextName() {
-        return "not[hasNext]";
+    private static <T> Field<Iterator<T>, Boolean> hasNextActual() {
+        return context -> Boolean.TRUE.equals(context.observed()) ? HAS_NEXT_NAME : NOT_HAS_NEXT_NAME;
     }
 
     public IteratorValue<T> doesNotHaveNext() {
         return append(
-                expression(s -> !s.hasNext())
-                        .name(doesNotHaveNextName())
-                        .expected(doesNotHaveNextName())
+                observing(Iterator::hasNext)
+                        .passesIf(hasNext -> !hasNext)
+                        .name(NOT_HAS_NEXT_NAME)
+                        .expected(NOT_HAS_NEXT_NAME)
                         .actual(hasNextActual())
+                        .build()
         );
     }
 }

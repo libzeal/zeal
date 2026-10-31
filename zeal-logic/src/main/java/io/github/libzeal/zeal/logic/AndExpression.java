@@ -1,110 +1,88 @@
 package io.github.libzeal.zeal.logic;
 
-import io.github.libzeal.zeal.logic.CompoundEvaluator.CompoundRationaleBuilder;
 import io.github.libzeal.zeal.logic.CompoundEvaluator.Tally;
+import io.github.libzeal.zeal.logic.evaluation.CompoundEvaluation;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import static io.github.libzeal.zeal.logic.util.ArgumentValidator.requireDoesNotContainNulls;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A compound expression where all sub-expression must be pass for the compound
- * expression to pass.
+ * An expression whose children are ANDed together.
+ *
+ * @param name
+ *         The name of the expression.
+ * @param children
+ *         The sub-expressions that are ANDed together. If no children are
+ *         provided, the ANDed expression evaluates to true.
  *
  * @author Justin Albano
+ * @since 0.5.0
  */
-public record AndExpression(String name,
-                            List<Expression> children) implements CompoundExpression {
+public record AndExpression(
+        String name,
+        List<Expression> children
+) implements CompoundExpression {
 
     static final String DEFAULT_NAME = "AND";
+    static final String EXPECTED = "false = 0";
 
     /**
-     * Creates a new conjunctive expression.
+     * Creates a new AND expression.
      *
      * @param name
-     *     The name of the expression.
+     *         The name of the expression.
      * @param children
-     *     The expressions used to initialize the compound expression.
+     *         The sub-expressions to be ANDed together.
      *
      * @throws NullPointerException
-     *     The supplied name is {@code null} or the children contains a
-     *     {@code null} value.
+     *         The supplied name or children is {@code null} or the children
+     *         contains any {@code null}s.
      */
     public AndExpression {
         requireNonNull(name);
-        requireDoesNotContainNulls(children);
+        children = List.copyOf(children);
     }
 
     /**
-     * Creates a new conjunctive expression using a default name.
+     * Creates an AND expression with a default name.
      *
      * @param children
-     *     The expressions used to initialize the compound expression.
+     *         The sub-expressions to be ANDed together.
      *
-     * @return A conjunctive expression with a default name.
+     * @return An AND expression with a default name.
      *
      * @throws NullPointerException
-     *     The supplied name is {@code null} or the children contains a
-     *     {@code null} value.
+     *         The supplied children list is {@code null} or the list contains
+     *         any {@code null}s.
      */
     public static AndExpression unnamed(final List<Expression> children) {
         return new AndExpression(DEFAULT_NAME, children);
     }
 
     /**
-     * Creates a new conjunctive expression using a default name.
+     * Creates an AND expression with a default name.
      *
      * @param children
-     *     The expressions used to initialize the compound expression.
+     *         The sub-expressions to be ANDed together.
      *
-     * @return A conjunctive expression with a default name.
+     * @return An AND expression with a default name.
      *
      * @throws NullPointerException
-     *     The supplied name is {@code null} or the children contains a
-     *     {@code null} value.
+     *         The supplied children list is {@code null} or the list contains
+     *         any {@code null}s.
      */
     public static AndExpression unnamed(final Expression... children) {
-        return new AndExpression(DEFAULT_NAME, Arrays.asList(children));
-    }
-
-    /**
-     * Creates a new conjunctive expression with an empty default sub-expression
-     * list.
-     *
-     * @param name
-     *     The name of the expression.
-     *
-     * @throws NullPointerException
-     *     The supplied name is {@code null}.
-     */
-    public AndExpression(final String name) {
-        this(name, new ArrayList<>(1));
+        return new AndExpression(DEFAULT_NAME, List.of(children));
     }
 
     @Override
-    public void append(final Expression expression) {
-        this.children.add(expression);
-    }
-
-    @Override
-    public void prepend(final Expression expression) {
-        this.children.addFirst(expression);
-    }
-
-    @Override
-    public Evaluation evaluate() {
-
-        final CompoundRationaleBuilder builder = CompoundRationaleBuilder.withExpectedPassed(children.size());
-
-        return new CompoundEvaluator(
-            name,
-            Tally::allPassed,
-            Tally::anyFailed,
-            builder
-        ).evaluate(children);
+    public CompoundEvaluation evaluate() {
+        return CompoundEvaluator.evaluate(
+                this, EXPECTED,
+                Evaluation::isFalse,
+                Tally::hasNoFalse
+        );
     }
 }

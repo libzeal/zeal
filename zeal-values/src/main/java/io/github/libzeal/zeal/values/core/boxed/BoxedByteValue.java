@@ -1,11 +1,16 @@
 package io.github.libzeal.zeal.values.core.boxed;
 
+import io.github.libzeal.zeal.values.core.boxed.BoxedNumberExpressions.BoxedNumberOperations;
+import io.github.libzeal.zeal.values.sdk.BaseValue;
+
 /**
  * An expression used to evaluate {@link Byte} instances.
  *
  * @author Justin Albano
  */
-public class BoxedByteValue extends BoxedWholeNumberValue<Byte, BoxedByteValue> {
+public class BoxedByteValue extends BaseValue<Byte, BoxedByteValue> implements BoxedWholeNumberValue<Byte, BoxedByteValue> {
+
+    private final BoxedByteOperations operations;
 
     /**
      * Creates a new expression.
@@ -15,45 +20,146 @@ public class BoxedByteValue extends BoxedWholeNumberValue<Byte, BoxedByteValue> 
      */
     public BoxedByteValue(final Byte subject) {
         super(subject, "Byte value");
+        this.operations = new BoxedByteOperations();
     }
 
     @Override
-    protected Byte zero() {
-        return 0;
+    public BoxedByteValue isEven() {
+        return append(
+            BoxedWholeNumberExpressions.isEven()
+        );
     }
 
     @Override
-    protected Byte min() {
-        return Byte.MIN_VALUE;
+    public BoxedByteValue isOdd() {
+        return append(
+            BoxedWholeNumberExpressions.isOdd()
+        );
     }
 
     @Override
-    protected Byte max() {
-        return Byte.MAX_VALUE;
+    public BoxedByteValue isLessThan(final Byte value) {
+        return append(
+            BoxedNumberExpressions.isLessThan(value, operations)
+        );
     }
 
     @Override
-    protected boolean eq(final Byte a, final Byte b) {
-        return a.equals(b);
+    public BoxedByteValue isGreaterThan(final Byte value) {
+        return append(
+            BoxedNumberExpressions.isGreaterThan(value, operations)
+        );
     }
 
     @Override
-    protected boolean lt(final Byte a, final Byte b) {
-        return a < b;
+    public BoxedByteValue isLessThanOrEqualTo(final Byte value) {
+        return append(
+            BoxedNumberExpressions.isLessThanOrEqualTo(value, operations)
+        );
     }
 
     @Override
-    protected boolean gt(final Byte a, final Byte b) {
-        return a > b;
+    public BoxedByteValue isGreaterThanOrEqualTo(final Byte value) {
+        return append(
+            BoxedNumberExpressions.isGreaterThanOrEqualTo(value, operations)
+        );
     }
 
     @Override
-    protected boolean gte(final Byte a, final Byte b) {
-        return a >= b;
+    public BoxedByteValue isMaxValue() {
+        return append(
+            BoxedNumberExpressions.isMaxValue(operations)
+        );
     }
 
     @Override
-    protected boolean lte(final Byte a, final Byte b) {
-        return a <= b;
+    public BoxedByteValue isMinValue() {
+        return append(
+            BoxedNumberExpressions.isMinValue(operations)
+        );
+    }
+
+    @Override
+    public BoxedByteValue isZero() {
+        return append(
+            BoxedNumberExpressions.isZero(operations)
+        );
+    }
+
+    @Override
+    public BoxedByteValue isNotZero() {
+        return append(
+            BoxedNumberExpressions.isNotZero(operations)
+        );
+    }
+
+    @Override
+    public BoxedByteValue isPositive() {
+        return append(
+            BoxedNumberExpressions.isPositive(operations)
+        );
+    }
+
+    @Override
+    public BoxedByteValue isNotPositive() {
+        return append(
+            BoxedNumberExpressions.isNotPositive(operations)
+        );
+    }
+
+    @Override
+    public BoxedByteValue isNegative() {
+        return append(
+            BoxedNumberExpressions.isNegative(operations)
+        );
+    }
+
+    @Override
+    public BoxedByteValue isNotNegative() {
+        return append(
+            BoxedNumberExpressions.isNotNegative(operations)
+        );
+    }
+    private static final class BoxedByteOperations implements BoxedNumberOperations<Byte> {
+
+        @Override
+        public Byte zero() {
+            return 0;
+        }
+
+        @Override
+        public Byte min() {
+            return Byte.MIN_VALUE;
+        }
+
+        @Override
+        public Byte max() {
+            return Byte.MAX_VALUE;
+        }
+
+        @Override
+        public boolean eq(final Byte a, final Byte b) {
+            return a.equals(b);
+        }
+
+        @Override
+        public boolean lt(final Byte a, final Byte b) {
+            return a < b;
+        }
+
+        @Override
+        public boolean gt(final Byte a, final Byte b) {
+            return a > b;
+        }
+
+        @Override
+        public boolean gte(final Byte a, final Byte b) {
+            return a >= b;
+        }
+
+        @Override
+        public boolean lte(final Byte a, final Byte b) {
+            return a <= b;
+        }
     }
 }

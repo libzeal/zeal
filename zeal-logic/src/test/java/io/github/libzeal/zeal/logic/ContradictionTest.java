@@ -1,15 +1,16 @@
 package io.github.libzeal.zeal.logic;
 
-import io.github.libzeal.zeal.logic.evaluation.cause.Cause;
+import io.github.libzeal.zeal.logic.evaluation.DirectCause;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
-import io.github.libzeal.zeal.logic.evaluation.Result;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static io.github.libzeal.zeal.logic.test.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.mock;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
 
 class ContradictionTest {
 
@@ -32,10 +33,38 @@ class ContradictionTest {
         final Evaluation evaluation = contradiction.evaluate();
         final Rationale rationale = evaluation.rationale();
 
-        assertEquals(Result.FALSE, evaluation.result());
+        assertFalse(evaluation.isTrue());
         assertEquals(Contradiction.NAME, evaluation.name());
         assertRationaleEquals(rationale, FALSE, FALSE);
-        assertEquals(evaluation, evaluation.cause().evaluation());
+        assertEquals(DirectCause.self(), evaluation.cause().direct());
         assertDepthFirstTraversalIsTerminal(evaluation);
+    }
+
+    @Test
+    void givenDefault_whenEvaluateTwice_thenDistinctEvaluationsReturned() {
+        assertNotSame(contradiction.evaluate(), contradiction.evaluate());
+    }
+
+    @Test
+    void givenTwoContradictions_whenEquals_thenEqual() {
+
+        final Contradiction other = new Contradiction();
+
+        assertNotSame(contradiction, other);
+        assertEquals(contradiction, other);
+        assertEquals(contradiction.hashCode(), other.hashCode());
+    }
+
+    @Test
+    void givenTautology_whenEquals_thenNotEqual() {
+        assertNotEquals(contradiction, new Tautology());
+    }
+
+    @Test
+    void givenCompoundsOfContradictions_whenEquals_thenEqual() {
+        assertEquals(
+            OrExpression.unnamed(new Contradiction()),
+            OrExpression.unnamed(new Contradiction())
+        );
     }
 }

@@ -1,0 +1,446 @@
+package io.github.libzeal.zeal.values.collection;
+
+import io.github.libzeal.zeal.values.core.ObjectValue;
+import io.github.libzeal.zeal.values.sdk.sequence.OrderedSequenceValue;
+import org.junit.jupiter.api.Test;
+
+
+interface OrderedSequenceValueTest<S, E extends ObjectValue<S, E> & OrderedSequenceValue<String, E>>
+    extends SequenceValueTest<S, E> {
+
+    // ---- includes (with the index of the desired element as the hint) ----
+
+    @Test
+    default void givenIncluded_whenIncludes_thenHintHasIndex() {
+        newTestCase()
+            .subject(subjectOf("a", "b"))
+            .expression(value -> value.includes("b"))
+            .result(true)
+            .name("includes[b]")
+            .expected("includes[b]")
+            .actual("includes[b]")
+            .hint("'b' found at index 1")
+            .run();
+    }
+
+    @Test
+    default void givenExcluded_whenIncludes_thenHintSaysNotIncluded() {
+        newTestCase()
+            .subject(subjectOf("a", "b"))
+            .expression(value -> value.includes("c"))
+            .result(false)
+            .name("includes[c]")
+            .expected("includes[c]")
+            .actual("excludes[c]")
+            .hint("Value does not include 'c'")
+            .run();
+    }
+
+    // ---- excludes (with the index of the desired element as the hint) ----
+
+    @Test
+    default void givenExcluded_whenExcludes_thenHintSaysNotIncluded() {
+        newTestCase()
+            .subject(subjectOf("a", "b"))
+            .expression(value -> value.excludes("c"))
+            .result(true)
+            .name("excludes[c]")
+            .expected("excludes[c]")
+            .actual("excludes[c]")
+            .hint("Value does not include 'c'")
+            .run();
+    }
+
+    @Test
+    default void givenIncluded_whenExcludes_thenHintHasIndex() {
+        newTestCase()
+            .subject(subjectOf("a", "b"))
+            .expression(value -> value.excludes("b"))
+            .result(false)
+            .name("excludes[b]")
+            .expected("excludes[b]")
+            .actual("includes[b]")
+            .hint("'b' found at index 1")
+            .run();
+    }
+
+    // ---- hasAtIndex ----
+
+    @Test
+    default void givenDesiredAtFirstIndex_whenHasAtIndex_thenTrue() {
+        newTestCase()
+            .subject(subjectOf("a", "b"))
+            .expression(value -> value.hasAtIndex("a", 0))
+            .result(true)
+            .name("hasAtIndex[desired=a, index=0]")
+            .expected("a")
+            .actual("a")
+            .hint("Desired element found at index 0")
+            .run();
+    }
+
+    @Test
+    default void givenDesiredAtLastIndex_whenHasAtIndex_thenTrue() {
+        newTestCase()
+            .subject(subjectOf("a", "b"))
+            .expression(value -> value.hasAtIndex("b", 1))
+            .result(true)
+            .name("hasAtIndex[desired=b, index=1]")
+            .expected("b")
+            .actual("b")
+            .run();
+    }
+
+    @Test
+    default void givenOtherElementAtIndex_whenHasAtIndex_thenFalse() {
+        newTestCase()
+            .subject(subjectOf("a", "b"))
+            .expression(value -> value.hasAtIndex("b", 0))
+            .result(false)
+            .name("hasAtIndex[desired=b, index=0]")
+            .expected("b")
+            .actual("a")
+            .hint("Index 0 is within bounds, but the desired element was not found there")
+            .run();
+    }
+
+    @Test
+    default void givenIndexOutOfBounds_whenHasAtIndex_thenFalse() {
+        newTestCase()
+            .subject(subjectOf("a", "b"))
+            .expression(value -> value.hasAtIndex("a", 2))
+            .result(false)
+            .name("hasAtIndex[desired=a, index=2]")
+            .expected("a")
+            .actual("Index 2 is out of bounds")
+            .hint("Index 2 is out of bounds")
+            .run();
+    }
+
+    @Test
+    default void givenNegativeIndex_whenHasAtIndex_thenFalse() {
+        newTestCase()
+            .subject(subjectOf("a", "b"))
+            .expression(value -> value.hasAtIndex("a", -1))
+            .result(false)
+            .name("hasAtIndex[desired=a, index=-1]")
+            .expected("a")
+            .actual("Index -1 is out of bounds")
+            .hint("Index -1 is out of bounds")
+            .run();
+    }
+
+    // ---- doesNotHaveAtIndex ----
+
+    @Test
+    default void givenOtherElementAtIndex_whenDoesNotHaveAtIndex_thenTrue() {
+        newTestCase()
+            .subject(subjectOf("a", "b"))
+            .expression(value -> value.doesNotHaveAtIndex("b", 0))
+            .result(true)
+            .name("doesNotHaveAtIndex[desired=b, index=0]")
+            .expected("not[b]")
+            .actual("a")
+            .run();
+    }
+
+    @Test
+    default void givenDesiredAtIndex_whenDoesNotHaveAtIndex_thenFalse() {
+        newTestCase()
+            .subject(subjectOf("a", "b"))
+            .expression(value -> value.doesNotHaveAtIndex("a", 0))
+            .result(false)
+            .name("doesNotHaveAtIndex[desired=a, index=0]")
+            .expected("not[a]")
+            .actual("a")
+            .run();
+    }
+
+    @Test
+    default void givenIndexOutOfBounds_whenDoesNotHaveAtIndex_thenTrue() {
+        newTestCase()
+            .subject(subjectOf("a", "b"))
+            .expression(value -> value.doesNotHaveAtIndex("a", 2))
+            .result(true)
+            .name("doesNotHaveAtIndex[desired=a, index=2]")
+            .expected("not[a]")
+            .actual("Index 2 is out of bounds")
+            .run();
+    }
+
+    // ---- startsWith ----
+
+    @Test
+    default void givenDesiredFirst_whenStartsWith_thenTrue() {
+        newTestCase()
+            .subject(subjectOf("a", "b"))
+            .expression(value -> value.startsWith("a"))
+            .result(true)
+            .name("startsWith[a]")
+            .expected("a")
+            .actual("a")
+            .hint("The first element is a")
+            .run();
+    }
+
+    @Test
+    default void givenOtherElementFirst_whenStartsWith_thenFalse() {
+        newTestCase()
+            .subject(subjectOf("a", "b"))
+            .expression(value -> value.startsWith("b"))
+            .result(false)
+            .name("startsWith[b]")
+            .expected("b")
+            .actual("a")
+            .hint("Value has at least one element, but the first element is not b")
+            .run();
+    }
+
+    @Test
+    default void givenEmpty_whenStartsWith_thenFalse() {
+        newTestCase()
+            .subject(subjectOf())
+            .expression(value -> value.startsWith("a"))
+            .result(false)
+            .name("startsWith[a]")
+            .expected("a")
+            .actual("Value is empty")
+            .hint("Value is empty")
+            .run();
+    }
+
+    // ---- doesNotStartWith ----
+
+    @Test
+    default void givenOtherElementFirst_whenDoesNotStartWith_thenTrue() {
+        newTestCase()
+            .subject(subjectOf("a", "b"))
+            .expression(value -> value.doesNotStartWith("b"))
+            .result(true)
+            .name("doesNotStartWith[b]")
+            .expected("not[b]")
+            .actual("a")
+            .hint("The first element is a")
+            .run();
+    }
+
+    @Test
+    default void givenDesiredFirst_whenDoesNotStartWith_thenFalse() {
+        newTestCase()
+            .subject(subjectOf("a", "b"))
+            .expression(value -> value.doesNotStartWith("a"))
+            .result(false)
+            .name("doesNotStartWith[a]")
+            .expected("not[a]")
+            .actual("a")
+            .hint("The first element is a")
+            .run();
+    }
+
+    @Test
+    default void givenEmpty_whenDoesNotStartWith_thenTrue() {
+        newTestCase()
+            .subject(subjectOf())
+            .expression(value -> value.doesNotStartWith("a"))
+            .result(true)
+            .name("doesNotStartWith[a]")
+            .expected("not[a]")
+            .actual("Value is empty")
+            .hint("Value is empty")
+            .run();
+    }
+
+    // ---- endsWith ----
+
+    @Test
+    default void givenDesiredLast_whenEndsWith_thenTrue() {
+        newTestCase()
+            .subject(subjectOf("a", "b"))
+            .expression(value -> value.endsWith("b"))
+            .result(true)
+            .name("endsWith[b]")
+            .expected("b")
+            .actual("b")
+            .hint("The last element is b")
+            .run();
+    }
+
+    @Test
+    default void givenOtherElementLast_whenEndsWith_thenFalse() {
+        newTestCase()
+            .subject(subjectOf("a", "b"))
+            .expression(value -> value.endsWith("a"))
+            .result(false)
+            .name("endsWith[a]")
+            .expected("a")
+            .actual("b")
+            .hint("Value has at least one element, but the last element is not a")
+            .run();
+    }
+
+    @Test
+    default void givenEmpty_whenEndsWith_thenFalse() {
+        newTestCase()
+            .subject(subjectOf())
+            .expression(value -> value.endsWith("a"))
+            .result(false)
+            .name("endsWith[a]")
+            .expected("a")
+            .actual("Value is empty")
+            .hint("Value is empty")
+            .run();
+    }
+
+    // ---- doesNotEndWith ----
+
+    @Test
+    default void givenOtherElementLast_whenDoesNotEndWith_thenTrue() {
+        newTestCase()
+            .subject(subjectOf("a", "b"))
+            .expression(value -> value.doesNotEndWith("a"))
+            .result(true)
+            .name("doesNotEndWith[a]")
+            .expected("not[a]")
+            .actual("b")
+            .hint("The last element is b")
+            .run();
+    }
+
+    @Test
+    default void givenDesiredLast_whenDoesNotEndWith_thenFalse() {
+        newTestCase()
+            .subject(subjectOf("a", "b"))
+            .expression(value -> value.doesNotEndWith("b"))
+            .result(false)
+            .name("doesNotEndWith[b]")
+            .expected("not[b]")
+            .actual("b")
+            .hint("The last element is b")
+            .run();
+    }
+
+    @Test
+    default void givenEmpty_whenDoesNotEndWith_thenTrue() {
+        newTestCase()
+            .subject(subjectOf())
+            .expression(value -> value.doesNotEndWith("a"))
+            .result(true)
+            .name("doesNotEndWith[a]")
+            .expected("not[a]")
+            .actual("Value is empty")
+            .hint("Value is empty")
+            .run();
+    }
+
+    // ---- lastIndexOfIs ----
+
+    @Test
+    default void givenSingleOccurrenceAtIndex_whenLastIndexOfIs_thenTrue() {
+        newTestCase()
+            .subject(subjectOf("a", "b"))
+            .expression(value -> value.lastIndexOfIs("b", 1))
+            .result(true)
+            .name("lastIndexOf[b] = 1")
+            .expected("1")
+            .actual("1")
+            .run();
+    }
+
+    @Test
+    default void givenLastOfDuplicatesAtIndex_whenLastIndexOfIs_thenTrue() {
+        newTestCase()
+            .subject(subjectOf("a", "b", "a"))
+            .expression(value -> value.lastIndexOfIs("a", 2))
+            .result(true)
+            .name("lastIndexOf[a] = 2")
+            .expected("2")
+            .actual("2")
+            .run();
+    }
+
+    @Test
+    default void givenOnlyEarlierOccurrenceAtIndex_whenLastIndexOfIs_thenFalse() {
+        newTestCase()
+            .subject(subjectOf("a", "b", "a"))
+            .expression(value -> value.lastIndexOfIs("a", 0))
+            .result(false)
+            .name("lastIndexOf[a] = 0")
+            .expected("0")
+            .actual("2")
+            .run();
+    }
+
+    @Test
+    default void givenMissingElement_whenLastIndexOfIs_thenFalse() {
+        newTestCase()
+            .subject(subjectOf("a", "b"))
+            .expression(value -> value.lastIndexOfIs("c", 0))
+            .result(false)
+            .name("lastIndexOf[c] = 0")
+            .expected("0")
+            .actual("-1")
+            .run();
+    }
+
+    @Test
+    default void givenMissingElement_whenLastIndexOfIsMinusOne_thenTrue() {
+        newTestCase()
+            .subject(subjectOf("a", "b"))
+            .expression(value -> value.lastIndexOfIs("c", -1))
+            .result(true)
+            .name("lastIndexOf[c] = -1")
+            .expected("-1")
+            .actual("-1")
+            .run();
+    }
+
+    // ---- lastIndexOfIsNot ----
+
+    @Test
+    default void givenOnlyEarlierOccurrenceAtIndex_whenLastIndexOfIsNot_thenTrue() {
+        newTestCase()
+            .subject(subjectOf("a", "b", "a"))
+            .expression(value -> value.lastIndexOfIsNot("a", 0))
+            .result(true)
+            .name("lastIndexOf[a] != 0")
+            .expected("not[0]")
+            .actual("2")
+            .run();
+    }
+
+    @Test
+    default void givenLastOfDuplicatesAtIndex_whenLastIndexOfIsNot_thenFalse() {
+        newTestCase()
+            .subject(subjectOf("a", "b", "a"))
+            .expression(value -> value.lastIndexOfIsNot("a", 2))
+            .result(false)
+            .name("lastIndexOf[a] != 2")
+            .expected("not[2]")
+            .actual("2")
+            .run();
+    }
+
+    @Test
+    default void givenMissingElement_whenLastIndexOfIsNot_thenTrue() {
+        newTestCase()
+            .subject(subjectOf("a", "b"))
+            .expression(value -> value.lastIndexOfIsNot("c", 0))
+            .result(true)
+            .name("lastIndexOf[c] != 0")
+            .expected("not[0]")
+            .actual("-1")
+            .run();
+    }
+
+    @Test
+    default void givenMissingElement_whenLastIndexOfIsNotMinusOne_thenFalse() {
+        newTestCase()
+            .subject(subjectOf("a", "b"))
+            .expression(value -> value.lastIndexOfIsNot("c", -1))
+            .result(false)
+            .name("lastIndexOf[c] != -1")
+            .expected("not[-1]")
+            .actual("-1")
+            .run();
+    }
+}

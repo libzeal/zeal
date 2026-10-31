@@ -1,544 +1,748 @@
 package io.github.libzeal.zeal.values.core.boxed;
 
-import io.github.libzeal.zeal.logic.util.Formatter;
-import io.github.libzeal.zeal.values.core.test.ExpressionTestCaseBuilder;
-import io.github.libzeal.zeal.values.api.BasedObjectValueTest;
+import io.github.libzeal.zeal.logic.format.ObjectFormatter;
+import io.github.libzeal.zeal.values.sdk.BaseValueTest;
+import org.junit.jupiter.api.Test;
 
-import static io.github.libzeal.zeal.logic.evaluation.Result.FALSE;
-import static io.github.libzeal.zeal.logic.evaluation.Result.TRUE;
 
 public abstract class BoxedNumberValueTest<T extends Number, E extends BoxedNumberValue<T, E>>
-    extends BasedObjectValueTest<T, E> {
+        extends BaseValueTest<T, E> {
 
-    @Override
-    protected final void extendTestCases(ExpressionTestCaseBuilder<T, E> builder) {
-        isEqualToTestCases(builder);
-        isNotEqualToTestCases(builder);
-        isLessThanTestCases(builder);
-        ltTestCases(builder);
-        isGreaterThanTestCases(builder);
-        gtTestCases(builder);
-        isLessThanOrEqualToTestCases(builder);
-        lteTestCases(builder);
-        isGreaterThanOrEqualToTestCases(builder);
-        gteTestCases(builder);
-        isMaxValueTestCases(builder);
-        isMinValueTestCases(builder);
-        isZeroTestCases(builder);
-        isNotZeroTestCases(builder);
-        isPositiveTestCases(builder);
-        isNotPositiveTestCases(builder);
-        isNegativeTestCases(builder);
-        isNotNegativeTestCases(builder);
-        customTestCases(builder);
+    // ---- isEqualTo ----
+
+    @Test
+    void givenEqualNumber_whenIsEqualTo_thenTrue() {
+        final T a = nonNullValueA();
+        newTestCase()
+                .subject(a)
+                .expression(value -> value.isEqualTo(a))
+                .result(true)
+                .name("isEqualTo[" + ObjectFormatter.stringify(a) + "]")
+                .expected(ObjectFormatter.stringify(a))
+                .actual(ObjectFormatter.stringify(a))
+                .run();
     }
 
-    private void isEqualToTestCases(final ExpressionTestCaseBuilder<T, E> builder) {
-
-        final T value1 = exampleValue1();
-        final T value2 = exampleValue2();
-
-        builder.newTest((expression, value) -> expression.isEqualTo(value1))
-                .subject(value1)
-                .expectedState(TRUE)
-                .expectedName("isEqualTo[" + Formatter.stringify(value1) + "]")
-                .expectedExpected(Formatter.stringify(value1))
-                .expectedActual(Formatter.stringify(value1))
-                .addTest()
-            .newTest((expression, value) -> expression.isEqualTo(value1))
-                .subject(value2)
-                .expectedState(FALSE)
-                .expectedName("isEqualTo[" + Formatter.stringify(value1) + "]")
-                .expectedExpected(Formatter.stringify(value1))
-                .expectedActual(Formatter.stringify(value2))
-                .addTest();
+    @Test
+    void givenDifferentNumber_whenIsEqualTo_thenFalse() {
+        final T a = nonNullValueA();
+        final T b = nonNullValueB();
+        newTestCase()
+                .subject(b)
+                .expression(value -> value.isEqualTo(a))
+                .result(false)
+                .name("isEqualTo[" + ObjectFormatter.stringify(a) + "]")
+                .expected(ObjectFormatter.stringify(a))
+                .actual(ObjectFormatter.stringify(b))
+                .run();
     }
 
-    private void isNotEqualToTestCases(final ExpressionTestCaseBuilder<T, E> builder) {
+    // ---- isNotEqualTo ----
 
-        final T value1 = exampleValue1();
-        final T value2 = exampleValue2();
-
-        builder.newTest((expression, value) -> expression.isNotEqualTo(value1))
-                .subject(value1)
-                .expectedState(FALSE)
-                .expectedName("isNotEqualTo[" + Formatter.stringify(value1) + "]")
-                .expectedExpected("not[" + Formatter.stringify(value1) + "]")
-                .expectedActual(Formatter.stringify(value1))
-                .addTest()
-            .newTest((expression, value) -> expression.isNotEqualTo(value1))
-                .subject(value2)
-                .expectedState(TRUE)
-                .expectedName("isNotEqualTo[" + Formatter.stringify(value1) + "]")
-                .expectedExpected("not[" + Formatter.stringify(value1) + "]")
-                .expectedActual(Formatter.stringify(value2))
-                .addTest();
+    @Test
+    void givenEqualNumber_whenIsNotEqualTo_thenFalse() {
+        final T a = nonNullValueA();
+        newTestCase()
+                .subject(a)
+                .expression(value -> value.isNotEqualTo(a))
+                .result(false)
+                .name("isNotEqualTo[" + ObjectFormatter.stringify(a) + "]")
+                .expected("not[" + ObjectFormatter.stringify(a) + "]")
+                .actual(ObjectFormatter.stringify(a))
+                .run();
     }
 
-    private void isLessThanTestCases(final ExpressionTestCaseBuilder<T, E> builder) {
+    @Test
+    void givenDifferentNumber_whenIsNotEqualTo_thenTrue() {
+        final T a = nonNullValueA();
+        final T b = nonNullValueB();
+        newTestCase()
+                .subject(b)
+                .expression(value -> value.isNotEqualTo(a))
+                .result(true)
+                .name("isNotEqualTo[" + ObjectFormatter.stringify(a) + "]")
+                .expected("not[" + ObjectFormatter.stringify(a) + "]")
+                .actual(ObjectFormatter.stringify(b))
+                .run();
+    }
 
-        final T negative = exampleNegativeValue();
+    // ---- isLessThan ----
+
+    @Test
+    void givenPositive_whenIsLessThanZero_thenFalse() {
         final T zero = exampleZeroValue();
         final T positive = examplePositiveValue();
-
-        builder.newTest((expression, value) -> expression.isLessThan(zero))
+        newTestCase()
                 .subject(positive)
-                .expectedState(FALSE)
-                .expectedName("isLessThan[" + Formatter.stringify(zero) + "]")
-                .expectedExpected("< " + Formatter.stringify(zero))
-                .expectedActual(Formatter.stringify(positive))
-                .addTest()
-            .newTest((expression, value) -> expression.isLessThan(zero))
-                .subject(zero)
-                .expectedState(FALSE)
-                .expectedName("isLessThan[" + Formatter.stringify(zero) + "]")
-                .expectedExpected("< " + Formatter.stringify(zero))
-                .expectedActual(Formatter.stringify(zero))
-                .addTest()
-            .newTest((expression, value) -> expression.isLessThan(zero))
-                .subject(negative)
-                .expectedState(TRUE)
-                .expectedName("isLessThan[" + Formatter.stringify(zero) + "]")
-                .expectedExpected("< " + Formatter.stringify(zero))
-                .expectedActual(Formatter.stringify(negative))
-                .addTest();
+                .expression(value -> value.isLessThan(zero))
+                .result(false)
+                .name("isLessThan[" + ObjectFormatter.stringify(zero) + "]")
+                .expected("< " + ObjectFormatter.stringify(zero))
+                .actual(ObjectFormatter.stringify(positive))
+                .run();
     }
 
-    private void ltTestCases(final ExpressionTestCaseBuilder<T, E> builder) {
+    @Test
+    void givenZero_whenIsLessThanZero_thenFalse() {
+        final T zero = exampleZeroValue();
+        newTestCase()
+                .subject(zero)
+                .expression(value -> value.isLessThan(zero))
+                .result(false)
+                .name("isLessThan[" + ObjectFormatter.stringify(zero) + "]")
+                .expected("< " + ObjectFormatter.stringify(zero))
+                .actual(ObjectFormatter.stringify(zero))
+                .run();
+    }
 
+    @Test
+    void givenNegative_whenIsLessThanZero_thenTrue() {
+        final T zero = exampleZeroValue();
         final T negative = exampleNegativeValue();
+        newTestCase()
+                .subject(negative)
+                .expression(value -> value.isLessThan(zero))
+                .result(true)
+                .name("isLessThan[" + ObjectFormatter.stringify(zero) + "]")
+                .expected("< " + ObjectFormatter.stringify(zero))
+                .actual(ObjectFormatter.stringify(negative))
+                .run();
+    }
+
+    // ---- lt ----
+
+    @Test
+    void givenPositive_whenLtZero_thenFalse() {
         final T zero = exampleZeroValue();
         final T positive = examplePositiveValue();
-
-        builder.newTest((expression, value) -> expression.lt(zero))
+        newTestCase()
                 .subject(positive)
-                .expectedState(FALSE)
-                .expectedName("isLessThan[" + Formatter.stringify(zero) + "]")
-                .expectedExpected("< " + Formatter.stringify(zero))
-                .expectedActual(Formatter.stringify(positive))
-                .addTest()
-            .newTest((expression, value) -> expression.lt(zero))
-                .subject(zero)
-                .expectedState(FALSE)
-                .expectedName("isLessThan[" + Formatter.stringify(zero) + "]")
-                .expectedExpected("< " + Formatter.stringify(zero))
-                .expectedActual(Formatter.stringify(zero))
-                .addTest()
-            .newTest((expression, value) -> expression.lt(zero))
-                .subject(negative)
-                .expectedState(TRUE)
-                .expectedName("isLessThan[" + Formatter.stringify(zero) + "]")
-                .expectedExpected("< " + Formatter.stringify(zero))
-                .expectedActual(Formatter.stringify(negative))
-                .addTest();
+                .expression(value -> value.lt(zero))
+                .result(false)
+                .name("isLessThan[" + ObjectFormatter.stringify(zero) + "]")
+                .expected("< " + ObjectFormatter.stringify(zero))
+                .actual(ObjectFormatter.stringify(positive))
+                .run();
     }
 
-    private void isGreaterThanTestCases(final ExpressionTestCaseBuilder<T, E> builder) {
+    @Test
+    void givenZero_whenLtZero_thenFalse() {
+        final T zero = exampleZeroValue();
+        newTestCase()
+                .subject(zero)
+                .expression(value -> value.lt(zero))
+                .result(false)
+                .name("isLessThan[" + ObjectFormatter.stringify(zero) + "]")
+                .expected("< " + ObjectFormatter.stringify(zero))
+                .actual(ObjectFormatter.stringify(zero))
+                .run();
+    }
 
+    @Test
+    void givenNegative_whenLtZero_thenTrue() {
+        final T zero = exampleZeroValue();
         final T negative = exampleNegativeValue();
+        newTestCase()
+                .subject(negative)
+                .expression(value -> value.lt(zero))
+                .result(true)
+                .name("isLessThan[" + ObjectFormatter.stringify(zero) + "]")
+                .expected("< " + ObjectFormatter.stringify(zero))
+                .actual(ObjectFormatter.stringify(negative))
+                .run();
+    }
+
+    // ---- isGreaterThan ----
+
+    @Test
+    void givenPositive_whenIsGreaterThanZero_thenTrue() {
         final T zero = exampleZeroValue();
         final T positive = examplePositiveValue();
-
-        builder.newTest((expression, value) -> expression.isGreaterThan(zero))
+        newTestCase()
                 .subject(positive)
-                .expectedState(TRUE)
-                .expectedName("isGreaterThan[" + Formatter.stringify(zero) + "]")
-                .expectedExpected("> " + Formatter.stringify(zero))
-                .expectedActual(Formatter.stringify(positive))
-                .addTest()
-            .newTest((expression, value) -> expression.isGreaterThan(zero))
-                .subject(zero)
-                .expectedState(FALSE)
-                .expectedName("isGreaterThan[" + Formatter.stringify(zero) + "]")
-                .expectedExpected("> " + Formatter.stringify(zero))
-                .expectedActual(Formatter.stringify(zero))
-                .addTest()
-            .newTest((expression, value) -> expression.isGreaterThan(zero))
-                .subject(negative)
-                .expectedState(FALSE)
-                .expectedName("isGreaterThan[" + Formatter.stringify(zero) + "]")
-                .expectedExpected("> " + Formatter.stringify(zero))
-                .expectedActual(Formatter.stringify(negative))
-                .addTest();
+                .expression(value -> value.isGreaterThan(zero))
+                .result(true)
+                .name("isGreaterThan[" + ObjectFormatter.stringify(zero) + "]")
+                .expected("> " + ObjectFormatter.stringify(zero))
+                .actual(ObjectFormatter.stringify(positive))
+                .run();
     }
 
-    private void gtTestCases(final ExpressionTestCaseBuilder<T, E> builder) {
+    @Test
+    void givenZero_whenIsGreaterThanZero_thenFalse() {
+        final T zero = exampleZeroValue();
+        newTestCase()
+                .subject(zero)
+                .expression(value -> value.isGreaterThan(zero))
+                .result(false)
+                .name("isGreaterThan[" + ObjectFormatter.stringify(zero) + "]")
+                .expected("> " + ObjectFormatter.stringify(zero))
+                .actual(ObjectFormatter.stringify(zero))
+                .run();
+    }
 
+    @Test
+    void givenNegative_whenIsGreaterThanZero_thenFalse() {
+        final T zero = exampleZeroValue();
         final T negative = exampleNegativeValue();
+        newTestCase()
+                .subject(negative)
+                .expression(value -> value.isGreaterThan(zero))
+                .result(false)
+                .name("isGreaterThan[" + ObjectFormatter.stringify(zero) + "]")
+                .expected("> " + ObjectFormatter.stringify(zero))
+                .actual(ObjectFormatter.stringify(negative))
+                .run();
+    }
+
+    // ---- gt ----
+
+    @Test
+    void givenPositive_whenGtZero_thenTrue() {
         final T zero = exampleZeroValue();
         final T positive = examplePositiveValue();
-
-        builder.newTest((expression, value) -> expression.gt(zero))
+        newTestCase()
                 .subject(positive)
-                .expectedState(TRUE)
-                .expectedName("isGreaterThan[" + Formatter.stringify(zero) + "]")
-                .expectedExpected("> " + Formatter.stringify(zero))
-                .expectedActual(Formatter.stringify(positive))
-                .addTest()
-            .newTest((expression, value) -> expression.gt(zero))
-                .subject(zero)
-                .expectedState(FALSE)
-                .expectedName("isGreaterThan[" + Formatter.stringify(zero) + "]")
-                .expectedExpected("> " + Formatter.stringify(zero))
-                .expectedActual(Formatter.stringify(zero))
-                .addTest()
-            .newTest((expression, value) -> expression.gt(zero))
-                .subject(negative)
-                .expectedState(FALSE)
-                .expectedName("isGreaterThan[" + Formatter.stringify(zero) + "]")
-                .expectedExpected("> " + Formatter.stringify(zero))
-                .expectedActual(Formatter.stringify(negative))
-                .addTest();
+                .expression(value -> value.gt(zero))
+                .result(true)
+                .name("isGreaterThan[" + ObjectFormatter.stringify(zero) + "]")
+                .expected("> " + ObjectFormatter.stringify(zero))
+                .actual(ObjectFormatter.stringify(positive))
+                .run();
     }
 
-    private void isLessThanOrEqualToTestCases(final ExpressionTestCaseBuilder<T, E> builder) {
+    @Test
+    void givenZero_whenGtZero_thenFalse() {
+        final T zero = exampleZeroValue();
+        newTestCase()
+                .subject(zero)
+                .expression(value -> value.gt(zero))
+                .result(false)
+                .name("isGreaterThan[" + ObjectFormatter.stringify(zero) + "]")
+                .expected("> " + ObjectFormatter.stringify(zero))
+                .actual(ObjectFormatter.stringify(zero))
+                .run();
+    }
 
+    @Test
+    void givenNegative_whenGtZero_thenFalse() {
+        final T zero = exampleZeroValue();
         final T negative = exampleNegativeValue();
+        newTestCase()
+                .subject(negative)
+                .expression(value -> value.gt(zero))
+                .result(false)
+                .name("isGreaterThan[" + ObjectFormatter.stringify(zero) + "]")
+                .expected("> " + ObjectFormatter.stringify(zero))
+                .actual(ObjectFormatter.stringify(negative))
+                .run();
+    }
+
+    // ---- isLessThanOrEqualTo ----
+
+    @Test
+    void givenPositive_whenIsLessThanOrEqualToZero_thenFalse() {
         final T zero = exampleZeroValue();
         final T positive = examplePositiveValue();
-
-        builder.newTest((expression, value) -> expression.isLessThanOrEqualTo(zero))
+        newTestCase()
                 .subject(positive)
-                .expectedState(FALSE)
-                .expectedName("isLessThanOrEqualTo[" + Formatter.stringify(zero) + "]")
-                .expectedExpected("<= " + Formatter.stringify(zero))
-                .expectedActual(Formatter.stringify(positive))
-                .addTest()
-            .newTest((expression, value) -> expression.isLessThanOrEqualTo(zero))
-                .subject(zero)
-                .expectedState(TRUE)
-                .expectedName("isLessThanOrEqualTo[" + Formatter.stringify(zero) + "]")
-                .expectedExpected("<= " + Formatter.stringify(zero))
-                .expectedActual(Formatter.stringify(zero))
-                .addTest()
-            .newTest((expression, value) -> expression.isLessThanOrEqualTo(zero))
-                .subject(negative)
-                .expectedState(TRUE)
-                .expectedName("isLessThanOrEqualTo[" + Formatter.stringify(zero) + "]")
-                .expectedExpected("<= " + Formatter.stringify(zero))
-                .expectedActual(Formatter.stringify(negative))
-                .addTest();
+                .expression(value -> value.isLessThanOrEqualTo(zero))
+                .result(false)
+                .name("isLessThanOrEqualTo[" + ObjectFormatter.stringify(zero) + "]")
+                .expected("<= " + ObjectFormatter.stringify(zero))
+                .actual(ObjectFormatter.stringify(positive))
+                .run();
     }
 
-    private void lteTestCases(final ExpressionTestCaseBuilder<T, E> builder) {
+    @Test
+    void givenZero_whenIsLessThanOrEqualToZero_thenTrue() {
+        final T zero = exampleZeroValue();
+        newTestCase()
+                .subject(zero)
+                .expression(value -> value.isLessThanOrEqualTo(zero))
+                .result(true)
+                .name("isLessThanOrEqualTo[" + ObjectFormatter.stringify(zero) + "]")
+                .expected("<= " + ObjectFormatter.stringify(zero))
+                .actual(ObjectFormatter.stringify(zero))
+                .run();
+    }
 
+    @Test
+    void givenNegative_whenIsLessThanOrEqualToZero_thenTrue() {
+        final T zero = exampleZeroValue();
         final T negative = exampleNegativeValue();
+        newTestCase()
+                .subject(negative)
+                .expression(value -> value.isLessThanOrEqualTo(zero))
+                .result(true)
+                .name("isLessThanOrEqualTo[" + ObjectFormatter.stringify(zero) + "]")
+                .expected("<= " + ObjectFormatter.stringify(zero))
+                .actual(ObjectFormatter.stringify(negative))
+                .run();
+    }
+
+    // ---- lte ----
+
+    @Test
+    void givenPositive_whenLteZero_thenFalse() {
         final T zero = exampleZeroValue();
         final T positive = examplePositiveValue();
-
-        String result;
-        result = Formatter.stringify(zero);
-        builder.newTest((expression, value) -> expression.lte(zero))
+        newTestCase()
                 .subject(positive)
-                .expectedState(FALSE)
-                .expectedName("isLessThanOrEqualTo[" + Formatter.stringify(zero) + "]")
-                .expectedExpected("<= " + result)
-                .expectedActual(Formatter.stringify(positive))
-                .addTest()
-            .newTest((expression, value) -> expression.lte(zero))
-                .subject(zero)
-                .expectedState(TRUE)
-                .expectedName("isLessThanOrEqualTo[" + Formatter.stringify(zero) + "]")
-                .expectedExpected("<= " + Formatter.stringify(zero))
-                .expectedActual(Formatter.stringify(zero))
-                .addTest()
-            .newTest((expression, value) -> expression.lte(zero))
-                .subject(negative)
-                .expectedState(TRUE)
-                .expectedName("isLessThanOrEqualTo[" + Formatter.stringify(zero) + "]")
-                .expectedExpected("<= " + Formatter.stringify(zero))
-                .expectedActual(Formatter.stringify(negative))
-                .addTest();
+                .expression(value -> value.lte(zero))
+                .result(false)
+                .name("isLessThanOrEqualTo[" + ObjectFormatter.stringify(zero) + "]")
+                .expected("<= " + ObjectFormatter.stringify(zero))
+                .actual(ObjectFormatter.stringify(positive))
+                .run();
     }
 
-    private void isGreaterThanOrEqualToTestCases(final ExpressionTestCaseBuilder<T, E> builder) {
+    @Test
+    void givenZero_whenLteZero_thenTrue() {
+        final T zero = exampleZeroValue();
+        newTestCase()
+                .subject(zero)
+                .expression(value -> value.lte(zero))
+                .result(true)
+                .name("isLessThanOrEqualTo[" + ObjectFormatter.stringify(zero) + "]")
+                .expected("<= " + ObjectFormatter.stringify(zero))
+                .actual(ObjectFormatter.stringify(zero))
+                .run();
+    }
 
+    @Test
+    void givenNegative_whenLteZero_thenTrue() {
+        final T zero = exampleZeroValue();
         final T negative = exampleNegativeValue();
+        newTestCase()
+                .subject(negative)
+                .expression(value -> value.lte(zero))
+                .result(true)
+                .name("isLessThanOrEqualTo[" + ObjectFormatter.stringify(zero) + "]")
+                .expected("<= " + ObjectFormatter.stringify(zero))
+                .actual(ObjectFormatter.stringify(negative))
+                .run();
+    }
+
+    // ---- isGreaterThanOrEqualTo ----
+
+    @Test
+    void givenPositive_whenIsGreaterThanOrEqualToZero_thenTrue() {
         final T zero = exampleZeroValue();
         final T positive = examplePositiveValue();
-
-        builder.newTest((expression, value) -> expression.isGreaterThanOrEqualTo(zero))
+        newTestCase()
                 .subject(positive)
-                .expectedState(TRUE)
-                .expectedName("isGreaterThanOrEqualTo[" + Formatter.stringify(zero) + "]")
-                .expectedExpected(">= " + Formatter.stringify(zero))
-                .expectedActual(Formatter.stringify(positive))
-                .addTest()
-            .newTest((expression, value) -> expression.isGreaterThanOrEqualTo(zero))
-                .subject(zero)
-                .expectedState(TRUE)
-                .expectedName("isGreaterThanOrEqualTo[" + Formatter.stringify(zero) + "]")
-                .expectedExpected(">= " + Formatter.stringify(zero))
-                .expectedActual(Formatter.stringify(zero))
-                .addTest()
-            .newTest((expression, value) -> expression.isGreaterThanOrEqualTo(zero))
-                .subject(negative)
-                .expectedState(FALSE)
-                .expectedName("isGreaterThanOrEqualTo[" + Formatter.stringify(zero) + "]")
-                .expectedExpected(">= " + Formatter.stringify(zero))
-                .expectedActual(Formatter.stringify(negative))
-                .addTest();
+                .expression(value -> value.isGreaterThanOrEqualTo(zero))
+                .result(true)
+                .name("isGreaterThanOrEqualTo[" + ObjectFormatter.stringify(zero) + "]")
+                .expected(">= " + ObjectFormatter.stringify(zero))
+                .actual(ObjectFormatter.stringify(positive))
+                .run();
     }
 
-    private void gteTestCases(final ExpressionTestCaseBuilder<T, E> builder) {
+    @Test
+    void givenZero_whenIsGreaterThanOrEqualToZero_thenTrue() {
+        final T zero = exampleZeroValue();
+        newTestCase()
+                .subject(zero)
+                .expression(value -> value.isGreaterThanOrEqualTo(zero))
+                .result(true)
+                .name("isGreaterThanOrEqualTo[" + ObjectFormatter.stringify(zero) + "]")
+                .expected(">= " + ObjectFormatter.stringify(zero))
+                .actual(ObjectFormatter.stringify(zero))
+                .run();
+    }
 
+    @Test
+    void givenNegative_whenIsGreaterThanOrEqualToZero_thenFalse() {
+        final T zero = exampleZeroValue();
         final T negative = exampleNegativeValue();
+        newTestCase()
+                .subject(negative)
+                .expression(value -> value.isGreaterThanOrEqualTo(zero))
+                .result(false)
+                .name("isGreaterThanOrEqualTo[" + ObjectFormatter.stringify(zero) + "]")
+                .expected(">= " + ObjectFormatter.stringify(zero))
+                .actual(ObjectFormatter.stringify(negative))
+                .run();
+    }
+
+    // ---- gte ----
+
+    @Test
+    void givenPositive_whenGteZero_thenTrue() {
         final T zero = exampleZeroValue();
         final T positive = examplePositiveValue();
-
-        builder.newTest((expression, value) -> expression.gte(zero))
+        newTestCase()
                 .subject(positive)
-                .expectedState(TRUE)
-                .expectedName("isGreaterThanOrEqualTo[" + Formatter.stringify(zero) + "]")
-                .expectedExpected(">= " + Formatter.stringify(zero))
-                .expectedActual(Formatter.stringify(positive))
-                .addTest()
-            .newTest((expression, value) -> expression.gte(zero))
-                .subject(zero)
-                .expectedState(TRUE)
-                .expectedName("isGreaterThanOrEqualTo[" + Formatter.stringify(zero) + "]")
-                .expectedExpected(">= " + Formatter.stringify(zero))
-                .expectedActual(Formatter.stringify(zero))
-                .addTest()
-            .newTest((expression, value) -> expression.gte(zero))
-                .subject(negative)
-                .expectedState(FALSE)
-                .expectedName("isGreaterThanOrEqualTo[" + Formatter.stringify(zero) + "]")
-                .expectedExpected(">= " + Formatter.stringify(zero))
-                .expectedActual(Formatter.stringify(negative))
-                .addTest();
+                .expression(value -> value.gte(zero))
+                .result(true)
+                .name("isGreaterThanOrEqualTo[" + ObjectFormatter.stringify(zero) + "]")
+                .expected(">= " + ObjectFormatter.stringify(zero))
+                .actual(ObjectFormatter.stringify(positive))
+                .run();
     }
 
-    private void isMaxValueTestCases(final ExpressionTestCaseBuilder<T, E> builder) {
+    @Test
+    void givenZero_whenGteZero_thenTrue() {
+        final T zero = exampleZeroValue();
+        newTestCase()
+                .subject(zero)
+                .expression(value -> value.gte(zero))
+                .result(true)
+                .name("isGreaterThanOrEqualTo[" + ObjectFormatter.stringify(zero) + "]")
+                .expected(">= " + ObjectFormatter.stringify(zero))
+                .actual(ObjectFormatter.stringify(zero))
+                .run();
+    }
 
+    @Test
+    void givenNegative_whenGteZero_thenFalse() {
+        final T zero = exampleZeroValue();
+        final T negative = exampleNegativeValue();
+        newTestCase()
+                .subject(negative)
+                .expression(value -> value.gte(zero))
+                .result(false)
+                .name("isGreaterThanOrEqualTo[" + ObjectFormatter.stringify(zero) + "]")
+                .expected(">= " + ObjectFormatter.stringify(zero))
+                .actual(ObjectFormatter.stringify(negative))
+                .run();
+    }
+
+    // ---- isMaxValue ----
+
+    @Test
+    void givenMax_whenIsMaxValue_thenTrue() {
+        final T max = exampleMaximumValue();
+        newTestCase()
+                .subject(max)
+                .expression(BoxedNumberValue::isMaxValue)
+                .result(true)
+                .name("isMax")
+                .expected(String.valueOf(max))
+                .actual(String.valueOf(max))
+                .run();
+    }
+
+    @Test
+    void givenMin_whenIsMaxValue_thenFalse() {
         final T max = exampleMaximumValue();
         final T min = exampleMinimumValue();
-
-        builder.newTest((expression, value) -> expression.isMaxValue())
-                .subject(max)
-                .expectedState(TRUE)
-                .expectedName("isMax")
-                .expectedExpected(String.valueOf(max))
-                .expectedActual(String.valueOf(max))
-                .addTest()
-            .newTest((expression, value) -> expression.isMaxValue())
+        newTestCase()
                 .subject(min)
-                .expectedState(FALSE)
-                .expectedName("isMax")
-                .expectedExpected(String.valueOf(max))
-                .expectedActual(String.valueOf(min))
-                .addTest();
+                .expression(BoxedNumberValue::isMaxValue)
+                .result(false)
+                .name("isMax")
+                .expected(String.valueOf(max))
+                .actual(String.valueOf(min))
+                .run();
     }
 
-    private void isMinValueTestCases(final ExpressionTestCaseBuilder<T, E> builder) {
+    // ---- isMinValue ----
 
+    @Test
+    void givenMax_whenIsMinValue_thenFalse() {
         final T max = exampleMaximumValue();
         final T min = exampleMinimumValue();
-
-        builder.newTest((expression, value) -> expression.isMinValue())
+        newTestCase()
                 .subject(max)
-                .expectedState(FALSE)
-                .expectedName("isMin")
-                .expectedExpected(String.valueOf(min))
-                .expectedActual(String.valueOf(max))
-                .addTest()
-            .newTest((expression, value) -> expression.isMinValue())
+                .expression(BoxedNumberValue::isMinValue)
+                .result(false)
+                .name("isMin")
+                .expected(String.valueOf(min))
+                .actual(String.valueOf(max))
+                .run();
+    }
+
+    @Test
+    void givenMin_whenIsMinValue_thenTrue() {
+        final T min = exampleMinimumValue();
+        newTestCase()
                 .subject(min)
-                .expectedState(TRUE)
-                .expectedName("isMin")
-                .expectedExpected(String.valueOf(min))
-                .expectedActual(String.valueOf(min))
-                .addTest();
+                .expression(BoxedNumberValue::isMinValue)
+                .result(true)
+                .name("isMin")
+                .expected(String.valueOf(min))
+                .actual(String.valueOf(min))
+                .run();
     }
 
-    private void isZeroTestCases(final ExpressionTestCaseBuilder<T, E> builder) {
+    // ---- isZero ----
 
-        final T positive = examplePositiveValue();
+    @Test
+    void givenPositive_whenIsZero_thenFalse() {
         final T zero = exampleZeroValue();
-        final T negative = exampleNegativeValue();
-
-        builder.newTest((expression, value) -> expression.isZero())
+        final T positive = examplePositiveValue();
+        newTestCase()
                 .subject(positive)
-                .expectedState(FALSE)
-                .expectedName("isZero")
-                .expectedExpected(Formatter.stringify(zero))
-                .expectedActual(Formatter.stringify(positive))
-                .addTest()
-            .newTest((expression, value) -> expression.isZero())
-                .subject(zero)
-                .expectedState(TRUE)
-                .expectedName("isZero")
-                .expectedExpected(Formatter.stringify(zero))
-                .expectedActual(Formatter.stringify(zero))
-                .addTest()
-            .newTest((expression, value) -> expression.isZero())
-                .subject(negative)
-                .expectedState(FALSE)
-                .expectedName("isZero")
-                .expectedExpected(Formatter.stringify(zero))
-                .expectedActual(Formatter.stringify(negative))
-                .addTest();
+                .expression(BoxedNumberValue::isZero)
+                .result(false)
+                .name("isZero")
+                .expected(ObjectFormatter.stringify(zero))
+                .actual(ObjectFormatter.stringify(positive))
+                .run();
     }
 
-    private void isNotZeroTestCases(final ExpressionTestCaseBuilder<T, E> builder) {
-
-        final T positive = examplePositiveValue();
+    @Test
+    void givenZero_whenIsZero_thenTrue() {
         final T zero = exampleZeroValue();
-        final T negative = exampleNegativeValue();
-
-        builder.newTest((expression, value) -> expression.isNotZero())
-                .subject(positive)
-                .expectedState(TRUE)
-                .expectedName("isNotZero")
-                .expectedExpected("not[" + Formatter.stringify(zero) + "]")
-                .expectedActual(Formatter.stringify(positive))
-                .addTest()
-            .newTest((expression, value) -> expression.isNotZero())
+        newTestCase()
                 .subject(zero)
-                .expectedState(FALSE)
-                .expectedName("isNotZero")
-                .expectedExpected("not[" + Formatter.stringify(zero) + "]")
-                .expectedActual(Formatter.stringify(zero))
-                .addTest()
-            .newTest((expression, value) -> expression.isNotZero())
-                .subject(negative)
-                .expectedState(TRUE)
-                .expectedName("isNotZero")
-                .expectedExpected("not[" + Formatter.stringify(zero) + "]")
-                .expectedActual(Formatter.stringify(negative))
-                .addTest();
+                .expression(BoxedNumberValue::isZero)
+                .result(true)
+                .name("isZero")
+                .expected(ObjectFormatter.stringify(zero))
+                .actual(ObjectFormatter.stringify(zero))
+                .run();
     }
 
-    private void isPositiveTestCases(final ExpressionTestCaseBuilder<T, E> builder) {
-
-        final T positive = examplePositiveValue();
+    @Test
+    void givenNegative_whenIsZero_thenFalse() {
         final T zero = exampleZeroValue();
         final T negative = exampleNegativeValue();
-
-        builder.newTest((expression, value) -> expression.isPositive())
-                .subject(positive)
-                .expectedState(TRUE)
-                .expectedName("isPositive")
-                .expectedExpected("> " + Formatter.stringify(zero))
-                .expectedActual(Formatter.stringify(positive))
-                .addTest()
-            .newTest((expression, value) -> expression.isPositive())
-                .subject(zero)
-                .expectedState(FALSE)
-                .expectedName("isPositive")
-                .expectedExpected("> " + Formatter.stringify(zero))
-                .expectedActual(Formatter.stringify(zero))
-                .addTest()
-            .newTest((expression, value) -> expression.isPositive())
+        newTestCase()
                 .subject(negative)
-                .expectedState(FALSE)
-                .expectedName("isPositive")
-                .expectedExpected("> " + Formatter.stringify(zero))
-                .expectedActual(Formatter.stringify(negative))
-                .addTest();
+                .expression(BoxedNumberValue::isZero)
+                .result(false)
+                .name("isZero")
+                .expected(ObjectFormatter.stringify(zero))
+                .actual(ObjectFormatter.stringify(negative))
+                .run();
     }
 
-    private void isNotPositiveTestCases(final ExpressionTestCaseBuilder<T, E> builder) {
+    // ---- isNotZero ----
 
-        final T positive = examplePositiveValue();
+    @Test
+    void givenPositive_whenIsNotZero_thenTrue() {
         final T zero = exampleZeroValue();
-        final T negative = exampleNegativeValue();
-
-        builder.newTest((expression, value) -> expression.isNotPositive())
+        final T positive = examplePositiveValue();
+        newTestCase()
                 .subject(positive)
-                .expectedState(FALSE)
-                .expectedName("isNotPositive")
-                .expectedExpected("<= " + Formatter.stringify(zero))
-                .expectedActual(Formatter.stringify(positive))
-                .addTest()
-            .newTest((expression, value) -> expression.isNotPositive())
-                .subject(zero)
-                .expectedState(TRUE)
-                .expectedName("isNotPositive")
-                .expectedExpected("<= " + Formatter.stringify(zero))
-                .expectedActual(Formatter.stringify(zero))
-                .addTest()
-            .newTest((expression, value) -> expression.isNotPositive())
-                .subject(negative)
-                .expectedState(TRUE)
-                .expectedName("isNotPositive")
-                .expectedExpected("<= " + Formatter.stringify(zero))
-                .expectedActual(Formatter.stringify(negative))
-                .addTest();
+                .expression(BoxedNumberValue::isNotZero)
+                .result(true)
+                .name("isNotZero")
+                .expected("not[" + ObjectFormatter.stringify(zero) + "]")
+                .actual(ObjectFormatter.stringify(positive))
+                .run();
     }
 
-    private void isNegativeTestCases(final ExpressionTestCaseBuilder<T, E> builder) {
-
-        final T positive = examplePositiveValue();
+    @Test
+    void givenZero_whenIsNotZero_thenFalse() {
         final T zero = exampleZeroValue();
-        final T negative = exampleNegativeValue();
-
-        builder.newTest((expression, value) -> expression.isNegative())
-                .subject(positive)
-                .expectedState(FALSE)
-                .expectedName("isNegative")
-                .expectedExpected("< " + Formatter.stringify(zero))
-                .expectedActual(Formatter.stringify(positive))
-                .addTest()
-            .newTest((expression, value) -> expression.isNegative())
+        newTestCase()
                 .subject(zero)
-                .expectedState(FALSE)
-                .expectedName("isNegative")
-                .expectedExpected("< " + Formatter.stringify(zero))
-                .expectedActual(Formatter.stringify(zero))
-                .addTest()
-            .newTest((expression, value) -> expression.isNegative())
-                .subject(negative)
-                .expectedState(TRUE)
-                .expectedName("isNegative")
-                .expectedExpected("< " + Formatter.stringify(zero))
-                .expectedActual(Formatter.stringify(negative))
-                .addTest();
+                .expression(BoxedNumberValue::isNotZero)
+                .result(false)
+                .name("isNotZero")
+                .expected("not[" + ObjectFormatter.stringify(zero) + "]")
+                .actual(ObjectFormatter.stringify(zero))
+                .run();
     }
 
-    private void isNotNegativeTestCases(final ExpressionTestCaseBuilder<T, E> builder) {
-
-        final T positive = examplePositiveValue();
+    @Test
+    void givenNegative_whenIsNotZero_thenTrue() {
         final T zero = exampleZeroValue();
         final T negative = exampleNegativeValue();
-
-        builder.newTest((expression, value) -> expression.isNotNegative())
-                .subject(positive)
-                .expectedState(TRUE)
-                .expectedName("isNotNegative")
-                .expectedExpected(">= " + Formatter.stringify(zero))
-                .expectedActual(Formatter.stringify(positive))
-                .addTest()
-            .newTest((expression, value) -> expression.isNotNegative())
-                .subject(zero)
-                .expectedState(TRUE)
-                .expectedName("isNotNegative")
-                .expectedExpected(">= " + Formatter.stringify(zero))
-                .expectedActual(Formatter.stringify(zero))
-                .addTest()
-            .newTest((expression, value) -> expression.isNotNegative())
+        newTestCase()
                 .subject(negative)
-                .expectedState(FALSE)
-                .expectedName("isNotNegative")
-                .expectedExpected(">= " + Formatter.stringify(zero))
-                .expectedActual(Formatter.stringify(negative))
-                .addTest();
+                .expression(BoxedNumberValue::isNotZero)
+                .result(true)
+                .name("isNotZero")
+                .expected("not[" + ObjectFormatter.stringify(zero) + "]")
+                .actual(ObjectFormatter.stringify(negative))
+                .run();
+    }
+
+    // ---- isPositive ----
+
+    @Test
+    void givenPositive_whenIsPositive_thenTrue() {
+        final T zero = exampleZeroValue();
+        final T positive = examplePositiveValue();
+        newTestCase()
+                .subject(positive)
+                .expression(BoxedNumberValue::isPositive)
+                .result(true)
+                .name("isPositive")
+                .expected("> " + ObjectFormatter.stringify(zero))
+                .actual(ObjectFormatter.stringify(positive))
+                .run();
+    }
+
+    @Test
+    void givenZero_whenIsPositive_thenFalse() {
+        final T zero = exampleZeroValue();
+        newTestCase()
+                .subject(zero)
+                .expression(BoxedNumberValue::isPositive)
+                .result(false)
+                .name("isPositive")
+                .expected("> " + ObjectFormatter.stringify(zero))
+                .actual(ObjectFormatter.stringify(zero))
+                .run();
+    }
+
+    @Test
+    void givenNegative_whenIsPositive_thenFalse() {
+        final T zero = exampleZeroValue();
+        final T negative = exampleNegativeValue();
+        newTestCase()
+                .subject(negative)
+                .expression(BoxedNumberValue::isPositive)
+                .result(false)
+                .name("isPositive")
+                .expected("> " + ObjectFormatter.stringify(zero))
+                .actual(ObjectFormatter.stringify(negative))
+                .run();
+    }
+
+    // ---- isNotPositive ----
+
+    @Test
+    void givenPositive_whenIsNotPositive_thenFalse() {
+        final T zero = exampleZeroValue();
+        final T positive = examplePositiveValue();
+        newTestCase()
+                .subject(positive)
+                .expression(BoxedNumberValue::isNotPositive)
+                .result(false)
+                .name("isNotPositive")
+                .expected("<= " + ObjectFormatter.stringify(zero))
+                .actual(ObjectFormatter.stringify(positive))
+                .run();
+    }
+
+    @Test
+    void givenZero_whenIsNotPositive_thenTrue() {
+        final T zero = exampleZeroValue();
+        newTestCase()
+                .subject(zero)
+                .expression(BoxedNumberValue::isNotPositive)
+                .result(true)
+                .name("isNotPositive")
+                .expected("<= " + ObjectFormatter.stringify(zero))
+                .actual(ObjectFormatter.stringify(zero))
+                .run();
+    }
+
+    @Test
+    void givenNegative_whenIsNotPositive_thenTrue() {
+        final T zero = exampleZeroValue();
+        final T negative = exampleNegativeValue();
+        newTestCase()
+                .subject(negative)
+                .expression(BoxedNumberValue::isNotPositive)
+                .result(true)
+                .name("isNotPositive")
+                .expected("<= " + ObjectFormatter.stringify(zero))
+                .actual(ObjectFormatter.stringify(negative))
+                .run();
+    }
+
+    // ---- isNegative ----
+
+    @Test
+    void givenPositive_whenIsNegative_thenFalse() {
+        final T zero = exampleZeroValue();
+        final T positive = examplePositiveValue();
+        newTestCase()
+                .subject(positive)
+                .expression(BoxedNumberValue::isNegative)
+                .result(false)
+                .name("isNegative")
+                .expected("< " + ObjectFormatter.stringify(zero))
+                .actual(ObjectFormatter.stringify(positive))
+                .run();
+    }
+
+    @Test
+    void givenZero_whenIsNegative_thenFalse() {
+        final T zero = exampleZeroValue();
+        newTestCase()
+                .subject(zero)
+                .expression(BoxedNumberValue::isNegative)
+                .result(false)
+                .name("isNegative")
+                .expected("< " + ObjectFormatter.stringify(zero))
+                .actual(ObjectFormatter.stringify(zero))
+                .run();
+    }
+
+    @Test
+    void givenNegative_whenIsNegative_thenTrue() {
+        final T zero = exampleZeroValue();
+        final T negative = exampleNegativeValue();
+        newTestCase()
+                .subject(negative)
+                .expression(BoxedNumberValue::isNegative)
+                .result(true)
+                .name("isNegative")
+                .expected("< " + ObjectFormatter.stringify(zero))
+                .actual(ObjectFormatter.stringify(negative))
+                .run();
+    }
+
+    // ---- isNotNegative ----
+
+    @Test
+    void givenPositive_whenIsNotNegative_thenTrue() {
+        final T zero = exampleZeroValue();
+        final T positive = examplePositiveValue();
+        newTestCase()
+                .subject(positive)
+                .expression(BoxedNumberValue::isNotNegative)
+                .result(true)
+                .name("isNotNegative")
+                .expected(">= " + ObjectFormatter.stringify(zero))
+                .actual(ObjectFormatter.stringify(positive))
+                .run();
+    }
+
+    @Test
+    void givenZero_whenIsNotNegative_thenTrue() {
+        final T zero = exampleZeroValue();
+        newTestCase()
+                .subject(zero)
+                .expression(BoxedNumberValue::isNotNegative)
+                .result(true)
+                .name("isNotNegative")
+                .expected(">= " + ObjectFormatter.stringify(zero))
+                .actual(ObjectFormatter.stringify(zero))
+                .run();
+    }
+
+    @Test
+    void givenNegative_whenIsNotNegative_thenFalse() {
+        final T zero = exampleZeroValue();
+        final T negative = exampleNegativeValue();
+        newTestCase()
+                .subject(negative)
+                .expression(BoxedNumberValue::isNotNegative)
+                .result(false)
+                .name("isNotNegative")
+                .expected(">= " + ObjectFormatter.stringify(zero))
+                .actual(ObjectFormatter.stringify(negative))
+                .run();
     }
 
     @Override
-    protected T exampleValue1() {
+    protected T nonNullValueA() {
         return exampleZeroValue();
     }
 
     @Override
-    protected T exampleValue2() {
+    protected T nonNullValueB() {
         return examplePositiveValue();
     }
 
-    protected abstract void customTestCases(final ExpressionTestCaseBuilder<T, E> builder);
     protected abstract T exampleNegativeValue();
+
     protected abstract T exampleZeroValue();
+
     protected abstract T examplePositiveValue();
+
     protected abstract T exampleMaximumValue();
+
     protected abstract T exampleMinimumValue();
 }

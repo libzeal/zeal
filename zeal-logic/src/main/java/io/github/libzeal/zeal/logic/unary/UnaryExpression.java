@@ -5,15 +5,18 @@ import io.github.libzeal.zeal.logic.Expression;
 /**
  * An expression that has a single subject.
  * <p>
- * The subject of an expression is the object on which the expression is the evaluated. For example, if the expression
- * evaluates whether a value is {@code null}, then the evaluation is executed against the subject of this expression.
+ * The subject of an expression is the object on which the expression is the
+ * evaluated. For example, if the expression evaluates whether a value is
+ * {@code null}, then the evaluation is executed against the subject of this
+ * expression.
  *
  * @param <S>
  *         The type of the subject.
  *
  * @author Justin Albano
  */
-public interface UnaryExpression<S> extends Expression {
+public sealed interface UnaryExpression<S> extends Expression
+        permits TerminalUnaryExpression, CompoundUnaryExpression {
 
     /**
      * Obtains the subject of the expression.

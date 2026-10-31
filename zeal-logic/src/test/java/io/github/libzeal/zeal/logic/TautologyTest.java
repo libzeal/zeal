@@ -1,15 +1,16 @@
 package io.github.libzeal.zeal.logic;
 
-import io.github.libzeal.zeal.logic.evaluation.cause.Cause;
+import io.github.libzeal.zeal.logic.evaluation.DirectCause;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
-import io.github.libzeal.zeal.logic.evaluation.Result;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static io.github.libzeal.zeal.logic.test.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.mock;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
 
 class TautologyTest {
 
@@ -32,10 +33,38 @@ class TautologyTest {
         final Evaluation evaluation = tautology.evaluate();
         final Rationale rationale = evaluation.rationale();
 
-        assertEquals(Result.TRUE, evaluation.result());
+        assertTrue(evaluation.isTrue());
         assertEquals(Tautology.NAME, evaluation.name());
         assertRationaleEquals(rationale, TRUE, TRUE);
-        assertEquals(evaluation, evaluation.cause().evaluation());
+        assertEquals(DirectCause.self(), evaluation.cause().direct());
         assertDepthFirstTraversalIsTerminal(evaluation);
+    }
+
+    @Test
+    void givenDefault_whenEvaluateTwice_thenDistinctEvaluationsReturned() {
+        assertNotSame(tautology.evaluate(), tautology.evaluate());
+    }
+
+    @Test
+    void givenTwoTautologies_whenEquals_thenEqual() {
+
+        final Tautology other = new Tautology();
+
+        assertNotSame(tautology, other);
+        assertEquals(tautology, other);
+        assertEquals(tautology.hashCode(), other.hashCode());
+    }
+
+    @Test
+    void givenContradiction_whenEquals_thenNotEqual() {
+        assertNotEquals(tautology, new Contradiction());
+    }
+
+    @Test
+    void givenCompoundsOfTautologies_whenEquals_thenEqual() {
+        assertEquals(
+            AndExpression.unnamed(new Tautology()),
+            AndExpression.unnamed(new Tautology())
+        );
     }
 }

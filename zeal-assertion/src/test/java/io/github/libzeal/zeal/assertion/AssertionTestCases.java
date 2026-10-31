@@ -1,8 +1,7 @@
 package io.github.libzeal.zeal.assertion;
 
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
-import io.github.libzeal.zeal.logic.evaluation.Result;
-import io.github.libzeal.zeal.logic.evaluation.format.Formatter;
+import io.github.libzeal.zeal.logic.format.EvaluationFormatter;
 import io.github.libzeal.zeal.logic.unary.UnaryExpression;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.provider.Arguments;
@@ -19,75 +18,83 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class AssertionTestCases {
 
-    private final Formatter formatter;
+    private final EvaluationFormatter formatter;
 
-    public AssertionTestCases(final Formatter formatter) {
+    public AssertionTestCases(final EvaluationFormatter formatter) {
         this.formatter = formatter;
     }
 
-    public void whenCall_thenExceptionThrown(final ExceptionTestCaseData testData,
-                                             final Consumer<UnaryExpression<Object>> action,
-                                             final String defaultMessage) {
+    public void whenCall_thenExceptionThrown(
+            final ExceptionTestCaseData testData,
+            final Consumer<UnaryExpression<Object>> action,
+            final String defaultMessage
+    ) {
 
         final Throwable caught = assertThrows(
-            testData.exception(),
-            () -> action.accept(testData.expression())
+                testData.exception(),
+                () -> action.accept(testData.expression())
         );
 
         final String expectedMessage = testData.message()
-            .orElseGet(() -> AssertionExpressionEvaluator.formatMessage(
-                    formatter,
-                    defaultMessage,
-                    testData.evaluation()
-                )
-            );
+                .orElseGet(() -> AssertionExpressionEvaluator.formatMessage(
+                                formatter,
+                                defaultMessage,
+                                testData.evaluation()
+                        )
+                );
 
         assertEquals(expectedMessage, caught.getMessage());
     }
 
-    public void whenCallWithMessage_thenExceptionThrown(final ExceptionTestCaseData testData,
-                                                               final EvaluationWithMessageAction action) {
+    public void whenCallWithMessage_thenExceptionThrown(
+            final ExceptionTestCaseData testData,
+            final EvaluationWithMessageAction action
+    ) {
 
         final String message = "foo";
 
         final Throwable caught = assertThrows(
-            testData.exception(),
-            () -> action.perform(testData.expression(), message)
+                testData.exception(),
+                () -> action.perform(testData.expression(), message)
         );
 
         final String expectedMessage = testData.message()
-            .orElseGet(() -> AssertionExpressionEvaluator.formatMessage(
-                    formatter,
-                    message,
-                    testData.evaluation()
-                )
-            );
+                .orElseGet(() -> AssertionExpressionEvaluator.formatMessage(
+                                formatter,
+                                message,
+                                testData.evaluation()
+                        )
+                );
 
         assertEquals(expectedMessage, caught.getMessage());
     }
 
-    public void whenCallWithMissingMessage_thenExceptionThrown(final ExceptionTestCaseData testData,
-                                                                final EvaluationWithMessageAction action) {
+    public void whenCallWithMissingMessage_thenExceptionThrown(
+            final ExceptionTestCaseData testData,
+            final EvaluationWithMessageAction action
+    ) {
 
         final Throwable caught = assertThrows(
-            testData.exception(),
-            () -> action.perform(testData.expression(), null)
+                testData.exception(),
+                () -> action.perform(testData.expression(), null)
         );
 
         final String expectedMessage = testData.message()
-            .orElseGet(() -> AssertionExpressionEvaluator.formatMessage(
-                    formatter,
-                    "",
-                    testData.evaluation()
-                )
-            );
+                .orElseGet(() -> AssertionExpressionEvaluator.formatMessage(
+                                formatter,
+                                "",
+                                testData.evaluation()
+                        )
+                );
 
         assertEquals(expectedMessage, caught.getMessage());
     }
 
-    public void whenCall_thenSubjectReturned(final SubjectReturnedDataSet testData,
-                                                    final Function<UnaryExpression<Object>, Object> action) {
-        final Result result = testData.result();
+    public void whenCall_thenSubjectReturned(
+            final SubjectReturnedDataSet testData,
+            final Function<UnaryExpression<Object>, Object> action
+    ) {
+        final boolean result = testData.result();
         final Object subject = testData.subject();
         final UnaryExpression<Object> expression = expression(result, subject);
 
@@ -96,10 +103,12 @@ public class AssertionTestCases {
         assertEquals(subject, returnedSubject);
     }
 
-    public void whenCallWithMessage_thenSubjectReturned(final SubjectReturnedDataSet testData,
-                                                               final EvaluationWithMessageAction action) throws Throwable {
+    public void whenCallWithMessage_thenSubjectReturned(
+            final SubjectReturnedDataSet testData,
+            final EvaluationWithMessageAction action
+    ) throws Throwable {
         final String message = "foo";
-        final Result result = testData.result();
+        final boolean result = testData.result();
         final Object subject = testData.subject();
         final UnaryExpression<Object> expression = expression(result, subject);
 
@@ -111,12 +120,10 @@ public class AssertionTestCases {
     public static final class SubjectReturnedArgumentsProvider implements ArgumentsProvider {
 
         @Override
-        public Stream<? extends Arguments> provideArguments(final ExtensionContext extensionContext) throws Exception {
+        public Stream<? extends Arguments> provideArguments(final ExtensionContext extensionContext) {
             return Stream.of(
-                Arguments.of( new SubjectReturnedDataSet("Passing with null subject", Result.TRUE, null)),
-                Arguments.of(new SubjectReturnedDataSet("Passing with non-null subject", Result.TRUE, new Object())),
-                Arguments.of(new SubjectReturnedDataSet("Skipped with null subject", Result.SKIPPED, null)),
-                Arguments.of(new SubjectReturnedDataSet("Skipped with non-null subject", Result.SKIPPED, new Object()))
+                    Arguments.of(new SubjectReturnedDataSet("Passing with null subject", true, null)),
+                    Arguments.of(new SubjectReturnedDataSet("Passing with non-null subject", true, new Object()))
             );
         }
     }
@@ -128,8 +135,10 @@ public class AssertionTestCases {
         private final Class<? extends Throwable> exception;
         private final String message;
 
-        public ExceptionTestCaseData(final String name, final UnaryExpression<Object> expression, final Class<?
-            extends Throwable> exception, String message) {
+        public ExceptionTestCaseData(
+                final String name, final UnaryExpression<Object> expression, final Class<?
+                        extends Throwable> exception, String message
+        ) {
             this.name = name;
             this.expression = expression;
             this.exception = exception;
@@ -169,16 +178,16 @@ public class AssertionTestCases {
     public static class SubjectReturnedDataSet {
 
         private final String name;
-        private final Result result;
+        private final boolean result;
         private final Object subject;
 
-        public SubjectReturnedDataSet(final String name, final Result result, final Object subject) {
+        public SubjectReturnedDataSet(final String name, final boolean result, final Object subject) {
             this.name = name;
             this.result = result;
             this.subject = subject;
         }
 
-        public Result result() {
+        public boolean result() {
             return result;
         }
 

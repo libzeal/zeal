@@ -1,111 +1,89 @@
 package io.github.libzeal.zeal.logic;
 
-import io.github.libzeal.zeal.logic.CompoundEvaluator.CompoundRationaleBuilder;
 import io.github.libzeal.zeal.logic.CompoundEvaluator.Tally;
+import io.github.libzeal.zeal.logic.evaluation.CompoundEvaluation;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import static io.github.libzeal.zeal.logic.util.ArgumentValidator.requireDoesNotContainNulls;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A compound expression where at least one sub-expression must be pass for the
- * compound expression to pass.
+ * An expression whose children are ORed together.
+ *
+ * @param name
+ *         The name of the expression.
+ * @param children
+ *         The sub-expressions that are ORed together. If no children are
+ *         provided, the OR expression evaluates to false.
  *
  * @author Justin Albano
+ * @since 0.5.0
  */
-public record OrExpression(String name,
-                           List<Expression> children) implements CompoundExpression {
+public record OrExpression(
+        String name,
+        List<Expression> children
+) implements CompoundExpression {
 
     static final String DEFAULT_NAME = "OR";
+    static final String EXPECTED = "true >= 1";
 
     /**
-     * Creates a new disjunctive expression.
+     * Creates a new OR expression.
      *
      * @param name
-     *     The name of the expression.
+     *         The name of the expression.
      * @param children
-     *     The expressions used initialize to the compound expression.
+     *         The sub-expressions to be ORed together.
      *
      * @throws NullPointerException
-     *     The supplied name is {@code null} or the children contains a
-     *     {@code null} value.
+     *         The supplied name or children is {@code null} or the children
+     *         contains any {@code null}s.
      */
     public OrExpression {
         requireNonNull(name);
-        requireDoesNotContainNulls(children);
+        children = List.copyOf(children);
     }
 
     /**
-     * Creates a new disjunctive expression using a default name.
+     * Creates a OR expression with a default name.
      *
      * @param children
-     *     The expressions used to initialize the compound expression.
+     *         The sub-expressions to be ORed together.
      *
-     * @return A disjunctive expression with a default name.
+     * @return An OR expression with a default name.
      *
      * @throws NullPointerException
-     *     The supplied name is {@code null} or the children contains a
-     *     {@code null} value.
+     *         The supplied children list is {@code null} or the list contains
+     *         any {@code null}s.
      */
     public static OrExpression unnamed(final List<Expression> children) {
         return new OrExpression(DEFAULT_NAME, children);
     }
 
     /**
-     * Creates a new disjunctive expression using a default name.
+     * Creates a OR expression with a default name.
      *
      * @param children
-     *     The expressions used to initialize the compound expression.
+     *         The sub-expressions to be ORed together.
      *
-     * @return A disjunctive expression with a default name.
+     * @return An OR expression with a default name.
      *
      * @throws NullPointerException
-     *     The supplied name is {@code null} or the children contains a
-     *     {@code null} value.
+     *         The supplied children list is {@code null} or the list contains
+     *         any {@code null}s.
      */
     public static OrExpression unnamed(final Expression... children) {
-        return new OrExpression(DEFAULT_NAME, Arrays.asList(children));
-    }
-
-    /**
-     * Creates a new disjunctive expression with an empty default sub-expression
-     * list.
-     *
-     * @param name
-     *     The name of the expression.
-     *
-     * @throws NullPointerException
-     *     The supplied name is {@code null}.
-     */
-    public OrExpression(String name) {
-        this(name, new ArrayList<>(1));
+        return new OrExpression(DEFAULT_NAME, List.of(children));
     }
 
     @Override
-    public void append(Expression predicate) {
-        this.children.add(predicate);
-    }
-
-    @Override
-    public void prepend(Expression predicate) {
-        this.children.addFirst(predicate);
-    }
-
-    @Override
-    public Evaluation evaluate() {
-
-        final int expectedPassed = children.isEmpty() ? 0 : 1;
-        final CompoundRationaleBuilder builder = CompoundRationaleBuilder.withExpectedPassed(expectedPassed);
-
-        return new CompoundEvaluator(
-            name,
-            Tally::anyPassed,
-            Tally::allFailed,
-            builder
-        ).evaluate(children);
+    public CompoundEvaluation evaluate() {
+        return CompoundEvaluator.evaluate(
+                this,
+                EXPECTED,
+                Evaluation::isTrue,
+                Tally::hasAtLeastOneTrue
+        );
     }
 }
