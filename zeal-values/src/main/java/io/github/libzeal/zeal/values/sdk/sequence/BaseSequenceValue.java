@@ -19,70 +19,70 @@ public abstract class BaseSequenceValue<S, T, V extends BaseSequenceValue<S, T, 
     @Override
     public V isEmpty() {
         return append(
-            SizedSequenceExpressions.isEmpty(operations)
+            SequenceExpressions.isEmpty(operations)
         );
     }
 
     @Override
     public V isNotEmpty() {
         return append(
-            SizedSequenceExpressions.isNotEmpty(operations)
+            SequenceExpressions.isNotEmpty(operations)
         );
     }
 
     @Override
     public V hasLengthOf(final int length) {
         return append(
-            SizedSequenceExpressions.hasLengthOf(length, operations)
+            SequenceExpressions.hasLengthOf(length, operations)
         );
     }
 
     @Override
     public V doesNotHaveLengthOf(final int length) {
         return append(
-            SizedSequenceExpressions.doesNotHaveLengthOf(length, operations)
+            SequenceExpressions.doesNotHaveLengthOf(length, operations)
         );
     }
 
     @Override
     public V isLongerThan(final int length) {
         return append(
-            SizedSequenceExpressions.isLongerThan(length, operations)
+            SequenceExpressions.isLongerThan(length, operations)
         );
     }
 
     @Override
     public V isLongerThanOrEqualTo(final int length) {
         return append(
-            SizedSequenceExpressions.isLongerThanOrEqualTo(length, operations)
+            SequenceExpressions.isLongerThanOrEqualTo(length, operations)
         );
     }
 
     @Override
     public V isShorterThan(final int length) {
         return append(
-            SizedSequenceExpressions.isShorterThan(length, operations)
+            SequenceExpressions.isShorterThan(length, operations)
         );
     }
 
     @Override
     public V isShorterThanOrEqualTo(final int length) {
         return append(
-            SizedSequenceExpressions.isShorterThanOrEqualTo(length, operations)
+            SequenceExpressions.isShorterThanOrEqualTo(length, operations)
         );
     }
 
     @Override
     public V includes(final T desired) {
         return append(
-            InspectableSequenceExpressions.includes(desired, operations)
+            SequenceExpressions.includes(desired, operations)
         );
     }
 
     @Override
     public V includesAll(final Collection<T> desired) {
         return append(
-            InspectableSequenceExpressions.includesAll(desired, operations)
+            SequenceExpressions.includesAll(desired, operations)
         );
     }
 
@@ -95,7 +95,7 @@ public abstract class BaseSequenceValue<S, T, V extends BaseSequenceValue<S, T, 
     @Override
     public V includesAny(final Collection<T> desired) {
         return append(
-            InspectableSequenceExpressions.includesAny(desired, operations)
+            SequenceExpressions.includesAny(desired, operations)
         );
     }
 
@@ -108,14 +108,14 @@ public abstract class BaseSequenceValue<S, T, V extends BaseSequenceValue<S, T, 
     @Override
     public V excludes(final T desired) {
         return append(
-            InspectableSequenceExpressions.excludes(desired, operations)
+            SequenceExpressions.excludes(desired, operations)
         );
     }
 
     @Override
     public V excludesAll(final Collection<T> desired) {
         return append(
-            InspectableSequenceExpressions.excludesAll(desired, operations)
+            SequenceExpressions.excludesAll(desired, operations)
         );
     }
 
@@ -128,7 +128,7 @@ public abstract class BaseSequenceValue<S, T, V extends BaseSequenceValue<S, T, 
     @Override
     public V excludesAny(final Collection<T> desired) {
         return append(
-            InspectableSequenceExpressions.excludesAny(desired, operations)
+            SequenceExpressions.excludesAny(desired, operations)
         );
     }
 
@@ -141,35 +141,35 @@ public abstract class BaseSequenceValue<S, T, V extends BaseSequenceValue<S, T, 
     @Override
     public V includesExactly(final T desired, final long times) {
         return append(
-            RepeatableSequenceExpressions.includesExactly(desired, times, operations)
+            SequenceExpressions.includesExactly(desired, times, operations)
         );
     }
 
     @Override
     public V includesMoreThan(final T desired, final long times) {
         return append(
-            RepeatableSequenceExpressions.includesMoreThan(desired, times, operations)
+            SequenceExpressions.includesMoreThan(desired, times, operations)
         );
     }
 
     @Override
     public V includesMoreThanOrEqualTo(final T desired, final long times) {
         return append(
-            RepeatableSequenceExpressions.includesMoreThanOrEqualTo(desired, times, operations)
+            SequenceExpressions.includesMoreThanOrEqualTo(desired, times, operations)
         );
     }
 
     @Override
     public V includesLessThan(final T desired, final long times) {
         return append(
-            RepeatableSequenceExpressions.includesLessThan(desired, times, operations)
+            SequenceExpressions.includesLessThan(desired, times, operations)
         );
     }
 
     @Override
     public V includesLessThanOrEqualTo(final T desired, final long times) {
         return append(
-            RepeatableSequenceExpressions.includesLessThanOrEqualTo(desired, times, operations)
+            SequenceExpressions.includesLessThanOrEqualTo(desired, times, operations)
         );
     }
 }

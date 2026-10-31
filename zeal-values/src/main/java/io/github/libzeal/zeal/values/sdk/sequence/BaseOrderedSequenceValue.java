@@ -1,7 +1,5 @@
 package io.github.libzeal.zeal.values.sdk.sequence;
 
-import io.github.libzeal.zeal.values.sdk.sequence.OrderedSequenceExpressions.OrderedSequenceOperations;
-
 public abstract class BaseOrderedSequenceValue<S, T, V extends BaseOrderedSequenceValue<S, T, V>>
     extends BaseSequenceValue<S, T, V>
     implements OrderedSequenceValue<T, V> {

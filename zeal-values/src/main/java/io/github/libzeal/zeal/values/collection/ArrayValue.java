@@ -2,7 +2,7 @@ package io.github.libzeal.zeal.values.collection;
 
 import io.github.libzeal.zeal.values.sdk.sequence.BaseOrderedSequenceValue;
 import io.github.libzeal.zeal.values.sdk.sequence.Element;
-import io.github.libzeal.zeal.values.sdk.sequence.OrderedSequenceExpressions.OrderedSequenceOperations;
+import io.github.libzeal.zeal.values.sdk.sequence.OrderedSequenceOperations;
 
 import java.util.Arrays;
 

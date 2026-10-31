@@ -1,7 +1,6 @@
 package io.github.libzeal.zeal.values.core;
 
 import io.github.libzeal.zeal.values.sdk.sequence.*;
-import io.github.libzeal.zeal.values.sdk.sequence.OrderedSequenceExpressions.OrderedSequenceOperations;
 
 /**
  * A value used to evaluate {@link String} instances.
@@ -72,7 +71,7 @@ public class StringValue extends BaseOrderedSequenceValue<String, Character, Str
     //  includes("") passing); a null sequence is found 0 times
     public StringValue includesExactly(final CharSequence desired, final long times) {
         return append(
-            RepeatableSequenceExpressions.includesExactly(asString(desired), times, stringOperations)
+            SequenceExpressions.includesExactly(asString(desired), times, stringOperations)
         );
     }
 
@@ -82,25 +81,25 @@ public class StringValue extends BaseOrderedSequenceValue<String, Character, Str
 
     public StringValue includesMoreThan(final CharSequence desired, final long times) {
         return append(
-            RepeatableSequenceExpressions.includesMoreThan(asString(desired), times, stringOperations)
+            SequenceExpressions.includesMoreThan(asString(desired), times, stringOperations)
         );
     }
 
     public StringValue includesMoreThanOrEqualTo(final CharSequence desired, final long times) {
         return append(
-            RepeatableSequenceExpressions.includesMoreThanOrEqualTo(asString(desired), times, stringOperations)
+            SequenceExpressions.includesMoreThanOrEqualTo(asString(desired), times, stringOperations)
         );
     }
 
     public StringValue includesLessThan(final CharSequence desired, final long times) {
         return append(
-            RepeatableSequenceExpressions.includesLessThan(asString(desired), times, stringOperations)
+            SequenceExpressions.includesLessThan(asString(desired), times, stringOperations)
         );
     }
 
     public StringValue includesLessThanOrEqualTo(final CharSequence desired, final long times) {
         return append(
-            RepeatableSequenceExpressions.includesLessThanOrEqualTo(asString(desired), times, stringOperations)
+            SequenceExpressions.includesLessThanOrEqualTo(asString(desired), times, stringOperations)
         );
     }
 
