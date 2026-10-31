@@ -7,9 +7,7 @@ import java.util.List;
 
 
 class IterableValueTest extends BaseValueTest<Iterable<String>, IterableValue<String>>
-    implements SizedSequenceValueTest<Iterable<String>, IterableValue<String>>,
-    InspectableSequenceValueTest<Iterable<String>, IterableValue<String>>,
-    RepeatableSequenceValueTest<Iterable<String>, IterableValue<String>> {
+    implements SequenceValueTest<Iterable<String>, IterableValue<String>> {
 
     // Plain iterables use identity for equals, hashCode, and toString, so the same instances must be returned each time
     private static final Iterable<String> VALUE_A = iterableOf("foo");

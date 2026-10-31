@@ -6,7 +6,63 @@ import org.junit.jupiter.api.Test;
 
 
 interface OrderedSequenceValueTest<S, E extends ObjectValue<S, E> & OrderedSequenceValue<String, E>>
-    extends SequenceValueContract<S, E> {
+    extends SequenceValueTest<S, E> {
+
+    // ---- includes (with the index of the desired element as the hint) ----
+
+    @Test
+    default void givenIncluded_whenIncludes_thenHintHasIndex() {
+        newTestCase()
+            .subject(subjectOf("a", "b"))
+            .expression(value -> value.includes("b"))
+            .result(true)
+            .name("includes[b]")
+            .expected("includes[b]")
+            .actual("includes[b]")
+            .hint("'b' found at index 1")
+            .run();
+    }
+
+    @Test
+    default void givenExcluded_whenIncludes_thenHintSaysNotIncluded() {
+        newTestCase()
+            .subject(subjectOf("a", "b"))
+            .expression(value -> value.includes("c"))
+            .result(false)
+            .name("includes[c]")
+            .expected("includes[c]")
+            .actual("excludes[c]")
+            .hint("Value does not include 'c'")
+            .run();
+    }
+
+    // ---- excludes (with the index of the desired element as the hint) ----
+
+    @Test
+    default void givenExcluded_whenExcludes_thenHintSaysNotIncluded() {
+        newTestCase()
+            .subject(subjectOf("a", "b"))
+            .expression(value -> value.excludes("c"))
+            .result(true)
+            .name("excludes[c]")
+            .expected("excludes[c]")
+            .actual("excludes[c]")
+            .hint("Value does not include 'c'")
+            .run();
+    }
+
+    @Test
+    default void givenIncluded_whenExcludes_thenHintHasIndex() {
+        newTestCase()
+            .subject(subjectOf("a", "b"))
+            .expression(value -> value.excludes("b"))
+            .result(false)
+            .name("excludes[b]")
+            .expected("excludes[b]")
+            .actual("includes[b]")
+            .hint("'b' found at index 1")
+            .run();
+    }
 
     // ---- hasAtIndex ----
 

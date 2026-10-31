@@ -12,7 +12,7 @@ import static io.github.libzeal.zeal.values.sdk.StandardRationales.Names.withVal
 
 public class OrderedSequenceExpressions {
 
-    public interface OrderedSequenceOperations<T, S> {
+    public interface OrderedSequenceOperations<T, S> extends SequenceOperations<T, S> {
         Element<T> lastElement(S haystack, T desired);
 
         Element<T> atIndex(S haystack, int index, T desired);
@@ -21,7 +21,9 @@ public class OrderedSequenceExpressions {
 
         int lastIndexOf(S haystack, T needle);
 
-        Element<T> firstElement(S haystack, T desired);
+        default Element<T> firstElement(final S haystack, final T desired) {
+            return atIndex(haystack, 0, desired);
+        }
     }
 
     public static <T, S> Condition<S> lastIndexOfIs(final T desired, final int index, final OrderedSequenceOperations<T, S> ops) {

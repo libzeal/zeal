@@ -9,9 +9,7 @@ import java.util.List;
 
 
 class SimpleCollectionValueTest extends BaseValueTest<Collection<String>, SimpleCollectionValue<String>>
-    implements SizedSequenceValueTest<Collection<String>, SimpleCollectionValue<String>>,
-    InspectableSequenceValueTest<Collection<String>, SimpleCollectionValue<String>>,
-    RepeatableSequenceValueTest<Collection<String>, SimpleCollectionValue<String>> {
+    implements SequenceValueTest<Collection<String>, SimpleCollectionValue<String>> {
 
     // ArrayDeque uses identity for equals and hashCode, so the same instances must be returned each time
     private static final Collection<String> VALUE_A = new ArrayDeque<>(List.of("foo"));

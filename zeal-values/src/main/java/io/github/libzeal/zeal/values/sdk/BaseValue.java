@@ -402,7 +402,7 @@ public abstract class BaseValue<T, E extends BaseValue<T, E>> implements ObjectV
     public E satisfies(final Predicate<T> predicate) {
         return append(
                 expression(predicate)
-                        .name("predicate")
+                        .name("condition")
                         .expected(StandardMessages.CONDITION_SATISFIED)
                         .actual(context -> context.ifPassedOrElse(CONDITION_SATISFIED, CONDITION_UNSATISFIED))
                         .build()
@@ -413,7 +413,7 @@ public abstract class BaseValue<T, E extends BaseValue<T, E>> implements ObjectV
     public E doesNotSatisfy(final Predicate<T> predicate) {
         return append(
                 expression(o -> !predicate.test(o))
-                        .name("not[predicate]")
+                        .name("not[condition]")
                         .expected(StandardMessages.CONDITION_UNSATISFIED)
                         .actual(context -> context.ifPassedOrElse(CONDITION_UNSATISFIED, CONDITION_SATISFIED))
                         .build()

@@ -4,14 +4,14 @@ public interface BoxedWholeNumberValue<T extends Number, E extends BoxedWholeNum
         extends BoxedNumberValue<T, E> {
 
     /**
-     * Adds a predicate to the expression that checks if the subject is even.
+     * Adds a condition to the expression that checks if the subject is even.
      *
      * @return This expression (fluent interface).
      */
     E isEven();
 
     /**
-     * Adds a predicate to the expression that checks if the subject is odd.
+     * Adds a condition to the expression that checks if the subject is odd.
      *
      * @return This expression (fluent interface).
      */

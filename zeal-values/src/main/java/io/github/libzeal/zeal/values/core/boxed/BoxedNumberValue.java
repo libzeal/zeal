@@ -6,7 +6,7 @@ public interface BoxedNumberValue<T extends Number, V extends BoxedNumberValue<T
         extends ObjectValue<T, V> {
 
     /**
-     * Adds a predicate to the expression that checks if the subject is less
+     * Adds a condition to the expression that checks if the subject is less
      * than the supplied value.
      *
      * @param value
@@ -33,7 +33,7 @@ public interface BoxedNumberValue<T extends Number, V extends BoxedNumberValue<T
     }
 
     /**
-     * Adds a predicate to the expression that checks if the subject is greater
+     * Adds a condition to the expression that checks if the subject is greater
      * than the supplied value.
      *
      * @param value
@@ -60,7 +60,7 @@ public interface BoxedNumberValue<T extends Number, V extends BoxedNumberValue<T
     }
 
     /**
-     * Adds a predicate to the expression that checks if the subject is less
+     * Adds a condition to the expression that checks if the subject is less
      * than or equal to the supplied value.
      *
      * @param value
@@ -87,7 +87,7 @@ public interface BoxedNumberValue<T extends Number, V extends BoxedNumberValue<T
     }
 
     /**
-     * Adds a predicate to the expression that checks if the subject is greater
+     * Adds a condition to the expression that checks if the subject is greater
      * than or equal to the supplied value.
      *
      * @param value
@@ -114,7 +114,7 @@ public interface BoxedNumberValue<T extends Number, V extends BoxedNumberValue<T
     }
 
     /**
-     * Adds a predicate to the expression that checks if the subject is equal to
+     * Adds a condition to the expression that checks if the subject is equal to
      * the maximum {@link T} value.
      *
      * @return This expression (fluent interface).
@@ -122,7 +122,7 @@ public interface BoxedNumberValue<T extends Number, V extends BoxedNumberValue<T
     V isMaxValue();
 
     /**
-     * Adds a predicate to the expression that checks if the subject is equal to
+     * Adds a condition to the expression that checks if the subject is equal to
      * the minimum {@link T} value.
      *
      * @return This expression (fluent interface).
@@ -130,7 +130,7 @@ public interface BoxedNumberValue<T extends Number, V extends BoxedNumberValue<T
     V isMinValue();
 
     /**
-     * Adds a predicate to the expression that checks if the subject is equal to
+     * Adds a condition to the expression that checks if the subject is equal to
      * 0.
      *
      * @return This expression (fluent interface).
@@ -138,7 +138,7 @@ public interface BoxedNumberValue<T extends Number, V extends BoxedNumberValue<T
     V isZero();
 
     /**
-     * Adds a predicate to the expression that checks if the subject is not
+     * Adds a condition to the expression that checks if the subject is not
      * equal to 0.
      *
      * @return This expression (fluent interface).
@@ -146,7 +146,7 @@ public interface BoxedNumberValue<T extends Number, V extends BoxedNumberValue<T
     V isNotZero();
 
     /**
-     * Adds a predicate to the expression that checks if the subject is positive
+     * Adds a condition to the expression that checks if the subject is positive
      * (greater than 0).
      *
      * @return This expression (fluent interface).
@@ -154,7 +154,7 @@ public interface BoxedNumberValue<T extends Number, V extends BoxedNumberValue<T
     V isPositive();
 
     /**
-     * Adds a predicate to the expression that checks if the subject is not
+     * Adds a condition to the expression that checks if the subject is not
      * positive (less than or equal to 0).
      *
      * @return This expression (fluent interface).
@@ -162,7 +162,7 @@ public interface BoxedNumberValue<T extends Number, V extends BoxedNumberValue<T
     V isNotPositive();
 
     /**
-     * Adds a predicate to the expression that checks if the subject is negative
+     * Adds a condition to the expression that checks if the subject is negative
      * (less than 0).
      *
      * @return This expression (fluent interface).
@@ -170,7 +170,7 @@ public interface BoxedNumberValue<T extends Number, V extends BoxedNumberValue<T
     V isNegative();
 
     /**
-     * Adds a predicate to the expression that checks if the subject is not
+     * Adds a condition to the expression that checks if the subject is not
      * negative (greater than or equal to 0).
      *
      * @return This expression (fluent interface).

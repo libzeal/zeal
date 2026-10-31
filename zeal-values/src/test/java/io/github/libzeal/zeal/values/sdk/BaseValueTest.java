@@ -586,7 +586,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
                 .run();
     }
 
-    // ---- predicate ----
+    // ---- condition ----
 
     @Test
     void givenAlwaysTrue_whenSatisfies_thenTrue() {
@@ -594,9 +594,9 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
                 .subject(nonNullValueA())
                 .expression(value -> value.satisfies(o -> true))
                 .result(true)
-                .name("predicate")
-                .expected("Predicate satisfied")
-                .actual("Predicate satisfied")
+                .name("condition")
+                .expected("Condition satisfied")
+                .actual("Condition satisfied")
                 .run();
     }
 
@@ -606,9 +606,9 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
                 .subject(nonNullValueA())
                 .expression(value -> value.satisfies(o -> false))
                 .result(false)
-                .name("predicate")
-                .expected("Predicate satisfied")
-                .actual("Predicate unsatisfied")
+                .name("condition")
+                .expected("Condition satisfied")
+                .actual("Condition unsatisfied")
                 .run();
     }
 
@@ -739,9 +739,9 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
                 .subject(nonNullValueA())
                 .expression(value -> value.doesNotSatisfy(o -> true))
                 .result(false)
-                .name("not[predicate]")
-                .expected("Predicate unsatisfied")
-                .actual("Predicate satisfied")
+                .name("not[condition]")
+                .expected("Condition unsatisfied")
+                .actual("Condition satisfied")
                 .run();
     }
 
@@ -751,9 +751,9 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
                 .subject(nonNullValueA())
                 .expression(value -> value.doesNotSatisfy(o -> false))
                 .result(true)
-                .name("not[predicate]")
-                .expected("Predicate unsatisfied")
-                .actual("Predicate unsatisfied")
+                .name("not[condition]")
+                .expected("Condition unsatisfied")
+                .actual("Condition unsatisfied")
                 .run();
     }
 

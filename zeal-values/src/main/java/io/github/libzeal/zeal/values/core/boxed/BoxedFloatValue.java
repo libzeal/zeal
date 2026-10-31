@@ -27,7 +27,7 @@ public class BoxedFloatValue extends BaseValue<Float, BoxedFloatValue>
     }
 
     /**
-     * Adds a predicate to the expression that checks if the subject is equal within the supplied delta.
+     * Adds a condition to the expression that checks if the subject is equal within the supplied delta.
      * <p>
      * Note: The formula used to evaluate the predicate is:
      * <pre><code>abs(subject - value) &lt;= delta</code></pre>
@@ -49,7 +49,7 @@ public class BoxedFloatValue extends BaseValue<Float, BoxedFloatValue>
     }
 
     /**
-     * Adds a predicate to the expression that checks if the subject is finite.
+     * Adds a condition to the expression that checks if the subject is finite.
      *
      * @return This expression (fluent interface).
      */
@@ -63,7 +63,7 @@ public class BoxedFloatValue extends BaseValue<Float, BoxedFloatValue>
     }
 
     /**
-     * Adds a predicate to the expression that checks if the subject is infinite.
+     * Adds a condition to the expression that checks if the subject is infinite.
      *
      * @return This expression (fluent interface).
      */
@@ -77,7 +77,7 @@ public class BoxedFloatValue extends BaseValue<Float, BoxedFloatValue>
     }
 
     /**
-     * Adds a predicate to the expression that checks if the subject is not a number (NaN).
+     * Adds a condition to the expression that checks if the subject is not a number (NaN).
      *
      * @return This expression (fluent interface).
      */

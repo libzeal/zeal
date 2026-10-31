@@ -17,7 +17,11 @@ public class InspectableSequenceExpressions {
 
     public interface InspectableSequenceOperations<T, S> {
 
-        List<T> findAllIn(S haystack, Collection<T> needles);
+        default List<T> findAllIn(final S haystack, final Collection<T> needles) {
+            return needles.stream()
+                    .filter(needle -> includes(haystack, needle))
+                    .collect(toList());
+        }
 
         boolean includes(S haystack, T needle);
     }

@@ -7,10 +7,7 @@ import java.util.List;
 
 
 class ListValueTest extends BaseValueTest<List<String>, ListValue<String>>
-    implements SizedSequenceValueTest<List<String>, ListValue<String>>,
-    InspectableSequenceValueTest<List<String>, ListValue<String>>,
-    RepeatableSequenceValueTest<List<String>, ListValue<String>>,
-    OrderedSequenceValueTest<List<String>, ListValue<String>> {
+    implements OrderedSequenceValueTest<List<String>, ListValue<String>> {
 
     @Override
     protected ListValue<String> expression(final List<String> value) {

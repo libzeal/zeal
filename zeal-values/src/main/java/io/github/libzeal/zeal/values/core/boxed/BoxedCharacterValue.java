@@ -30,7 +30,7 @@ public class BoxedCharacterValue extends BaseValue<Character, BoxedCharacterValu
     }
 
     /**
-     * Adds a predicate to the expression that checks if the subject is lower
+     * Adds a condition to the expression that checks if the subject is lower
      * case.
      *
      * @return This expression (fluent interface).
@@ -47,7 +47,7 @@ public class BoxedCharacterValue extends BaseValue<Character, BoxedCharacterValu
     }
 
     /**
-     * Adds a predicate to the expression that checks if the subject is upper
+     * Adds a condition to the expression that checks if the subject is upper
      * case.
      *
      * @return This expression (fluent interface).
@@ -64,7 +64,7 @@ public class BoxedCharacterValue extends BaseValue<Character, BoxedCharacterValu
     }
 
     /**
-     * Adds a predicate to the expression that checks if the subject is a
+     * Adds a condition to the expression that checks if the subject is a
      * letter.
      *
      * @return This expression (fluent interface).
@@ -81,7 +81,7 @@ public class BoxedCharacterValue extends BaseValue<Character, BoxedCharacterValu
     }
 
     /**
-     * Adds a predicate to the expression that checks if the subject is not a
+     * Adds a condition to the expression that checks if the subject is not a
      * letter.
      *
      * @return This expression (fluent interface).
@@ -98,7 +98,7 @@ public class BoxedCharacterValue extends BaseValue<Character, BoxedCharacterValu
     }
 
     /**
-     * Adds a predicate to the expression that checks if the subject is a
+     * Adds a condition to the expression that checks if the subject is a
      * digit.
      *
      * @return This expression (fluent interface).
@@ -115,7 +115,7 @@ public class BoxedCharacterValue extends BaseValue<Character, BoxedCharacterValu
     }
 
     /**
-     * Adds a predicate to the expression that checks if the subject is not a
+     * Adds a condition to the expression that checks if the subject is not a
      * digit.
      *
      * @return This expression (fluent interface).
@@ -132,7 +132,7 @@ public class BoxedCharacterValue extends BaseValue<Character, BoxedCharacterValu
     }
 
     /**
-     * Adds a predicate to the expression that checks if the subject is a letter
+     * Adds a condition to the expression that checks if the subject is a letter
      * or a digit.
      *
      * @return This expression (fluent interface).
@@ -149,7 +149,7 @@ public class BoxedCharacterValue extends BaseValue<Character, BoxedCharacterValu
     }
 
     /**
-     * Adds a predicate to the expression that checks if the subject is not a
+     * Adds a condition to the expression that checks if the subject is not a
      * letter or a digit.
      *
      * @return This expression (fluent interface).
@@ -166,7 +166,7 @@ public class BoxedCharacterValue extends BaseValue<Character, BoxedCharacterValu
     }
 
     /**
-     * Adds a predicate to the expression that checks if the subject is a
+     * Adds a condition to the expression that checks if the subject is a
      * whitespace.
      *
      * @return This expression (fluent interface).
@@ -183,7 +183,7 @@ public class BoxedCharacterValue extends BaseValue<Character, BoxedCharacterValu
     }
 
     /**
-     * Adds a predicate to the expression that checks if the subject is not a
+     * Adds a condition to the expression that checks if the subject is not a
      * whitespace.
      *
      * @return This expression (fluent interface).

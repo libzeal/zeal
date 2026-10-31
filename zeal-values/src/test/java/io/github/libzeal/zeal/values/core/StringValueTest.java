@@ -1443,4 +1443,511 @@ class StringValueTest extends BaseValueTest<String, StringValue> {
             .actual("4")
             .run();
     }
+
+    // ---- null character ----
+
+    @Test
+    void givenNullChar_whenIncludes_thenFalse() {
+        newTestCase()
+            .subject("abc")
+            .expression(value -> value.includes((Character) null))
+            .result(false)
+            .name("includes[(null)]")
+            .expected("includes[(null)]")
+            .actual("excludes[(null)]")
+            .hint("Value does not include '(null)'")
+            .run();
+    }
+
+    @Test
+    void givenNullChar_whenIncludesAllOf_thenFalse() {
+        newTestCase()
+            .subject("abc")
+            .expression(value -> value.includesAllOf('a', null))
+            .result(false)
+            .name("includesAll")
+            .expected("All desired elements in subject")
+            .actual("At least one desired element missing in subject")
+            .hint("The following desired elements were not found: [(null)]")
+            .run();
+    }
+
+    @Test
+    void givenOnlyNullChar_whenIncludesAnyOf_thenFalse() {
+        newTestCase()
+            .subject("abc")
+            .expression(value -> value.includesAnyOf((Character) null))
+            .result(false)
+            .name("includesAny")
+            .expected("Any desired elements in subject")
+            .actual("All desired elements missing in subject")
+            .hint("All of the desired elements are missing in subject")
+            .run();
+    }
+
+    // ---- null character sequence ----
+
+    @Test
+    void givenNullCharSequenceAndSubjectOfNullText_whenIncludes_thenFalse() {
+        newTestCase()
+            .subject("null")
+            .expression(value -> value.includes((CharSequence) null))
+            .result(false)
+            .name("includes[(null)]")
+            .expected("includes[(null)]")
+            .actual("excludes[(null)]")
+            .hint("Value does not include '(null)'")
+            .run();
+    }
+
+    @Test
+    void givenNullCharSequenceAndSubjectOfNullText_whenLastIndexOfIs_thenMinusOne() {
+        newTestCase()
+            .subject("null")
+            .expression(value -> value.lastIndexOfIs((CharSequence) null, -1))
+            .result(true)
+            .name("lastIndexOf[(null)] = -1")
+            .expected("-1")
+            .actual("-1")
+            .run();
+    }
+
+    @Test
+    void givenNullCharSequence_whenIncludesExactlyZeroTimes_thenTrue() {
+        newTestCase()
+            .subject("abc")
+            .expression(value -> value.includesExactly((CharSequence) null, 0))
+            .result(true)
+            .name("includesExactly[desired=(null), times=0]")
+            .expected("found '(null)' 0 times")
+            .actual("found '(null)' 0 times")
+            .run();
+    }
+
+    @Test
+    void givenNullCharSequence_whenStartsWith_thenFalse() {
+        newTestCase()
+            .subject("abc")
+            .expression(value -> value.startsWith((CharSequence) null))
+            .result(false)
+            .name("startsWith[(null)]")
+            .expected("(null)")
+            .actual("a")
+            .hint("Value has at least one element, but the first element is not (null)")
+            .run();
+    }
+
+    @Test
+    void givenNullCharSequenceAndEmptySubject_whenStartsWith_thenFalse() {
+        newTestCase()
+            .subject("")
+            .expression(value -> value.startsWith((CharSequence) null))
+            .result(false)
+            .name("startsWith[(null)]")
+            .expected("(null)")
+            .actual("Value is empty")
+            .hint("Value is empty")
+            .run();
+    }
+
+    @Test
+    void givenNullCharSequence_whenEndsWith_thenFalse() {
+        newTestCase()
+            .subject("abc")
+            .expression(value -> value.endsWith((CharSequence) null))
+            .result(false)
+            .name("endsWith[(null)]")
+            .expected("(null)")
+            .actual("c")
+            .hint("Value has at least one element, but the last element is not (null)")
+            .run();
+    }
+
+    @Test
+    void givenNullCharSequenceAndEmptySubject_whenEndsWith_thenFalse() {
+        newTestCase()
+            .subject("")
+            .expression(value -> value.endsWith((CharSequence) null))
+            .result(false)
+            .name("endsWith[(null)]")
+            .expected("(null)")
+            .actual("Value is empty")
+            .hint("Value is empty")
+            .run();
+    }
+
+    @Test
+    void givenNullCharSequence_whenHasAtIndex_thenFalse() {
+        newTestCase()
+            .subject("abc")
+            .expression(value -> value.hasAtIndex((CharSequence) null, 0))
+            .result(false)
+            .name("hasAtIndex[desired=(null), index=0]")
+            .expected("(null)")
+            .actual("a")
+            .hint("Index 0 is within bounds, but the desired element was not found there")
+            .run();
+    }
+
+    // ---- non-string character sequence ----
+
+    @Test
+    void givenStringBuilder_whenIncludes_thenTrue() {
+        newTestCase()
+            .subject("abc")
+            .expression(value -> value.includes(new StringBuilder("bc")))
+            .result(true)
+            .name("includes[bc]")
+            .expected("includes[bc]")
+            .actual("includes[bc]")
+            .hint("'bc' found at index 1")
+            .run();
+    }
+
+    @Test
+    void givenStringBuilder_whenStartsWith_thenTrue() {
+        newTestCase()
+            .subject("abc")
+            .expression(value -> value.startsWith(new StringBuilder("ab")))
+            .result(true)
+            .name("startsWith[ab]")
+            .expected("ab")
+            .actual("ab")
+            .run();
+    }
+
+    @Test
+    void givenStringBuilder_whenEndsWith_thenTrue() {
+        newTestCase()
+            .subject("abc")
+            .expression(value -> value.endsWith(new StringBuilder("bc")))
+            .result(true)
+            .name("endsWith[bc]")
+            .expected("bc")
+            .actual("bc")
+            .run();
+    }
+
+    @Test
+    void givenStringBuilder_whenHasAtIndex_thenTrue() {
+        newTestCase()
+            .subject("abc")
+            .expression(value -> value.hasAtIndex(new StringBuilder("b"), 1))
+            .result(true)
+            .name("hasAtIndex[desired=b, index=1]")
+            .expected("b")
+            .actual("b")
+            .run();
+    }
+
+    @Test
+    void givenStringBuilder_whenIncludesExactly_thenTrue() {
+        newTestCase()
+            .subject("abab")
+            .expression(value -> value.includesExactly(new StringBuilder("ab"), 2))
+            .result(true)
+            .name("includesExactly[desired=ab, times=2]")
+            .expected("found 'ab' 2 times")
+            .actual("found 'ab' 2 times")
+            .run();
+    }
+
+    // ---- empty character sequence ----
+
+    @Test
+    void givenEmptySubject_whenIncludesEmpty_thenTrue() {
+        newTestCase()
+            .subject("")
+            .expression(value -> value.includes(""))
+            .result(true)
+            .name("includes[]")
+            .expected("includes[]")
+            .actual("includes[]")
+            .run();
+    }
+
+    @Test
+    void givenEmptySubject_whenStartsWithEmpty_thenTrue() {
+        newTestCase()
+            .subject("")
+            .expression(value -> value.startsWith(""))
+            .result(true)
+            .name("startsWith[]")
+            .expected("")
+            .actual("")
+            .run();
+    }
+
+    @Test
+    void givenNonEmptySubject_whenStartsWithEmpty_thenTrue() {
+        newTestCase()
+            .subject("abc")
+            .expression(value -> value.startsWith(""))
+            .result(true)
+            .name("startsWith[]")
+            .expected("")
+            .actual("")
+            .run();
+    }
+
+    @Test
+    void givenEmptySubject_whenEndsWithEmpty_thenTrue() {
+        newTestCase()
+            .subject("")
+            .expression(value -> value.endsWith(""))
+            .result(true)
+            .name("endsWith[]")
+            .expected("")
+            .actual("")
+            .run();
+    }
+
+    @Test
+    void givenNonEmptySubject_whenEndsWithEmpty_thenTrue() {
+        newTestCase()
+            .subject("abc")
+            .expression(value -> value.endsWith(""))
+            .result(true)
+            .name("endsWith[]")
+            .expected("")
+            .actual("")
+            .run();
+    }
+
+    @Test
+    void givenIndexEqualToLength_whenHasAtIndexEmpty_thenTrue() {
+        newTestCase()
+            .subject("abc")
+            .expression(value -> value.hasAtIndex("", 3))
+            .result(true)
+            .name("hasAtIndex[desired=, index=3]")
+            .expected("")
+            .actual("")
+            .run();
+    }
+
+    @Test
+    void givenIndexPastLength_whenHasAtIndexEmpty_thenFalse() {
+        newTestCase()
+            .subject("abc")
+            .expression(value -> value.hasAtIndex("", 4))
+            .result(false)
+            .name("hasAtIndex[desired=, index=4]")
+            .expected("")
+            .actual("Index 4 is out of bounds")
+            .hint("Index 4 is out of bounds")
+            .run();
+    }
+
+    @Test
+    void givenIndexEqualToLength_whenHasAtIndexNonEmpty_thenFalse() {
+        newTestCase()
+            .subject("abc")
+            .expression(value -> value.hasAtIndex("c", 3))
+            .result(false)
+            .name("hasAtIndex[desired=c, index=3]")
+            .expected("c")
+            .actual("Index 3 is out of bounds")
+            .hint("Index 3 is out of bounds")
+            .run();
+    }
+
+    @Test
+    void givenDesiredLongerThanRemainder_whenHasAtIndex_thenFalse() {
+        newTestCase()
+            .subject("abc")
+            .expression(value -> value.hasAtIndex("cd", 2))
+            .result(false)
+            .name("hasAtIndex[desired=cd, index=2]")
+            .expected("cd")
+            .actual("c")
+            .run();
+    }
+
+    @Test
+    void givenEmpty_whenLastIndexOfIs_thenLength() {
+        newTestCase()
+            .subject("abc")
+            .expression(value -> value.lastIndexOfIs("", 3))
+            .result(true)
+            .name("lastIndexOf[] = 3")
+            .expected("3")
+            .actual("3")
+            .run();
+    }
+
+    // ---- character sequence occurrences ----
+
+    @Test
+    void givenOverlappingOccurrences_whenIncludesExactly_thenCountedWithoutOverlap() {
+        newTestCase()
+            .subject("aaa")
+            .expression(value -> value.includesExactly("aa", 1))
+            .result(true)
+            .name("includesExactly[desired=aa, times=1]")
+            .expected("found 'aa' 1 time")
+            .actual("found 'aa' 1 time")
+            .run();
+    }
+
+    @Test
+    void givenSeparateOccurrences_whenIncludesExactly_thenTrue() {
+        newTestCase()
+            .subject("abcab")
+            .expression(value -> value.includesExactly("ab", 2))
+            .result(true)
+            .name("includesExactly[desired=ab, times=2]")
+            .expected("found 'ab' 2 times")
+            .actual("found 'ab' 2 times")
+            .run();
+    }
+
+    @Test
+    void givenNoOccurrences_whenIncludesExactlyCharSequence_thenFalse() {
+        newTestCase()
+            .subject("abc")
+            .expression(value -> value.includesExactly("cd", 1))
+            .result(false)
+            .name("includesExactly[desired=cd, times=1]")
+            .expected("found 'cd' 1 time")
+            .actual("found 'cd' 0 times")
+            .hint("Desired value not found in subject")
+            .run();
+    }
+
+    @Test
+    void givenEmpty_whenIncludesExactlyLengthPlusOne_thenTrue() {
+        newTestCase()
+            .subject("abc")
+            .expression(value -> value.includesExactly("", 4))
+            .result(true)
+            .name("includesExactly[desired=, times=4]")
+            .expected("found '' 4 times")
+            .actual("found '' 4 times")
+            .run();
+    }
+
+    @Test
+    void givenEmptySubject_whenIncludesEmptyOnce_thenTrue() {
+        newTestCase()
+            .subject("")
+            .expression(value -> value.includesOnce(""))
+            .result(true)
+            .name("includesExactly[desired=, times=1]")
+            .expected("found '' 1 time")
+            .actual("found '' 1 time")
+            .run();
+    }
+
+    @Test
+    void givenOneOccurrence_whenIncludesOnceCharSequence_thenTrue() {
+        newTestCase()
+            .subject("abc")
+            .expression(value -> value.includesOnce("bc"))
+            .result(true)
+            .name("includesExactly[desired=bc, times=1]")
+            .expected("found 'bc' 1 time")
+            .actual("found 'bc' 1 time")
+            .run();
+    }
+
+    @Test
+    void givenTwoOccurrences_whenIncludesMoreThanCharSequence_thenTrue() {
+        newTestCase()
+            .subject("abab")
+            .expression(value -> value.includesMoreThan("ab", 1))
+            .result(true)
+            .name("includesMoreThan[desired=ab, times=1]")
+            .expected("found 'ab' more than 1 time")
+            .actual("found 'ab' 2 times")
+            .run();
+    }
+
+    @Test
+    void givenOneOccurrence_whenIncludesMoreThanOrEqualToCharSequence_thenTrue() {
+        newTestCase()
+            .subject("ab")
+            .expression(value -> value.includesMoreThanOrEqualTo("ab", 1))
+            .result(true)
+            .name("includesMoreThanOrEqualTo[desired=ab, times=1]")
+            .expected("found 'ab' more than or equal to 1 time")
+            .actual("found 'ab' 1 time")
+            .run();
+    }
+
+    @Test
+    void givenTwoOccurrences_whenIncludesLessThanCharSequence_thenFalse() {
+        newTestCase()
+            .subject("abab")
+            .expression(value -> value.includesLessThan("ab", 2))
+            .result(false)
+            .name("includesLessThan[desired=ab, times=2]")
+            .expected("found 'ab' less than 2 times")
+            .actual("found 'ab' 2 times")
+            .run();
+    }
+
+    @Test
+    void givenTwoOccurrences_whenIncludesLessThanOrEqualToCharSequence_thenTrue() {
+        newTestCase()
+            .subject("abab")
+            .expression(value -> value.includesLessThanOrEqualTo("ab", 2))
+            .result(true)
+            .name("includesLessThanOrEqualTo[desired=ab, times=2]")
+            .expected("found 'ab' less than or equal to 2 times")
+            .actual("found 'ab' 2 times")
+            .run();
+    }
+
+    // ---- character endsWith ----
+
+    @Test
+    void givenMatchingLastChar_whenEndsWith_thenTrue() {
+        newTestCase()
+            .subject("abc")
+            .expression(value -> value.endsWith('c'))
+            .result(true)
+            .name("endsWith[c]")
+            .expected("c")
+            .actual("c")
+            .hint("The last element is c")
+            .run();
+    }
+
+    @Test
+    void givenEmptySubject_whenEndsWithChar_thenFalse() {
+        newTestCase()
+            .subject("")
+            .expression(value -> value.endsWith('c'))
+            .result(false)
+            .name("endsWith[c]")
+            .expected("c")
+            .actual("Value is empty")
+            .hint("Value is empty")
+            .run();
+    }
+
+    @Test
+    void givenNullChar_whenLastIndexOfIs_thenMinusOne() {
+        newTestCase()
+            .subject("abc")
+            .expression(value -> value.lastIndexOfIs((Character) null, -1))
+            .result(true)
+            .name("lastIndexOf[(null)] = -1")
+            .expected("-1")
+            .actual("-1")
+            .run();
+    }
+
+    @Test
+    void givenNullChar_whenIncludesExactlyZeroTimes_thenTrue() {
+        newTestCase()
+            .subject("abc")
+            .expression(value -> value.includesExactly((Character) null, 0))
+            .result(true)
+            .name("includesExactly[desired=(null), times=0]")
+            .expected("found '(null)' 0 times")
+            .actual("found '(null)' 0 times")
+            .run();
+    }
 }

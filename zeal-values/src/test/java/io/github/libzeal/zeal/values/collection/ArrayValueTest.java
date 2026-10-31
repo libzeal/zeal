@@ -5,10 +5,7 @@ import org.junit.jupiter.api.Test;
 
 
 class ArrayValueTest extends BaseValueTest<String[], ArrayValue<String>>
-    implements SizedSequenceValueTest<String[], ArrayValue<String>>,
-    InspectableSequenceValueTest<String[], ArrayValue<String>>,
-    RepeatableSequenceValueTest<String[], ArrayValue<String>>,
-    OrderedSequenceValueTest<String[], ArrayValue<String>> {
+    implements OrderedSequenceValueTest<String[], ArrayValue<String>> {
 
     // Arrays use identity for equals, hashCode, and toString, so the same instances must be returned each time
     private static final String[] VALUE_A = {"foo"};
@@ -32,62 +29,6 @@ class ArrayValueTest extends BaseValueTest<String[], ArrayValue<String>>
     @Override
     public String[] subjectOf(final String... elements) {
         return elements;
-    }
-
-    // ---- includes (with the index of the desired element as the hint) ----
-
-    @Test
-    void givenIncluded_whenIncludes_thenHintHasIndex() {
-        newTestCase()
-            .subject(subjectOf("a", "b"))
-            .expression(value -> value.includes("b"))
-            .result(true)
-            .name("includes[b]")
-            .expected("includes[b]")
-            .actual("includes[b]")
-            .hint("'b' found at index 1")
-            .run();
-    }
-
-    @Test
-    void givenExcluded_whenIncludes_thenHintSaysNotIncluded() {
-        newTestCase()
-            .subject(subjectOf("a", "b"))
-            .expression(value -> value.includes("c"))
-            .result(false)
-            .name("includes[c]")
-            .expected("includes[c]")
-            .actual("excludes[c]")
-            .hint("Value does not include 'c'")
-            .run();
-    }
-
-    // ---- excludes (with the index of the desired element as the hint) ----
-
-    @Test
-    void givenExcluded_whenExcludes_thenHintSaysNotIncluded() {
-        newTestCase()
-            .subject(subjectOf("a", "b"))
-            .expression(value -> value.excludes("c"))
-            .result(true)
-            .name("excludes[c]")
-            .expected("excludes[c]")
-            .actual("excludes[c]")
-            .hint("Value does not include 'c'")
-            .run();
-    }
-
-    @Test
-    void givenIncluded_whenExcludes_thenHintHasIndex() {
-        newTestCase()
-            .subject(subjectOf("a", "b"))
-            .expression(value -> value.excludes("b"))
-            .result(false)
-            .name("excludes[b]")
-            .expected("excludes[b]")
-            .actual("includes[b]")
-            .hint("'b' found at index 1")
-            .run();
     }
 
     // ---- duplicate elements ----

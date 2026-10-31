@@ -11,7 +11,7 @@ package io.github.libzeal.zeal.values.sdk.sequence;
  *
  * @author Justin Albano
  */
-public interface OrderedSequenceValue<T, V extends OrderedSequenceValue<T, V>> {
+public interface OrderedSequenceValue<T, V extends OrderedSequenceValue<T, V>> extends SequenceValue<T, V> {
 
     /**
      * Checks that the desired element occurs at the desired index.

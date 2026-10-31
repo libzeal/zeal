@@ -22,7 +22,7 @@ public class BoxedBooleanValue extends BaseValue<Boolean, BoxedBooleanValue> {
     }
 
     /**
-     * Adds a predicate to the expression that checks if the subject is true.
+     * Adds a condition to the expression that checks if the subject is true.
      *
      * @return This expression (fluent interface).
      */
@@ -37,7 +37,7 @@ public class BoxedBooleanValue extends BaseValue<Boolean, BoxedBooleanValue> {
     }
 
     /**
-     * Adds a predicate to the expression that checks if the subject is false.
+     * Adds a condition to the expression that checks if the subject is false.
      *
      * @return This expression (fluent interface).
      */

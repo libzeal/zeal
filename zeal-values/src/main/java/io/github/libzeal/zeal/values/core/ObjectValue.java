@@ -14,7 +14,7 @@ public interface ObjectValue<T, E extends ObjectValue<T, E>>
         extends CompoundUnaryExpression<T> {
 
     /**
-     * Adds a predicate to the expression that checks if the subject is
+     * Adds a condition to the expression that checks if the subject is
      * {@code null}.
      *
      * @return This expression (fluent interface).
@@ -22,7 +22,7 @@ public interface ObjectValue<T, E extends ObjectValue<T, E>>
     E isNull();
 
     /**
-     * Adds a predicate to the expression that checks if the subject is not
+     * Adds a condition to the expression that checks if the subject is not
      * {@code null}.
      * <p>
      * Note: This evaluation takes precedent over all other evaluations. For
@@ -57,7 +57,7 @@ public interface ObjectValue<T, E extends ObjectValue<T, E>>
     E isNotNull();
 
     /**
-     * Adds a predicate to the expression that checks if the subject exactly
+     * Adds a condition to the expression that checks if the subject exactly
      * matches the supplied type.
      * <p>
      * Note: If the subject is a subtype of the supplied type, this check will
@@ -72,7 +72,7 @@ public interface ObjectValue<T, E extends ObjectValue<T, E>>
     E isType(Class<?> type);
 
     /**
-     * Adds a predicate to the expression that checks if the subject is not an
+     * Adds a condition to the expression that checks if the subject is not an
      * exact match of the supplied type.
      *
      * @param type
@@ -84,7 +84,7 @@ public interface ObjectValue<T, E extends ObjectValue<T, E>>
     E isNotType(Class<?> type);
 
     /**
-     * Adds a predicate to the expression that checks if the subject matches or
+     * Adds a condition to the expression that checks if the subject matches or
      * is a subtype of the supplied type.
      * <p>
      * Note: This check is equivalent to the following statement, where
@@ -105,7 +105,7 @@ public interface ObjectValue<T, E extends ObjectValue<T, E>>
     E isInstanceOf(Class<?> type);
 
     /**
-     * Adds a predicate to the expression that checks if the subject does not
+     * Adds a condition to the expression that checks if the subject does not
      * exactly match or is not a subtype of the supplied type.
      * <p>
      * Note: This check is equivalent to the following statement, where
@@ -126,7 +126,7 @@ public interface ObjectValue<T, E extends ObjectValue<T, E>>
     E isNotInstanceOf(Class<?> type);
 
     /**
-     * Adds a predicate to the expression that checks if the subject is the same
+     * Adds a condition to the expression that checks if the subject is the same
      * as the supplied object.
      * <p>
      * This evaluation will pass if the subject and supplied object are both
@@ -147,7 +147,7 @@ public interface ObjectValue<T, E extends ObjectValue<T, E>>
     E isExactly(Object other);
 
     /**
-     * Adds a predicate to the expression that checks if the subject is not the
+     * Adds a condition to the expression that checks if the subject is not the
      * same as the supplied object.
      * <p>
      * This evaluation will fail if the subject and supplied object are both
@@ -168,7 +168,7 @@ public interface ObjectValue<T, E extends ObjectValue<T, E>>
     E isNotExactly(Object other);
 
     /**
-     * Adds a predicate to the expression that checks if the subject satisfies
+     * Adds a condition to the expression that checks if the subject satisfies
      * the supplied condition.
      *
      * @param condition
@@ -179,7 +179,7 @@ public interface ObjectValue<T, E extends ObjectValue<T, E>>
     E is(Condition<T> condition);
 
     /**
-     * Adds a predicate to the expression that checks if the subject is equal to
+     * Adds a condition to the expression that checks if the subject is equal to
      * the supplied object.
      * <p>
      * This evaluation will pass if the subject and supplied object are both
@@ -202,7 +202,7 @@ public interface ObjectValue<T, E extends ObjectValue<T, E>>
     E isEqualTo(Object other);
 
     /**
-     * Adds a predicate to the expression that checks if the subject is equal to
+     * Adds a condition to the expression that checks if the subject is equal to
      * the supplied object using the supplied comparator.
      * <p>
      * This evaluation will fail if the supplied comparator is {@code null}. If
@@ -233,7 +233,7 @@ public interface ObjectValue<T, E extends ObjectValue<T, E>>
     }
 
     /**
-     * Adds a predicate to the expression that checks if the subject is not
+     * Adds a condition to the expression that checks if the subject is not
      * equal to the supplied object.
      * <p>
      * This evaluation will fail if the subject and supplied object are both
@@ -256,7 +256,7 @@ public interface ObjectValue<T, E extends ObjectValue<T, E>>
     E isNotEqualTo(Object other);
 
     /**
-     * Adds a predicate to the expression that checks if the subject is not
+     * Adds a condition to the expression that checks if the subject is not
      * equal to the supplied object using the supplied comparator.
      * <p>
      * This evaluation will fail if the supplied comparator is {@code null}. If
@@ -287,7 +287,7 @@ public interface ObjectValue<T, E extends ObjectValue<T, E>>
     }
 
     /**
-     * Adds a predicate to the expression that checks if the hash code of the
+     * Adds a condition to the expression that checks if the hash code of the
      * subject is equal to the supplied hash code.
      * <p>
      * Note: This check is equivalent to the following statement, where
@@ -305,7 +305,7 @@ public interface ObjectValue<T, E extends ObjectValue<T, E>>
     E hashCodeIs(int hashCode);
 
     /**
-     * Adds a predicate to the expression that checks if the hash code of the
+     * Adds a condition to the expression that checks if the hash code of the
      * subject is not equal to the supplied hash code.
      * <p>
      * Note: This check is equivalent to the following statement, where
@@ -323,7 +323,7 @@ public interface ObjectValue<T, E extends ObjectValue<T, E>>
     E hashCodeIsNot(int hashCode);
 
     /**
-     * Adds a predicate to the expression that checks if the {@code toString()}
+     * Adds a condition to the expression that checks if the {@code toString()}
      * value of the subject is equal to the supplied value.
      * <p>
      * Note: This check is equivalent to the following statement, where
@@ -341,7 +341,7 @@ public interface ObjectValue<T, E extends ObjectValue<T, E>>
     E toStringIs(String expected);
 
     /**
-     * Adds a predicate to the expression that checks if the {@code toString()}
+     * Adds a condition to the expression that checks if the {@code toString()}
      * value of the subject is not equal to the supplied value.
      * <p>
      * Note: This check is equivalent to the following statement, where
@@ -359,7 +359,7 @@ public interface ObjectValue<T, E extends ObjectValue<T, E>>
     E toStringIsNot(String expected);
 
     /**
-     * Adds a predicate to the expression that checks if the supplied predicate
+     * Adds a condition to the expression that checks if the supplied predicate
      * is true.
      *
      * @param predicate
@@ -370,7 +370,7 @@ public interface ObjectValue<T, E extends ObjectValue<T, E>>
     E satisfies(Predicate<T> predicate);
 
     /**
-     * Adds a predicate to the expression that checks if the supplied predicate
+     * Adds a condition to the expression that checks if the supplied predicate
      * is false.
      *
      * @param predicate

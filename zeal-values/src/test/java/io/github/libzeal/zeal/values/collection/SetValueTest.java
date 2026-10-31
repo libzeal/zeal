@@ -7,9 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 class SetValueTest extends BaseValueTest<Set<String>, SetValue<String>>
-    implements SizedSequenceValueTest<Set<String>, SetValue<String>>,
-    InspectableSequenceValueTest<Set<String>, SetValue<String>>,
-    RepeatableSequenceValueTest<Set<String>, SetValue<String>> {
+    implements SequenceValueTest<Set<String>, SetValue<String>> {
 
     @Override
     protected SetValue<String> expression(final Set<String> value) {

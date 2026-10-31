@@ -44,7 +44,7 @@ public abstract class EnumValue<T extends Enum<T>, B extends EnumValue<T, B>>
     }
 
     /**
-     * Adds a predicate to the expression that checks if the ordinal of the subject matches the supplied value.
+     * Adds a condition to the expression that checks if the ordinal of the subject matches the supplied value.
      *
      * @param ordinal
      *     The ordinal to test the subject against.
@@ -62,7 +62,7 @@ public abstract class EnumValue<T extends Enum<T>, B extends EnumValue<T, B>>
     }
 
     /**
-     * Adds a predicate to the expression that checks if the ordinal of the subject does not match the supplied value.
+     * Adds a condition to the expression that checks if the ordinal of the subject does not match the supplied value.
      *
      * @param ordinal
      *     The ordinal to test the subject against.
@@ -80,7 +80,7 @@ public abstract class EnumValue<T extends Enum<T>, B extends EnumValue<T, B>>
     }
 
     /**
-     * Adds a predicate to the expression that checks if the name of the subject matches the supplied value.
+     * Adds a condition to the expression that checks if the name of the subject matches the supplied value.
      *
      * @param name
      *     The name to test the subject against.
@@ -98,7 +98,7 @@ public abstract class EnumValue<T extends Enum<T>, B extends EnumValue<T, B>>
     }
 
     /**
-     * Adds a predicate to the expression that checks if the name of the subject does not match the supplied value.
+     * Adds a condition to the expression that checks if the name of the subject does not match the supplied value.
      *
      * @param name
      *     The name to test the subject against.
@@ -116,7 +116,7 @@ public abstract class EnumValue<T extends Enum<T>, B extends EnumValue<T, B>>
     }
 
     /**
-     * Adds a predicate to the expression that checks if the name of the subject matches the supplied value, ignoring
+     * Adds a condition to the expression that checks if the name of the subject matches the supplied value, ignoring
      * case.
      *
      * @param name
@@ -135,7 +135,7 @@ public abstract class EnumValue<T extends Enum<T>, B extends EnumValue<T, B>>
     }
 
     /**
-     * Adds a predicate to the expression that checks if the name of the subject does not match the supplied value,
+     * Adds a condition to the expression that checks if the name of the subject does not match the supplied value,
      * ignoring case.
      *
      * @param name

@@ -1,32 +1,16 @@
 package io.github.libzeal.zeal.values.core;
 
-import io.github.libzeal.zeal.values.sdk.BaseValue;
 import io.github.libzeal.zeal.values.sdk.sequence.*;
-import io.github.libzeal.zeal.values.sdk.sequence.InspectableSequenceExpressions.InspectableSequenceOperations;
 import io.github.libzeal.zeal.values.sdk.sequence.OrderedSequenceExpressions.OrderedSequenceOperations;
-import io.github.libzeal.zeal.values.sdk.sequence.RepeatableSequenceExpressions.RepeatableSequenceOperations;
-import io.github.libzeal.zeal.values.sdk.sequence.SizedSequenceExpressions.SizedSequenceOperations;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-
-import static java.util.stream.Collectors.toList;
 
 /**
  * A value used to evaluate {@link String} instances.
  *
  * @author Justin Albano
  */
-public class StringValue extends BaseValue<String, StringValue>
-    implements
-        SizedSequenceValue<String, StringValue>,
-    InspectableSequenceValue<Character, StringValue>,
-    OrderedSequenceValue<Character, StringValue>,
-    RepeatableSequenceValue<Character, StringValue> {
+public class StringValue extends BaseOrderedSequenceValue<String, Character, StringValue> {
 
-    private final StringOperations operations;
-    private final StringOnStringOperations charSequenceOperations = new StringOnStringOperations();
+    private final StringOnStringOperations stringOperations = new StringOnStringOperations();
 
     /**
      * Creates a new expression.
@@ -35,26 +19,11 @@ public class StringValue extends BaseValue<String, StringValue>
      *     The subject of the expression.
      */
     public StringValue(final String subject) {
-        super(subject, "String value");
-        this.operations = new StringOperations();
-    }
-
-    @Override
-    public StringValue isEmpty() {
-        return append(
-            SizedSequenceExpressions.isEmpty(operations)
-        );
-    }
-
-    @Override
-    public StringValue isNotEmpty() {
-        return append(
-            SizedSequenceExpressions.isNotEmpty(operations)
-        );
+        super(subject, "String value", new StringOperations());
     }
 
     /**
-     * Adds a predicate to the expression that checks if the subject is blank (empty or contains only whitespace).
+     * Adds a condition to the expression that checks if the subject is blank (empty or contains only whitespace).
      *
      * @return This expression (fluent interface).
      */
@@ -69,7 +38,7 @@ public class StringValue extends BaseValue<String, StringValue>
     }
 
     /**
-     * Adds a predicate to the expression that checks if the subject is not blank (empty or contains only whitespace).
+     * Adds a condition to the expression that checks if the subject is not blank (empty or contains only whitespace).
      *
      * @return This expression (fluent interface).
      */
@@ -83,263 +52,122 @@ public class StringValue extends BaseValue<String, StringValue>
         );
     }
 
-    @Override
-    public StringValue hasLengthOf(final int length) {
-        return append(
-            SizedSequenceExpressions.hasLengthOf(length, operations)
-        );
-    }
-
-    @Override
-    public StringValue doesNotHaveLengthOf(final int length) {
-        return append(
-            SizedSequenceExpressions.doesNotHaveLengthOf(length, operations)
-        );
-    }
-
-    @Override
-    public StringValue isShorterThan(final int length) {
-        return append(
-            SizedSequenceExpressions.isShorterThan(length, operations)
-        );
-    }
-
-    @Override
-    public StringValue isShorterThanOrEqualTo(final int length) {
-        return append(
-            SizedSequenceExpressions.isShorterThanOrEqualTo(length, operations)
-        );
-    }
-
-    @Override
-    public StringValue isLongerThan(final int length) {
-        return append(
-            SizedSequenceExpressions.isLongerThan(length, operations)
-        );
-    }
-
-    @Override
-    public StringValue isLongerThanOrEqualTo(final int length) {
-        return append(
-            SizedSequenceExpressions.isLongerThanOrEqualTo(length, operations)
-        );
-    }
-
-    @Override
-    public StringValue includes(final Character desired) {
-        return append(
-            OrderedSequenceExpressions.includes(desired, operations)
-        );
-    }
-
+    // TODO Javadoc: the desired sequence is compared by its content (toString), so any CharSequence (such as a
+    //  StringBuilder) matches a string with the same characters; an empty sequence is always included (even in an
+    //  empty string) and a null sequence is never included
     public StringValue includes(final CharSequence desired) {
         return append(
-            OrderedSequenceExpressions.includes(desired, charSequenceOperations)
-        );
-    }
-
-    @Override
-    public StringValue includesAll(final Collection<Character> desired) {
-        return append(
-            InspectableSequenceExpressions.includesAll(desired, operations)
-        );
-    }
-
-    @Override
-    public StringValue includesAllOf(final Character... desired) {
-        return includesAll(Arrays.asList(desired));
-    }
-
-    @Override
-    public StringValue includesAny(final Collection<Character> desired) {
-        return append(
-            InspectableSequenceExpressions.includesAny(desired, operations)
-        );
-    }
-
-    @Override
-    public StringValue includesAnyOf(final Character... desired) {
-        return includesAny(Arrays.asList(desired));
-    }
-
-    @Override
-    public StringValue includesExactly(final Character desired, final long times) {
-        return append(
-            RepeatableSequenceExpressions.includesExactly(desired, times, operations)
-        );
-    }
-
-    @Override
-    public StringValue includesMoreThan(final Character desired, final long times) {
-        return append(
-            RepeatableSequenceExpressions.includesMoreThan(desired, times, operations)
-        );
-    }
-
-    @Override
-    public StringValue includesMoreThanOrEqualTo(final Character desired, final long times) {
-        return append(
-            RepeatableSequenceExpressions.includesMoreThanOrEqualTo(desired, times, operations)
-        );
-    }
-
-    @Override
-    public StringValue includesLessThan(final Character desired, final long times) {
-        return append(
-            RepeatableSequenceExpressions.includesLessThan(desired, times, operations)
-        );
-    }
-
-    @Override
-    public StringValue includesLessThanOrEqualTo(final Character desired, final long times) {
-        return append(
-            RepeatableSequenceExpressions.includesLessThanOrEqualTo(desired, times, operations)
-        );
-    }
-
-    @Override
-    public StringValue excludes(final Character desired) {
-        return append(
-            OrderedSequenceExpressions.excludes(desired, operations)
+            OrderedSequenceExpressions.includes(asString(desired), stringOperations)
         );
     }
 
     public StringValue excludes(final CharSequence desired) {
         return append(
-            OrderedSequenceExpressions.excludes(desired, charSequenceOperations)
+            OrderedSequenceExpressions.excludes(asString(desired), stringOperations)
         );
     }
 
-    @Override
-    public StringValue excludesAll(final Collection<Character> desired) {
+    // TODO Javadoc: occurrences are counted without overlapping (e.g., "aa" is found once in "aaa", not twice); an
+    //  empty sequence is found length + 1 times (once before each character and once at the end, matching
+    //  includes("") passing); a null sequence is found 0 times
+    public StringValue includesExactly(final CharSequence desired, final long times) {
         return append(
-            InspectableSequenceExpressions.excludesAll(desired, operations)
+            RepeatableSequenceExpressions.includesExactly(asString(desired), times, stringOperations)
         );
     }
 
-    @Override
-    public StringValue excludesAllOf(final Character... desired) {
-        return excludesAll(Arrays.asList(desired));
+    public StringValue includesOnce(final CharSequence desired) {
+        return includesExactly(desired, 1);
     }
 
-    @Override
-    public StringValue excludesAny(final Collection<Character> desired) {
+    public StringValue includesMoreThan(final CharSequence desired, final long times) {
         return append(
-            InspectableSequenceExpressions.excludesAny(desired, operations)
+            RepeatableSequenceExpressions.includesMoreThan(asString(desired), times, stringOperations)
         );
     }
 
-    @Override
-    public StringValue excludesAnyOf(final Character... desired) {
-        return excludesAny(Arrays.asList(desired));
-    }
-
-    @Override
-    public StringValue hasAtIndex(final Character desired, final int index) {
+    public StringValue includesMoreThanOrEqualTo(final CharSequence desired, final long times) {
         return append(
-            OrderedSequenceExpressions.hasAtIndex(desired, index, operations)
+            RepeatableSequenceExpressions.includesMoreThanOrEqualTo(asString(desired), times, stringOperations)
         );
     }
 
+    public StringValue includesLessThan(final CharSequence desired, final long times) {
+        return append(
+            RepeatableSequenceExpressions.includesLessThan(asString(desired), times, stringOperations)
+        );
+    }
+
+    public StringValue includesLessThanOrEqualTo(final CharSequence desired, final long times) {
+        return append(
+            RepeatableSequenceExpressions.includesLessThanOrEqualTo(asString(desired), times, stringOperations)
+        );
+    }
+
+    // TODO Javadoc: checks whether the subject has the desired sequence starting at the index (not a single
+    //  character); the actual value is the part of the subject at the index with the same length as the desired
+    //  sequence; an empty sequence is found at every index from 0 up to and including the length of the subject; a
+    //  null sequence is never found
     public StringValue hasAtIndex(final CharSequence desired, final int index) {
         return append(
-            OrderedSequenceExpressions.hasAtIndex(desired, index, charSequenceOperations)
-        );
-    }
-
-    @Override
-    public StringValue doesNotHaveAtIndex(final Character desired, final int index) {
-        return append(
-            OrderedSequenceExpressions.doesNotHaveAtIndex(desired, index, operations)
+            OrderedSequenceExpressions.hasAtIndex(asString(desired), index, stringOperations)
         );
     }
 
     public StringValue doesNotHaveAtIndex(final CharSequence desired, final int index) {
         return append(
-            OrderedSequenceExpressions.doesNotHaveAtIndex(desired, index, charSequenceOperations)
+            OrderedSequenceExpressions.doesNotHaveAtIndex(asString(desired), index, stringOperations)
         );
     }
 
-    @Override
-    public StringValue lastIndexOfIs(final Character desired, final int index) {
-        return append(
-            OrderedSequenceExpressions.lastIndexOfIs(desired, index, operations)
-        );
-    }
-
+    // TODO Javadoc: the last index of an empty sequence is the length of the subject (not length - 1); the last
+    //  index of a null sequence is -1
     public StringValue lastIndexOfIs(final CharSequence desired, final int index) {
         return append(
-            OrderedSequenceExpressions.lastIndexOfIs(desired, index, charSequenceOperations)
-        );
-    }
-
-    @Override
-    public StringValue lastIndexOfIsNot(final Character desired, final int index) {
-        return append(
-            OrderedSequenceExpressions.lastIndexOfIsNot(desired, index, operations)
+            OrderedSequenceExpressions.lastIndexOfIs(asString(desired), index, stringOperations)
         );
     }
 
     public StringValue lastIndexOfIsNot(final CharSequence desired, final int index) {
         return append(
-            OrderedSequenceExpressions.lastIndexOfIsNot(desired, index, charSequenceOperations)
+            OrderedSequenceExpressions.lastIndexOfIsNot(asString(desired), index, stringOperations)
         );
     }
 
-    @Override
-    public StringValue startsWith(final Character desired) {
-        return append(
-            OrderedSequenceExpressions.startsWith(desired, operations)
-        );
-    }
-
+    // TODO Javadoc: every string (including an empty string) starts with an empty sequence; a null sequence is
+    //  never a prefix
     public StringValue startsWith(final CharSequence desired) {
         return append(
-            OrderedSequenceExpressions.startsWith(desired, charSequenceOperations)
-        );
-    }
-
-    @Override
-    public StringValue doesNotStartWith(final Character desired) {
-        return append(
-            OrderedSequenceExpressions.doesNotStartWith(desired, operations)
+            OrderedSequenceExpressions.startsWith(asString(desired), stringOperations)
         );
     }
 
     public StringValue doesNotStartWith(final CharSequence desired) {
         return append(
-            OrderedSequenceExpressions.doesNotStartWith(desired, charSequenceOperations)
+            OrderedSequenceExpressions.doesNotStartWith(asString(desired), stringOperations)
         );
     }
 
-    @Override
-    public StringValue endsWith(final Character desired) {
-        return append(
-            OrderedSequenceExpressions.endsWith(desired, operations)
-        );
-    }
-
+    // TODO Javadoc: every string (including an empty string) ends with an empty sequence; a null sequence is never
+    //  a suffix
     public StringValue endsWith(final CharSequence desired) {
         return append(
-            OrderedSequenceExpressions.endsWith(desired, charSequenceOperations)
-        );
-    }
-
-    @Override
-    public StringValue doesNotEndWith(final Character desired) {
-        return append(
-            OrderedSequenceExpressions.doesNotEndWith(desired, operations)
+            OrderedSequenceExpressions.endsWith(asString(desired), stringOperations)
         );
     }
 
     public StringValue doesNotEndWith(final CharSequence desired) {
         return append(
-            OrderedSequenceExpressions.doesNotEndWith(desired, charSequenceOperations)
+            OrderedSequenceExpressions.doesNotEndWith(asString(desired), stringOperations)
         );
     }
 
+    private static String asString(final CharSequence sequence) {
+        return sequence == null ? null : sequence.toString();
+    }
+
     /**
-     * Adds a predicate to the expression that checks if the supplied regular expression matches the subject.
+     * Adds a condition to the expression that checks if the supplied regular expression matches the subject.
      *
      * @param regex
      *     The regular expression to match.
@@ -356,7 +184,7 @@ public class StringValue extends BaseValue<String, StringValue>
     }
 
     /**
-     * Adds a predicate to the expression that checks if the supplied regular expression does not match the subject.
+     * Adds a condition to the expression that checks if the supplied regular expression does not match the subject.
      *
      * @param regex
      *     The regular expression to not match.
@@ -373,7 +201,7 @@ public class StringValue extends BaseValue<String, StringValue>
     }
 
     /**
-     * Adds a predicate to the expression that checks if the supplied argument equals the subject, ignoring case.
+     * Adds a condition to the expression that checks if the supplied argument equals the subject, ignoring case.
      *
      * @param other
      *     The string to match.
@@ -390,7 +218,7 @@ public class StringValue extends BaseValue<String, StringValue>
     }
 
     /**
-     * Adds a predicate to the expression that checks if the last index of the
+     * Adds a condition to the expression that checks if the last index of the
      * supplied needle in the subject matches
      * the supplied index.
      *
@@ -406,7 +234,7 @@ public class StringValue extends BaseValue<String, StringValue>
     }
 
     /**
-     * Adds a predicate to the expression that checks if the last index of the
+     * Adds a condition to the expression that checks if the last index of the
      * supplied needle in the subject matches
      * the supplied index.
      *
@@ -422,7 +250,7 @@ public class StringValue extends BaseValue<String, StringValue>
     }
 
     /**
-     * Adds a predicate to the expression that checks if the last index of the
+     * Adds a condition to the expression that checks if the last index of the
      * supplied needle in the subject does not
      * match the supplied index.
      *
@@ -438,7 +266,7 @@ public class StringValue extends BaseValue<String, StringValue>
     }
 
     /**
-     * Adds a predicate to the expression that checks if the last index of the
+     * Adds a condition to the expression that checks if the last index of the
      * supplied needle in the subject does not
      * match the supplied index.
      *
@@ -453,11 +281,9 @@ public class StringValue extends BaseValue<String, StringValue>
         return lastIndexOfIsNot((CharSequence) needle, index);
     }
 
-    protected static final class StringOperations implements
-        SizedSequenceOperations<String>,
-        InspectableSequenceOperations<Character, String>,
-        RepeatableSequenceOperations<Character, String>,
-        OrderedSequenceOperations<Character, String> {
+    // TODO Javadoc: a null character is never included in a string (includes fails, excludes passes, and its index
+    //  is -1) rather than causing an exception
+    protected static final class StringOperations implements OrderedSequenceOperations<Character, String> {
 
         @Override
         public Element<Character> lastElement(final String haystack, final Character desired) {
@@ -467,17 +293,6 @@ public class StringValue extends BaseValue<String, StringValue>
             }
             else {
                 return Element.found(haystack.charAt(haystack.length() - 1));
-            }
-        }
-
-        @Override
-        public Element<Character> firstElement(final String haystack, final Character desired) {
-
-            if (haystack.isEmpty()) {
-                return Element.missing();
-            }
-            else {
-                return Element.found(haystack.charAt(0));
             }
         }
 
@@ -533,91 +348,86 @@ public class StringValue extends BaseValue<String, StringValue>
         }
 
         @Override
-        public List<Character> findAllIn(final String haystack, final Collection<Character> needles) {
-            return needles.stream()
-                .filter(c -> haystack.indexOf(c) != -1)
-                .collect(toList());
-        }
-
-        @Override
         public int size(final String haystack) {
             return haystack.length();
         }
 
         @Override
         public boolean includes(final String haystack, final Character needle) {
-            return haystack.indexOf(needle) >= 0;
+            return indexOf(haystack, needle) >= 0;
         }
     }
 
-    protected static final class StringOnStringOperations implements
-        SizedSequenceOperations<String>,
-        InspectableSequenceOperations<CharSequence, String>,
-        OrderedSequenceOperations<CharSequence, String> {
+    protected static final class StringOnStringOperations implements OrderedSequenceOperations<String, String> {
 
         @Override
-        public Element<CharSequence> lastElement(final String haystack, final CharSequence desired) {
+        public Element<String> lastElement(final String haystack, final String desired) {
 
-            final int length = desired.length();
+            final int length = lengthOf(desired);
 
-            if (haystack.isEmpty()) {
+            if (haystack.isEmpty() && length > 0) {
                 return Element.missing();
             }
-            else if (length > haystack.length()) {
-                return Element.found(haystack);
-            }
             else {
-                return Element.found(haystack.substring(haystack.length() - length));
+                return Element.found(haystack.substring(Math.max(haystack.length() - length, 0)));
             }
         }
 
         @Override
-        public Element<CharSequence> atIndex(final String haystack, final int index, final CharSequence desired) {
+        public Element<String> atIndex(final String haystack, final int index, final String desired) {
 
-            final int length = desired.length();
+            final int length = lengthOf(desired);
 
-            if (index < 0 || index >= haystack.length()) {
+            // An empty sequence can be found at the end of the haystack (where index equals the length)
+            if (index < 0 || index > haystack.length() || (index == haystack.length() && length > 0)) {
                 return Element.missing();
             }
-            else if ((index + length) > haystack.length()) {
-                return Element.found(haystack.substring(index));
+            else {
+                return Element.found(haystack.substring(index, Math.min(index + length, haystack.length())));
+            }
+        }
+
+        @Override
+        public int indexOf(final String haystack, final String needle) {
+
+            if (needle == null) {
+                return -1;
             }
             else {
-                return Element.found(haystack.substring(index, index + length));
+                return haystack.indexOf(needle);
             }
         }
 
         @Override
-        public int indexOf(final String haystack, final CharSequence needle) {
-            return haystack.indexOf(String.valueOf(needle));
-        }
+        public int lastIndexOf(final String haystack, final String needle) {
 
-        @Override
-        public int lastIndexOf(final String haystack, final CharSequence needle) {
-            return haystack.lastIndexOf(String.valueOf(needle));
-        }
-
-        @Override
-        public Element<CharSequence> firstElement(final String haystack, final CharSequence desired) {
-
-            final int length = desired.length();
-
-            if (haystack.isEmpty()) {
-                return Element.missing();
-            }
-            else if (length > haystack.length()) {
-                return Element.found(haystack);
+            if (needle == null) {
+                return -1;
             }
             else {
-                return Element.found(haystack.substring(0, length));
+                return haystack.lastIndexOf(needle);
             }
         }
 
         @Override
-        public List<CharSequence> findAllIn(final String haystack, final Collection<CharSequence> needles) {
-            return needles.stream()
-                .filter(haystack::contains)
-                .collect(toList());
+        public int occurrences(final String haystack, final String needle) {
+
+            if (needle == null) {
+                return 0;
+            }
+            else if (needle.isEmpty()) {
+                return haystack.length() + 1;
+            }
+
+            int count = 0;
+            int index = haystack.indexOf(needle);
+
+            while (index >= 0) {
+                count++;
+                index = haystack.indexOf(needle, index + needle.length());
+            }
+
+            return count;
         }
 
         @Override
@@ -626,8 +436,14 @@ public class StringValue extends BaseValue<String, StringValue>
         }
 
         @Override
-        public boolean includes(final String haystack, final CharSequence needle) {
-            return haystack.contains(needle);
+        public boolean includes(final String haystack, final String needle) {
+            return indexOf(haystack, needle) >= 0;
+        }
+
+        // A null desired value is compared against a single character so that it is reported as not matching the
+        // element at the index (rather than as an empty match or an out-of-bounds index)
+        private static int lengthOf(final String desired) {
+            return desired == null ? 1 : desired.length();
         }
     }
 }
