@@ -5,9 +5,21 @@ import io.github.libzeal.zeal.values.sdk.BaseValue;
 import java.util.Arrays;
 import java.util.Collection;
 
+/**
+ * A base class used by sequences to include common conditions.
+ *
+ * @param <S>
+ *         The type of the sequence.
+ * @param <T>
+ *         The type of the elements of the sequence.
+ * @param <V>
+ *         The value of the implementing value (used for fluent interfaces).
+ *
+ * @author Justin Albano
+ */
 public abstract class BaseSequenceValue<S, T, V extends BaseSequenceValue<S, T, V>>
-    extends BaseValue<S, V>
-    implements SequenceValue<T, V> {
+        extends BaseValue<S, V>
+        implements SequenceValue<T, V> {
 
     private final SequenceOperations<T, S> operations;
 
@@ -19,70 +31,70 @@ public abstract class BaseSequenceValue<S, T, V extends BaseSequenceValue<S, T, 
     @Override
     public V isEmpty() {
         return append(
-            SequenceExpressions.isEmpty(operations)
+                SequenceConditions.isEmpty(operations)
         );
     }
 
     @Override
     public V isNotEmpty() {
         return append(
-            SequenceExpressions.isNotEmpty(operations)
+                SequenceConditions.isNotEmpty(operations)
         );
     }
 
     @Override
     public V hasLengthOf(final int length) {
         return append(
-            SequenceExpressions.hasLengthOf(length, operations)
+                SequenceConditions.hasLengthOf(length, operations)
         );
     }
 
     @Override
     public V doesNotHaveLengthOf(final int length) {
         return append(
-            SequenceExpressions.doesNotHaveLengthOf(length, operations)
+                SequenceConditions.doesNotHaveLengthOf(length, operations)
         );
     }
 
     @Override
     public V isLongerThan(final int length) {
         return append(
-            SequenceExpressions.isLongerThan(length, operations)
+                SequenceConditions.isLongerThan(length, operations)
         );
     }
 
     @Override
     public V isLongerThanOrEqualTo(final int length) {
         return append(
-            SequenceExpressions.isLongerThanOrEqualTo(length, operations)
+                SequenceConditions.isLongerThanOrEqualTo(length, operations)
         );
     }
 
     @Override
     public V isShorterThan(final int length) {
         return append(
-            SequenceExpressions.isShorterThan(length, operations)
+                SequenceConditions.isShorterThan(length, operations)
         );
     }
 
     @Override
     public V isShorterThanOrEqualTo(final int length) {
         return append(
-            SequenceExpressions.isShorterThanOrEqualTo(length, operations)
+                SequenceConditions.isShorterThanOrEqualTo(length, operations)
         );
     }
 
     @Override
     public V includes(final T desired) {
         return append(
-            SequenceExpressions.includes(desired, operations)
+                SequenceConditions.includes(desired, operations)
         );
     }
 
     @Override
     public V includesAll(final Collection<? extends T> desired) {
         return append(
-            SequenceExpressions.includesAll(desired, operations)
+                SequenceConditions.includesAll(desired, operations)
         );
     }
 
@@ -95,7 +107,7 @@ public abstract class BaseSequenceValue<S, T, V extends BaseSequenceValue<S, T, 
     @Override
     public V includesAny(final Collection<? extends T> desired) {
         return append(
-            SequenceExpressions.includesAny(desired, operations)
+                SequenceConditions.includesAny(desired, operations)
         );
     }
 
@@ -108,14 +120,14 @@ public abstract class BaseSequenceValue<S, T, V extends BaseSequenceValue<S, T, 
     @Override
     public V excludes(final T desired) {
         return append(
-            SequenceExpressions.excludes(desired, operations)
+                SequenceConditions.excludes(desired, operations)
         );
     }
 
     @Override
     public V excludesAll(final Collection<? extends T> desired) {
         return append(
-            SequenceExpressions.excludesAll(desired, operations)
+                SequenceConditions.excludesAll(desired, operations)
         );
     }
 
@@ -128,7 +140,7 @@ public abstract class BaseSequenceValue<S, T, V extends BaseSequenceValue<S, T, 
     @Override
     public V excludesAny(final Collection<? extends T> desired) {
         return append(
-            SequenceExpressions.excludesAny(desired, operations)
+                SequenceConditions.excludesAny(desired, operations)
         );
     }
 
@@ -141,35 +153,35 @@ public abstract class BaseSequenceValue<S, T, V extends BaseSequenceValue<S, T, 
     @Override
     public V includesExactly(final T desired, final long times) {
         return append(
-            SequenceExpressions.includesExactly(desired, times, operations)
+                SequenceConditions.includesExactly(desired, times, operations)
         );
     }
 
     @Override
     public V includesMoreThan(final T desired, final long times) {
         return append(
-            SequenceExpressions.includesMoreThan(desired, times, operations)
+                SequenceConditions.includesMoreThan(desired, times, operations)
         );
     }
 
     @Override
     public V includesMoreThanOrEqualTo(final T desired, final long times) {
         return append(
-            SequenceExpressions.includesMoreThanOrEqualTo(desired, times, operations)
+                SequenceConditions.includesMoreThanOrEqualTo(desired, times, operations)
         );
     }
 
     @Override
     public V includesLessThan(final T desired, final long times) {
         return append(
-            SequenceExpressions.includesLessThan(desired, times, operations)
+                SequenceConditions.includesLessThan(desired, times, operations)
         );
     }
 
     @Override
     public V includesLessThanOrEqualTo(final T desired, final long times) {
         return append(
-            SequenceExpressions.includesLessThanOrEqualTo(desired, times, operations)
+                SequenceConditions.includesLessThanOrEqualTo(desired, times, operations)
         );
     }
 }

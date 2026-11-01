@@ -2,6 +2,18 @@ package io.github.libzeal.zeal.values.sdk.sequence;
 
 import java.util.Collection;
 
+/**
+ * A value that represents a sequence of elements. This is not limited to
+ * collection-based values; string-based values and third-party values may also
+ * implement this interface.
+ *
+ * @param <T>
+ *         The type of the element.
+ * @param <V>
+ *         The type of the implementing value (used for fluent interfaces).
+ *
+ * @author Justin Albano
+ */
 public interface SequenceValue<T, V extends SequenceValue<T, V>> {
 
     /**
@@ -106,6 +118,7 @@ public interface SequenceValue<T, V extends SequenceValue<T, V>> {
      *
      * @return This value (fluent interface).
      */
+    @SuppressWarnings("unchecked")
     V includesAllOf(T... desired);
 
     /**
@@ -126,6 +139,7 @@ public interface SequenceValue<T, V extends SequenceValue<T, V>> {
      *
      * @return This value (fluent interface).
      */
+    @SuppressWarnings("unchecked")
     V includesAnyOf(T... desired);
 
     /**
@@ -156,6 +170,7 @@ public interface SequenceValue<T, V extends SequenceValue<T, V>> {
      *
      * @return This value (fluent interface).
      */
+    @SuppressWarnings("unchecked")
     V excludesAllOf(T... desired);
 
     /**
@@ -176,6 +191,7 @@ public interface SequenceValue<T, V extends SequenceValue<T, V>> {
      *
      * @return This value (fluent interface).
      */
+    @SuppressWarnings("unchecked")
     V excludesAnyOf(T... desired);
 
     /**

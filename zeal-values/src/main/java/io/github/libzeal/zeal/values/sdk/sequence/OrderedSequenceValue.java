@@ -66,11 +66,43 @@ public interface OrderedSequenceValue<T, V extends OrderedSequenceValue<T, V>> e
      */
     V lastIndexOfIsNot(T desired, int index);
 
+    /**
+     * Checks that the sequence starts with the supplied element.
+     *
+     * @param desired
+     *         The desired starting element.
+     *
+     * @return This value (fluent interface).
+     */
     V startsWith(T desired);
 
+    /**
+     * Checks that the sequence does not start with the supplied element.
+     *
+     * @param desired
+     *         The element that the sequence should not start with.
+     *
+     * @return This value (fluent interface).
+     */
     V doesNotStartWith(T desired);
 
+    /**
+     * Checks that the sequence ends with the supplied element.
+     *
+     * @param desired
+     *         The desired ending element.
+     *
+     * @return This value (fluent interface).
+     */
     V endsWith(T desired);
 
+    /**
+     * Checks that the sequence does not end with the supplied element.
+     *
+     * @param desired
+     *         The element that the sequence should not end with.
+     *
+     * @return This value (fluent interface).
+     */
     V doesNotEndWith(T desired);
 }

@@ -16,11 +16,28 @@ import static io.github.libzeal.zeal.values.sdk.StandardRationales.Names.withPai
 import static io.github.libzeal.zeal.values.sdk.StandardRationales.Names.withValue;
 import static java.util.stream.Collectors.toList;
 
-public class SequenceExpressions {
+/**
+ * A set of common conditions for sequences. These conditions are used by the
+ * supported first-party sequence values and is also intended for use by
+ * third-party sequence values.
+ *
+ * @author Justin Albano
+ */
+public class SequenceConditions {
 
     private static final String LENGTH = "length";
     private static final String NULL_DESIRED_HINT = "Desired elements is (null), which passes by default";
 
+    /**
+     * Creates a condition that checks if a sequence is empty.
+     *
+     * @param ops
+     *         The sequence operations to use.
+     * @param <S>
+     *         The type of the sequence.
+     *
+     * @return A condition that checks if a sequence is empty.
+     */
     public static <S> Condition<S> isEmpty(final SequenceOperations<?, S> ops) {
         return ConditionBuilder.observing(ops::size)
                 .passesIf(size -> size == 0)
@@ -34,6 +51,16 @@ public class SequenceExpressions {
         return context -> Operators.EQ.display(LENGTH, context.observed());
     }
 
+    /**
+     * Creates a condition that checks if a sequence is not empty.
+     *
+     * @param ops
+     *         The sequence operations to use.
+     * @param <S>
+     *         The type of the sequence.
+     *
+     * @return A condition that checks if a sequence is not empty.
+     */
     public static <S> Condition<S> isNotEmpty(final SequenceOperations<?, S> ops) {
         return ConditionBuilder.observing(ops::size)
                 .passesIf(size -> size > 0)
@@ -43,6 +70,18 @@ public class SequenceExpressions {
                 .build();
     }
 
+    /**
+     * Creates a condition that checks if a sequence has the supplied length.
+     *
+     * @param ops
+     *         The sequence operations to use.
+     * @param length
+     *         The desired length.
+     * @param <S>
+     *         The type of the sequence.
+     *
+     * @return A condition that checks if a sequence has the supplied length.
+     */
     public static <S> Condition<S> hasLengthOf(final int length, final SequenceOperations<?, S> ops) {
         return ConditionBuilder.observing(ops::size)
                 .passesIf(size -> size == length)
@@ -52,6 +91,20 @@ public class SequenceExpressions {
                 .build();
     }
 
+    /**
+     * Creates a condition that checks if a sequence does not have the supplied
+     * length.
+     *
+     * @param ops
+     *         The sequence operations to use.
+     * @param length
+     *         The desired length.
+     * @param <S>
+     *         The type of the sequence.
+     *
+     * @return A condition that checks if a sequence does not have the supplied
+     * length.
+     */
     public static <S> Condition<S> doesNotHaveLengthOf(final int length, final SequenceOperations<?, S> ops) {
         return ConditionBuilder.observing(ops::size)
                 .passesIf(size -> size != length)
@@ -61,6 +114,20 @@ public class SequenceExpressions {
                 .build();
     }
 
+    /**
+     * Creates a condition that checks if a sequence is shorter than the
+     * supplied length.
+     *
+     * @param ops
+     *         The sequence operations to use.
+     * @param length
+     *         The desired length.
+     * @param <S>
+     *         The type of the sequence.
+     *
+     * @return A condition that checks if a sequence is shorter than the
+     * supplied length.
+     */
     public static <S> Condition<S> isShorterThan(final int length, final SequenceOperations<?, S> ops) {
         return ConditionBuilder.observing(ops::size)
                 .passesIf(size -> size < length)
@@ -70,6 +137,20 @@ public class SequenceExpressions {
                 .build();
     }
 
+    /**
+     * Creates a condition that checks if a sequence is shorter than or equal to
+     * the supplied length.
+     *
+     * @param ops
+     *         The sequence operations to use.
+     * @param length
+     *         The desired length.
+     * @param <S>
+     *         The type of the sequence.
+     *
+     * @return A condition that checks if a sequence is shorter than or equal to
+     * the supplied length.
+     */
     public static <S> Condition<S> isShorterThanOrEqualTo(final int length, final SequenceOperations<?, S> ops) {
         return ConditionBuilder.observing(ops::size)
                 .passesIf(size -> size <= length)
@@ -79,6 +160,20 @@ public class SequenceExpressions {
                 .build();
     }
 
+    /**
+     * Creates a condition that checks if a sequence is longer than the supplied
+     * length.
+     *
+     * @param ops
+     *         The sequence operations to use.
+     * @param length
+     *         The desired length.
+     * @param <S>
+     *         The type of the sequence.
+     *
+     * @return A condition that checks if a sequence is longer than the supplied
+     * length.
+     */
     public static <S> Condition<S> isLongerThan(final int length, final SequenceOperations<?, S> ops) {
         return ConditionBuilder.observing(ops::size)
                 .passesIf(size -> size > length)
@@ -88,6 +183,20 @@ public class SequenceExpressions {
                 .build();
     }
 
+    /**
+     * Creates a condition that checks if a sequence is longer than or equal to
+     * than the supplied length.
+     *
+     * @param ops
+     *         The sequence operations to use.
+     * @param length
+     *         The desired length.
+     * @param <S>
+     *         The type of the sequence.
+     *
+     * @return A condition that checks if a sequence is longer than or equal to
+     * than the supplied length.
+     */
     public static <S> Condition<S> isLongerThanOrEqualTo(final int length, final SequenceOperations<?, S> ops) {
         return ConditionBuilder.observing(ops::size)
                 .passesIf(size -> size >= length)
@@ -97,6 +206,22 @@ public class SequenceExpressions {
                 .build();
     }
 
+    /**
+     * Creates a condition that checks if a sequence includes the supplied
+     * element.
+     *
+     * @param ops
+     *         The sequence operations to use.
+     * @param desired
+     *         The desired element.
+     * @param <S>
+     *         The type of the sequence.
+     * @param <T>
+     *         The type of the elements in the sequence.
+     *
+     * @return A condition that checks if a sequence includes the supplied
+     * element.
+     */
     public static <T, S> Condition<S> includes(final T desired, final SequenceOperations<T, S> ops) {
         return ConditionBuilder.of((S s) -> ops.includes(s, desired))
                 .name(StandardRationales.includes(desired))
@@ -105,6 +230,22 @@ public class SequenceExpressions {
                 .build();
     }
 
+    /**
+     * Creates a condition that checks if a sequence includes the supplied
+     * elements.
+     *
+     * @param ops
+     *         The sequence operations to use.
+     * @param desired
+     *         The desired elements.
+     * @param <S>
+     *         The type of the sequence.
+     * @param <T>
+     *         The type of the elements in the sequence.
+     *
+     * @return A condition that checks if a sequence includes the supplied
+     * elements.
+     */
     public static <T, S> Condition<S> includesAll(
             final Collection<? extends T> desired,
             final SequenceOperations<T, S> ops
@@ -134,6 +275,22 @@ public class SequenceExpressions {
                 .build();
     }
 
+    /**
+     * Creates a condition that checks if a sequence includes any of the
+     * supplied elements.
+     *
+     * @param ops
+     *         The sequence operations to use.
+     * @param desired
+     *         The desired elements.
+     * @param <S>
+     *         The type of the sequence.
+     * @param <T>
+     *         The type of the elements in the sequence.
+     *
+     * @return A condition that checks if a sequence includes any of the
+     * supplied elements.
+     */
     public static <T, S> Condition<S> includesAny(final Collection<? extends T> desired, final SequenceOperations<T, S> ops) {
 
         if (desired == null) {
@@ -196,24 +353,56 @@ public class SequenceExpressions {
                 .toList();
     }
 
-    public static <T, S> Condition<S> excludes(final T desired, final SequenceOperations<T, S> ops) {
-        return ConditionBuilder.of((S s) -> !ops.includes(s, desired))
-                .name(StandardRationales.excludes(desired))
-                .expected(StandardRationales.excludes(desired))
-                .actual(context -> context.passed() ? StandardRationales.excludes(desired) : StandardRationales.includes(desired))
+    /**
+     * Creates a condition that checks if a sequence excludes the supplied
+     * element.
+     *
+     * @param ops
+     *         The sequence operations to use.
+     * @param undesired
+     *         The undesired element.
+     * @param <S>
+     *         The type of the sequence.
+     * @param <T>
+     *         The type of the elements in the sequence.
+     *
+     * @return A condition that checks if a sequence excludes the supplied
+     * element.
+     */
+    public static <T, S> Condition<S> excludes(final T undesired, final SequenceOperations<T, S> ops) {
+        return ConditionBuilder.of((S s) -> !ops.includes(s, undesired))
+                .name(StandardRationales.excludes(undesired))
+                .expected(StandardRationales.excludes(undesired))
+                .actual(context -> context.passed() ? StandardRationales.excludes(undesired) : StandardRationales.includes(undesired))
                 .build();
     }
 
-    public static <T, S> Condition<S> excludesAll(final Collection<? extends T> desired, final SequenceOperations<T, S> ops) {
+    /**
+     * Creates a condition that checks if a sequence excludes the supplied
+     * elements.
+     *
+     * @param ops
+     *         The sequence operations to use.
+     * @param undesired
+     *         The undesired elements.
+     * @param <S>
+     *         The type of the sequence.
+     * @param <T>
+     *         The type of the elements in the sequence.
+     *
+     * @return A condition that checks if a sequence excludes the supplied
+     * elements.
+     */
+    public static <T, S> Condition<S> excludesAll(final Collection<? extends T> undesired, final SequenceOperations<T, S> ops) {
 
-        if (desired == null) {
+        if (undesired == null) {
             return passesForNullDesired(
                     "excludesAll", "All desired elements missing in subject",
                     "All desired elements missing in subject"
             );
         }
 
-        return ConditionBuilder.observing((S s) -> ops.findAllIn(s, desired))
+        return ConditionBuilder.observing((S s) -> ops.findAllIn(s, undesired))
                 .passesIf(List::isEmpty)
                 .name("excludesAll")
                 .expected("All desired elements missing in subject")
@@ -230,17 +419,33 @@ public class SequenceExpressions {
                 .build();
     }
 
-    public static <T, S> Condition<S> excludesAny(final Collection<? extends T> desired, final SequenceOperations<T, S> ops) {
+    /**
+     * Creates a condition that checks if a sequence excludes any of the
+     * supplied elements.
+     *
+     * @param ops
+     *         The sequence operations to use.
+     * @param undesired
+     *         The undesired elements.
+     * @param <S>
+     *         The type of the sequence.
+     * @param <T>
+     *         The type of the elements in the sequence.
+     *
+     * @return A condition that checks if a sequence excludes any of the
+     * supplied elements.
+     */
+    public static <T, S> Condition<S> excludesAny(final Collection<? extends T> undesired, final SequenceOperations<T, S> ops) {
 
-        if (desired == null) {
+        if (undesired == null) {
             return passesForNullDesired(
                     "excludesAny", "At least one desired element missing in subject",
                     "At least one desired element missing in subject"
             );
         }
 
-        return ConditionBuilder.observing((S s) -> ops.findAllIn(s, desired))
-                .passesIf(found -> found.size() < desired.size())
+        return ConditionBuilder.observing((S s) -> ops.findAllIn(s, undesired))
+                .passesIf(found -> found.size() < undesired.size())
                 .name("excludesAny")
                 .expected("At least one desired element missing in subject")
                 .actual(context ->
@@ -256,6 +461,24 @@ public class SequenceExpressions {
                 .build();
     }
 
+    /**
+     * Creates a condition that checks if a sequence includes the supplied
+     * elements the supplied number of times.
+     *
+     * @param ops
+     *         The sequence operations to use.
+     * @param desired
+     *         The desired elements.
+     * @param times
+     *         The desired number of occurrences.
+     * @param <S>
+     *         The type of the sequence.
+     * @param <T>
+     *         The type of the elements in the sequence.
+     *
+     * @return A condition that checks if a sequence includes the supplied
+     * elements the supplied number of times.
+     */
     public static <T, S> Condition<S> includesExactly(final T desired, final long times, final SequenceOperations<T, S> ops) {
 
         final String desiredAsString = stringify(desired);
@@ -279,6 +502,24 @@ public class SequenceExpressions {
         return times == 1 ? "time" : "times";
     }
 
+    /**
+     * Creates a condition that checks if a sequence includes the supplied
+     * elements more than the supplied number of times.
+     *
+     * @param ops
+     *         The sequence operations to use.
+     * @param desired
+     *         The desired elements.
+     * @param times
+     *         The lower bound of occurrences.
+     * @param <S>
+     *         The type of the sequence.
+     * @param <T>
+     *         The type of the elements in the sequence.
+     *
+     * @return A condition that checks if a sequence includes the supplied
+     * elements more than the supplied number of times.
+     */
     public static <T, S> Condition<S> includesMoreThan(final T desired, final long times, final SequenceOperations<T, S> ops) {
 
         final String desiredAsString = stringify(desired);
@@ -298,6 +539,24 @@ public class SequenceExpressions {
                 .build();
     }
 
+    /**
+     * Creates a condition that checks if a sequence includes the supplied
+     * elements more than or equal to the supplied number of times.
+     *
+     * @param ops
+     *         The sequence operations to use.
+     * @param desired
+     *         The desired elements.
+     * @param times
+     *         The lower bound of occurrences.
+     * @param <S>
+     *         The type of the sequence.
+     * @param <T>
+     *         The type of the elements in the sequence.
+     *
+     * @return A condition that checks if a sequence includes the supplied
+     * elements more than or equal to the supplied number of times.
+     */
     public static <T, S> Condition<S> includesMoreThanOrEqualTo(final T desired, final long times, final SequenceOperations<T, S> ops) {
 
         final String desiredAsString = stringify(desired);
@@ -317,6 +576,24 @@ public class SequenceExpressions {
                 .build();
     }
 
+    /**
+     * Creates a condition that checks if a sequence includes the supplied
+     * elements less than the supplied number of times.
+     *
+     * @param ops
+     *         The sequence operations to use.
+     * @param desired
+     *         The desired elements.
+     * @param times
+     *         The lower upper of occurrences.
+     * @param <S>
+     *         The type of the sequence.
+     * @param <T>
+     *         The type of the elements in the sequence.
+     *
+     * @return A condition that checks if a sequence includes the supplied
+     * elements less than the supplied number of times.
+     */
     public static <T, S> Condition<S> includesLessThan(final T desired, final long times, final SequenceOperations<T, S> ops) {
 
         final String desiredAsString = stringify(desired);
@@ -336,6 +613,24 @@ public class SequenceExpressions {
                 .build();
     }
 
+    /**
+     * Creates a condition that checks if a sequence includes the supplied
+     * elements less than or equal to the supplied number of times.
+     *
+     * @param ops
+     *         The sequence operations to use.
+     * @param desired
+     *         The desired elements.
+     * @param times
+     *         The lower upper of occurrences.
+     * @param <S>
+     *         The type of the sequence.
+     * @param <T>
+     *         The type of the elements in the sequence.
+     *
+     * @return A condition that checks if a sequence includes the supplied
+     * elements less than or equal to the supplied number of times.
+     */
     public static <T, S> Condition<S> includesLessThanOrEqualTo(final T desired, final long times, final SequenceOperations<T, S> ops) {
 
         final String desiredAsString = stringify(desired);

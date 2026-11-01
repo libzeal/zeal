@@ -1,7 +1,7 @@
 package io.github.libzeal.zeal.values.collection;
 
+import io.github.libzeal.zeal.logic.unary.Observed;
 import io.github.libzeal.zeal.values.sdk.sequence.BaseOrderedSequenceValue;
-import io.github.libzeal.zeal.values.sdk.sequence.Element;
 import io.github.libzeal.zeal.values.sdk.sequence.OrderedSequenceOperations;
 
 import java.util.Arrays;
@@ -57,12 +57,12 @@ public class ArrayValue<T> extends BaseOrderedSequenceValue<T[], T, ArrayValue<T
         }
 
         @Override
-        public Element<T> atIndex(final T[] haystack, final int index, final T desired) {
+        public Observed<T> atIndex(final T[] haystack, final int index, final T desired) {
             return list.atIndex(Arrays.asList(haystack), index, desired);
         }
 
         @Override
-        public Element<T> lastElement(final T[] haystack, final T desired) {
+        public Observed<T> lastElement(final T[] haystack, final T desired) {
             return list.lastElement(Arrays.asList(haystack), desired);
         }
     }

@@ -1,8 +1,20 @@
 package io.github.libzeal.zeal.values.sdk.sequence;
 
+/**
+ * A base class used by ordered sequences to include common conditions.
+ *
+ * @param <S>
+ *         The type of the sequence.
+ * @param <T>
+ *         The type of the elements of the sequence.
+ * @param <V>
+ *         The value of the implementing value (used for fluent interfaces).
+ *
+ * @author Justin Albano
+ */
 public abstract class BaseOrderedSequenceValue<S, T, V extends BaseOrderedSequenceValue<S, T, V>>
-    extends BaseSequenceValue<S, T, V>
-    implements OrderedSequenceValue<T, V> {
+        extends BaseSequenceValue<S, T, V>
+        implements OrderedSequenceValue<T, V> {
 
     private final OrderedSequenceOperations<T, S> operations;
 
@@ -11,75 +23,87 @@ public abstract class BaseOrderedSequenceValue<S, T, V extends BaseOrderedSequen
         this.operations = operations;
     }
 
-    // TODO Javadoc: unlike unordered sequences, the hint for includes/excludes on an ordered sequence states the
-    //  index at which the desired element was found (or that it was not found); explain this difference
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Ordered sequence override the default behavior provided by general
+     * sequences and include a hint that specifies the index that the desired
+     * element was found at if the desired element is found.
+     */
     @Override
     public V includes(final T desired) {
         return append(
-            OrderedSequenceExpressions.includes(desired, operations)
+                OrderedSequenceConditions.includes(desired, operations)
         );
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Ordered sequence override the default behavior provided by general
+     * sequences and include a hint that specifies the index that the desired
+     * element was found at if the desired element is found.
+     */
     @Override
     public V excludes(final T desired) {
         return append(
-            OrderedSequenceExpressions.excludes(desired, operations)
+                OrderedSequenceConditions.excludes(desired, operations)
         );
     }
 
     @Override
     public V hasAtIndex(final T desired, final int index) {
         return append(
-            OrderedSequenceExpressions.hasAtIndex(desired, index, operations)
+                OrderedSequenceConditions.hasAtIndex(desired, index, operations)
         );
     }
 
     @Override
     public V doesNotHaveAtIndex(final T desired, final int index) {
         return append(
-            OrderedSequenceExpressions.doesNotHaveAtIndex(desired, index, operations)
+                OrderedSequenceConditions.doesNotHaveAtIndex(desired, index, operations)
         );
     }
 
     @Override
     public V lastIndexOfIs(final T desired, final int index) {
         return append(
-            OrderedSequenceExpressions.lastIndexOfIs(desired, index, operations)
+                OrderedSequenceConditions.lastIndexOfIs(desired, index, operations)
         );
     }
 
     @Override
     public V lastIndexOfIsNot(final T desired, final int index) {
         return append(
-            OrderedSequenceExpressions.lastIndexOfIsNot(desired, index, operations)
+                OrderedSequenceConditions.lastIndexOfIsNot(desired, index, operations)
         );
     }
 
     @Override
     public V startsWith(final T desired) {
         return append(
-            OrderedSequenceExpressions.startsWith(desired, operations)
+                OrderedSequenceConditions.startsWith(desired, operations)
         );
     }
 
     @Override
     public V doesNotStartWith(final T desired) {
         return append(
-            OrderedSequenceExpressions.doesNotStartWith(desired, operations)
+                OrderedSequenceConditions.doesNotStartWith(desired, operations)
         );
     }
 
     @Override
     public V endsWith(final T desired) {
         return append(
-            OrderedSequenceExpressions.endsWith(desired, operations)
+                OrderedSequenceConditions.endsWith(desired, operations)
         );
     }
 
     @Override
     public V doesNotEndWith(final T desired) {
         return append(
-            OrderedSequenceExpressions.doesNotEndWith(desired, operations)
+                OrderedSequenceConditions.doesNotEndWith(desired, operations)
         );
     }
 }
