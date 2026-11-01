@@ -8,6 +8,8 @@ import org.junit.jupiter.api.Test;
 public abstract class BoxedNumberValueTest<T extends Number, E extends BoxedNumberValue<T, E>>
         extends BaseValueTest<T, E> {
 
+    private static final String CANNOT_COMPARE_TO_NULL = "Always fail: cannot compare to subject to (null)";
+
     // ---- isEqualTo ----
 
     @Test
@@ -723,6 +725,60 @@ public abstract class BoxedNumberValueTest<T extends Number, E extends BoxedNumb
                 .name("isNotNegative")
                 .expected(">= " + ObjectFormatter.stringify(zero))
                 .actual(ObjectFormatter.stringify(negative))
+                .run();
+    }
+
+    // ---- comparisons to null ----
+
+    @Test
+    void givenNullValue_whenIsLessThan_thenFalse() {
+        final T zero = exampleZeroValue();
+        newTestCase()
+                .subject(zero)
+                .expression(value -> value.isLessThan(null))
+                .result(false)
+                .name("isLessThan[(null)]")
+                .expected(CANNOT_COMPARE_TO_NULL)
+                .actual(ObjectFormatter.stringify(zero))
+                .run();
+    }
+
+    @Test
+    void givenNullValue_whenIsGreaterThan_thenFalse() {
+        final T zero = exampleZeroValue();
+        newTestCase()
+                .subject(zero)
+                .expression(value -> value.isGreaterThan(null))
+                .result(false)
+                .name("isGreaterThan[(null)]")
+                .expected(CANNOT_COMPARE_TO_NULL)
+                .actual(ObjectFormatter.stringify(zero))
+                .run();
+    }
+
+    @Test
+    void givenNullValue_whenIsLessThanOrEqualTo_thenFalse() {
+        final T zero = exampleZeroValue();
+        newTestCase()
+                .subject(zero)
+                .expression(value -> value.isLessThanOrEqualTo(null))
+                .result(false)
+                .name("isLessThanOrEqualTo[(null)]")
+                .expected(CANNOT_COMPARE_TO_NULL)
+                .actual(ObjectFormatter.stringify(zero))
+                .run();
+    }
+
+    @Test
+    void givenNullValue_whenIsGreaterThanOrEqualTo_thenFalse() {
+        final T zero = exampleZeroValue();
+        newTestCase()
+                .subject(zero)
+                .expression(value -> value.isGreaterThanOrEqualTo(null))
+                .result(false)
+                .name("isGreaterThanOrEqualTo[(null)]")
+                .expected(CANNOT_COMPARE_TO_NULL)
+                .actual(ObjectFormatter.stringify(zero))
                 .run();
     }
 

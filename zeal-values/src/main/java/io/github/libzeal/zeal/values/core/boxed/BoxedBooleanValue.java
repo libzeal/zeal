@@ -20,7 +20,7 @@ public class BoxedBooleanValue extends BaseValue<Boolean, BoxedBooleanValue> {
     }
 
     /**
-     * Creates a new Boolean expression.
+     * Creates a new Boolean value.
      *
      * @return This value (fluent interface).
      */

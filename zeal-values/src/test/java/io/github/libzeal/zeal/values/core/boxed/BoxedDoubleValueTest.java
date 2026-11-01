@@ -33,7 +33,7 @@ class BoxedDoubleValueTest extends BoxedNumberValueTest<Double, BoxedDoubleValue
 
     @Override
     protected Double exampleMinimumValue() {
-        return Double.MIN_VALUE;
+        return -Double.MAX_VALUE;
     }
 
     // ---- isEqualTo (with tolerance) ----
@@ -209,6 +209,58 @@ class BoxedDoubleValueTest extends BoxedNumberValueTest<Double, BoxedDoubleValue
                 .name("isNaN")
                 .expected("NaN")
                 .actual(ObjectFormatter.stringify(exampleZeroValue()))
+                .run();
+    }
+
+    // ---- isMinValue (the most negative value, not the smallest positive value) ----
+
+    @Test
+    void givenSmallestPositive_whenIsMinValue_thenFalse() {
+        newTestCase()
+                .subject(Double.MIN_VALUE)
+                .expression(BoxedDoubleValue::isMinValue)
+                .result(false)
+                .name("isMin")
+                .expected(String.valueOf(-Double.MAX_VALUE))
+                .actual(String.valueOf(Double.MIN_VALUE))
+                .run();
+    }
+
+    @Test
+    void givenNegativeMax_whenIsMinValue_thenTrue() {
+        newTestCase()
+                .subject(-Double.MAX_VALUE)
+                .expression(BoxedDoubleValue::isMinValue)
+                .result(true)
+                .name("isMin")
+                .expected(String.valueOf(-Double.MAX_VALUE))
+                .actual(String.valueOf(-Double.MAX_VALUE))
+                .run();
+    }
+
+    // ---- IEEE 754 comparisons ----
+
+    @Test
+    void givenNaN_whenIsPositive_thenFalse() {
+        newTestCase()
+                .subject(Double.NaN)
+                .expression(BoxedDoubleValue::isPositive)
+                .result(false)
+                .name("isPositive")
+                .expected("> 0.0")
+                .actual("NaN")
+                .run();
+    }
+
+    @Test
+    void givenNegativeZero_whenIsNegative_thenFalse() {
+        newTestCase()
+                .subject(-0.0)
+                .expression(BoxedDoubleValue::isNegative)
+                .result(false)
+                .name("isNegative")
+                .expected("< 0.0")
+                .actual("-0.0")
                 .run();
     }
 }

@@ -33,7 +33,7 @@ class BoxedFloatValueTest extends BoxedNumberValueTest<Float, BoxedFloatValue> {
 
     @Override
     protected Float exampleMinimumValue() {
-        return Float.MIN_VALUE;
+        return -Float.MAX_VALUE;
     }
 
     // ---- isEqualTo (with tolerance) ----
@@ -209,6 +209,72 @@ class BoxedFloatValueTest extends BoxedNumberValueTest<Float, BoxedFloatValue> {
                 .name("isNaN")
                 .expected("NaN")
                 .actual(ObjectFormatter.stringify(exampleZeroValue()))
+                .run();
+    }
+
+    // ---- isMinValue (the most negative value, not the smallest positive value) ----
+
+    @Test
+    void givenSmallestPositive_whenIsMinValue_thenFalse() {
+        newTestCase()
+                .subject(Float.MIN_VALUE)
+                .expression(BoxedFloatValue::isMinValue)
+                .result(false)
+                .name("isMin")
+                .expected(String.valueOf(-Float.MAX_VALUE))
+                .actual(String.valueOf(Float.MIN_VALUE))
+                .run();
+    }
+
+    @Test
+    void givenNegativeMax_whenIsMinValue_thenTrue() {
+        newTestCase()
+                .subject(-Float.MAX_VALUE)
+                .expression(BoxedFloatValue::isMinValue)
+                .result(true)
+                .name("isMin")
+                .expected(String.valueOf(-Float.MAX_VALUE))
+                .actual(String.valueOf(-Float.MAX_VALUE))
+                .run();
+    }
+
+    // ---- isEqualTo (with tolerance) uses float arithmetic ----
+
+    @Test
+    void givenDifferenceRoundedToDeltaInFloat_whenIsEqualToWithTolerance_thenTrue() {
+        newTestCase()
+                .subject(1.07f)
+                .expression(value -> value.isEqualTo(0.1f, 0.97f))
+                .result(true)
+                .name("isEqualTo[0.1 +/- 0.97]")
+                .expected("0.1 +/- 0.97")
+                .actual(ObjectFormatter.stringify(1.07f))
+                .run();
+    }
+
+    // ---- IEEE 754 comparisons ----
+
+    @Test
+    void givenNaN_whenIsPositive_thenFalse() {
+        newTestCase()
+                .subject(Float.NaN)
+                .expression(BoxedFloatValue::isPositive)
+                .result(false)
+                .name("isPositive")
+                .expected("> 0.0")
+                .actual("NaN")
+                .run();
+    }
+
+    @Test
+    void givenNegativeZero_whenIsNegative_thenFalse() {
+        newTestCase()
+                .subject(-0.0f)
+                .expression(BoxedFloatValue::isNegative)
+                .result(false)
+                .name("isNegative")
+                .expected("< 0.0")
+                .actual("-0.0")
                 .run();
     }
 }
