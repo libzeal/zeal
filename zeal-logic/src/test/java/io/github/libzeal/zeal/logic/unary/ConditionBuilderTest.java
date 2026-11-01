@@ -3,6 +3,10 @@ package io.github.libzeal.zeal.logic.unary;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import org.junit.jupiter.api.Test;
 
+import java.util.Objects;
+import java.util.function.Function;
+import java.util.function.Predicate;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class ConditionBuilderTest {
@@ -121,5 +125,33 @@ class ConditionBuilderTest {
         builder.name("after");
 
         assertEquals("before", expression.bind("foo").evaluate().name());
+    }
+
+    @Test
+    void givenPredicateOfSupertype_whenOf_thenBuilderOfSubtypeCreated() {
+
+        final Predicate<Object> nonNull = Objects::nonNull;
+
+        final Evaluation evaluation = ConditionBuilder.<String>of(nonNull)
+                .build()
+                .bind("foo")
+                .evaluate();
+
+        assertTrue(evaluation.isTrue());
+    }
+
+    @Test
+    void givenFunctionAndPredicateOfSupertypes_whenObservingAndPassesIf_thenBuilderCreated() {
+
+        final Function<Object, String> describe = Object::toString;
+        final Predicate<CharSequence> notEmpty = s -> !s.isEmpty();
+
+        final Evaluation evaluation = ConditionBuilder.<Integer, CharSequence>observing(describe)
+                .passesIf(notEmpty)
+                .build()
+                .bind(1)
+                .evaluate();
+
+        assertTrue(evaluation.isTrue());
     }
 }

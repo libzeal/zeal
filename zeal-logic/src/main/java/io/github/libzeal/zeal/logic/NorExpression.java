@@ -57,8 +57,8 @@ public record NorExpression(
      *         The supplied children list is {@code null} or the list contains
      *         any {@code null}s.
      */
-    public static NorExpression unnamed(final List<Expression> children) {
-        return new NorExpression(DEFAULT_NAME, children);
+    public static NorExpression unnamed(final List<? extends Expression> children) {
+        return new NorExpression(DEFAULT_NAME, List.copyOf(children));
     }
 
     /**

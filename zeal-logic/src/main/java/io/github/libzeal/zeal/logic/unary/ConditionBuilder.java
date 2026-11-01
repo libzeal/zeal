@@ -19,15 +19,15 @@ import static java.util.Objects.requireNonNull;
  */
 public final class ConditionBuilder<S, O> {
 
-    private final Function<S, O> observe;
-    private final Predicate<O> condition;
+    private final Function<? super S, ? extends O> observe;
+    private final Predicate<? super O> condition;
     private boolean nullable = false;
     private String name = "<unnamed>";
     private Field<S, O> expected = context -> "<not set>";
     private Field<S, O> actual = context -> ObjectFormatter.stringify(context.observed());
     private Field<S, O> hint = null;
 
-    private ConditionBuilder(final Function<S, O> observe, final Predicate<O> condition) {
+    private ConditionBuilder(final Function<? super S, ? extends O> observe, final Predicate<? super O> condition) {
         this.observe = requireNonNull(observe);
         this.condition = requireNonNull(condition);
     }
@@ -47,7 +47,7 @@ public final class ConditionBuilder<S, O> {
      * @throws NullPointerException
      *         The supplied predicate is {@code null}.
      */
-    public static <S> ConditionBuilder<S, S> of(final Predicate<S> condition) {
+    public static <S> ConditionBuilder<S, S> of(final Predicate<? super S> condition) {
         return new ConditionBuilder<>(Function.identity(), condition);
     }
 
@@ -70,7 +70,7 @@ public final class ConditionBuilder<S, O> {
      * @throws NullPointerException
      *         The supplied observation function is {@code null}.
      */
-    public static <S, O> Observing<S, O> observing(final Function<S, O> observe) {
+    public static <S, O> Observing<S, O> observing(final Function<? super S, ? extends O> observe) {
         return new Observing<>(observe);
     }
 
@@ -250,7 +250,7 @@ public final class ConditionBuilder<S, O> {
      * @param <O>
      *         The type of the observed value.
      */
-    public record Observing<S, O>(Function<S, O> observe) {
+    public record Observing<S, O>(Function<? super S, ? extends O> observe) {
 
         /**
          * Creates a new observation builder.
@@ -276,7 +276,7 @@ public final class ConditionBuilder<S, O> {
          * @throws NullPointerException
          *         The supplied predicate is {@code null}.
          */
-        public ConditionBuilder<S, O> passesIf(final Predicate<O> condition) {
+        public ConditionBuilder<S, O> passesIf(final Predicate<? super O> condition) {
             return new ConditionBuilder<>(observe, condition);
         }
     }

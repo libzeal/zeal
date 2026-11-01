@@ -80,7 +80,7 @@ public abstract class BaseSequenceValue<S, T, V extends BaseSequenceValue<S, T, 
     }
 
     @Override
-    public V includesAll(final Collection<T> desired) {
+    public V includesAll(final Collection<? extends T> desired) {
         return append(
             SequenceExpressions.includesAll(desired, operations)
         );
@@ -93,7 +93,7 @@ public abstract class BaseSequenceValue<S, T, V extends BaseSequenceValue<S, T, 
     }
 
     @Override
-    public V includesAny(final Collection<T> desired) {
+    public V includesAny(final Collection<? extends T> desired) {
         return append(
             SequenceExpressions.includesAny(desired, operations)
         );
@@ -113,7 +113,7 @@ public abstract class BaseSequenceValue<S, T, V extends BaseSequenceValue<S, T, 
     }
 
     @Override
-    public V excludesAll(final Collection<T> desired) {
+    public V excludesAll(final Collection<? extends T> desired) {
         return append(
             SequenceExpressions.excludesAll(desired, operations)
         );
@@ -126,7 +126,7 @@ public abstract class BaseSequenceValue<S, T, V extends BaseSequenceValue<S, T, 
     }
 
     @Override
-    public V excludesAny(final Collection<T> desired) {
+    public V excludesAny(final Collection<? extends T> desired) {
         return append(
             SequenceExpressions.excludesAny(desired, operations)
         );

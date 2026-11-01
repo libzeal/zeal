@@ -57,8 +57,8 @@ public record AndExpression(
      *         The supplied children list is {@code null} or the list contains
      *         any {@code null}s.
      */
-    public static AndExpression unnamed(final List<Expression> children) {
-        return new AndExpression(DEFAULT_NAME, children);
+    public static AndExpression unnamed(final List<? extends Expression> children) {
+        return new AndExpression(DEFAULT_NAME, List.copyOf(children));
     }
 
     /**

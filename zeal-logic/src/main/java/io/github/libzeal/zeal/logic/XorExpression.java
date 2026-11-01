@@ -64,8 +64,8 @@ public record XorExpression(
      *         The supplied children list is {@code null} or the list contains
      *         any {@code null}s.
      */
-    public static XorExpression unnamed(final List<Expression> children) {
-        return new XorExpression(DEFAULT_NAME, children);
+    public static XorExpression unnamed(final List<? extends Expression> children) {
+        return new XorExpression(DEFAULT_NAME, List.copyOf(children));
     }
 
     /**

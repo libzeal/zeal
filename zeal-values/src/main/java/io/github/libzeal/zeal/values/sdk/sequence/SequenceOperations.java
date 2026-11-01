@@ -13,7 +13,7 @@ public interface SequenceOperations<T, S> {
 
     int occurrences(S haystack, T needle);
 
-    default List<T> findAllIn(final S haystack, final Collection<T> needles) {
+    default List<T> findAllIn(final S haystack, final Collection<? extends T> needles) {
         return needles.stream()
                 .filter(needle -> includes(haystack, needle))
                 .collect(toList());

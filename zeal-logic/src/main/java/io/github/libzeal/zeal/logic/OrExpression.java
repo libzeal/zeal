@@ -57,8 +57,8 @@ public record OrExpression(
      *         The supplied children list is {@code null} or the list contains
      *         any {@code null}s.
      */
-    public static OrExpression unnamed(final List<Expression> children) {
-        return new OrExpression(DEFAULT_NAME, children);
+    public static OrExpression unnamed(final List<? extends Expression> children) {
+        return new OrExpression(DEFAULT_NAME, List.copyOf(children));
     }
 
     /**

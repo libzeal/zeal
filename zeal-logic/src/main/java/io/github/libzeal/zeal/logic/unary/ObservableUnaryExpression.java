@@ -70,8 +70,8 @@ public record ObservableUnaryExpression<S, O>(
         String name,
         S subject,
         boolean nullable,
-        Function<S, O> observe,
-        Predicate<O> condition,
+        Function<? super S, ? extends O> observe,
+        Predicate<? super O> condition,
         Field<S, O> expected,
         Field<S, O> actual,
         Field<S, O> hint

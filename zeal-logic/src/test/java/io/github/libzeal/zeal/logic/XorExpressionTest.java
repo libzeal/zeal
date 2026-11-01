@@ -150,4 +150,15 @@ class XorExpressionTest {
         assertTraces(evaluation, "XOR -> t1", "XOR -> f2");
         assertRootCauses(evaluation, child(evaluation, 0), child(evaluation, 1));
     }
+
+    @Test
+    void givenListOfExpressionSubtype_whenUnnamed_thenChildrenUsed() {
+
+        final BooleanExpression child = new BooleanExpression(() -> true);
+        final List<BooleanExpression> children = List.of(child);
+
+        final XorExpression expression = XorExpression.unnamed(children);
+
+        assertEquals(List.of(child), expression.children());
+    }
 }

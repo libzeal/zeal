@@ -40,8 +40,8 @@ public final class Conditions {
      * @throws NullPointerException
      *         Any of the supplied arguments are {@code null}.
      */
-    public static <T> Condition<T> of(final String name, final Predicate<T> predicate) {
-        return ConditionBuilder.of(predicate)
+    public static <T> Condition<T> of(final String name, final Predicate<? super T> predicate) {
+        return ConditionBuilder.<T>of(predicate)
                 .nullable()
                 .name(name)
                 .expected("satisfied")
@@ -63,7 +63,7 @@ public final class Conditions {
      * @throws NullPointerException
      *         The supplied predicate is {@code null}.
      */
-    public static <T> Condition<T> of(final Predicate<T> predicate) {
+    public static <T> Condition<T> of(final Predicate<? super T> predicate) {
         return of(DEFAULT_NAME, predicate);
     }
 
@@ -138,7 +138,7 @@ public final class Conditions {
      * conditions are true.
      */
     @SafeVarargs
-    public static <T> Condition<T> anyOf(final Condition<T>... conditions) {
+    public static <T> Condition<T> anyOf(final Condition<? super T>... conditions) {
 
         requireNonNull(conditions);
 
@@ -196,7 +196,7 @@ public final class Conditions {
      * @throws NullPointerException
      *         The supplied {@link Iterable} is {@code null}.
      */
-    public static <T> Condition<T> anyOf(final Iterable<T> values) {
+    public static <T> Condition<T> anyOf(final Iterable<? extends T> values) {
 
         requireNonNull(values);
 
@@ -227,7 +227,7 @@ public final class Conditions {
      * conditions are true.
      */
     @SafeVarargs
-    public static <T> Condition<T> allOf(final Condition<T>... conditions) {
+    public static <T> Condition<T> allOf(final Condition<? super T>... conditions) {
 
         requireNonNull(conditions);
 
@@ -285,7 +285,7 @@ public final class Conditions {
      * @throws NullPointerException
      *         The supplied {@link Iterable} is {@code null}.
      */
-    public static <T> Condition<T> allOf(final Iterable<T> values) {
+    public static <T> Condition<T> allOf(final Iterable<? extends T> values) {
 
         requireNonNull(values);
 
@@ -312,7 +312,7 @@ public final class Conditions {
      * conditions are true.
      */
     @SafeVarargs
-    public static <T> Condition<T> noneOf(final Condition<T>... conditions) {
+    public static <T> Condition<T> noneOf(final Condition<? super T>... conditions) {
 
         requireNonNull(conditions);
 
@@ -360,7 +360,7 @@ public final class Conditions {
      * @throws NullPointerException
      *         The supplied {@link Iterable} is {@code null}.
      */
-    public static <T> Condition<T> noneOf(final Iterable<T> values) {
+    public static <T> Condition<T> noneOf(final Iterable<? extends T> values) {
 
         requireNonNull(values);
 

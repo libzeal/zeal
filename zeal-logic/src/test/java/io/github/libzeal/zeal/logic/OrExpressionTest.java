@@ -286,4 +286,15 @@ class OrExpressionTest {
         assertCause(f3, child(evaluation, 0));
         assertTraces(f3, "AND -> t1", "AND -> t2");
     }
+
+    @Test
+    void givenListOfExpressionSubtype_whenUnnamed_thenChildrenUsed() {
+
+        final BooleanExpression child = new BooleanExpression(() -> true);
+        final List<BooleanExpression> children = List.of(child);
+
+        final OrExpression expression = OrExpression.unnamed(children);
+
+        assertEquals(List.of(child), expression.children());
+    }
 }

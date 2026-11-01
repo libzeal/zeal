@@ -207,7 +207,7 @@ public interface ObjectValue<T, E extends ObjectValue<T, E>>
      *
      * @see Comparator#compare(Object, Object)
      */
-    E isEqualTo(T other, Comparator<T> comparator);
+    E isEqualTo(T other, Comparator<? super T> comparator);
 
     /**
      * Checks if the subject is not equal to the supplied object.
@@ -249,7 +249,7 @@ public interface ObjectValue<T, E extends ObjectValue<T, E>>
      *
      * @see Comparator#compare(Object, Object)
      */
-    E isNotEqualTo(T other, Comparator<T> comparator);
+    E isNotEqualTo(T other, Comparator<? super T> comparator);
 
     /**
      * Checks if the hash code of the subject is equal to the supplied hash
@@ -331,7 +331,7 @@ public interface ObjectValue<T, E extends ObjectValue<T, E>>
      *
      * @return This value (fluent interface).
      */
-    E satisfies(Predicate<T> predicate);
+    E satisfies(Predicate<? super T> predicate);
 
     /**
      * Checks if the supplied predicate is false.
@@ -341,5 +341,5 @@ public interface ObjectValue<T, E extends ObjectValue<T, E>>
      *
      * @return This value (fluent interface).
      */
-    E doesNotSatisfy(Predicate<T> predicate);
+    E doesNotSatisfy(Predicate<? super T> predicate);
 }

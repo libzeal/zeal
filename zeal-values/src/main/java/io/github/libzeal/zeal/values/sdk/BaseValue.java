@@ -136,7 +136,7 @@ public abstract class BaseValue<T, E extends BaseValue<T, E>> implements ObjectV
      * @throws NullPointerException
      *         The supplied test was {@code null}.
      */
-    protected final ConditionBuilder<T, T> expression(final Predicate<T> test) {
+    protected final ConditionBuilder<T, T> expression(final Predicate<? super T> test) {
         return ConditionBuilder.of(test);
     }
 
@@ -157,8 +157,8 @@ public abstract class BaseValue<T, E extends BaseValue<T, E>> implements ObjectV
      * @throws NullPointerException
      *         The supplied test was {@code null}.
      */
-    protected final ConditionBuilder<T, T> nullableExpression(final Predicate<T> test) {
-        return ConditionBuilder.of(test).nullable();
+    protected final ConditionBuilder<T, T> nullableExpression(final Predicate<? super T> test) {
+        return ConditionBuilder.<T>of(test).nullable();
     }
 
     /**
@@ -178,7 +178,7 @@ public abstract class BaseValue<T, E extends BaseValue<T, E>> implements ObjectV
      * @throws NullPointerException
      *         The supplied function was {@code null}.
      */
-    protected final <O> Observing<T, O> observing(final Function<T, O> observe) {
+    protected final <O> Observing<T, O> observing(final Function<? super T, ? extends O> observe) {
         return ConditionBuilder.observing(observe);
     }
 
@@ -324,7 +324,7 @@ public abstract class BaseValue<T, E extends BaseValue<T, E>> implements ObjectV
     }
 
     @Override
-    public E isEqualTo(final T other, final Comparator<T> comparator) {
+    public E isEqualTo(final T other, final Comparator<? super T> comparator) {
         return append(
                 comparableEquals(other, comparator)
                         .name("isEqualTo[" + stringify(other) + ", comparator: " + stringify(comparator) + "]")
@@ -335,7 +335,7 @@ public abstract class BaseValue<T, E extends BaseValue<T, E>> implements ObjectV
 
     private static <T> ConditionBuilder<T, T> comparableEquals(
             T other,
-            Comparator<T> comparator
+            Comparator<? super T> comparator
     ) {
 
         if (comparator == null) {
@@ -359,7 +359,7 @@ public abstract class BaseValue<T, E extends BaseValue<T, E>> implements ObjectV
     }
 
     @Override
-    public E isNotEqualTo(final T other, final Comparator<T> comparator) {
+    public E isNotEqualTo(final T other, final Comparator<? super T> comparator) {
         return append(
                 comparableNotEquals(other, comparator)
                         .name("isNotEqualTo[" + stringify(other) + ", comparator: " + stringify(comparator) + "]")
@@ -370,7 +370,7 @@ public abstract class BaseValue<T, E extends BaseValue<T, E>> implements ObjectV
 
     private static <T> ConditionBuilder<T, T> comparableNotEquals(
             T other,
-            Comparator<T> comparator
+            Comparator<? super T> comparator
     ) {
 
         if (comparator == null) {
@@ -427,7 +427,7 @@ public abstract class BaseValue<T, E extends BaseValue<T, E>> implements ObjectV
     }
 
     @Override
-    public E satisfies(final Predicate<T> predicate) {
+    public E satisfies(final Predicate<? super T> predicate) {
         return append(
                 expression(predicate)
                         .name("condition")
@@ -438,7 +438,7 @@ public abstract class BaseValue<T, E extends BaseValue<T, E>> implements ObjectV
     }
 
     @Override
-    public E doesNotSatisfy(final Predicate<T> predicate) {
+    public E doesNotSatisfy(final Predicate<? super T> predicate) {
         return append(
                 expression(o -> !predicate.test(o))
                         .name("not[condition]")

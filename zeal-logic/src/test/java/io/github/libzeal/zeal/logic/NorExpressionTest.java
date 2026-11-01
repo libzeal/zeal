@@ -153,4 +153,15 @@ class NorExpressionTest {
             );
         }
     }
+
+    @Test
+    void givenListOfExpressionSubtype_whenUnnamed_thenChildrenUsed() {
+
+        final BooleanExpression child = new BooleanExpression(() -> true);
+        final List<BooleanExpression> children = List.of(child);
+
+        final NorExpression expression = NorExpression.unnamed(children);
+
+        assertEquals(List.of(child), expression.children());
+    }
 }

@@ -401,4 +401,15 @@ class AndExpressionTest {
         assertEquals("t3", skipped(evaluation, 2).name());
         assertEquals("f4", skipped(evaluation, 3).name());
     }
+
+    @Test
+    void givenListOfExpressionSubtype_whenUnnamed_thenChildrenUsed() {
+
+        final BooleanExpression child = new BooleanExpression(() -> true);
+        final List<BooleanExpression> children = List.of(child);
+
+        final AndExpression expression = AndExpression.unnamed(children);
+
+        assertEquals(List.of(child), expression.children());
+    }
 }

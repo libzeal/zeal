@@ -42,7 +42,7 @@ public class Element<T> {
         return isPresent() ? ifFound : orElse;
     }
 
-    public <A> A ifPresentOrElseGet(final Function<T, A> ifFound, final Supplier<A> orElse) {
+    public <A> A ifPresentOrElseGet(final Function<? super T, ? extends A> ifFound, final Supplier<? extends A> orElse) {
         return isPresent() ? ifFound.apply(value) : orElse.get();
     }
 }

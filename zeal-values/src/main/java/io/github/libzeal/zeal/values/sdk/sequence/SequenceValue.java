@@ -96,7 +96,7 @@ public interface SequenceValue<T, V extends SequenceValue<T, V>> {
      *
      * @return This value (fluent interface).
      */
-    V includesAll(Collection<T> desired);
+    V includesAll(Collection<? extends T> desired);
 
     /**
      * Checks that the value includes the supplied elements.
@@ -116,7 +116,7 @@ public interface SequenceValue<T, V extends SequenceValue<T, V>> {
      *
      * @return This value (fluent interface).
      */
-    V includesAny(Collection<T> desired);
+    V includesAny(Collection<? extends T> desired);
 
     /**
      * Checks that the value includes any of the supplied elements.
@@ -146,7 +146,7 @@ public interface SequenceValue<T, V extends SequenceValue<T, V>> {
      *
      * @return This value (fluent interface).
      */
-    V excludesAll(Collection<T> desired);
+    V excludesAll(Collection<? extends T> desired);
 
     /**
      * Checks that the value excludes the supplied elements.
@@ -166,7 +166,7 @@ public interface SequenceValue<T, V extends SequenceValue<T, V>> {
      *
      * @return This value (fluent interface).
      */
-    V excludesAny(Collection<T> desired);
+    V excludesAny(Collection<? extends T> desired);
 
     /**
      * Checks that the value excludes any of the supplied elements.

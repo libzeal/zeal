@@ -106,7 +106,7 @@ public class SequenceExpressions {
     }
 
     public static <T, S> Condition<S> includesAll(
-            final Collection<T> desired,
+            final Collection<? extends T> desired,
             final SequenceOperations<T, S> ops
     ) {
 
@@ -134,7 +134,7 @@ public class SequenceExpressions {
                 .build();
     }
 
-    public static <T, S> Condition<S> includesAny(final Collection<T> desired, final SequenceOperations<T, S> ops) {
+    public static <T, S> Condition<S> includesAny(final Collection<? extends T> desired, final SequenceOperations<T, S> ops) {
 
         if (desired == null) {
             return passesForNullDesired(
@@ -173,7 +173,7 @@ public class SequenceExpressions {
                 .build();
     }
 
-    private static <T> List<String> computeMissing(final Collection<T> desired, final List<T> found) {
+    private static <T> List<String> computeMissing(final Collection<? extends T> desired, final List<T> found) {
 
         final boolean truncated = desired.size() > Configuration.MAX_LIST_DISPLAY_LENGTH;
 
@@ -204,7 +204,7 @@ public class SequenceExpressions {
                 .build();
     }
 
-    public static <T, S> Condition<S> excludesAll(final Collection<T> desired, final SequenceOperations<T, S> ops) {
+    public static <T, S> Condition<S> excludesAll(final Collection<? extends T> desired, final SequenceOperations<T, S> ops) {
 
         if (desired == null) {
             return passesForNullDesired(
@@ -230,7 +230,7 @@ public class SequenceExpressions {
                 .build();
     }
 
-    public static <T, S> Condition<S> excludesAny(final Collection<T> desired, final SequenceOperations<T, S> ops) {
+    public static <T, S> Condition<S> excludesAny(final Collection<? extends T> desired, final SequenceOperations<T, S> ops) {
 
         if (desired == null) {
             return passesForNullDesired(

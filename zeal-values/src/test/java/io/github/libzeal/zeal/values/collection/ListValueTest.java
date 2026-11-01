@@ -7,6 +7,7 @@ import java.util.AbstractList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 class ListValueTest extends BaseValueTest<List<String>, ListValue<String>>
@@ -181,5 +182,23 @@ class ListValueTest extends BaseValueTest<List<String>, ListValue<String>>
                 throw new NullPointerException("Searched");
             }
         };
+    }
+
+    // ---- collections of a subtype of the element type ----
+
+    @Test
+    void givenCollectionsOfSubtype_whenIncludesAndExcludes_thenAccepted() {
+
+        final List<Integer> included = List.of(1, 2);
+        final List<Integer> excluded = List.of(4, 5);
+        final List<Integer> partiallyIncluded = List.of(1, 4);
+
+        final ListValue<Number> value = new ListValue<Number>(List.of(1, 2, 3))
+            .includesAll(included)
+            .includesAny(partiallyIncluded)
+            .excludesAll(excluded)
+            .excludesAny(partiallyIncluded);
+
+        assertTrue(value.evaluate().isTrue());
     }
 }

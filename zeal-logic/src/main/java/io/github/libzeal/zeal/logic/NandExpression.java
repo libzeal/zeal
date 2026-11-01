@@ -57,8 +57,8 @@ public record NandExpression(
      *         The supplied children list is {@code null} or the list contains
      *         any {@code null}s.
      */
-    public static NandExpression unnamed(final List<Expression> children) {
-        return new NandExpression(DEFAULT_NAME, children);
+    public static NandExpression unnamed(final List<? extends Expression> children) {
+        return new NandExpression(DEFAULT_NAME, List.copyOf(children));
     }
 
     /**

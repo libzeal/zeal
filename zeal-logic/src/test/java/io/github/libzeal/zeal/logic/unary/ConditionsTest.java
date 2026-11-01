@@ -4,7 +4,9 @@ import io.github.libzeal.zeal.logic.Expression;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.function.Predicate;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
@@ -1029,5 +1031,92 @@ class ConditionsTest {
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
         assertTrue(evaluation.isTrue());
+    }
+
+    // ------------------------------------------------------------------------
+    // Wildcard parameters
+    // ------------------------------------------------------------------------
+
+    @Test
+    void givenPredicateOfSupertype_whenOf_thenConditionOfSubtypeCreated() {
+
+        final Predicate<Object> nonNull = Objects::nonNull;
+
+        final Condition<String> condition = Conditions.of(nonNull);
+
+        assertTrue(condition.bind("foo").evaluate().isTrue());
+    }
+
+    @Test
+    void givenNamedPredicateOfSupertype_whenOf_thenConditionOfSubtypeCreated() {
+
+        final Predicate<Object> nonNull = Objects::nonNull;
+
+        final Condition<String> condition = Conditions.of("nonNull", nonNull);
+
+        assertTrue(condition.bind("foo").evaluate().isTrue());
+    }
+
+    @Test
+    void givenIterableOfSubtype_whenAnyOf_thenConditionOfSupertypeCreated() {
+
+        final List<Integer> values = List.of(1, 2);
+
+        final Condition<Number> condition = Conditions.anyOf(values);
+
+        assertTrue(condition.bind(2).evaluate().isTrue());
+    }
+
+    @Test
+    void givenIterableOfSubtype_whenAllOf_thenConditionOfSupertypeCreated() {
+
+        final List<Integer> values = List.of(1);
+
+        final Condition<Number> condition = Conditions.allOf(values);
+
+        assertTrue(condition.bind(1).evaluate().isTrue());
+    }
+
+    @Test
+    void givenIterableOfSubtype_whenNoneOf_thenConditionOfSupertypeCreated() {
+
+        final List<Integer> values = List.of(1, 2);
+
+        final Condition<Number> condition = Conditions.noneOf(values);
+
+        assertTrue(condition.bind(3).evaluate().isTrue());
+    }
+
+    @Test
+    void givenConditionOfSupertype_whenAnyOf_thenConditionOfSubtypeCreated() {
+
+        final Condition<Object> isNull = Conditions.of(Objects::isNull);
+        final Condition<String> isEmpty = Conditions.of(String::isEmpty);
+
+        final Condition<String> condition = Conditions.anyOf(isNull, isEmpty);
+
+        assertTrue(condition.bind("").evaluate().isTrue());
+    }
+
+    @Test
+    void givenConditionOfSupertype_whenAllOf_thenConditionOfSubtypeCreated() {
+
+        final Condition<Object> nonNull = Conditions.of(Objects::nonNull);
+        final Condition<String> notEmpty = Conditions.of(s -> !s.isEmpty());
+
+        final Condition<String> condition = Conditions.allOf(nonNull, notEmpty);
+
+        assertTrue(condition.bind("foo").evaluate().isTrue());
+    }
+
+    @Test
+    void givenConditionOfSupertype_whenNoneOf_thenConditionOfSubtypeCreated() {
+
+        final Condition<Object> isNull = Conditions.of(Objects::isNull);
+        final Condition<String> isEmpty = Conditions.of(String::isEmpty);
+
+        final Condition<String> condition = Conditions.noneOf(isNull, isEmpty);
+
+        assertTrue(condition.bind("foo").evaluate().isTrue());
     }
 }
