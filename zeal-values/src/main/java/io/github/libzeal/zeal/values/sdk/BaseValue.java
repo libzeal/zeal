@@ -47,7 +47,7 @@ import static java.util.Objects.requireNonNull;
  *         method called {@code includesCharacter(char)}, the following would
  *         cause an error:
  *         <pre>{@code new
- *                                         StringExpression("foo").isNotNull().includeCharacter('c');}</pre>
+ *                                                         StringExpression("foo").isNotNull().includeCharacter('c');}</pre>
  *         Since the {@code isNotNull()} method would return a {@link BaseValue}
  *         object, rather than a {@code StringExpression}, thus hiding the
  *         {@code includesCharacter(char)} method of {@code  StringExpression}.
@@ -333,6 +333,20 @@ public abstract class BaseValue<T, E extends BaseValue<T, E>> implements ObjectV
         );
     }
 
+    private static <T> ConditionBuilder<T, T> comparableEquals(
+            T other,
+            Comparator<T> comparator
+    ) {
+
+        if (comparator == null) {
+            return ConditionBuilder.of((T s) -> false).nullable()
+                    .hint(StandardMessages.CANNOT_COMPARE_USING_NULL_COMPARATOR);
+        }
+        else {
+            return ConditionBuilder.of((T s) -> comparator.compare(s, other) == 0).nullable();
+        }
+    }
+
     @Override
     public E isNotEqualTo(final Object other) {
         return append(
@@ -352,6 +366,20 @@ public abstract class BaseValue<T, E extends BaseValue<T, E>> implements ObjectV
                         .expected(stringify(other))
                         .build()
         );
+    }
+
+    private static <T> ConditionBuilder<T, T> comparableNotEquals(
+            T other,
+            Comparator<T> comparator
+    ) {
+
+        if (comparator == null) {
+            return ConditionBuilder.of((T s) -> false).nullable()
+                    .hint(StandardMessages.CANNOT_COMPARE_USING_NULL_COMPARATOR);
+        }
+        else {
+            return ConditionBuilder.of((T s) -> comparator.compare(s, other) != 0).nullable();
+        }
     }
 
     @Override

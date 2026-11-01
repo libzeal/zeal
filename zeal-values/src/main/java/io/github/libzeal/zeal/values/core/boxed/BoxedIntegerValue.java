@@ -4,9 +4,7 @@ import io.github.libzeal.zeal.values.core.boxed.BoxedNumberExpressions.BoxedNumb
 import io.github.libzeal.zeal.values.sdk.BaseValue;
 
 /**
- * An expression used to evaluate {@link Integer} instances.
- * <p>
- * Note: Many of the predicates of this expression require unboxing, resulting in some performance loss.
+ * A value used to evaluate {@link Integer}s.
  *
  * @author Justin Albano
  */
@@ -16,10 +14,10 @@ public class BoxedIntegerValue extends BaseValue<Integer, BoxedIntegerValue>
     private final BoxedIntegerOperations operations;
 
     /**
-     * Creates a new expression.
+     * Creates a new Integer value.
      *
      * @param subject
-     *     The subject of the expression.
+     *         The desired subject.
      */
     public BoxedIntegerValue(final Integer subject) {
         super(subject, "Integer value");
@@ -29,98 +27,98 @@ public class BoxedIntegerValue extends BaseValue<Integer, BoxedIntegerValue>
     @Override
     public BoxedIntegerValue isEven() {
         return append(
-            BoxedWholeNumberExpressions.isEven()
+                BoxedWholeNumberExpressions.isEven()
         );
     }
 
     @Override
     public BoxedIntegerValue isOdd() {
         return append(
-            BoxedWholeNumberExpressions.isOdd()
+                BoxedWholeNumberExpressions.isOdd()
         );
     }
 
     @Override
     public BoxedIntegerValue isLessThan(final Integer value) {
         return append(
-            BoxedNumberExpressions.isLessThan(value, operations)
+                BoxedNumberExpressions.isLessThan(value, operations)
         );
     }
 
     @Override
     public BoxedIntegerValue isGreaterThan(final Integer value) {
         return append(
-            BoxedNumberExpressions.isGreaterThan(value, operations)
+                BoxedNumberExpressions.isGreaterThan(value, operations)
         );
     }
 
     @Override
     public BoxedIntegerValue isLessThanOrEqualTo(final Integer value) {
         return append(
-            BoxedNumberExpressions.isLessThanOrEqualTo(value, operations)
+                BoxedNumberExpressions.isLessThanOrEqualTo(value, operations)
         );
     }
 
     @Override
     public BoxedIntegerValue isGreaterThanOrEqualTo(final Integer value) {
         return append(
-            BoxedNumberExpressions.isGreaterThanOrEqualTo(value, operations)
+                BoxedNumberExpressions.isGreaterThanOrEqualTo(value, operations)
         );
     }
 
     @Override
     public BoxedIntegerValue isMaxValue() {
         return append(
-            BoxedNumberExpressions.isMaxValue(operations)
+                BoxedNumberExpressions.isMaxValue(operations)
         );
     }
 
     @Override
     public BoxedIntegerValue isMinValue() {
         return append(
-            BoxedNumberExpressions.isMinValue(operations)
+                BoxedNumberExpressions.isMinValue(operations)
         );
     }
 
     @Override
     public BoxedIntegerValue isZero() {
         return append(
-            BoxedNumberExpressions.isZero(operations)
+                BoxedNumberExpressions.isZero(operations)
         );
     }
 
     @Override
     public BoxedIntegerValue isNotZero() {
         return append(
-            BoxedNumberExpressions.isNotZero(operations)
+                BoxedNumberExpressions.isNotZero(operations)
         );
     }
 
     @Override
     public BoxedIntegerValue isPositive() {
         return append(
-            BoxedNumberExpressions.isPositive(operations)
+                BoxedNumberExpressions.isPositive(operations)
         );
     }
 
     @Override
     public BoxedIntegerValue isNotPositive() {
         return append(
-            BoxedNumberExpressions.isNotPositive(operations)
+                BoxedNumberExpressions.isNotPositive(operations)
         );
     }
 
     @Override
     public BoxedIntegerValue isNegative() {
         return append(
-            BoxedNumberExpressions.isNegative(operations)
+                BoxedNumberExpressions.isNegative(operations)
         );
     }
 
     @Override
     public BoxedIntegerValue isNotNegative() {
         return append(
-            BoxedNumberExpressions.isNotNegative(operations)
+                BoxedNumberExpressions.isNotNegative(operations)
         );
     }
 

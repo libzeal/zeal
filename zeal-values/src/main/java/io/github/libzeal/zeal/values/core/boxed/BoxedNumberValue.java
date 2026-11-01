@@ -2,18 +2,27 @@ package io.github.libzeal.zeal.values.core.boxed;
 
 import io.github.libzeal.zeal.values.core.ObjectValue;
 
+/**
+ * A value representing a boxed {@link Number}.
+ *
+ * @param <T>
+ *         The {@link Number} type.
+ * @param <V>
+ *         The value type (the implementation type of this interface).
+ *
+ * @author Justin Albano
+ */
 public interface BoxedNumberValue<T extends Number, V extends BoxedNumberValue<T, V>>
         extends ObjectValue<T, V> {
 
     /**
-     * Adds a condition to the expression that checks if the subject is less
-     * than the supplied value.
+     * Checks if the subject is less than the supplied value.
      *
      * @param value
-     *     The value to compare. This predicate will fail if the supplied value
-     *     is {@code null}.
+     *         The value to compare. This predicate will fail if the supplied
+     *         value is {@code null}.
      *
-     * @return This expression (fluent interface).
+     * @return This value (fluent interface).
      */
     V isLessThan(T value);
 
@@ -21,10 +30,10 @@ public interface BoxedNumberValue<T extends Number, V extends BoxedNumberValue<T
      * Alias for {@link #isLessThan}
      *
      * @param value
-     *     The value to compare. This predicate will fail if the supplied value
-     *     is {@code null}.
+     *         The value to compare. This predicate will fail if the supplied
+     *         value is {@code null}.
      *
-     * @return This expression (fluent interface).
+     * @return This value (fluent interface).
      *
      * @see #isLessThan
      */
@@ -33,14 +42,13 @@ public interface BoxedNumberValue<T extends Number, V extends BoxedNumberValue<T
     }
 
     /**
-     * Adds a condition to the expression that checks if the subject is greater
-     * than the supplied value.
+     * Checks if the subject is greater than the supplied value.
      *
      * @param value
-     *     The value to compare. This predicate will fail if the supplied value
-     *     is {@code null}.
+     *         The value to compare. This predicate will fail if the supplied
+     *         value is {@code null}.
      *
-     * @return This expression (fluent interface).
+     * @return This value (fluent interface).
      */
     V isGreaterThan(T value);
 
@@ -48,10 +56,10 @@ public interface BoxedNumberValue<T extends Number, V extends BoxedNumberValue<T
      * Alias for {@link #isGreaterThan}
      *
      * @param value
-     *     The value to compare. This predicate will fail if the supplied value
-     *     is {@code null}.
+     *         The value to compare. This predicate will fail if the supplied
+     *         value is {@code null}.
      *
-     * @return This expression (fluent interface).
+     * @return This value (fluent interface).
      *
      * @see #isGreaterThan
      */
@@ -60,14 +68,13 @@ public interface BoxedNumberValue<T extends Number, V extends BoxedNumberValue<T
     }
 
     /**
-     * Adds a condition to the expression that checks if the subject is less
-     * than or equal to the supplied value.
+     * Checks if the subject is less than or equal to the supplied value.
      *
      * @param value
-     *     The value to compare. This predicate will fail if the supplied value
-     *     is {@code null}.
+     *         The value to compare. This predicate will fail if the supplied
+     *         value is {@code null}.
      *
-     * @return This expression (fluent interface).
+     * @return This value (fluent interface).
      */
     V isLessThanOrEqualTo(T value);
 
@@ -75,10 +82,10 @@ public interface BoxedNumberValue<T extends Number, V extends BoxedNumberValue<T
      * Alias for {@link #isLessThanOrEqualTo}
      *
      * @param value
-     *     The value to compare. This predicate will fail if the supplied value
-     *     is {@code null}.
+     *         The value to compare. This predicate will fail if the supplied
+     *         value is {@code null}.
      *
-     * @return This expression (fluent interface).
+     * @return This value (fluent interface).
      *
      * @see #isLessThanOrEqualTo
      */
@@ -87,14 +94,13 @@ public interface BoxedNumberValue<T extends Number, V extends BoxedNumberValue<T
     }
 
     /**
-     * Adds a condition to the expression that checks if the subject is greater
-     * than or equal to the supplied value.
+     * Checks if the subject is greater than or equal to the supplied value.
      *
      * @param value
-     *     The value to compare. This predicate will fail if the supplied value
-     *     is {@code null}.
+     *         The value to compare. This predicate will fail if the supplied
+     *         value is {@code null}.
      *
-     * @return This expression (fluent interface).
+     * @return This value (fluent interface).
      */
     V isGreaterThanOrEqualTo(T value);
 
@@ -102,10 +108,10 @@ public interface BoxedNumberValue<T extends Number, V extends BoxedNumberValue<T
      * Alias for {@link #isGreaterThanOrEqualTo}
      *
      * @param value
-     *     The value to compare. This predicate will fail if the supplied value
-     *     is {@code null}.
+     *         The value to compare. This predicate will fail if the supplied
+     *         value is {@code null}.
      *
-     * @return This expression (fluent interface).
+     * @return This value (fluent interface).
      *
      * @see #isGreaterThanOrEqualTo
      */
@@ -114,66 +120,58 @@ public interface BoxedNumberValue<T extends Number, V extends BoxedNumberValue<T
     }
 
     /**
-     * Adds a condition to the expression that checks if the subject is equal to
-     * the maximum {@link T} value.
+     * Checks if the subject is equal to the maximum {@link T} value.
      *
-     * @return This expression (fluent interface).
+     * @return This value (fluent interface).
      */
     V isMaxValue();
 
     /**
-     * Adds a condition to the expression that checks if the subject is equal to
-     * the minimum {@link T} value.
+     * Checks if the subject is equal to the minimum {@link T} value.
      *
-     * @return This expression (fluent interface).
+     * @return This value (fluent interface).
      */
     V isMinValue();
 
     /**
-     * Adds a condition to the expression that checks if the subject is equal to
-     * 0.
+     * Checks if the subject is equal to 0.
      *
-     * @return This expression (fluent interface).
+     * @return This value (fluent interface).
      */
     V isZero();
 
     /**
-     * Adds a condition to the expression that checks if the subject is not
-     * equal to 0.
+     * Checks if the subject is not equal to 0.
      *
-     * @return This expression (fluent interface).
+     * @return This value (fluent interface).
      */
     V isNotZero();
 
     /**
-     * Adds a condition to the expression that checks if the subject is positive
-     * (greater than 0).
+     * Checks if the subject is positive (greater than 0).
      *
-     * @return This expression (fluent interface).
+     * @return This value (fluent interface).
      */
     V isPositive();
 
     /**
-     * Adds a condition to the expression that checks if the subject is not
-     * positive (less than or equal to 0).
+     * Checks if the subject is not positive (less than or equal to 0).
      *
-     * @return This expression (fluent interface).
+     * @return This value (fluent interface).
      */
     V isNotPositive();
 
     /**
-     * Adds a condition to the expression that checks if the subject is negative
-     * (less than 0).
+     * Checks if the subject is negative (less than 0).
      *
-     * @return This expression (fluent interface).
+     * @return This value (fluent interface).
      */
     V isNegative();
 
     /**
-     * Adds a condition to the expression that checks if the subject is not
-     * negative (greater than or equal to 0).
+     * Checks if the subject is not negative (greater than or equal to 0).
      *
-     * @return This expression (fluent interface).
+     * @return This value (fluent interface).
      */
     V isNotNegative();
 }

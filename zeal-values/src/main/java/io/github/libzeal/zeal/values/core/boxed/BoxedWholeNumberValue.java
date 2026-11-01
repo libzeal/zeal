@@ -1,19 +1,29 @@
 package io.github.libzeal.zeal.values.core.boxed;
 
-public interface BoxedWholeNumberValue<T extends Number, E extends BoxedWholeNumberValue<T, E>>
-        extends BoxedNumberValue<T, E> {
+/**
+ * A value representing a boxed whole {@link Number}.
+ *
+ * @param <T>
+ *         The {@link Number} type.
+ * @param <V>
+ *         The value type (the implementation type of this interface).
+ *
+ * @author Justin Albano
+ */
+public interface BoxedWholeNumberValue<T extends Number, V extends BoxedWholeNumberValue<T, V>>
+        extends BoxedNumberValue<T, V> {
 
     /**
-     * Adds a condition to the expression that checks if the subject is even.
+     * Checks if the subject is even.
      *
-     * @return This expression (fluent interface).
+     * @return This value (fluent interface).
      */
-    E isEven();
+    V isEven();
 
     /**
-     * Adds a condition to the expression that checks if the subject is odd.
+     * Checks if the subject is odd.
      *
-     * @return This expression (fluent interface).
+     * @return This value (fluent interface).
      */
-    E isOdd();
+    V isOdd();
 }

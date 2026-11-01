@@ -3,7 +3,7 @@ package io.github.libzeal.zeal.values.core;
 import io.github.libzeal.zeal.values.sdk.sequence.*;
 
 /**
- * A value used to evaluate {@link String} instances.
+ * A value used to evaluate {@link String}s.
  *
  * @author Justin Albano
  */
@@ -15,39 +15,39 @@ public class StringValue extends BaseOrderedSequenceValue<String, Character, Str
      * Creates a new expression.
      *
      * @param subject
-     *     The subject of the expression.
+     *         The subject of the expression.
      */
     public StringValue(final String subject) {
         super(subject, "String value", new StringOperations());
     }
 
     /**
-     * Adds a condition to the expression that checks if the subject is blank (empty or contains only whitespace).
+     * Checks if the subject is blank (empty or contains only whitespace).
      *
-     * @return This expression (fluent interface).
+     * @return This value (fluent interface).
      */
     public StringValue isBlank() {
         return append(
-            expression(s -> s.trim().isEmpty())
-                .name("isBlank")
-                .expected("true")
-                .actual(context -> context.ifPassedOrElse("true", "false"))
-                .build()
+                expression(s -> s.trim().isEmpty())
+                        .name("isBlank")
+                        .expected("true")
+                        .actual(context -> context.ifPassedOrElse("true", "false"))
+                        .build()
         );
     }
 
     /**
-     * Adds a condition to the expression that checks if the subject is not blank (empty or contains only whitespace).
+     * Checks if the subject is not blank (empty or contains only whitespace).
      *
-     * @return This expression (fluent interface).
+     * @return This value (fluent interface).
      */
     public StringValue isNotBlank() {
         return append(
-            expression(s -> !s.trim().isEmpty())
-                .name("isNotBlank")
-                .expected("true")
-                .actual(context -> context.ifPassedOrElse("true", "false"))
-                .build()
+                expression(s -> !s.trim().isEmpty())
+                        .name("isNotBlank")
+                        .expected("true")
+                        .actual(context -> context.ifPassedOrElse("true", "false"))
+                        .build()
         );
     }
 
@@ -56,13 +56,13 @@ public class StringValue extends BaseOrderedSequenceValue<String, Character, Str
     //  empty string) and a null sequence is never included
     public StringValue includes(final CharSequence desired) {
         return append(
-            OrderedSequenceExpressions.includes(asString(desired), stringOperations)
+                OrderedSequenceExpressions.includes(asString(desired), stringOperations)
         );
     }
 
     public StringValue excludes(final CharSequence desired) {
         return append(
-            OrderedSequenceExpressions.excludes(asString(desired), stringOperations)
+                OrderedSequenceExpressions.excludes(asString(desired), stringOperations)
         );
     }
 
@@ -71,7 +71,7 @@ public class StringValue extends BaseOrderedSequenceValue<String, Character, Str
     //  includes("") passing); a null sequence is found 0 times
     public StringValue includesExactly(final CharSequence desired, final long times) {
         return append(
-            SequenceExpressions.includesExactly(asString(desired), times, stringOperations)
+                SequenceExpressions.includesExactly(asString(desired), times, stringOperations)
         );
     }
 
@@ -81,25 +81,25 @@ public class StringValue extends BaseOrderedSequenceValue<String, Character, Str
 
     public StringValue includesMoreThan(final CharSequence desired, final long times) {
         return append(
-            SequenceExpressions.includesMoreThan(asString(desired), times, stringOperations)
+                SequenceExpressions.includesMoreThan(asString(desired), times, stringOperations)
         );
     }
 
     public StringValue includesMoreThanOrEqualTo(final CharSequence desired, final long times) {
         return append(
-            SequenceExpressions.includesMoreThanOrEqualTo(asString(desired), times, stringOperations)
+                SequenceExpressions.includesMoreThanOrEqualTo(asString(desired), times, stringOperations)
         );
     }
 
     public StringValue includesLessThan(final CharSequence desired, final long times) {
         return append(
-            SequenceExpressions.includesLessThan(asString(desired), times, stringOperations)
+                SequenceExpressions.includesLessThan(asString(desired), times, stringOperations)
         );
     }
 
     public StringValue includesLessThanOrEqualTo(final CharSequence desired, final long times) {
         return append(
-            SequenceExpressions.includesLessThanOrEqualTo(asString(desired), times, stringOperations)
+                SequenceExpressions.includesLessThanOrEqualTo(asString(desired), times, stringOperations)
         );
     }
 
@@ -109,13 +109,13 @@ public class StringValue extends BaseOrderedSequenceValue<String, Character, Str
     //  null sequence is never found
     public StringValue hasAtIndex(final CharSequence desired, final int index) {
         return append(
-            OrderedSequenceExpressions.hasAtIndex(asString(desired), index, stringOperations)
+                OrderedSequenceExpressions.hasAtIndex(asString(desired), index, stringOperations)
         );
     }
 
     public StringValue doesNotHaveAtIndex(final CharSequence desired, final int index) {
         return append(
-            OrderedSequenceExpressions.doesNotHaveAtIndex(asString(desired), index, stringOperations)
+                OrderedSequenceExpressions.doesNotHaveAtIndex(asString(desired), index, stringOperations)
         );
     }
 
@@ -123,13 +123,13 @@ public class StringValue extends BaseOrderedSequenceValue<String, Character, Str
     //  index of a null sequence is -1
     public StringValue lastIndexOfIs(final CharSequence desired, final int index) {
         return append(
-            OrderedSequenceExpressions.lastIndexOfIs(asString(desired), index, stringOperations)
+                OrderedSequenceExpressions.lastIndexOfIs(asString(desired), index, stringOperations)
         );
     }
 
     public StringValue lastIndexOfIsNot(final CharSequence desired, final int index) {
         return append(
-            OrderedSequenceExpressions.lastIndexOfIsNot(asString(desired), index, stringOperations)
+                OrderedSequenceExpressions.lastIndexOfIsNot(asString(desired), index, stringOperations)
         );
     }
 
@@ -137,13 +137,13 @@ public class StringValue extends BaseOrderedSequenceValue<String, Character, Str
     //  never a prefix
     public StringValue startsWith(final CharSequence desired) {
         return append(
-            OrderedSequenceExpressions.startsWith(asString(desired), stringOperations)
+                OrderedSequenceExpressions.startsWith(asString(desired), stringOperations)
         );
     }
 
     public StringValue doesNotStartWith(final CharSequence desired) {
         return append(
-            OrderedSequenceExpressions.doesNotStartWith(asString(desired), stringOperations)
+                OrderedSequenceExpressions.doesNotStartWith(asString(desired), stringOperations)
         );
     }
 
@@ -151,13 +151,13 @@ public class StringValue extends BaseOrderedSequenceValue<String, Character, Str
     //  a suffix
     public StringValue endsWith(final CharSequence desired) {
         return append(
-            OrderedSequenceExpressions.endsWith(asString(desired), stringOperations)
+                OrderedSequenceExpressions.endsWith(asString(desired), stringOperations)
         );
     }
 
     public StringValue doesNotEndWith(final CharSequence desired) {
         return append(
-            OrderedSequenceExpressions.doesNotEndWith(asString(desired), stringOperations)
+                OrderedSequenceExpressions.doesNotEndWith(asString(desired), stringOperations)
         );
     }
 
@@ -166,115 +166,111 @@ public class StringValue extends BaseOrderedSequenceValue<String, Character, Str
     }
 
     /**
-     * Adds a condition to the expression that checks if the supplied regular expression matches the subject.
+     * Checks if the supplied regular expression matches the subject.
      *
      * @param regex
-     *     The regular expression to match.
+     *         The regular expression to match.
      *
-     * @return This expression (fluent interface).
+     * @return This value (fluent interface).
      */
     public StringValue matches(final String regex) {
         return append(
-            expression(s -> s.matches(regex))
-                .name("matches[" + regex + "]")
-                .expected("matches[" + regex + "]")
-                .build()
+                expression(s -> s.matches(regex))
+                        .name("matches[" + regex + "]")
+                        .expected("matches[" + regex + "]")
+                        .build()
         );
     }
 
     /**
-     * Adds a condition to the expression that checks if the supplied regular expression does not match the subject.
+     * Checks if the supplied regular expression does not match the subject.
      *
      * @param regex
-     *     The regular expression to not match.
+     *         The regular expression to not match.
      *
-     * @return This expression (fluent interface).
+     * @return This value (fluent interface).
      */
     public StringValue doesNotMatch(final String regex) {
         return append(
-            expression(s -> !s.matches(regex))
-                .name("doesNotMatch[" + regex + "]")
-                .expected("not[matches[" + regex + "]]")
-                .build()
+                expression(s -> !s.matches(regex))
+                        .name("doesNotMatch[" + regex + "]")
+                        .expected("not[matches[" + regex + "]]")
+                        .build()
         );
     }
 
     /**
-     * Adds a condition to the expression that checks if the supplied argument equals the subject, ignoring case.
+     * Checks if the supplied argument equals the subject, ignoring case.
      *
      * @param other
-     *     The string to match.
+     *         The string to match.
      *
-     * @return This expression (fluent interface).
+     * @return This value (fluent interface).
      */
     public StringValue isCaseInsensitiveEqualTo(final String other) {
         return append(
-            expression(s -> s.equalsIgnoreCase(other))
-                .name("caseInsensitiveEqualTo[" + other + "]")
-                .expected(other)
-                .build()
+                expression(s -> s.equalsIgnoreCase(other))
+                        .name("caseInsensitiveEqualTo[" + other + "]")
+                        .expected(other)
+                        .build()
         );
     }
 
     /**
-     * Adds a condition to the expression that checks if the last index of the
-     * supplied needle in the subject matches
+     * Checks if the last index of the supplied needle in the subject matches
      * the supplied index.
      *
      * @param needle
-     *     The needle to look for in the subject.
+     *         The needle to look for in the subject.
      * @param index
-     *     The expected last index.
+     *         The expected last index.
      *
-     * @return This expression (fluent interface).
+     * @return This value (fluent interface).
      */
     public StringValue hasAtLastIndex(final char needle, final int index) {
         return lastIndexOfIs((Character) needle, index);
     }
 
     /**
-     * Adds a condition to the expression that checks if the last index of the
-     * supplied needle in the subject matches
+     * Checks if the last index of the supplied needle in the subject matches
      * the supplied index.
      *
      * @param needle
-     *     The needle to look for in the subject.
+     *         The needle to look for in the subject.
      * @param index
-     *     The expected last index.
+     *         The expected last index.
      *
-     * @return This expression (fluent interface).
+     * @return This value (fluent interface).
      */
     public StringValue hasAtLastIndex(final String needle, final int index) {
         return lastIndexOfIs((CharSequence) needle, index);
     }
 
     /**
-     * Adds a condition to the expression that checks if the last index of the
-     * supplied needle in the subject does not
+     * Checks if the last index of the supplied needle in the subject does not
      * match the supplied index.
      *
      * @param needle
-     *     The needle to look for in the subject.
+     *         The needle to look for in the subject.
      * @param index
-     *     The index expected not to match.
+     *         The index expected not to match.
      *
-     * @return This expression (fluent interface).
+     * @return This value (fluent interface).
      */
     public StringValue doesNotHaveAtLastIndex(final char needle, final int index) {
         return lastIndexOfIsNot((Character) needle, index);
     }
 
     /**
-     * Adds a condition to the expression that checks if the last index of the
-     * supplied needle in the subject does not
+     * Checks if the last index of the supplied needle in the subject does not
      * match the supplied index.
      *
      * @param needle
-     *     The needle to look for in the subject.
+     *         The needle to look for in the subject.
      * @param index
-     *     The index expected not to match.
+     *         The index expected not to match.
      *
-     * @return This expression (fluent interface).
+     * @return This value (fluent interface).
      */
     public StringValue doesNotHaveAtLastIndex(final String needle, final int index) {
         return lastIndexOfIsNot((CharSequence) needle, index);

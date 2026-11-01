@@ -3,51 +3,49 @@ package io.github.libzeal.zeal.values.core.boxed;
 import io.github.libzeal.zeal.values.sdk.BaseValue;
 
 /**
- * An expression used to evaluate {@link Boolean} instances.
- * <p>
- * Note: Many of the predicates of this expression require unboxing, resulting in some performance loss.
+ * A value used to evaluate {@link Boolean}s.
  *
  * @author Justin Albano
  */
 public class BoxedBooleanValue extends BaseValue<Boolean, BoxedBooleanValue> {
 
     /**
-     * Creates a new expression.
+     * Creates a new Boolean expression.
      *
      * @param subject
-     *     The subject of the expression.
+     *         The desired subject.
      */
     public BoxedBooleanValue(final Boolean subject) {
         super(subject, "Boolean value");
     }
 
     /**
-     * Adds a condition to the expression that checks if the subject is true.
+     * Creates a new Boolean expression.
      *
-     * @return This expression (fluent interface).
+     * @return This value (fluent interface).
      */
     public BoxedBooleanValue isTrue() {
         return append(
-            expression(Boolean::booleanValue)
-                .name("isTrue")
-                .expected("true")
-                .actual(context -> String.valueOf(context.subject()))
-                .build()
+                expression(Boolean::booleanValue)
+                        .name("isTrue")
+                        .expected("true")
+                        .actual(context -> String.valueOf(context.subject()))
+                        .build()
         );
     }
 
     /**
-     * Adds a condition to the expression that checks if the subject is false.
+     * Checks if the subject is false.
      *
-     * @return This expression (fluent interface).
+     * @return This value (fluent interface).
      */
     public BoxedBooleanValue isFalse() {
         return append(
-            expression(b -> !b)
-                .name("isFalse")
-                .expected("false")
-                .actual(context -> String.valueOf(context.subject()))
-                .build()
+                expression(b -> !b)
+                        .name("isFalse")
+                        .expected("false")
+                        .actual(context -> String.valueOf(context.subject()))
+                        .build()
         );
     }
 }

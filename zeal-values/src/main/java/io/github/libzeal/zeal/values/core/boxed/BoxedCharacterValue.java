@@ -3,10 +3,7 @@ package io.github.libzeal.zeal.values.core.boxed;
 import io.github.libzeal.zeal.values.sdk.BaseValue;
 
 /**
- * An expression used to evaluate {@link Character} instances.
- * <p>
- * Note:  Many of the predicates of this expression require unboxing, resulting
- * in some performance loss.
+ * A value used to evaluate {@link Character}s.
  *
  * @author Justin Albano
  */
@@ -20,20 +17,19 @@ public class BoxedCharacterValue extends BaseValue<Character, BoxedCharacterValu
     private static final String IS_WHITESPACE = "isWhitespace";
 
     /**
-     * Creates a new expression.
+     * Creates a new Character value.
      *
      * @param subject
-     *         The subject of the expression.
+     *         The desired subject.
      */
     public BoxedCharacterValue(final Character subject) {
         super(subject, "Character value");
     }
 
     /**
-     * Adds a condition to the expression that checks if the subject is lower
-     * case.
+     * Checks if the subject is lower case.
      *
-     * @return This expression (fluent interface).
+     * @return This value (fluent interface).
      *
      * @see Character#isLowerCase(char)
      */
@@ -47,10 +43,9 @@ public class BoxedCharacterValue extends BaseValue<Character, BoxedCharacterValu
     }
 
     /**
-     * Adds a condition to the expression that checks if the subject is upper
-     * case.
+     * Checks if the subject is upper case.
      *
-     * @return This expression (fluent interface).
+     * @return This value (fluent interface).
      *
      * @see Character#isUpperCase(char)
      */
@@ -64,10 +59,9 @@ public class BoxedCharacterValue extends BaseValue<Character, BoxedCharacterValu
     }
 
     /**
-     * Adds a condition to the expression that checks if the subject is a
-     * letter.
+     * Checks if the subject is a letter.
      *
-     * @return This expression (fluent interface).
+     * @return This value (fluent interface).
      *
      * @see Character#isLetter(char)
      */
@@ -81,10 +75,9 @@ public class BoxedCharacterValue extends BaseValue<Character, BoxedCharacterValu
     }
 
     /**
-     * Adds a condition to the expression that checks if the subject is not a
-     * letter.
+     * Checks if the subject is not a letter.
      *
-     * @return This expression (fluent interface).
+     * @return This value (fluent interface).
      *
      * @see Character#isLetter(char)
      */
@@ -98,10 +91,9 @@ public class BoxedCharacterValue extends BaseValue<Character, BoxedCharacterValu
     }
 
     /**
-     * Adds a condition to the expression that checks if the subject is a
-     * digit.
+     * Checks if the subject is a digit.
      *
-     * @return This expression (fluent interface).
+     * @return This value (fluent interface).
      *
      * @see Character#isDigit(char)
      */
@@ -115,10 +107,9 @@ public class BoxedCharacterValue extends BaseValue<Character, BoxedCharacterValu
     }
 
     /**
-     * Adds a condition to the expression that checks if the subject is not a
-     * digit.
+     * Checks if the subject is not a digit.
      *
-     * @return This expression (fluent interface).
+     * @return This value (fluent interface).
      *
      * @see Character#isDigit(char)
      */
@@ -132,10 +123,9 @@ public class BoxedCharacterValue extends BaseValue<Character, BoxedCharacterValu
     }
 
     /**
-     * Adds a condition to the expression that checks if the subject is a letter
-     * or a digit.
+     * Checks if the subject is a letter or a digit.
      *
-     * @return This expression (fluent interface).
+     * @return This value (fluent interface).
      *
      * @see Character#isLetterOrDigit(char)
      */
@@ -149,10 +139,9 @@ public class BoxedCharacterValue extends BaseValue<Character, BoxedCharacterValu
     }
 
     /**
-     * Adds a condition to the expression that checks if the subject is not a
-     * letter or a digit.
+     * Checks if the subject is not a letter or a digit.
      *
-     * @return This expression (fluent interface).
+     * @return This value (fluent interface).
      *
      * @see Character#isLetterOrDigit(char)
      */
@@ -166,10 +155,9 @@ public class BoxedCharacterValue extends BaseValue<Character, BoxedCharacterValu
     }
 
     /**
-     * Adds a condition to the expression that checks if the subject is a
-     * whitespace.
+     * Checks if the subject is a whitespace.
      *
-     * @return This expression (fluent interface).
+     * @return This value (fluent interface).
      *
      * @see Character#isWhitespace(char)
      */
@@ -183,10 +171,9 @@ public class BoxedCharacterValue extends BaseValue<Character, BoxedCharacterValu
     }
 
     /**
-     * Adds a condition to the expression that checks if the subject is not a
-     * whitespace.
+     * Checks if the subject is not a whitespace.
      *
-     * @return This expression (fluent interface).
+     * @return This value (fluent interface).
      *
      * @see Character#isWhitespace(char)
      */

@@ -1,16 +1,16 @@
 package io.github.libzeal.zeal.values.sdk.sequence;
 
-public interface OrderedSequenceOperations<T, S> extends SequenceOperations<T, S> {
+public interface OrderedSequenceOperations<N, H> extends SequenceOperations<N, H> {
 
-    Element<T> lastElement(S haystack, T desired);
+    Element<N> lastElement(H haystack, N desired);
 
-    Element<T> atIndex(S haystack, int index, T desired);
+    Element<N> atIndex(H haystack, int index, N desired);
 
-    int indexOf(S haystack, T needle);
+    int indexOf(H haystack, N needle);
 
-    int lastIndexOf(S haystack, T needle);
+    int lastIndexOf(H haystack, N needle);
 
-    default Element<T> firstElement(final S haystack, final T desired) {
+    default Element<N> firstElement(final H haystack, final N desired) {
         return atIndex(haystack, 0, desired);
     }
 }

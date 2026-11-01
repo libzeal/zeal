@@ -49,4 +49,18 @@ class SimpleCollectionValueTest extends BaseValueTest<Collection<String>, Simple
             .actual("found 'a' 2 times")
             .run();
     }
+
+    // ---- null needles in collections that do not permit null elements ----
+
+    @Test
+    void givenCollectionNotPermittingNull_whenIncludesNull_thenFalse() {
+        newTestCase()
+            .subject(List.of("a", "b"))
+            .expression(value -> value.includes(null))
+            .result(false)
+            .name("includes[(null)]")
+            .expected("includes[(null)]")
+            .actual("excludes[(null)]")
+            .run();
+    }
 }

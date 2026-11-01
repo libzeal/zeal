@@ -5,7 +5,8 @@ import io.github.libzeal.zeal.values.sdk.sequence.SequenceOperations;
 import java.util.Collection;
 import java.util.Collections;
 
-class CollectionOperations<T, C extends Collection<T>> implements SequenceOperations<T, C> {
+class CollectionOperations<T, C extends Collection<T>>
+        implements SequenceOperations<T, C> {
 
     @Override
     public int size(final C haystack) {
@@ -14,7 +15,22 @@ class CollectionOperations<T, C extends Collection<T>> implements SequenceOperat
 
     @Override
     public boolean includes(final C haystack, final T needle) {
-        return haystack.contains(needle);
+
+        try {
+            return haystack.contains(needle);
+        }
+        catch (final NullPointerException e) {
+            // Some collections do not permit null elements and may throw when a
+            // null needle is used. This section catches this exception and if
+            // the needle is null (the cause of the NPE), the needle is
+            // considered "not found."
+
+            if (needle == null) {
+                return false;
+            }
+
+            throw e;
+        }
     }
 
     @Override

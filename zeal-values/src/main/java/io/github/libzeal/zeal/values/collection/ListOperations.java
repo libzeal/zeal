@@ -6,7 +6,7 @@ import io.github.libzeal.zeal.values.sdk.sequence.OrderedSequenceOperations;
 import java.util.List;
 
 final class ListOperations<T> extends CollectionOperations<T, List<T>>
-    implements OrderedSequenceOperations<T, List<T>> {
+        implements OrderedSequenceOperations<T, List<T>> {
 
     @Override
     public Element<T> lastElement(final List<T> haystack, final T desired) {
@@ -32,11 +32,36 @@ final class ListOperations<T> extends CollectionOperations<T, List<T>>
 
     @Override
     public int indexOf(final List<T> haystack, final T needle) {
-        return haystack.indexOf(needle);
+
+        try {
+            return haystack.indexOf(needle);
+        }
+        catch (final NullPointerException e) {
+            return handleNullNeedle(needle, e);
+        }
+    }
+
+    private static <T> int handleNullNeedle(final T needle, final NullPointerException e) {
+        // Some collections do not permit null elements and may throw when a
+        // null needle is used. This section catches this exception and if
+        // the needle is null (the cause of the NPE), the needle is
+        // considered "not found."
+
+        if (needle == null) {
+            return -1;
+        }
+
+        throw e;
     }
 
     @Override
     public int lastIndexOf(final List<T> haystack, final T needle) {
-        return haystack.lastIndexOf(needle);
+
+        try {
+            return haystack.lastIndexOf(needle);
+        }
+        catch (final NullPointerException e) {
+            return handleNullNeedle(needle, e);
+        }
     }
 }

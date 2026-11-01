@@ -4,9 +4,7 @@ import io.github.libzeal.zeal.values.core.boxed.BoxedNumberExpressions.BoxedNumb
 import io.github.libzeal.zeal.values.sdk.BaseValue;
 
 /**
- * An expression used to evaluate {@link Float} instances.
- * <p>
- * Many of the predicates of this expression require unboxing, resulting in some performance loss.
+ * A value used to evaluate {@link Float}s.
  *
  * @author Justin Albano
  */
@@ -16,10 +14,10 @@ public class BoxedFloatValue extends BaseValue<Float, BoxedFloatValue>
     private final BoxedFloatOperations operations;
 
     /**
-     * Creates a new expression.
+     * Creates a new Float value.
      *
      * @param subject
-     *     The subject of the expression.
+     *         The desired subject.
      */
     public BoxedFloatValue(final Float subject) {
         super(subject, "Float value");
@@ -27,150 +25,150 @@ public class BoxedFloatValue extends BaseValue<Float, BoxedFloatValue>
     }
 
     /**
-     * Adds a condition to the expression that checks if the subject is equal within the supplied delta.
+     * Checks if the subject is equal within the supplied delta.
      * <p>
      * Note: The formula used to evaluate the predicate is:
-     * <pre><code>abs(subject - value) &lt;= delta</code></pre>
+     * <pre>{@code abs(subject - value) <= delta}</pre>
      *
      * @param value
-     *     The value to compare to the subject.
+     *         The value to compare to the subject.
      * @param delta
-     *     The delta used to compare the expected value to the subject.
+     *         The delta used to compare the expected value to the subject.
      *
-     * @return This expression (fluent interface).
+     * @return This value (fluent interface).
      */
     public BoxedFloatValue isEqualTo(final Float value, final Float delta) {
         return append(
-            expression(d -> Math.abs(d - value) <= delta)
-                .name("isEqualTo[" + value + " +/- " + delta + "]")
-                .expected(value + " +/- " + delta)
-                .build()
+                expression(d -> Math.abs(d - value) <= delta)
+                        .name("isEqualTo[" + value + " +/- " + delta + "]")
+                        .expected(value + " +/- " + delta)
+                        .build()
         );
     }
 
     /**
-     * Adds a condition to the expression that checks if the subject is finite.
+     * Checks if the subject is finite.
      *
-     * @return This expression (fluent interface).
+     * @return This value (fluent interface).
      */
     public BoxedFloatValue isFinite() {
         return append(
-            expression(Float::isFinite)
-                .name("isFinite")
-                .expected("finite")
-                .build()
+                expression(Float::isFinite)
+                        .name("isFinite")
+                        .expected("finite")
+                        .build()
         );
     }
 
     /**
-     * Adds a condition to the expression that checks if the subject is infinite.
+     * Checks if the subject is infinite.
      *
-     * @return This expression (fluent interface).
+     * @return This value (fluent interface).
      */
     public BoxedFloatValue isInfinite() {
         return append(
-            expression(l -> l.isInfinite())
-                .name("isInfinite")
-                .expected("infinite")
-                .build()
+                expression(l -> l.isInfinite())
+                        .name("isInfinite")
+                        .expected("infinite")
+                        .build()
         );
     }
 
     /**
-     * Adds a condition to the expression that checks if the subject is not a number (NaN).
+     * Checks if the subject is not a number (NaN).
      *
-     * @return This expression (fluent interface).
+     * @return This value (fluent interface).
      */
     public BoxedFloatValue isNaN() {
         return append(
-            expression(l -> l.isNaN())
-                .name("isNaN")
-                .expected("NaN")
-                .build()
+                expression(l -> l.isNaN())
+                        .name("isNaN")
+                        .expected("NaN")
+                        .build()
         );
     }
 
     @Override
     public BoxedFloatValue isLessThan(final Float value) {
         return append(
-            BoxedNumberExpressions.isLessThan(value, operations)
+                BoxedNumberExpressions.isLessThan(value, operations)
         );
     }
 
     @Override
     public BoxedFloatValue isGreaterThan(final Float value) {
         return append(
-            BoxedNumberExpressions.isGreaterThan(value, operations)
+                BoxedNumberExpressions.isGreaterThan(value, operations)
         );
     }
 
     @Override
     public BoxedFloatValue isLessThanOrEqualTo(final Float value) {
         return append(
-            BoxedNumberExpressions.isLessThanOrEqualTo(value, operations)
+                BoxedNumberExpressions.isLessThanOrEqualTo(value, operations)
         );
     }
 
     @Override
     public BoxedFloatValue isGreaterThanOrEqualTo(final Float value) {
         return append(
-            BoxedNumberExpressions.isGreaterThanOrEqualTo(value, operations)
+                BoxedNumberExpressions.isGreaterThanOrEqualTo(value, operations)
         );
     }
 
     @Override
     public BoxedFloatValue isMaxValue() {
         return append(
-            BoxedNumberExpressions.isMaxValue(operations)
+                BoxedNumberExpressions.isMaxValue(operations)
         );
     }
 
     @Override
     public BoxedFloatValue isMinValue() {
         return append(
-            BoxedNumberExpressions.isMinValue(operations)
+                BoxedNumberExpressions.isMinValue(operations)
         );
     }
 
     @Override
     public BoxedFloatValue isZero() {
         return append(
-            BoxedNumberExpressions.isZero(operations)
+                BoxedNumberExpressions.isZero(operations)
         );
     }
 
     @Override
     public BoxedFloatValue isNotZero() {
         return append(
-            BoxedNumberExpressions.isNotZero(operations)
+                BoxedNumberExpressions.isNotZero(operations)
         );
     }
 
     @Override
     public BoxedFloatValue isPositive() {
         return append(
-            BoxedNumberExpressions.isPositive(operations)
+                BoxedNumberExpressions.isPositive(operations)
         );
     }
 
     @Override
     public BoxedFloatValue isNotPositive() {
         return append(
-            BoxedNumberExpressions.isNotPositive(operations)
+                BoxedNumberExpressions.isNotPositive(operations)
         );
     }
 
     @Override
     public BoxedFloatValue isNegative() {
         return append(
-            BoxedNumberExpressions.isNegative(operations)
+                BoxedNumberExpressions.isNegative(operations)
         );
     }
 
     @Override
     public BoxedFloatValue isNotNegative() {
         return append(
-            BoxedNumberExpressions.isNotNegative(operations)
+                BoxedNumberExpressions.isNotNegative(operations)
         );
     }
 
