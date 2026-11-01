@@ -22,13 +22,13 @@ import static io.github.libzeal.zeal.values.sdk.StandardMessages.CONDITION_UNSAT
 import static java.util.Objects.requireNonNull;
 
 /**
- * The abstract base class for all Object-based (non-primitive) expressions.
+ * The abstract base class for all Object-based (non-primitive) values.
  * <p>
- * This base class should be extended when creating expressions for any
- * specialized class. For example, if creating a {@code StringExpression} class,
- * the {@code StringExpression} class should extend this class, with {@code T}
- * set to {@link String}. An example of a proper extension of this class (to
- * create a {@code StringExpression} for example) would be:
+ * This base class should be extended when creating values for any specialized
+ * class. For example, if creating a {@code StringExpression} class, the
+ * {@code StringExpression} class should extend this class, with {@code T} set
+ * to {@link String}. An example of a proper extension of this class (to create
+ * a {@code StringExpression} for example) would be:
  * <pre>{@code class StringExpression extends ObjectExpression<String,
  * StringExpression>}</pre>
  *
@@ -47,7 +47,7 @@ import static java.util.Objects.requireNonNull;
  *         method called {@code includesCharacter(char)}, the following would
  *         cause an error:
  *         <pre>{@code new
- *                                                         StringExpression("foo").isNotNull().includeCharacter('c');}</pre>
+ *                                                                 StringExpression("foo").isNotNull().includeCharacter('c');}</pre>
  *         Since the {@code isNotNull()} method would return a {@link BaseValue}
  *         object, rather than a {@code StringExpression}, thus hiding the
  *         {@code includesCharacter(char)} method of {@code  StringExpression}.
