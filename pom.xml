@@ -37,8 +37,7 @@
     </scm>
 
     <properties>
-        <maven.compiler.source>21</maven.compiler.source>
-        <maven.compiler.target>21</maven.compiler.target>
+        <maven.compiler.release>21</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <junit.version>5.10.3</junit.version>
@@ -48,8 +47,8 @@
         <gpg.plugin.version>3.2.4</gpg.plugin.version>
         <source.plugin.version>3.3.1</source.plugin.version>
         <javadoc.plugin.version>3.7.0</javadoc.plugin.version>
-        <central.publishing.plugin.version>0.5.0
-        </central.publishing.plugin.version>
+        <central.publishing.plugin.version>0.5.0</central.publishing.plugin.version>
+        <compiler.plugin.version>3.15.0</compiler.plugin.version>
         <release.plugin.version>3.1.0</release.plugin.version>
 
         <jacoco.plugin.version>0.8.14</jacoco.plugin.version>
@@ -154,6 +153,16 @@
                     <artifactId>maven-deploy-plugin</artifactId>
                     <version>${deploy.plugin.version}</version>
                 </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${compiler.plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.sonatype.central</groupId>
+                    <artifactId>central-publishing-maven-plugin</artifactId>
+                    <version>${central.publishing.plugin.version}</version>
+                </plugin>
             </plugins>
         </pluginManagement>
         <plugins>
@@ -180,7 +189,6 @@
                     <plugin>
                         <groupId>org.sonatype.central</groupId>
                         <artifactId>central-publishing-maven-plugin</artifactId>
-                        <version>${central.publishing.plugin.version}</version>
                         <extensions>true</extensions>
                         <configuration>
                             <publishingServerId>central</publishingServerId>
