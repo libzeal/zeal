@@ -1,5 +1,6 @@
 package io.github.libzeal.zeal.logic.unary;
 
+import io.github.libzeal.zeal.logic.Expression;
 import io.github.libzeal.zeal.logic.format.ObjectFormatter;
 import io.github.libzeal.zeal.logic.unary.ObservableUnaryExpression.Field;
 
@@ -22,7 +23,7 @@ public final class ConditionBuilder<S, O> {
     private final Function<? super S, ? extends O> observe;
     private final Predicate<? super O> condition;
     private boolean nullable = false;
-    private String name = "<unnamed>";
+    private String name = Expression.DEFAULT_NAME;
     private Field<S, O> expected = context -> "<not set>";
     private Field<S, O> actual = context -> ObjectFormatter.stringify(context.observed());
     private Field<S, O> hint = null;

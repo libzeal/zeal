@@ -82,7 +82,7 @@ class ConditionsTest {
 
         Condition<Object> condition = Conditions.of(s -> true);
 
-        assertEquals(Condition.DEFAULT_NAME, condition.bind(subject).name());
+        assertEquals(Expression.DEFAULT_NAME, condition.bind(subject).name());
     }
 
     @Test

@@ -15,11 +15,6 @@ import io.github.libzeal.zeal.logic.Expressions;
 public interface Condition<T> {
 
     /**
-     * The default name for unnamed conditions.
-     */
-    String DEFAULT_NAME = "unnamed";
-
-    /**
      * Binds a subject to the condition to create an expression.
      *
      * @param subject

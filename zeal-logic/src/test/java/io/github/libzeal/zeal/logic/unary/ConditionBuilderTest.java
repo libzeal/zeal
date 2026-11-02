@@ -1,5 +1,6 @@
 package io.github.libzeal.zeal.logic.unary;
 
+import io.github.libzeal.zeal.logic.Expression;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import org.junit.jupiter.api.Test;
 
@@ -40,7 +41,7 @@ class ConditionBuilderTest {
                 .evaluate();
 
         assertTrue(evaluation.isTrue());
-        assertEquals("<unnamed>", evaluation.name());
+        assertEquals(Expression.DEFAULT_NAME, evaluation.name());
         assertEquals("<not set>", evaluation.rationale().expected());
         assertEquals("foo", evaluation.rationale().actual());
         assertFalse(evaluation.rationale().hint().isPresent());

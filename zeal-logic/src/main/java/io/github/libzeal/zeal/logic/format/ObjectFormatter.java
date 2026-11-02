@@ -1,10 +1,5 @@
 package io.github.libzeal.zeal.logic.format;
 
-import java.util.Collection;
-import java.util.List;
-
-import static java.util.stream.Collectors.toList;
-
 /**
  * A utility class containing methods that format values.
  *
@@ -25,23 +20,5 @@ public class ObjectFormatter {
      */
     public static String stringify(Object o) {
         return o == null ? "(null)" : o.toString();
-    }
-
-    /**
-     * Formats all supplied objects as a string.
-     *
-     * @param o
-     *         The objects to format.
-     * @param <T>
-     *         The type of the elements in the supplied collection.
-     *
-     * @return A list of formatted objects (as strings).
-     *
-     * @since 0.5.0
-     */
-    public static <T> List<String> stringifyAll(Collection<? extends T> o) {
-        return o.stream()
-                .map(ObjectFormatter::stringify)
-                .collect(toList());
     }
 }
