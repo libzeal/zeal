@@ -19,6 +19,9 @@ import static io.github.libzeal.zeal.values.sdk.StandardRationales.Names.withVal
  */
 public class OrderedSequenceConditions {
 
+    private OrderedSequenceConditions() {
+    }
+
     /**
      * Creates a condition that checks if the last index of the supplied desired
      * element is the supplied index.

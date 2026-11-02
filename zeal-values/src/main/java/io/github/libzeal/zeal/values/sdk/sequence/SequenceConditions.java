@@ -28,6 +28,9 @@ public class SequenceConditions {
     private static final String LENGTH = "length";
     private static final String NULL_DESIRED_HINT = "Desired elements is (null), which passes by default";
 
+    private SequenceConditions() {
+    }
+
     /**
      * Creates a condition that checks if a sequence is empty.
      *

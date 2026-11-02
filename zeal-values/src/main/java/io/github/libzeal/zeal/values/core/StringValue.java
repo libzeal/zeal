@@ -560,7 +560,7 @@ public class StringValue extends BaseOrderedSequenceValue<String, Character, Str
         }
     }
 
-    protected static final class StringOnStringOperations implements OrderedSequenceOperations<String, String> {
+    private static final class StringOnStringOperations implements OrderedSequenceOperations<String, String> {
 
         @Override
         public Observed<String> lastElement(final String haystack, final String desired) {
