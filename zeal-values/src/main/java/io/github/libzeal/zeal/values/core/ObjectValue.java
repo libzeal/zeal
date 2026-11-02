@@ -8,15 +8,26 @@ import java.util.Comparator;
 import java.util.Objects;
 import java.util.function.Predicate;
 
-public interface ObjectValue<T, E extends ObjectValue<T, E>>
-        extends CompoundUnaryExpression<T> {
+/**
+ * A value that has an {@link Object} subject. This interface should be
+ * implemented by all non-primitive values.
+ *
+ * @param <S>
+ *         The type of the subject.
+ * @param <V>
+ *         The type of the value.
+ *
+ * @author Justin Albano
+ */
+public interface ObjectValue<S, V extends ObjectValue<S, V>>
+        extends CompoundUnaryExpression<S> {
 
     /**
      * Checks if the subject is {@code null}.
      *
      * @return This value (fluent interface).
      */
-    E isNull();
+    V isNull();
 
     /**
      * Checks if the subject is not {@code null}.
@@ -49,7 +60,7 @@ public interface ObjectValue<T, E extends ObjectValue<T, E>>
      *
      * @return This value (fluent interface).
      */
-    E isNotNull();
+    V isNotNull();
 
     /**
      * Checks if the subject exactly matches the supplied type.
@@ -63,7 +74,7 @@ public interface ObjectValue<T, E extends ObjectValue<T, E>>
      *
      * @return This value (fluent interface).
      */
-    E isType(Class<?> type);
+    V isType(Class<?> type);
 
     /**
      * Checks if the subject is not an exact match of the supplied type.
@@ -74,7 +85,7 @@ public interface ObjectValue<T, E extends ObjectValue<T, E>>
      *
      * @return This value (fluent interface).
      */
-    E isNotType(Class<?> type);
+    V isNotType(Class<?> type);
 
     /**
      * Checks if the subject matches or is a subtype of the supplied type.
@@ -94,7 +105,7 @@ public interface ObjectValue<T, E extends ObjectValue<T, E>>
      *
      * @see Class#isAssignableFrom(Class)
      */
-    E isInstanceOf(Class<?> type);
+    V isInstanceOf(Class<?> type);
 
     /**
      * Checks if the subject does not exactly match or is not a subtype of the
@@ -115,7 +126,7 @@ public interface ObjectValue<T, E extends ObjectValue<T, E>>
      *
      * @see Class#isAssignableFrom(Class)
      */
-    E isNotInstanceOf(Class<?> type);
+    V isNotInstanceOf(Class<?> type);
 
     /**
      * Checks if the subject is the same as the supplied object.
@@ -135,7 +146,7 @@ public interface ObjectValue<T, E extends ObjectValue<T, E>>
      *
      * @return This value (fluent interface).
      */
-    E isExactly(Object other);
+    V isExactly(Object other);
 
     /**
      * Checks if the subject is not the same as the supplied object.
@@ -155,7 +166,7 @@ public interface ObjectValue<T, E extends ObjectValue<T, E>>
      *
      * @return This value (fluent interface).
      */
-    E isNotExactly(Object other);
+    V isNotExactly(Object other);
 
     /**
      * Checks if the subject satisfies the supplied condition.
@@ -165,7 +176,7 @@ public interface ObjectValue<T, E extends ObjectValue<T, E>>
      *
      * @return This value (fluent interface).
      */
-    E is(Condition<T> condition);
+    V is(Condition<S> condition);
 
     /**
      * Checks if the subject is equal to the supplied object.
@@ -187,7 +198,7 @@ public interface ObjectValue<T, E extends ObjectValue<T, E>>
      *
      * @see Objects#equals(Object, Object)
      */
-    E isEqualTo(Object other);
+    V isEqualTo(Object other);
 
     /**
      * Checks if the subject is equal to the supplied object using the supplied
@@ -207,7 +218,7 @@ public interface ObjectValue<T, E extends ObjectValue<T, E>>
      *
      * @see Comparator#compare(Object, Object)
      */
-    E isEqualTo(T other, Comparator<? super T> comparator);
+    V isEqualTo(S other, Comparator<? super S> comparator);
 
     /**
      * Checks if the subject is not equal to the supplied object.
@@ -229,7 +240,7 @@ public interface ObjectValue<T, E extends ObjectValue<T, E>>
      *
      * @see Objects#equals(Object, Object)
      */
-    E isNotEqualTo(Object other);
+    V isNotEqualTo(Object other);
 
     /**
      * Checks if the subject is not equal to the supplied object using the
@@ -249,7 +260,7 @@ public interface ObjectValue<T, E extends ObjectValue<T, E>>
      *
      * @see Comparator#compare(Object, Object)
      */
-    E isNotEqualTo(T other, Comparator<? super T> comparator);
+    V isNotEqualTo(S other, Comparator<? super S> comparator);
 
     /**
      * Checks if the hash code of the subject is equal to the supplied hash
@@ -267,7 +278,7 @@ public interface ObjectValue<T, E extends ObjectValue<T, E>>
      *
      * @return This value (fluent interface).
      */
-    E hashCodeIs(int hashCode);
+    V hashCodeIs(int hashCode);
 
     /**
      * Checks if the hash code of the subject is not equal to the supplied hash
@@ -285,7 +296,7 @@ public interface ObjectValue<T, E extends ObjectValue<T, E>>
      *
      * @return This value (fluent interface).
      */
-    E hashCodeIsNot(int hashCode);
+    V hashCodeIsNot(int hashCode);
 
     /**
      * Checks if the {@code toString()} value of the subject is equal to the
@@ -303,7 +314,7 @@ public interface ObjectValue<T, E extends ObjectValue<T, E>>
      *
      * @return This value (fluent interface).
      */
-    E toStringIs(String expected);
+    V toStringIs(String expected);
 
     /**
      * Checks if the {@code toString()} value of the subject is not equal to the
@@ -321,7 +332,7 @@ public interface ObjectValue<T, E extends ObjectValue<T, E>>
      *
      * @return This value (fluent interface).
      */
-    E toStringIsNot(String expected);
+    V toStringIsNot(String expected);
 
     /**
      * Checks if the supplied predicate is true.
@@ -331,7 +342,7 @@ public interface ObjectValue<T, E extends ObjectValue<T, E>>
      *
      * @return This value (fluent interface).
      */
-    E satisfies(Predicate<? super T> predicate);
+    V satisfies(Predicate<? super S> predicate);
 
     /**
      * Checks if the supplied predicate is false.
@@ -341,5 +352,5 @@ public interface ObjectValue<T, E extends ObjectValue<T, E>>
      *
      * @return This value (fluent interface).
      */
-    E doesNotSatisfy(Predicate<? super T> predicate);
+    V doesNotSatisfy(Predicate<? super S> predicate);
 }

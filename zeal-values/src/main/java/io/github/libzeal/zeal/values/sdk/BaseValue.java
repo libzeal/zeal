@@ -47,7 +47,7 @@ import static java.util.Objects.requireNonNull;
  *         method called {@code includesCharacter(char)}, the following would
  *         cause an error:
  *         <pre>{@code new
- *                                                                 StringExpression("foo").isNotNull().includeCharacter('c');}</pre>
+ *                                                                                                 StringExpression("foo").isNotNull().includeCharacter('c');}</pre>
  *         Since the {@code isNotNull()} method would return a {@link BaseValue}
  *         object, rather than a {@code StringExpression}, thus hiding the
  *         {@code includesCharacter(char)} method of {@code  StringExpression}.
@@ -66,7 +66,7 @@ public abstract class BaseValue<T, E extends BaseValue<T, E>> implements ObjectV
      * uses a default name for the expression.
      *
      * @param subject
-     *         The subject of the expression.
+     *         The subject of the value.
      */
     protected BaseValue(final T subject) {
         this(subject, "Object[" + stringify(subject) + "] value");
@@ -76,9 +76,9 @@ public abstract class BaseValue<T, E extends BaseValue<T, E>> implements ObjectV
      * Creates an object expression with the supplied subject and name.
      *
      * @param subject
-     *         The subject of the expression.
+     *         The subject of the value.
      * @param name
-     *         The name of the expression.
+     *         The name of the value.
      */
     protected BaseValue(final T subject, final String name) {
         this.name = requireNonNull(name) + ": " + stringify(subject);
@@ -86,18 +86,40 @@ public abstract class BaseValue<T, E extends BaseValue<T, E>> implements ObjectV
         this.chain = new UnaryExpressionChain<>();
     }
 
+    /**
+     * Appends a new condition to the value.
+     *
+     * @param condition
+     *         The condition to append.
+     *
+     * @return This value (fluent interface).
+     *
+     * @throws NullPointerException
+     *         The supplied condition is {@code null}.
+     */
     @SuppressWarnings("unchecked")
-    protected final E append(final Condition<T> expression) {
+    protected final E append(final Condition<T> condition) {
 
-        chain.append(expression);
+        chain.append(condition);
 
         return (E) this;
     }
 
+    /**
+     * Prepends a new condition to the value.
+     *
+     * @param condition
+     *         The condition to prepend.
+     *
+     * @return This value (fluent interface).
+     *
+     * @throws NullPointerException
+     *         The supplied condition is {@code null}.
+     */
     @SuppressWarnings("unchecked")
-    protected final E prepend(final Condition<T> expression) {
+    protected final E prepend(final Condition<T> condition) {
 
-        chain.prepend(expression);
+        chain.prepend(condition);
 
         return (E) this;
     }
@@ -171,9 +193,11 @@ public abstract class BaseValue<T, E extends BaseValue<T, E>> implements ObjectV
      *         supplied function can assume that the subject will never be
      *         {@code null} (a {@code null} check will be performed before the
      *         function is applied).
+     * @param <O>
+     *         The type of the observed value.
      *
-     * @return The first step of the expression builder, which accepts the
-     * condition for the observed value.
+     * @return The first step of the value builder, which accepts the condition
+     * for the observed value.
      *
      * @throws NullPointerException
      *         The supplied function was {@code null}.

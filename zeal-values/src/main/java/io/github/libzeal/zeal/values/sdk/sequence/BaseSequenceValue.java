@@ -5,6 +5,8 @@ import io.github.libzeal.zeal.values.sdk.BaseValue;
 import java.util.Arrays;
 import java.util.Collection;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * A base class used by sequences to include common conditions.
  *
@@ -23,9 +25,22 @@ public abstract class BaseSequenceValue<S, T, V extends BaseSequenceValue<S, T, 
 
     private final SequenceOperations<T, S> operations;
 
+    /**
+     * Creates a base sequence value.
+     *
+     * @param subject
+     *         The subject of the value.
+     * @param name
+     *         The name of the value.
+     * @param operations
+     *         The operations to use in the value.
+     *
+     * @throws NullPointerException
+     *         The name or operations are {@code null}.
+     */
     protected BaseSequenceValue(final S subject, final String name, final SequenceOperations<T, S> operations) {
         super(subject, name);
-        this.operations = operations;
+        this.operations = requireNonNull(operations);
     }
 
     @Override

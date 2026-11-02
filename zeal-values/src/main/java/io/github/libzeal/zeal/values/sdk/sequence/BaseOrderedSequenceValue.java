@@ -1,5 +1,7 @@
 package io.github.libzeal.zeal.values.sdk.sequence;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * A base class used by ordered sequences to include common conditions.
  *
@@ -18,9 +20,22 @@ public abstract class BaseOrderedSequenceValue<S, T, V extends BaseOrderedSequen
 
     private final OrderedSequenceOperations<T, S> operations;
 
+    /**
+     * Creates a base ordered sequence value.
+     *
+     * @param subject
+     *         The subject of the value.
+     * @param name
+     *         The name of the value.
+     * @param operations
+     *         The operations to use in the value.
+     *
+     * @throws NullPointerException
+     *         The name or operations are {@code null}.
+     */
     protected BaseOrderedSequenceValue(final S subject, final String name, final OrderedSequenceOperations<T, S> operations) {
         super(subject, name, operations);
-        this.operations = operations;
+        this.operations = requireNonNull(operations);
     }
 
     /**

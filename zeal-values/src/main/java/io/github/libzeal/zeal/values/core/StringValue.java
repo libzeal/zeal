@@ -26,7 +26,7 @@ public class StringValue extends BaseOrderedSequenceValue<String, Character, Str
     }
 
     /**
-     * Checks if the subject is blank (empty or contains only whitespace).
+     * Checks if the value is blank (empty or contains only whitespace).
      *
      * @return This value (fluent interface).
      */
@@ -41,7 +41,7 @@ public class StringValue extends BaseOrderedSequenceValue<String, Character, Str
     }
 
     /**
-     * Checks if the subject is not blank (empty or contains only whitespace).
+     * Checks if the value is not blank (empty or contains only whitespace).
      *
      * @return This value (fluent interface).
      */
@@ -55,113 +55,318 @@ public class StringValue extends BaseOrderedSequenceValue<String, Character, Str
         );
     }
 
-    // TODO Javadoc: the desired sequence is compared by its content (toString), so any CharSequence (such as a
-    //  StringBuilder) matches a string with the same characters; an empty sequence is always included (even in an
-    //  empty string) and a null sequence is never included
+    /**
+     * Checks if the value includes the supplied character sequence. An empty
+     * character sequence ({@code ""}) is always considered included and a
+     * {@code null} character sequence is always excluded (not included).
+     *
+     * @param desired
+     *         The desired character sequence.
+     *
+     * @return This value (fluent interface).
+     */
     public StringValue includes(final CharSequence desired) {
         return append(
                 OrderedSequenceConditions.includes(asString(desired), stringOperations)
         );
     }
 
-    public StringValue excludes(final CharSequence desired) {
+    /**
+     * Checks if the value excludes the supplied character sequence. An empty
+     * character sequence ({@code ""}) is always considered included (never
+     * excluded) and a {@code null} character sequence is always excluded.
+     *
+     * @param undesired
+     *         The character sequence that should not be found in the value.
+     *
+     * @return This value (fluent interface).
+     */
+    public StringValue excludes(final CharSequence undesired) {
         return append(
-                OrderedSequenceConditions.excludes(asString(desired), stringOperations)
+                OrderedSequenceConditions.excludes(asString(undesired), stringOperations)
         );
     }
 
-    // TODO Javadoc: occurrences are counted without overlapping (e.g., "aa" is found once in "aaa", not twice); an
-    //  empty sequence is found length + 1 times (once before each character and once at the end, matching
-    //  includes("") passing); a null sequence is found 0 times
+    /**
+     * Checks that the supplied character sequence is found the supplied number
+     * of times. This check abides by the following rules:
+     * <ul>
+     *     <li><strong>Overlap</strong>: The number of occurrence is countered
+     *     without overlap. For example, if the value is {@code "aaa"} and the
+     *     desired character sequence is {@code "aa"}, only one occurrence will
+     *     be found.</li>
+     *     <li><strong>Empty character sequence</strong>: A supplied empty
+     *     character sequence always results in {@code value.length + 1}
+     *     occurrences being counted. For example, given the value
+     *     {@code "aaa"}, {@code includesExactly("", 4)} will pass. This matches
+     *     the logic used by both {@link String#indexOf(String)} and
+     *     {@link String#lastIndexOf(String)}.</li>
+     *     <li><strong>{@code null} character sequence</strong>: A {@code null}
+     *     character sequence is never found (have 0 occurrences) by definition.
+     *     This differs from the logic in {@link String#contains(CharSequence)},
+     *     which throws an exception. This method is designed not to throw an
+     *     exception, so it results in 0 occurrences instead.</li>
+     * </ul>
+     * This check counts without overlap. For example, if the value is
+     * {@code "aaa"} and the desired character sequence is {@code "aa"}, only one occurrence will be found.
+     *
+     * @param desired
+     *         The desired character sequence.
+     * @param times
+     *         The desired number of occurrences.
+     *
+     * @return This value (fluent interface).
+     */
     public StringValue includesExactly(final CharSequence desired, final long times) {
         return append(
                 SequenceConditions.includesExactly(asString(desired), times, stringOperations)
         );
     }
 
+    /**
+     * Checks if the value includes the supplied character sequence exactly
+     * once. For more information about the inclusion and exclusion logic, see
+     * {@link #includesExactly(CharSequence, long)}.
+     *
+     * @param desired
+     *         The desired character sequence.
+     *
+     * @return This value (fluent interface).
+     *
+     * @see #includesExactly(CharSequence, long)
+     */
     public StringValue includesOnce(final CharSequence desired) {
         return includesExactly(desired, 1);
     }
 
+    /**
+     * Checks if the value includes the supplied character sequence the supplied
+     * number of times. For more information about the inclusion and exclusion
+     * logic, see {@link #includesExactly(CharSequence, long)}.
+     *
+     * @param desired
+     *         The desired character sequence.
+     * @param times
+     *         The desired number of occurrences.
+     *
+     * @return This value (fluent interface).
+     *
+     * @see #includesExactly(CharSequence, long)
+     */
     public StringValue includesMoreThan(final CharSequence desired, final long times) {
         return append(
                 SequenceConditions.includesMoreThan(asString(desired), times, stringOperations)
         );
     }
 
+    /**
+     * Checks if the value includes the supplied character sequence more than or
+     * equals to supplied number of times. For more information about the
+     * inclusion and exclusion logic, see
+     * {@link #includesExactly(CharSequence, long)}.
+     *
+     * @param desired
+     *         The desired character sequence.
+     * @param times
+     *         The desired lower bound of occurrences.
+     *
+     * @return This value (fluent interface).
+     *
+     * @see #includesExactly(CharSequence, long)
+     */
     public StringValue includesMoreThanOrEqualTo(final CharSequence desired, final long times) {
         return append(
                 SequenceConditions.includesMoreThanOrEqualTo(asString(desired), times, stringOperations)
         );
     }
 
+    /**
+     * Checks if the value includes the supplied character sequence less than
+     * supplied number of times. For more information about the inclusion and
+     * exclusion logic, see {@link #includesExactly(CharSequence, long)}.
+     *
+     * @param desired
+     *         The desired character sequence.
+     * @param times
+     *         The desired upper bound of occurrences.
+     *
+     * @return This value (fluent interface).
+     *
+     * @see #includesExactly(CharSequence, long)
+     */
     public StringValue includesLessThan(final CharSequence desired, final long times) {
         return append(
                 SequenceConditions.includesLessThan(asString(desired), times, stringOperations)
         );
     }
 
+    /**
+     * Checks if the value includes the supplied character sequence less than or
+     * equal to supplied number of times. For more information about the
+     * inclusion and exclusion logic, see
+     * {@link #includesExactly(CharSequence, long)}.
+     *
+     * @param desired
+     *         The desired character sequence.
+     * @param times
+     *         The desired upper bound of occurrences.
+     *
+     * @return This value (fluent interface).
+     *
+     * @see #includesExactly(CharSequence, long)
+     */
     public StringValue includesLessThanOrEqualTo(final CharSequence desired, final long times) {
         return append(
                 SequenceConditions.includesLessThanOrEqualTo(asString(desired), times, stringOperations)
         );
     }
 
-    // TODO Javadoc: checks whether the subject has the desired sequence starting at the index (not a single
-    //  character); the actual value is the part of the subject at the index with the same length as the desired
-    //  sequence; an empty sequence is found at every index from 0 up to and including the length of the subject; a
-    //  null sequence is never found
+    /**
+     * Checks if the value has the supplied character sequence at the supplied
+     * index. This check abides by the following rules:
+     * <ul>
+     *     <li><strong>Overlap</strong>: The index of the match marks the first
+     *     occurrence of the match. For example, if the value is {@code "aaa"}
+     *     and the desired sequence is {@code "aa"}, the (first) index would be
+     *     {@code 0} and the last index would also be {@code 0}.</li>
+     *     <li><strong>Empty character sequence</strong>: A supplied empty
+     *     character sequence always results in the character being found at
+     *     every index up to and including the length of the value. For example,
+     *     given the value {@code "aaa"}, {@code hasAtIndex("", ...)} will pass
+     *     for every index value in the range {@code [0, 4]}.</li>
+     *     <li><strong>{@code null} character sequence</strong>: A {@code null}
+     *     character sequence is never found and will fail for every index.</li>
+     * </ul>
+     *
+     * @param desired
+     *         The desired character sequence.
+     * @param index
+     *         The desired index.
+     *
+     * @return This value (fluent interface).
+     */
     public StringValue hasAtIndex(final CharSequence desired, final int index) {
         return append(
                 OrderedSequenceConditions.hasAtIndex(asString(desired), index, stringOperations)
         );
     }
 
-    public StringValue doesNotHaveAtIndex(final CharSequence desired, final int index) {
+    /**
+     * Checks if the value does not have an index of the supplied character
+     * sequence matching the supplied index. For more information about the
+     * indexing logic, see {@link #hasAtIndex(CharSequence, int)}.
+     *
+     * @param undesired
+     *         The character sequence that should not have an index matching the
+     *         supplied index.
+     * @param index
+     *         The undesired index.
+     *
+     * @return This value (fluent interface).
+     *
+     * @see #hasAtIndex(CharSequence, int)
+     */
+    public StringValue doesNotHaveAtIndex(final CharSequence undesired, final int index) {
         return append(
-                OrderedSequenceConditions.doesNotHaveAtIndex(asString(desired), index, stringOperations)
+                OrderedSequenceConditions.doesNotHaveAtIndex(asString(undesired), index, stringOperations)
         );
     }
 
-    // TODO Javadoc: the last index of an empty sequence is the length of the subject (not length - 1); the last
-    //  index of a null sequence is -1
+    /**
+     * Checks if the value has a last index of the supplied character sequence
+     * matching the supplied index. For more information about the indexing
+     * logic, see {@link #hasAtIndex(CharSequence, int)}.
+     *
+     * @param desired
+     *         The character sequence that should have a last index matching the
+     *         supplied index.
+     * @param index
+     *         The desired last index.
+     *
+     * @return This value (fluent interface).
+     *
+     * @see #hasAtIndex(CharSequence, int)
+     */
     public StringValue lastIndexOfIs(final CharSequence desired, final int index) {
         return append(
                 OrderedSequenceConditions.lastIndexOfIs(asString(desired), index, stringOperations)
         );
     }
 
-    public StringValue lastIndexOfIsNot(final CharSequence desired, final int index) {
+    /**
+     * Checks if the value does not have a last index of the supplied character
+     * sequence matching the supplied index. For more information about the
+     * indexing logic, see {@link #hasAtIndex(CharSequence, int)}.
+     *
+     * @param undesired
+     *         The character sequence that should not have a last index matching
+     *         the supplied index.
+     * @param index
+     *         The undesired last index.
+     *
+     * @return This value (fluent interface).
+     *
+     * @see #hasAtIndex(CharSequence, int)
+     */
+    public StringValue lastIndexOfIsNot(final CharSequence undesired, final int index) {
         return append(
-                OrderedSequenceConditions.lastIndexOfIsNot(asString(desired), index, stringOperations)
+                OrderedSequenceConditions.lastIndexOfIsNot(asString(undesired), index, stringOperations)
         );
     }
 
-    // TODO Javadoc: every string (including an empty string) starts with an empty sequence; a null sequence is
-    //  never a prefix
+    /**
+     * Checks if the value starts with the supplied character sequence.
+     *
+     * @param desired
+     *         The desired character sequence.
+     *
+     * @return This value (fluent interface).
+     */
     public StringValue startsWith(final CharSequence desired) {
         return append(
                 OrderedSequenceConditions.startsWith(asString(desired), stringOperations)
         );
     }
 
-    public StringValue doesNotStartWith(final CharSequence desired) {
+    /**
+     * Checks if the value does not start with the supplied character sequence.
+     *
+     * @param undesired
+     *         The undesired character sequence.
+     *
+     * @return This value (fluent interface).
+     */
+    public StringValue doesNotStartWith(final CharSequence undesired) {
         return append(
-                OrderedSequenceConditions.doesNotStartWith(asString(desired), stringOperations)
+                OrderedSequenceConditions.doesNotStartWith(asString(undesired), stringOperations)
         );
     }
 
-    // TODO Javadoc: every string (including an empty string) ends with an empty sequence; a null sequence is never
-    //  a suffix
+    /**
+     * Checks if the value ends with the supplied character sequence.
+     *
+     * @param desired
+     *         The desired character sequence.
+     *
+     * @return This value (fluent interface).
+     */
     public StringValue endsWith(final CharSequence desired) {
         return append(
                 OrderedSequenceConditions.endsWith(asString(desired), stringOperations)
         );
     }
 
-    public StringValue doesNotEndWith(final CharSequence desired) {
+    /**
+     * Checks if the value does not end with the supplied character sequence.
+     *
+     * @param undesired
+     *         The undesired character sequence.
+     *
+     * @return This value (fluent interface).
+     */
+    public StringValue doesNotEndWith(final CharSequence undesired) {
         return append(
-                OrderedSequenceConditions.doesNotEndWith(asString(desired), stringOperations)
+                OrderedSequenceConditions.doesNotEndWith(asString(undesired), stringOperations)
         );
     }
 
@@ -280,9 +485,7 @@ public class StringValue extends BaseOrderedSequenceValue<String, Character, Str
         return lastIndexOfIsNot((CharSequence) needle, index);
     }
 
-    // TODO Javadoc: a null character is never included in a string (includes fails, excludes passes, and its index
-    //  is -1) rather than causing an exception
-    protected static final class StringOperations implements OrderedSequenceOperations<Character, String> {
+    private static final class StringOperations implements OrderedSequenceOperations<Character, String> {
 
         @Override
         public Observed<Character> lastElement(final String haystack, final Character desired) {
