@@ -6,7 +6,8 @@ import io.github.libzeal.zeal.logic.format.SimpleEvaluationFormatter;
 import io.github.libzeal.zeal.logic.unary.UnaryExpression;
 
 /**
- * Responsible for evaluating postconditions.
+ * An assertion evaluator responsible for evaluating assertions as
+ * post-conditions.
  *
  * @author Justin Albano
  */

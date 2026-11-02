@@ -6,7 +6,8 @@ import io.github.libzeal.zeal.logic.format.SimpleEvaluationFormatter;
 import io.github.libzeal.zeal.logic.unary.UnaryExpression;
 
 /**
- * Responsible for evaluating assertions.
+ * An assertion evaluator responsible for evaluating assertions invariants
+ * (rather than as a pre- or post-condition).
  *
  * @author Justin Albano
  */
@@ -15,7 +16,7 @@ public class Confirmation {
     static final String DEFAULT_MESSAGE = "Assertion failed";
     private final AssertionExpressionEvaluator<AssertionFailedError, AssertionFailedError> evaluator;
 
-    public Confirmation() {
+    private Confirmation() {
         this.evaluator = new AssertionExpressionEvaluator<>(
                 new SimpleEvaluationFormatter(),
                 AssertionFailedError::new,

@@ -116,6 +116,9 @@ final class AssertionExpressionEvaluator<N extends Throwable, F extends Throwabl
      * A function that consumes a message and creates a
      * {@link RuntimeException}.
      *
+     * @param <T>
+     *         The type of the exception.
+     *
      * @author Justin Albano
      * @since 0.2.0
      */

@@ -6,12 +6,18 @@ import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.format.SimpleEvaluationFormatter;
 import io.github.libzeal.zeal.logic.unary.UnaryExpression;
 
+/**
+ * An assertion evaluator responsible for evaluating assertions as
+ * pre-conditions.
+ *
+ * @author Justin Albano
+ */
 public class Requirement {
 
     static final String DEFAULT_MESSAGE = "Precondition failed";
     private final AssertionExpressionEvaluator<NullPointerException, PreconditionFailedException> evaluator;
 
-    public Requirement() {
+    private Requirement() {
         this.evaluator = new AssertionExpressionEvaluator<>(
                 new SimpleEvaluationFormatter(),
                 NullPointerException::new,
@@ -19,6 +25,11 @@ public class Requirement {
         );
     }
 
+    /**
+     * Creates a new requirement with a default configuration.
+     *
+     * @return A requirement with a default configuration.
+     */
     public static Requirement create() {
         return new Requirement();
     }
