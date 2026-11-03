@@ -1,6 +1,7 @@
 package io.github.libzeal.zeal.values.core;
 
 import io.github.libzeal.zeal.values.sdk.BaseValue;
+import org.jspecify.annotations.Nullable;
 
 /**
  * The abstract base class for all {@link Enum} values. This base class should
@@ -26,7 +27,7 @@ public abstract class EnumValue<T extends Enum<T>, B extends EnumValue<T, B>>
      * @param subject
      *         The subject of the expression.
      */
-    protected EnumValue(final T subject) {
+    protected EnumValue(final @Nullable T subject) {
         this(subject, "Enum value");
     }
 
@@ -38,7 +39,7 @@ public abstract class EnumValue<T extends Enum<T>, B extends EnumValue<T, B>>
      * @param name
      *         The name of the expression.
      */
-    protected EnumValue(final T subject, final String name) {
+    protected EnumValue(final @Nullable T subject, final String name) {
         super(subject, name);
     }
 

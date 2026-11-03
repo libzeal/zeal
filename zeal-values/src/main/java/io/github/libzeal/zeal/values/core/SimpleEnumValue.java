@@ -1,5 +1,7 @@
 package io.github.libzeal.zeal.values.core;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * A value used to evaluate {@link Enum} instances.
  *
@@ -16,7 +18,7 @@ public final class SimpleEnumValue<T extends Enum<T>> extends EnumValue<T, Simpl
      * @param subject
      *         The subject of the expression.
      */
-    public SimpleEnumValue(final T subject) {
+    public SimpleEnumValue(final @Nullable T subject) {
         super(subject);
     }
 }

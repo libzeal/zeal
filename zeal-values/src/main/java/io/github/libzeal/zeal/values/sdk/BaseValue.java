@@ -7,6 +7,7 @@ import io.github.libzeal.zeal.logic.unary.Condition;
 import io.github.libzeal.zeal.logic.unary.ConditionBuilder;
 import io.github.libzeal.zeal.logic.unary.ConditionBuilder.Observing;
 import io.github.libzeal.zeal.values.core.ObjectValue;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Comparator;
 import java.util.List;
@@ -58,7 +59,7 @@ import static java.util.Objects.requireNonNull;
 public abstract class BaseValue<T, E extends BaseValue<T, E>> implements ObjectValue<T, E> {
 
     private final String name;
-    private final T subject;
+    private final @Nullable T subject;
     private final UnaryExpressionChain<T> chain;
 
     /**
@@ -68,7 +69,7 @@ public abstract class BaseValue<T, E extends BaseValue<T, E>> implements ObjectV
      * @param subject
      *         The subject of the value.
      */
-    protected BaseValue(final T subject) {
+    protected BaseValue(final @Nullable T subject) {
         this(subject, "Object[" + stringify(subject) + "] value");
     }
 
@@ -80,7 +81,7 @@ public abstract class BaseValue<T, E extends BaseValue<T, E>> implements ObjectV
      * @param name
      *         The name of the value.
      */
-    protected BaseValue(final T subject, final String name) {
+    protected BaseValue(final @Nullable T subject, final String name) {
         this.name = requireNonNull(name) + ": " + stringify(subject);
         this.subject = subject;
         this.chain = new UnaryExpressionChain<>();
@@ -125,7 +126,7 @@ public abstract class BaseValue<T, E extends BaseValue<T, E>> implements ObjectV
     }
 
     @Override
-    public final T subject() {
+    public final @Nullable T subject() {
         return subject;
     }
 
@@ -179,7 +180,7 @@ public abstract class BaseValue<T, E extends BaseValue<T, E>> implements ObjectV
      * @throws NullPointerException
      *         The supplied test was {@code null}.
      */
-    protected final ConditionBuilder<T, T> nullableExpression(final Predicate<? super T> test) {
+    protected final ConditionBuilder<T, T> nullableExpression(final Predicate<? super @Nullable T> test) {
         return ConditionBuilder.<T>of(test).nullable();
     }
 
@@ -231,7 +232,7 @@ public abstract class BaseValue<T, E extends BaseValue<T, E>> implements ObjectV
     }
 
     @Override
-    public E isType(final Class<?> type) {
+    public E isType(final @Nullable Class<?> type) {
 
         final ConditionBuilder<T, Class<?>> builder = typeExpression(c -> c.equals(type));
 
@@ -252,7 +253,7 @@ public abstract class BaseValue<T, E extends BaseValue<T, E>> implements ObjectV
     }
 
     @Override
-    public E isNotType(final Class<?> type) {
+    public E isNotType(final @Nullable Class<?> type) {
 
         final ConditionBuilder<T, Class<?>> builder = typeExpression(c -> type != null && !c.equals(type));
 
@@ -273,7 +274,7 @@ public abstract class BaseValue<T, E extends BaseValue<T, E>> implements ObjectV
     }
 
     @Override
-    public E isInstanceOf(final Class<?> type) {
+    public E isInstanceOf(final @Nullable Class<?> type) {
 
         final ConditionBuilder<T, Class<?>> builder = typeExpression(c -> type != null && type.isAssignableFrom(c));
 
@@ -294,7 +295,7 @@ public abstract class BaseValue<T, E extends BaseValue<T, E>> implements ObjectV
     }
 
     @Override
-    public E isNotInstanceOf(final Class<?> type) {
+    public E isNotInstanceOf(final @Nullable Class<?> type) {
 
         final ConditionBuilder<T, Class<?>> builder = typeExpression(c -> type != null && !type.isAssignableFrom(c));
 
@@ -315,12 +316,12 @@ public abstract class BaseValue<T, E extends BaseValue<T, E>> implements ObjectV
     }
 
     @Override
-    public E isExactly(final Object other) {
+    public E isExactly(final @Nullable Object other) {
         return append(exactly(other));
     }
 
     @Override
-    public E isNotExactly(final Object other) {
+    public E isNotExactly(final @Nullable Object other) {
         return append(
                 nullableExpression(s -> s != other)
                         .name("isNotExactly[" + stringify(other) + "]")
@@ -331,7 +332,7 @@ public abstract class BaseValue<T, E extends BaseValue<T, E>> implements ObjectV
     }
 
     @Override
-    public E is(final Condition<T> condition) {
+    public E is(final @Nullable Condition<T> condition) {
         return append(Objects.requireNonNullElseGet(
                 condition,
                 () -> expression(s -> false)
@@ -343,12 +344,12 @@ public abstract class BaseValue<T, E extends BaseValue<T, E>> implements ObjectV
     }
 
     @Override
-    public E isEqualTo(final Object other) {
+    public E isEqualTo(final @Nullable Object other) {
         return append(equalTo(other));
     }
 
     @Override
-    public E isEqualTo(final T other, final Comparator<? super T> comparator) {
+    public E isEqualTo(final T other, final @Nullable Comparator<? super T> comparator) {
         return append(
                 comparableEquals(other, comparator)
                         .name("isEqualTo[" + stringify(other) + ", comparator: " + stringify(comparator) + "]")
@@ -359,7 +360,7 @@ public abstract class BaseValue<T, E extends BaseValue<T, E>> implements ObjectV
 
     private static <T> ConditionBuilder<T, T> comparableEquals(
             T other,
-            Comparator<? super T> comparator
+            @Nullable Comparator<? super T> comparator
     ) {
 
         if (comparator == null) {
@@ -372,7 +373,7 @@ public abstract class BaseValue<T, E extends BaseValue<T, E>> implements ObjectV
     }
 
     @Override
-    public E isNotEqualTo(final Object other) {
+    public E isNotEqualTo(final @Nullable Object other) {
         return append(
                 nullableExpression(s -> !Objects.equals(s, other))
                         .name("isNotEqualTo[" + stringify(other) + "]")
@@ -383,7 +384,7 @@ public abstract class BaseValue<T, E extends BaseValue<T, E>> implements ObjectV
     }
 
     @Override
-    public E isNotEqualTo(final T other, final Comparator<? super T> comparator) {
+    public E isNotEqualTo(final T other, final @Nullable Comparator<? super T> comparator) {
         return append(
                 comparableNotEquals(other, comparator)
                         .name("isNotEqualTo[" + stringify(other) + ", comparator: " + stringify(comparator) + "]")
@@ -394,7 +395,7 @@ public abstract class BaseValue<T, E extends BaseValue<T, E>> implements ObjectV
 
     private static <T> ConditionBuilder<T, T> comparableNotEquals(
             T other,
-            Comparator<? super T> comparator
+            @Nullable Comparator<? super T> comparator
     ) {
 
         if (comparator == null) {
@@ -429,23 +430,23 @@ public abstract class BaseValue<T, E extends BaseValue<T, E>> implements ObjectV
     }
 
     @Override
-    public E toStringIs(final String expected) {
+    public E toStringIs(final @Nullable String expected) {
         return append(
                 expression(s -> s.toString().equals(expected))
-                        .name("toString().equals(" + expected + ")")
-                        .expected(expected)
-                        .hint("Subject's toString() value should equal " + expected + " (using subject.toString().equals(" + expected + "))")
+                        .name("toString().equals(" + stringify(expected) + ")")
+                        .expected(stringify(expected))
+                        .hint("Subject's toString() value should equal " + stringify(expected) + " (using subject.toString().equals(" + stringify(expected) + "))")
                         .build()
         );
     }
 
     @Override
-    public E toStringIsNot(final String expected) {
+    public E toStringIsNot(final @Nullable String expected) {
         return append(
                 expression(s -> !s.toString().equals(expected))
-                        .name("not[toString().equals(" + expected + ")]")
-                        .expected("not[" + expected + "]")
-                        .hint("Subject's toString() value should not equal " + expected + " (using !subject.toString().equals(" + expected + "))")
+                        .name("not[toString().equals(" + stringify(expected) + ")]")
+                        .expected("not[" + stringify(expected) + "]")
+                        .hint("Subject's toString() value should not equal " + stringify(expected) + " (using !subject.toString().equals(" + stringify(expected) + "))")
                         .build()
         );
     }

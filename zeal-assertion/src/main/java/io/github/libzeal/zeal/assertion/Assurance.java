@@ -4,6 +4,7 @@ import io.github.libzeal.zeal.assertion.error.PostconditionFailedException;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.format.SimpleEvaluationFormatter;
 import io.github.libzeal.zeal.logic.unary.UnaryExpression;
+import org.jspecify.annotations.Nullable;
 
 /**
  * An assertion evaluator responsible for evaluating assertions as
@@ -82,7 +83,7 @@ public class Assurance {
      * @throws PostconditionFailedException
      *         The supplied expression evaluates to false.
      */
-    public <T> T ensure(final UnaryExpression<T> expression, final String message) {
+    public <T> T ensure(final UnaryExpression<T> expression, final @Nullable String message) {
         return evaluator.evaluate(expression, message);
     }
 }

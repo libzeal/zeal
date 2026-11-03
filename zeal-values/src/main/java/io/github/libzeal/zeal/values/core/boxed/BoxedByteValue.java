@@ -1,5 +1,7 @@
 package io.github.libzeal.zeal.values.core.boxed;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * A value used to evaluate {@link Byte}s.
  *
@@ -14,7 +16,7 @@ public class BoxedByteValue
      * @param subject
      *         The desired subject.
      */
-    public BoxedByteValue(final Byte subject) {
+    public BoxedByteValue(final @Nullable Byte subject) {
         super(
                 subject,
                 "Byte value",

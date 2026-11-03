@@ -1,5 +1,7 @@
 package io.github.libzeal.zeal.values.core.boxed;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * A value used to evaluate {@link Integer}s.
  *
@@ -14,7 +16,7 @@ public class BoxedIntegerValue
      * @param subject
      *         The desired subject.
      */
-    public BoxedIntegerValue(final Integer subject) {
+    public BoxedIntegerValue(final @Nullable Integer subject) {
         super(
                 subject,
                 "Integer value",

@@ -1,5 +1,7 @@
 package io.github.libzeal.zeal.values.sdk.sequence;
 
+import org.jspecify.annotations.Nullable;
+
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -14,7 +16,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @author Justin Albano
  */
-public abstract class BaseOrderedSequenceValue<S, T, V extends BaseOrderedSequenceValue<S, T, V>>
+public abstract class BaseOrderedSequenceValue<S extends @Nullable Object, T, V extends BaseOrderedSequenceValue<S, T, V>>
         extends BaseSequenceValue<S, T, V>
         implements OrderedSequenceValue<T, V> {
 
@@ -33,7 +35,7 @@ public abstract class BaseOrderedSequenceValue<S, T, V extends BaseOrderedSequen
      * @throws NullPointerException
      *         The name or operations are {@code null}.
      */
-    protected BaseOrderedSequenceValue(final S subject, final String name, final OrderedSequenceOperations<T, S> operations) {
+    protected BaseOrderedSequenceValue(final @Nullable S subject, final String name, final OrderedSequenceOperations<T, S> operations) {
         super(subject, name, operations);
         this.operations = requireNonNull(operations);
     }
@@ -46,7 +48,7 @@ public abstract class BaseOrderedSequenceValue<S, T, V extends BaseOrderedSequen
      * element was found at if the desired element is found.
      */
     @Override
-    public V includes(final T desired) {
+    public V includes(final @Nullable T desired) {
         return append(
                 OrderedSequenceConditions.includes(desired, operations)
         );
@@ -60,63 +62,63 @@ public abstract class BaseOrderedSequenceValue<S, T, V extends BaseOrderedSequen
      * element was found at if the desired element is found.
      */
     @Override
-    public V excludes(final T desired) {
+    public V excludes(final @Nullable T desired) {
         return append(
                 OrderedSequenceConditions.excludes(desired, operations)
         );
     }
 
     @Override
-    public V hasAtIndex(final T desired, final int index) {
+    public V hasAtIndex(final @Nullable T desired, final int index) {
         return append(
                 OrderedSequenceConditions.hasAtIndex(desired, index, operations)
         );
     }
 
     @Override
-    public V doesNotHaveAtIndex(final T desired, final int index) {
+    public V doesNotHaveAtIndex(final @Nullable T desired, final int index) {
         return append(
                 OrderedSequenceConditions.doesNotHaveAtIndex(desired, index, operations)
         );
     }
 
     @Override
-    public V lastIndexOfIs(final T desired, final int index) {
+    public V lastIndexOfIs(final @Nullable T desired, final int index) {
         return append(
                 OrderedSequenceConditions.lastIndexOfIs(desired, index, operations)
         );
     }
 
     @Override
-    public V lastIndexOfIsNot(final T desired, final int index) {
+    public V lastIndexOfIsNot(final @Nullable T desired, final int index) {
         return append(
                 OrderedSequenceConditions.lastIndexOfIsNot(desired, index, operations)
         );
     }
 
     @Override
-    public V startsWith(final T desired) {
+    public V startsWith(final @Nullable T desired) {
         return append(
                 OrderedSequenceConditions.startsWith(desired, operations)
         );
     }
 
     @Override
-    public V doesNotStartWith(final T desired) {
+    public V doesNotStartWith(final @Nullable T desired) {
         return append(
                 OrderedSequenceConditions.doesNotStartWith(desired, operations)
         );
     }
 
     @Override
-    public V endsWith(final T desired) {
+    public V endsWith(final @Nullable T desired) {
         return append(
                 OrderedSequenceConditions.endsWith(desired, operations)
         );
     }
 
     @Override
-    public V doesNotEndWith(final T desired) {
+    public V doesNotEndWith(final @Nullable T desired) {
         return append(
                 OrderedSequenceConditions.doesNotEndWith(desired, operations)
         );

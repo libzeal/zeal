@@ -1,5 +1,7 @@
 package io.github.libzeal.zeal.logic.unary;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
@@ -17,9 +19,9 @@ import java.util.function.Supplier;
  *
  * @author Justin Albano
  */
-public class Observed<T> {
+public class Observed<T extends @Nullable Object> {
 
-    private final T value;
+    private final @Nullable T value;
     private final boolean missing;
 
     /**
@@ -49,7 +51,7 @@ public class Observed<T> {
         return new Observed<>(value, false);
     }
 
-    private Observed(final T value, final boolean missing) {
+    private Observed(final @Nullable T value, final boolean missing) {
         this.value = value;
         this.missing = missing;
     }
@@ -93,7 +95,7 @@ public class Observed<T> {
      * @return True if the observed value matches the supplied value; false
      * otherwise.
      */
-    public boolean matches(final T other) {
+    public boolean matches(final @Nullable T other) {
         return isPresent() && Objects.equals(value, other);
     }
 
@@ -131,6 +133,8 @@ public class Observed<T> {
      * @return The desired value based on whether the observed value is present
      * or missing.
      */
+    // A present value is only null when it was found as null, which requires T to be nullable
+    @SuppressWarnings("NullAway")
     public <A> A ifPresentOrElseGet(final Function<? super T, ? extends A> ifFound, final Supplier<? extends A> orElse) {
         return isPresent() ? ifFound.apply(value) : orElse.get();
     }

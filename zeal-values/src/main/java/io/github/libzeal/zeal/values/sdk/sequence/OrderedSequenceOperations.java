@@ -1,6 +1,7 @@
 package io.github.libzeal.zeal.values.sdk.sequence;
 
 import io.github.libzeal.zeal.logic.unary.Observed;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A common set of operations for ordered sequences. These operations are used
@@ -14,7 +15,7 @@ import io.github.libzeal.zeal.logic.unary.Observed;
  *
  * @author Justin Albano
  */
-public interface OrderedSequenceOperations<N, H> extends SequenceOperations<N, H> {
+public interface OrderedSequenceOperations<N extends @Nullable Object, H> extends SequenceOperations<N, H> {
 
     /**
      * Obtains the last element of the haystack.
@@ -30,7 +31,7 @@ public interface OrderedSequenceOperations<N, H> extends SequenceOperations<N, H
      *
      * @return The last element of the haystack.
      */
-    Observed<N> lastElement(H haystack, N desired);
+    Observed<N> lastElement(H haystack, @Nullable N desired);
 
     /**
      * Obtains the element in the haystack at the supplied index.
@@ -45,7 +46,7 @@ public interface OrderedSequenceOperations<N, H> extends SequenceOperations<N, H
      *
      * @return The element in the haystack at the supplied index.
      */
-    Observed<N> atIndex(H haystack, int index, N desired);
+    Observed<N> atIndex(H haystack, int index, @Nullable N desired);
 
     /**
      * Obtains the index of the supplied needle in the supplied haystack.
@@ -58,7 +59,7 @@ public interface OrderedSequenceOperations<N, H> extends SequenceOperations<N, H
      * @return The index of the supplied needle in the supplied haystack. If the
      * needle is not found, this method should return {@code -1}.
      */
-    int indexOf(H haystack, N needle);
+    int indexOf(H haystack, @Nullable N needle);
 
     /**
      * Obtains the last index of the supplied needle in the supplied haystack.
@@ -71,7 +72,7 @@ public interface OrderedSequenceOperations<N, H> extends SequenceOperations<N, H
      * @return The last index of the supplied needle in the supplied haystack.
      * If the needle is not found, this method should return {@code -1}.
      */
-    int lastIndexOf(H haystack, N needle);
+    int lastIndexOf(H haystack, @Nullable N needle);
 
     /**
      * Obtains the first element of the haystack.
@@ -87,7 +88,7 @@ public interface OrderedSequenceOperations<N, H> extends SequenceOperations<N, H
      *
      * @return The first element of the haystack.
      */
-    default Observed<N> firstElement(final H haystack, final N desired) {
+    default Observed<N> firstElement(final H haystack, final @Nullable N desired) {
         return atIndex(haystack, 0, desired);
     }
 }

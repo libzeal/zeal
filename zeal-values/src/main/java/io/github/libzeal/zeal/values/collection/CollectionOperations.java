@@ -1,11 +1,12 @@
 package io.github.libzeal.zeal.values.collection;
 
 import io.github.libzeal.zeal.values.sdk.sequence.SequenceOperations;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Collections;
 
-class CollectionOperations<T, C extends Collection<T>>
+class CollectionOperations<T extends @Nullable Object, C extends Collection<T>>
         implements SequenceOperations<T, C> {
 
     @Override
@@ -14,7 +15,7 @@ class CollectionOperations<T, C extends Collection<T>>
     }
 
     @Override
-    public boolean includes(final C haystack, final T needle) {
+    public boolean includes(final C haystack, final @Nullable T needle) {
 
         try {
             return haystack.contains(needle);
@@ -34,7 +35,7 @@ class CollectionOperations<T, C extends Collection<T>>
     }
 
     @Override
-    public int occurrences(final C haystack, final T needle) {
+    public int occurrences(final C haystack, final @Nullable T needle) {
         return Collections.frequency(haystack, needle);
     }
 }

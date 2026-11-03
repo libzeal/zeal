@@ -1,6 +1,7 @@
 package io.github.libzeal.zeal.logic.unary;
 
 import io.github.libzeal.zeal.logic.Expression;
+import org.jspecify.annotations.Nullable;
 
 /**
  * An expression that has a single subject.
@@ -23,6 +24,6 @@ public sealed interface UnaryExpression<S> extends Expression
      *
      * @return The subject of the expression.
      */
-    S subject();
+    @Nullable S subject();
 
 }

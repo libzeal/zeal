@@ -9,6 +9,7 @@ import io.github.libzeal.zeal.logic.evaluation.SkippableEvaluation.Skipped;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
 import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
 import io.github.libzeal.zeal.logic.util.StopWatch;
+import org.jspecify.annotations.Nullable;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -39,7 +40,7 @@ final class CompoundEvaluator {
         final StopWatch stopWatch = StopWatch.started();
         final List<SkippableEvaluation> children = new ArrayList<>();
         final List<Evaluation> evaluated = new ArrayList<>();
-        DirectCause.Delegated decidedBy = null;
+        DirectCause.@Nullable Delegated decidedBy = null;
 
         for (final Expression child : expression.children()) {
 
@@ -67,7 +68,7 @@ final class CompoundEvaluator {
         );
     }
 
-    private static DirectCause directCause(final DirectCause.Delegated decidedBy, final List<Evaluation> evaluated) {
+    private static DirectCause directCause(final DirectCause.@Nullable Delegated decidedBy, final List<Evaluation> evaluated) {
 
         if (decidedBy != null) {
             return decidedBy;

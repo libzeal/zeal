@@ -3,6 +3,7 @@ package io.github.libzeal.zeal.logic.unary;
 import io.github.libzeal.zeal.logic.Expression;
 import io.github.libzeal.zeal.logic.format.ObjectFormatter;
 import io.github.libzeal.zeal.logic.unary.ObservableUnaryExpression.Field;
+import org.jspecify.annotations.Nullable;
 
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -26,7 +27,7 @@ public final class ConditionBuilder<S, O> {
     private String name = Expression.DEFAULT_NAME;
     private Field<S, O> expected = context -> "<not set>";
     private Field<S, O> actual = context -> ObjectFormatter.stringify(context.observed());
-    private Field<S, O> hint = null;
+    private @Nullable Field<S, O> hint = null;
 
     private ConditionBuilder(final Function<? super S, ? extends O> observe, final Predicate<? super O> condition) {
         this.observe = requireNonNull(observe);

@@ -1,5 +1,7 @@
 package io.github.libzeal.zeal.values.sdk.sequence;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * A value representing a sequence of ordered elements.
  *
@@ -11,7 +13,7 @@ package io.github.libzeal.zeal.values.sdk.sequence;
  *
  * @author Justin Albano
  */
-public interface OrderedSequenceValue<T, V extends OrderedSequenceValue<T, V>> extends SequenceValue<T, V> {
+public interface OrderedSequenceValue<T extends @Nullable Object, V extends OrderedSequenceValue<T, V>> extends SequenceValue<T, V> {
 
     /**
      * Checks that the desired element occurs at the desired index.
@@ -23,7 +25,7 @@ public interface OrderedSequenceValue<T, V extends OrderedSequenceValue<T, V>> e
      *
      * @return The value to allow for method chaining.
      */
-    V hasAtIndex(T desired, int index);
+    V hasAtIndex(@Nullable T desired, int index);
 
     /**
      * Checks that the desired element does not occur at the desired index.
@@ -35,7 +37,7 @@ public interface OrderedSequenceValue<T, V extends OrderedSequenceValue<T, V>> e
      *
      * @return The value to allow for method chaining.
      */
-    V doesNotHaveAtIndex(T desired, int index);
+    V doesNotHaveAtIndex(@Nullable T desired, int index);
 
     /**
      * Checks that the last occurrence of the desired element is at the desired
@@ -50,7 +52,7 @@ public interface OrderedSequenceValue<T, V extends OrderedSequenceValue<T, V>> e
      *
      * @return The value to allow for method chaining.
      */
-    V lastIndexOfIs(T desired, int index);
+    V lastIndexOfIs(@Nullable T desired, int index);
 
     /**
      * Checks that the last occurrence of the desired element is not at the
@@ -64,7 +66,7 @@ public interface OrderedSequenceValue<T, V extends OrderedSequenceValue<T, V>> e
      *
      * @return The value to allow for method chaining.
      */
-    V lastIndexOfIsNot(T desired, int index);
+    V lastIndexOfIsNot(@Nullable T desired, int index);
 
     /**
      * Checks that the sequence starts with the supplied element.
@@ -74,7 +76,7 @@ public interface OrderedSequenceValue<T, V extends OrderedSequenceValue<T, V>> e
      *
      * @return This value (fluent interface).
      */
-    V startsWith(T desired);
+    V startsWith(@Nullable T desired);
 
     /**
      * Checks that the sequence does not start with the supplied element.
@@ -84,7 +86,7 @@ public interface OrderedSequenceValue<T, V extends OrderedSequenceValue<T, V>> e
      *
      * @return This value (fluent interface).
      */
-    V doesNotStartWith(T desired);
+    V doesNotStartWith(@Nullable T desired);
 
     /**
      * Checks that the sequence ends with the supplied element.
@@ -94,7 +96,7 @@ public interface OrderedSequenceValue<T, V extends OrderedSequenceValue<T, V>> e
      *
      * @return This value (fluent interface).
      */
-    V endsWith(T desired);
+    V endsWith(@Nullable T desired);
 
     /**
      * Checks that the sequence does not end with the supplied element.
@@ -104,5 +106,5 @@ public interface OrderedSequenceValue<T, V extends OrderedSequenceValue<T, V>> e
      *
      * @return This value (fluent interface).
      */
-    V doesNotEndWith(T desired);
+    V doesNotEndWith(@Nullable T desired);
 }

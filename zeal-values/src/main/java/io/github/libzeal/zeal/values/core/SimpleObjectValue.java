@@ -1,6 +1,7 @@
 package io.github.libzeal.zeal.values.core;
 
 import io.github.libzeal.zeal.values.sdk.BaseValue;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A value used to evaluate arrays.
@@ -18,7 +19,7 @@ public final class SimpleObjectValue<T> extends BaseValue<T, SimpleObjectValue<T
      * @param subject
      *         The subject of the expression.
      */
-    public SimpleObjectValue(final T subject) {
+    public SimpleObjectValue(final @Nullable T subject) {
         super(subject);
     }
 }

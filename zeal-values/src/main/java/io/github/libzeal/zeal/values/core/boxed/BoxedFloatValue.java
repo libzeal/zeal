@@ -1,5 +1,7 @@
 package io.github.libzeal.zeal.values.core.boxed;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * A value used to evaluate {@link Float}s.
  *
@@ -13,7 +15,7 @@ public class BoxedFloatValue extends BaseBoxedFloatingPointValue<Float, BoxedFlo
      * @param subject
      *         The desired subject.
      */
-    public BoxedFloatValue(final Float subject) {
+    public BoxedFloatValue(final @Nullable Float subject) {
         super(
                 subject,
                 "Float value",

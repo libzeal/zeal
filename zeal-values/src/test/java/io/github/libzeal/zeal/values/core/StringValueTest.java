@@ -1,9 +1,15 @@
 package io.github.libzeal.zeal.values.core;
 
+import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.values.sdk.BaseValueTest;
 import io.github.libzeal.zeal.values.sdk.StandardRationales;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+import java.util.function.Function;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class StringValueTest extends BaseValueTest<String, StringValue> {
 
@@ -1949,5 +1955,46 @@ class StringValueTest extends BaseValueTest<String, StringValue> {
             .expected("found '(null)' 0 times")
             .actual("found '(null)' 0 times")
             .run();
+    }
+
+    // ---- null subject ----
+
+    @Test
+    void givenNullSubject_whenStringChecks_thenFalseWithNullActual() {
+
+        final List<Function<StringValue, StringValue>> checks = List.of(
+            value -> value.isBlank(),
+            value -> value.isNotBlank(),
+            value -> value.includes("a"),
+            value -> value.excludes("a"),
+            value -> value.includesExactly("a", 1),
+            value -> value.includesOnce("a"),
+            value -> value.includesMoreThan("a", 0),
+            value -> value.includesMoreThanOrEqualTo("a", 1),
+            value -> value.includesLessThan("a", 1),
+            value -> value.includesLessThanOrEqualTo("a", 1),
+            value -> value.hasAtIndex("a", 0),
+            value -> value.doesNotHaveAtIndex("a", 0),
+            value -> value.lastIndexOfIs("a", 0),
+            value -> value.lastIndexOfIsNot("a", 0),
+            value -> value.startsWith("a"),
+            value -> value.doesNotStartWith("a"),
+            value -> value.endsWith("a"),
+            value -> value.doesNotEndWith("a"),
+            value -> value.matches("a"),
+            value -> value.doesNotMatch("a"),
+            value -> value.isCaseInsensitiveEqualTo("a"),
+            value -> value.hasAtLastIndex("a", 0),
+            value -> value.doesNotHaveAtLastIndex("a", 0)
+        );
+
+        for (final Function<StringValue, StringValue> check : checks) {
+
+            final Evaluation evaluation = check.apply(new StringValue(null)).evaluate().evaluated().get(0);
+
+            assertFalse(evaluation.isTrue(), evaluation.name());
+            assertEquals("(null)", evaluation.rationale().actual(), evaluation.name());
+            assertFalse(evaluation.rationale().hint().isPresent(), evaluation.name());
+        }
     }
 }

@@ -1,6 +1,7 @@
 package io.github.libzeal.zeal.values.core.boxed;
 
 import io.github.libzeal.zeal.values.sdk.BaseValue;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A value used to evaluate {@link Character}s.
@@ -22,7 +23,7 @@ public class BoxedCharacterValue extends BaseValue<Character, BoxedCharacterValu
      * @param subject
      *         The desired subject.
      */
-    public BoxedCharacterValue(final Character subject) {
+    public BoxedCharacterValue(final @Nullable Character subject) {
         super(subject, "Character value");
     }
 

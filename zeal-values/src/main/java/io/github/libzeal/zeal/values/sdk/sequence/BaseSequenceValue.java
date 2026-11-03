@@ -1,6 +1,7 @@
 package io.github.libzeal.zeal.values.sdk.sequence;
 
 import io.github.libzeal.zeal.values.sdk.BaseValue;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -19,7 +20,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @author Justin Albano
  */
-public abstract class BaseSequenceValue<S, T, V extends BaseSequenceValue<S, T, V>>
+public abstract class BaseSequenceValue<S extends @Nullable Object, T, V extends BaseSequenceValue<S, T, V>>
         extends BaseValue<S, V>
         implements SequenceValue<T, V> {
 
@@ -38,7 +39,7 @@ public abstract class BaseSequenceValue<S, T, V extends BaseSequenceValue<S, T, 
      * @throws NullPointerException
      *         The name or operations are {@code null}.
      */
-    protected BaseSequenceValue(final S subject, final String name, final SequenceOperations<T, S> operations) {
+    protected BaseSequenceValue(final @Nullable S subject, final String name, final SequenceOperations<T, S> operations) {
         super(subject, name);
         this.operations = requireNonNull(operations);
     }
@@ -100,14 +101,14 @@ public abstract class BaseSequenceValue<S, T, V extends BaseSequenceValue<S, T, 
     }
 
     @Override
-    public V includes(final T desired) {
+    public V includes(final @Nullable T desired) {
         return append(
                 SequenceConditions.includes(desired, operations)
         );
     }
 
     @Override
-    public V includesAll(final Collection<? extends T> desired) {
+    public V includesAll(final @Nullable Collection<? extends @Nullable T> desired) {
         return append(
                 SequenceConditions.includesAll(desired, operations)
         );
@@ -115,12 +116,12 @@ public abstract class BaseSequenceValue<S, T, V extends BaseSequenceValue<S, T, 
 
     @Override
     @SafeVarargs
-    public final V includesAllOf(final T... desired) {
+    public final V includesAllOf(final @Nullable T... desired) {
         return includesAll(Arrays.asList(desired));
     }
 
     @Override
-    public V includesAny(final Collection<? extends T> desired) {
+    public V includesAny(final @Nullable Collection<? extends @Nullable T> desired) {
         return append(
                 SequenceConditions.includesAny(desired, operations)
         );
@@ -128,19 +129,19 @@ public abstract class BaseSequenceValue<S, T, V extends BaseSequenceValue<S, T, 
 
     @Override
     @SafeVarargs
-    public final V includesAnyOf(final T... desired) {
+    public final V includesAnyOf(final @Nullable T... desired) {
         return includesAny(Arrays.asList(desired));
     }
 
     @Override
-    public V excludes(final T desired) {
+    public V excludes(final @Nullable T desired) {
         return append(
                 SequenceConditions.excludes(desired, operations)
         );
     }
 
     @Override
-    public V excludesAll(final Collection<? extends T> desired) {
+    public V excludesAll(final @Nullable Collection<? extends @Nullable T> desired) {
         return append(
                 SequenceConditions.excludesAll(desired, operations)
         );
@@ -148,12 +149,12 @@ public abstract class BaseSequenceValue<S, T, V extends BaseSequenceValue<S, T, 
 
     @Override
     @SafeVarargs
-    public final V excludesAllOf(final T... desired) {
+    public final V excludesAllOf(final @Nullable T... desired) {
         return excludesAll(Arrays.asList(desired));
     }
 
     @Override
-    public V excludesAny(final Collection<? extends T> desired) {
+    public V excludesAny(final @Nullable Collection<? extends @Nullable T> desired) {
         return append(
                 SequenceConditions.excludesAny(desired, operations)
         );
@@ -161,40 +162,40 @@ public abstract class BaseSequenceValue<S, T, V extends BaseSequenceValue<S, T, 
 
     @Override
     @SafeVarargs
-    public final V excludesAnyOf(final T... desired) {
+    public final V excludesAnyOf(final @Nullable T... desired) {
         return excludesAny(Arrays.asList(desired));
     }
 
     @Override
-    public V includesExactly(final T desired, final long times) {
+    public V includesExactly(final @Nullable T desired, final long times) {
         return append(
                 SequenceConditions.includesExactly(desired, times, operations)
         );
     }
 
     @Override
-    public V includesMoreThan(final T desired, final long times) {
+    public V includesMoreThan(final @Nullable T desired, final long times) {
         return append(
                 SequenceConditions.includesMoreThan(desired, times, operations)
         );
     }
 
     @Override
-    public V includesMoreThanOrEqualTo(final T desired, final long times) {
+    public V includesMoreThanOrEqualTo(final @Nullable T desired, final long times) {
         return append(
                 SequenceConditions.includesMoreThanOrEqualTo(desired, times, operations)
         );
     }
 
     @Override
-    public V includesLessThan(final T desired, final long times) {
+    public V includesLessThan(final @Nullable T desired, final long times) {
         return append(
                 SequenceConditions.includesLessThan(desired, times, operations)
         );
     }
 
     @Override
-    public V includesLessThanOrEqualTo(final T desired, final long times) {
+    public V includesLessThanOrEqualTo(final @Nullable T desired, final long times) {
         return append(
                 SequenceConditions.includesLessThanOrEqualTo(desired, times, operations)
         );

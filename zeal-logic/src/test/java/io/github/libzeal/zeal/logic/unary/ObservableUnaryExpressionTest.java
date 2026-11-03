@@ -166,7 +166,7 @@ class ObservableUnaryExpressionTest {
     }
 
     @Test
-    void givenNullSubjectAndNotNullable_whenEvaluate_thenFailsWithoutObserving() {
+    void givenNullSubjectAndNotNullable_whenEvaluate_thenFailsWithNullActualAndNoHint() {
 
         final AtomicInteger observations = new AtomicInteger();
         final ObservableUnaryExpression<Object, Object> expression = new ObservableUnaryExpression<>(
@@ -184,7 +184,8 @@ class ObservableUnaryExpressionTest {
         final Evaluation evaluation = expression.evaluate();
 
         assertFalse(evaluation.isTrue());
-        assertEquals("null", evaluation.rationale().actual());
+        assertEquals("(null)", evaluation.rationale().actual());
+        assertFalse(evaluation.rationale().hint().isPresent());
         assertEquals(0, observations.get());
     }
 

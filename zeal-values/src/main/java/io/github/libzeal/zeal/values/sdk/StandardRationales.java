@@ -1,5 +1,7 @@
 package io.github.libzeal.zeal.values.sdk;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -178,7 +180,7 @@ public class StandardRationales {
          *
          * @return The formatted name and value.
          */
-        public static String withValue(final String name, final Object value) {
+        public static String withValue(final String name, final @Nullable Object value) {
             return name + "[" + stringify(value) + "]";
         }
 
@@ -231,7 +233,7 @@ public class StandardRationales {
         public static String withPairs(
                 final String name,
                 final Object key,
-                final Object value
+                final @Nullable Object value
         ) {
             return name + "[" + key + "=" + stringify(value) + "]";
         }
@@ -255,9 +257,9 @@ public class StandardRationales {
         public static String withPairs(
                 final String name,
                 final Object key1,
-                final Object value1,
+                final @Nullable Object value1,
                 final Object key2,
-                final Object value2
+                final @Nullable Object value2
         ) {
             return name + "["
                     + key1 + "=" + stringify(value1) + ", "
@@ -279,7 +281,7 @@ public class StandardRationales {
      * @return Formatted string denoting that the supplied value should be
      * included.
      */
-    public static <T> String includes(final T value) {
+    public static <T> String includes(final @Nullable T value) {
         return Names.withValue("includes", value);
     }
 
@@ -297,7 +299,7 @@ public class StandardRationales {
      * @return Formatted string denoting that the supplied value should be
      * excluded.
      */
-    public static <T> String excludes(final T value) {
+    public static <T> String excludes(final @Nullable T value) {
         return Names.withValue("excludes", value);
     }
 
@@ -315,7 +317,7 @@ public class StandardRationales {
      * @return Formatted string denoting that the supplied element should be
      * found at the supplied index.
      */
-    public static <T> String needleInHaystackHint(final int index, final T element) {
+    public static <T> String needleInHaystackHint(final int index, final @Nullable T element) {
 
         if (index != -1) {
             return "'" + stringify(element) + "' found at index " + index;

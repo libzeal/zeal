@@ -3,6 +3,7 @@ package io.github.libzeal.zeal.assertion;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.format.EvaluationFormatter;
 import io.github.libzeal.zeal.logic.unary.UnaryExpression;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
@@ -72,7 +73,7 @@ final class AssertionExpressionEvaluator<N extends Throwable, F extends Throwabl
      *         the supplied expression (when calling
      *         {@link UnaryExpression#evaluate()}) is {@code null}.
      */
-    public <T> T evaluate(final UnaryExpression<T> expression, final String message) throws N, F {
+    public <T> T evaluate(final UnaryExpression<T> expression, final @Nullable String message) throws N, F {
 
         if (expression == null) {
             throw new NullPointerException(Messages.NULL_EXPRESSION);
@@ -98,12 +99,19 @@ final class AssertionExpressionEvaluator<N extends Throwable, F extends Throwabl
             }
         }
         else {
-            return subject;
+            return passedSubject(subject);
         }
     }
 
+    // A passing evaluation only has a null subject when every condition accepts null (such as isNull), in which case
+    // the null subject is returned
+    @SuppressWarnings("NullAway")
+    private static <T> T passedSubject(final @Nullable T subject) {
+        return subject;
+    }
+
     static String formatMessage(
-            final EvaluationFormatter formatter, final String message,
+            final EvaluationFormatter formatter, final @Nullable String message,
             final Evaluation evaluation
     ) {
 

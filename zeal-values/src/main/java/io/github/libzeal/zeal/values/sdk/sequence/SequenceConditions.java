@@ -7,6 +7,7 @@ import io.github.libzeal.zeal.logic.unary.ObservableUnaryExpression.Field;
 import io.github.libzeal.zeal.values.config.Configuration;
 import io.github.libzeal.zeal.values.sdk.StandardRationales;
 import io.github.libzeal.zeal.values.sdk.StandardRationales.Operators;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.List;
@@ -225,7 +226,7 @@ public class SequenceConditions {
      * @return A condition that checks if a sequence includes the supplied
      * element.
      */
-    public static <T, S> Condition<S> includes(final T desired, final SequenceOperations<T, S> ops) {
+    public static <T extends @Nullable Object, S> Condition<S> includes(final @Nullable T desired, final SequenceOperations<T, S> ops) {
         return ConditionBuilder.of((S s) -> ops.includes(s, desired))
                 .name(StandardRationales.includes(desired))
                 .expected(StandardRationales.includes(desired))
@@ -249,8 +250,8 @@ public class SequenceConditions {
      * @return A condition that checks if a sequence includes the supplied
      * elements.
      */
-    public static <T, S> Condition<S> includesAll(
-            final Collection<? extends T> desired,
+    public static <T extends @Nullable Object, S> Condition<S> includesAll(
+            final @Nullable Collection<? extends @Nullable T> desired,
             final SequenceOperations<T, S> ops
     ) {
 
@@ -294,7 +295,7 @@ public class SequenceConditions {
      * @return A condition that checks if a sequence includes any of the
      * supplied elements.
      */
-    public static <T, S> Condition<S> includesAny(final Collection<? extends T> desired, final SequenceOperations<T, S> ops) {
+    public static <T extends @Nullable Object, S> Condition<S> includesAny(final @Nullable Collection<? extends @Nullable T> desired, final SequenceOperations<T, S> ops) {
 
         if (desired == null) {
             return passesForNullDesired(
@@ -320,7 +321,7 @@ public class SequenceConditions {
                 .build();
     }
 
-    private static <T, S> Condition<S> passesForNullDesired(
+    private static <T extends @Nullable Object, S> Condition<S> passesForNullDesired(
             final String name, final String expected,
             final String actual
     ) {
@@ -333,7 +334,7 @@ public class SequenceConditions {
                 .build();
     }
 
-    private static <T> List<String> computeMissing(final Collection<? extends T> desired, final List<T> found) {
+    private static <T extends @Nullable Object> List<String> computeMissing(final Collection<? extends @Nullable T> desired, final List<T> found) {
 
         final boolean truncated = desired.size() > Configuration.MAX_LIST_DISPLAY_LENGTH;
 
@@ -350,7 +351,7 @@ public class SequenceConditions {
         return missing;
     }
 
-    private static <T> List<String> stringifyAll(final List<T> elements) {
+    private static <T extends @Nullable Object> List<String> stringifyAll(final List<T> elements) {
         return elements.stream()
                 .map(ObjectFormatter::stringify)
                 .toList();
@@ -372,7 +373,7 @@ public class SequenceConditions {
      * @return A condition that checks if a sequence excludes the supplied
      * element.
      */
-    public static <T, S> Condition<S> excludes(final T undesired, final SequenceOperations<T, S> ops) {
+    public static <T extends @Nullable Object, S> Condition<S> excludes(final @Nullable T undesired, final SequenceOperations<T, S> ops) {
         return ConditionBuilder.of((S s) -> !ops.includes(s, undesired))
                 .name(StandardRationales.excludes(undesired))
                 .expected(StandardRationales.excludes(undesired))
@@ -396,7 +397,7 @@ public class SequenceConditions {
      * @return A condition that checks if a sequence excludes the supplied
      * elements.
      */
-    public static <T, S> Condition<S> excludesAll(final Collection<? extends T> undesired, final SequenceOperations<T, S> ops) {
+    public static <T extends @Nullable Object, S> Condition<S> excludesAll(final @Nullable Collection<? extends @Nullable T> undesired, final SequenceOperations<T, S> ops) {
 
         if (undesired == null) {
             return passesForNullDesired(
@@ -438,7 +439,7 @@ public class SequenceConditions {
      * @return A condition that checks if a sequence excludes any of the
      * supplied elements.
      */
-    public static <T, S> Condition<S> excludesAny(final Collection<? extends T> undesired, final SequenceOperations<T, S> ops) {
+    public static <T extends @Nullable Object, S> Condition<S> excludesAny(final @Nullable Collection<? extends @Nullable T> undesired, final SequenceOperations<T, S> ops) {
 
         if (undesired == null) {
             return passesForNullDesired(
@@ -482,7 +483,7 @@ public class SequenceConditions {
      * @return A condition that checks if a sequence includes the supplied
      * elements the supplied number of times.
      */
-    public static <T, S> Condition<S> includesExactly(final T desired, final long times, final SequenceOperations<T, S> ops) {
+    public static <T extends @Nullable Object, S> Condition<S> includesExactly(final @Nullable T desired, final long times, final SequenceOperations<T, S> ops) {
 
         final String desiredAsString = stringify(desired);
 
@@ -523,7 +524,7 @@ public class SequenceConditions {
      * @return A condition that checks if a sequence includes the supplied
      * elements more than the supplied number of times.
      */
-    public static <T, S> Condition<S> includesMoreThan(final T desired, final long times, final SequenceOperations<T, S> ops) {
+    public static <T extends @Nullable Object, S> Condition<S> includesMoreThan(final @Nullable T desired, final long times, final SequenceOperations<T, S> ops) {
 
         final String desiredAsString = stringify(desired);
 
@@ -560,7 +561,7 @@ public class SequenceConditions {
      * @return A condition that checks if a sequence includes the supplied
      * elements more than or equal to the supplied number of times.
      */
-    public static <T, S> Condition<S> includesMoreThanOrEqualTo(final T desired, final long times, final SequenceOperations<T, S> ops) {
+    public static <T extends @Nullable Object, S> Condition<S> includesMoreThanOrEqualTo(final @Nullable T desired, final long times, final SequenceOperations<T, S> ops) {
 
         final String desiredAsString = stringify(desired);
 
@@ -597,7 +598,7 @@ public class SequenceConditions {
      * @return A condition that checks if a sequence includes the supplied
      * elements less than the supplied number of times.
      */
-    public static <T, S> Condition<S> includesLessThan(final T desired, final long times, final SequenceOperations<T, S> ops) {
+    public static <T extends @Nullable Object, S> Condition<S> includesLessThan(final @Nullable T desired, final long times, final SequenceOperations<T, S> ops) {
 
         final String desiredAsString = stringify(desired);
 
@@ -634,7 +635,7 @@ public class SequenceConditions {
      * @return A condition that checks if a sequence includes the supplied
      * elements less than or equal to the supplied number of times.
      */
-    public static <T, S> Condition<S> includesLessThanOrEqualTo(final T desired, final long times, final SequenceOperations<T, S> ops) {
+    public static <T extends @Nullable Object, S> Condition<S> includesLessThanOrEqualTo(final @Nullable T desired, final long times, final SequenceOperations<T, S> ops) {
 
         final String desiredAsString = stringify(desired);
 

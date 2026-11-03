@@ -1,6 +1,7 @@
 package io.github.libzeal.zeal.values.collection;
 
 import io.github.libzeal.zeal.values.sdk.sequence.BaseSequenceValue;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
 
@@ -12,7 +13,7 @@ import java.util.Collection;
  *
  * @author Justin Albano
  */
-public class SimpleCollectionValue<T> extends BaseSequenceValue<Collection<T>, T, SimpleCollectionValue<T>> {
+public class SimpleCollectionValue<T extends @Nullable Object> extends BaseSequenceValue<Collection<T>, T, SimpleCollectionValue<T>> {
 
     /**
      * Creates a collection value from the supplied subject.
@@ -20,7 +21,7 @@ public class SimpleCollectionValue<T> extends BaseSequenceValue<Collection<T>, T
      * @param subject
      *         The desired subject.
      */
-    public SimpleCollectionValue(final Collection<T> subject) {
+    public SimpleCollectionValue(final @Nullable Collection<T> subject) {
         super(subject, "Collection value", new CollectionOperations<>());
     }
 }

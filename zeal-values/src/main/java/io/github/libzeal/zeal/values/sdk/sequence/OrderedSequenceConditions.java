@@ -5,6 +5,7 @@ import io.github.libzeal.zeal.logic.unary.Condition;
 import io.github.libzeal.zeal.logic.unary.ConditionBuilder;
 import io.github.libzeal.zeal.values.sdk.StandardRationales;
 import io.github.libzeal.zeal.values.sdk.StandardRationales.Operators;
+import org.jspecify.annotations.Nullable;
 
 import static io.github.libzeal.zeal.logic.format.ObjectFormatter.stringify;
 import static io.github.libzeal.zeal.values.sdk.StandardRationales.Names.withPairs;
@@ -40,7 +41,7 @@ public class OrderedSequenceConditions {
      * @return A condition that checks if the last index of the supplied desired
      * element is the supplied index.
      */
-    public static <T, S> Condition<S> lastIndexOfIs(final T desired, final int index, final OrderedSequenceOperations<T, S> ops) {
+    public static <T extends @Nullable Object, S> Condition<S> lastIndexOfIs(final @Nullable T desired, final int index, final OrderedSequenceOperations<T, S> ops) {
         return ConditionBuilder.observing((S s) -> ops.lastIndexOf(s, desired))
                 .passesIf(lastIndex -> lastIndex == index)
                 .name(Operators.EQ.display(lastIndexOfName(desired), index))
@@ -66,7 +67,7 @@ public class OrderedSequenceConditions {
      * @return A condition that checks if the last index of the supplied desired
      * element is not the supplied index.
      */
-    public static <T, S> Condition<S> lastIndexOfIsNot(final T desired, final int index, final OrderedSequenceOperations<T, S> ops) {
+    public static <T extends @Nullable Object, S> Condition<S> lastIndexOfIsNot(final @Nullable T desired, final int index, final OrderedSequenceOperations<T, S> ops) {
         return ConditionBuilder.observing((S s) -> ops.lastIndexOf(s, desired))
                 .passesIf(lastIndex -> lastIndex != index)
                 .name(Operators.NE.display(lastIndexOfName(desired), index))
@@ -74,7 +75,7 @@ public class OrderedSequenceConditions {
                 .build();
     }
 
-    private static <T> String lastIndexOfName(final T desired) {
+    private static <T extends @Nullable Object> String lastIndexOfName(final @Nullable T desired) {
         return "lastIndexOf[" + stringify(desired) + "]";
     }
 
@@ -96,7 +97,7 @@ public class OrderedSequenceConditions {
      * @return A condition that checks if the index of the supplied desired
      * element is the supplied index.
      */
-    public static <T, S> Condition<S> hasAtIndex(final T desired, final int index, final OrderedSequenceOperations<T, S> ops) {
+    public static <T extends @Nullable Object, S> Condition<S> hasAtIndex(final @Nullable T desired, final int index, final OrderedSequenceOperations<T, S> ops) {
 
         final String desiredName = stringify(desired);
 
@@ -141,7 +142,7 @@ public class OrderedSequenceConditions {
      * @return A condition that checks if the index of the supplied desired
      * element is not the supplied index.
      */
-    public static <T, S> Condition<S> doesNotHaveAtIndex(final T desired, final int index, final OrderedSequenceOperations<T, S> ops) {
+    public static <T extends @Nullable Object, S> Condition<S> doesNotHaveAtIndex(final @Nullable T desired, final int index, final OrderedSequenceOperations<T, S> ops) {
 
         final String desiredName = stringify(desired);
 
@@ -173,7 +174,7 @@ public class OrderedSequenceConditions {
      * @return A condition that checks if a sequence starts with the supplied
      * desired element.
      */
-    public static <T, S> Condition<S> startsWith(final T desired, final OrderedSequenceOperations<T, S> ops) {
+    public static <T extends @Nullable Object, S> Condition<S> startsWith(final @Nullable T desired, final OrderedSequenceOperations<T, S> ops) {
 
         final String desiredName = stringify(desired);
 
@@ -214,7 +215,7 @@ public class OrderedSequenceConditions {
      * @return A condition that checks if a sequence does not start with the
      * supplied desired element.
      */
-    public static <T, S> Condition<S> doesNotStartWith(final T desired, final OrderedSequenceOperations<T, S> ops) {
+    public static <T extends @Nullable Object, S> Condition<S> doesNotStartWith(final @Nullable T desired, final OrderedSequenceOperations<T, S> ops) {
 
         final String desiredName = stringify(desired);
 
@@ -250,7 +251,7 @@ public class OrderedSequenceConditions {
      * @return A condition that checks if a sequence ends with the supplied
      * desired element.
      */
-    public static <T, S> Condition<S> endsWith(final T desired, final OrderedSequenceOperations<T, S> ops) {
+    public static <T extends @Nullable Object, S> Condition<S> endsWith(final @Nullable T desired, final OrderedSequenceOperations<T, S> ops) {
 
         final String desiredName = stringify(desired);
 
@@ -291,7 +292,7 @@ public class OrderedSequenceConditions {
      * @return A condition that checks if a sequence does not end with the
      * supplied desired element.
      */
-    public static <T, S> Condition<S> doesNotEndWith(final T desired, final OrderedSequenceOperations<T, S> ops) {
+    public static <T extends @Nullable Object, S> Condition<S> doesNotEndWith(final @Nullable T desired, final OrderedSequenceOperations<T, S> ops) {
 
         final String desiredName = stringify(desired);
 
@@ -327,7 +328,7 @@ public class OrderedSequenceConditions {
      * @return A condition that checks if a sequence includes the supplied
      * desired element.
      */
-    public static <T, S> Condition<S> includes(final T desired, final OrderedSequenceOperations<T, S> ops) {
+    public static <T extends @Nullable Object, S> Condition<S> includes(final @Nullable T desired, final OrderedSequenceOperations<T, S> ops) {
         return ConditionBuilder.observing((S s) -> ops.indexOf(s, desired))
                 .passesIf(index -> index > -1)
                 .name(StandardRationales.includes(desired))
@@ -353,7 +354,7 @@ public class OrderedSequenceConditions {
      * @return A condition that checks if a sequence excludes the supplied
      * undesired element.
      */
-    public static <T, S> Condition<S> excludes(final T undesired, final OrderedSequenceOperations<T, S> ops) {
+    public static <T extends @Nullable Object, S> Condition<S> excludes(final @Nullable T undesired, final OrderedSequenceOperations<T, S> ops) {
         return ConditionBuilder.observing((S s) -> ops.indexOf(s, undesired))
                 .passesIf(index -> index == -1)
                 .name(StandardRationales.excludes(undesired))

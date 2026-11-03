@@ -1,11 +1,15 @@
 package io.github.libzeal.zeal.values.collection;
 
+import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.values.sdk.BaseValueTest;
 import org.junit.jupiter.api.Test;
 
 import java.util.AbstractList;
 import java.util.List;
+import java.util.function.Function;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -200,5 +204,55 @@ class ListValueTest extends BaseValueTest<List<String>, ListValue<String>>
             .excludesAny(partiallyIncluded);
 
         assertTrue(value.evaluate().isTrue());
+    }
+
+    // ---- null subject ----
+
+    @Test
+    void givenNullSubject_whenSequenceChecks_thenFalseWithNullActual() {
+
+        final List<Function<ListValue<String>, ListValue<String>>> checks = List.of(
+            value -> value.isEmpty(),
+            value -> value.isNotEmpty(),
+            value -> value.hasLengthOf(0),
+            value -> value.doesNotHaveLengthOf(0),
+            value -> value.isLongerThan(0),
+            value -> value.isLongerThanOrEqualTo(0),
+            value -> value.isShorterThan(1),
+            value -> value.isShorterThanOrEqualTo(1),
+            value -> value.includes("a"),
+            value -> value.includesAll(List.of("a")),
+            value -> value.includesAllOf("a"),
+            value -> value.includesAny(List.of("a")),
+            value -> value.includesAnyOf("a"),
+            value -> value.excludes("a"),
+            value -> value.excludesAll(List.of("a")),
+            value -> value.excludesAllOf("a"),
+            value -> value.excludesAny(List.of("a")),
+            value -> value.excludesAnyOf("a"),
+            value -> value.includesExactly("a", 1),
+            value -> value.includesOnce("a"),
+            value -> value.includesMoreThan("a", 0),
+            value -> value.includesMoreThanOrEqualTo("a", 1),
+            value -> value.includesLessThan("a", 1),
+            value -> value.includesLessThanOrEqualTo("a", 1),
+            value -> value.hasAtIndex("a", 0),
+            value -> value.doesNotHaveAtIndex("a", 0),
+            value -> value.lastIndexOfIs("a", 0),
+            value -> value.lastIndexOfIsNot("a", 0),
+            value -> value.startsWith("a"),
+            value -> value.doesNotStartWith("a"),
+            value -> value.endsWith("a"),
+            value -> value.doesNotEndWith("a")
+        );
+
+        for (final Function<ListValue<String>, ListValue<String>> check : checks) {
+
+            final Evaluation evaluation = check.apply(new ListValue<>(null)).evaluate().evaluated().get(0);
+
+            assertFalse(evaluation.isTrue(), evaluation.name());
+            assertEquals("(null)", evaluation.rationale().actual(), evaluation.name());
+            assertFalse(evaluation.rationale().hint().isPresent(), evaluation.name());
+        }
     }
 }

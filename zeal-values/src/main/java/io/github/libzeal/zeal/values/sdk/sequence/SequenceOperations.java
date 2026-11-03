@@ -1,5 +1,7 @@
 package io.github.libzeal.zeal.values.sdk.sequence;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.Collection;
 import java.util.List;
 
@@ -18,7 +20,7 @@ import static java.util.stream.Collectors.toList;
  *
  * @author Justin Albano
  */
-public interface SequenceOperations<T, S> {
+public interface SequenceOperations<T extends @Nullable Object, S> {
 
     /**
      * Obtains the size of the supplied haystack.
@@ -41,7 +43,7 @@ public interface SequenceOperations<T, S> {
      * @return True if the supplied needle is found in the supplied haystack;
      * false otherwise.
      */
-    boolean includes(S haystack, T needle);
+    boolean includes(S haystack, @Nullable T needle);
 
     /**
      * Finds the number of occurrences of the supplied needle in the supplied
@@ -55,7 +57,7 @@ public interface SequenceOperations<T, S> {
      * @return The number of occurrences of the supplied needle in the supplied
      * haystack.
      */
-    int occurrences(S haystack, T needle);
+    int occurrences(S haystack, @Nullable T needle);
 
     /**
      * Obtains a list of the supplied needles that were found in the supplied

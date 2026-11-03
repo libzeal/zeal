@@ -1,9 +1,11 @@
 package io.github.libzeal.zeal.values.core.boxed;
 
+import org.jspecify.annotations.Nullable;
+
 abstract class BaseBoxedFloatingPointValue<N extends Number, V extends BaseBoxedFloatingPointValue<N, V>>
         extends BaseBoxedNumberValue<N, V> {
 
-    BaseBoxedFloatingPointValue(final N subject, final String name, final FloatingPointOperations<N> operations) {
+    BaseBoxedFloatingPointValue(final @Nullable N subject, final String name, final FloatingPointOperations<N> operations) {
         super(subject, name, operations);
     }
 

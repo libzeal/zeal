@@ -1,5 +1,7 @@
 package io.github.libzeal.zeal.values.core.boxed;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * A value used to evaluate {@link Short}s.
  *
@@ -13,7 +15,7 @@ public class BoxedShortValue extends BaseBoxedWholeNumberValue<Short, BoxedShort
      * @param subject
      *         The desired subject.
      */
-    public BoxedShortValue(final Short subject) {
+    public BoxedShortValue(final @Nullable Short subject) {
         super(
                 subject,
                 "Short value",

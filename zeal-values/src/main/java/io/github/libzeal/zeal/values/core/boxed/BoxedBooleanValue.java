@@ -1,6 +1,7 @@
 package io.github.libzeal.zeal.values.core.boxed;
 
 import io.github.libzeal.zeal.values.sdk.BaseValue;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A value used to evaluate {@link Boolean}s.
@@ -15,7 +16,7 @@ public class BoxedBooleanValue extends BaseValue<Boolean, BoxedBooleanValue> {
      * @param subject
      *         The desired subject.
      */
-    public BoxedBooleanValue(final Boolean subject) {
+    public BoxedBooleanValue(final @Nullable Boolean subject) {
         super(subject, "Boolean value");
     }
 

@@ -5,6 +5,7 @@ import io.github.libzeal.zeal.values.core.SimpleEnumValue;
 import io.github.libzeal.zeal.values.core.SimpleObjectValue;
 import io.github.libzeal.zeal.values.core.StringValue;
 import io.github.libzeal.zeal.values.core.boxed.*;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -33,7 +34,7 @@ public class Values {
      *
      * @return A value that wraps the supplied value.
      */
-    public static <T> SimpleObjectValue<T> value(final T value) {
+    public static <T> SimpleObjectValue<T> value(final @Nullable T value) {
         return new SimpleObjectValue<>(value);
     }
 
@@ -47,7 +48,7 @@ public class Values {
      *
      * @return A value that wraps the supplied {@link Enum}.
      */
-    public static <T extends Enum<T>> SimpleEnumValue<T> value(final T value) {
+    public static <T extends Enum<T>> SimpleEnumValue<T> value(final @Nullable T value) {
         return new SimpleEnumValue<>(value);
     }
 
@@ -59,7 +60,7 @@ public class Values {
      *
      * @return A value that wraps the supplied {@link String}.
      */
-    public static StringValue value(final String value) {
+    public static StringValue value(final @Nullable String value) {
         return new StringValue(value);
     }
 
@@ -71,7 +72,7 @@ public class Values {
      *
      * @return A value that wraps the supplied {@link Long}.
      */
-    public static BoxedLongValue value(final Long value) {
+    public static BoxedLongValue value(final @Nullable Long value) {
         return new BoxedLongValue(value);
     }
 
@@ -83,7 +84,7 @@ public class Values {
      *
      * @return A value that wraps the supplied {@link Integer}.
      */
-    public static BoxedIntegerValue value(final Integer value) {
+    public static BoxedIntegerValue value(final @Nullable Integer value) {
         return new BoxedIntegerValue(value);
     }
 
@@ -95,7 +96,7 @@ public class Values {
      *
      * @return A value that wraps the supplied {@link Double}.
      */
-    public static BoxedDoubleValue value(final Double value) {
+    public static BoxedDoubleValue value(final @Nullable Double value) {
         return new BoxedDoubleValue(value);
     }
 
@@ -107,7 +108,7 @@ public class Values {
      *
      * @return A value that wraps the supplied {@link Float}.
      */
-    public static BoxedFloatValue value(final Float value) {
+    public static BoxedFloatValue value(final @Nullable Float value) {
         return new BoxedFloatValue(value);
     }
 
@@ -119,7 +120,7 @@ public class Values {
      *
      * @return A value that wraps the supplied {@link Boolean}.
      */
-    public static BoxedBooleanValue value(final Boolean value) {
+    public static BoxedBooleanValue value(final @Nullable Boolean value) {
         return new BoxedBooleanValue(value);
     }
 
@@ -131,7 +132,7 @@ public class Values {
      *
      * @return A value that wraps the supplied {@link Byte}.
      */
-    public static BoxedByteValue value(final Byte value) {
+    public static BoxedByteValue value(final @Nullable Byte value) {
         return new BoxedByteValue(value);
     }
 
@@ -143,7 +144,7 @@ public class Values {
      *
      * @return A value that wraps the supplied {@link Character}.
      */
-    public static BoxedCharacterValue value(final Character value) {
+    public static BoxedCharacterValue value(final @Nullable Character value) {
         return new BoxedCharacterValue(value);
     }
 
@@ -161,7 +162,7 @@ public class Values {
      *
      * @return A value that wraps the supplied object array.
      */
-    public static <T> ArrayValue<T> value(final T[] value) {
+    public static <T extends @Nullable Object> ArrayValue<T> value(final T @Nullable [] value) {
         return new ArrayValue<>(value);
     }
 
@@ -175,7 +176,7 @@ public class Values {
      *
      * @return A value that wraps the supplied {@link Iterator}.
      */
-    public static <T> IteratorValue<T> value(final Iterator<T> value) {
+    public static <T extends @Nullable Object> IteratorValue<T> value(final @Nullable Iterator<T> value) {
         return new IteratorValue<>(value);
     }
 
@@ -189,7 +190,7 @@ public class Values {
      *
      * @return A value that wraps the supplied {@link Iterable}.
      */
-    public static <T> IterableValue<T> value(final Iterable<T> value) {
+    public static <T extends @Nullable Object> IterableValue<T> value(final @Nullable Iterable<T> value) {
         return new IterableValue<>(value);
     }
 
@@ -203,7 +204,7 @@ public class Values {
      *
      * @return A value that wraps the supplied {@link Collection}.
      */
-    public static <T> SimpleCollectionValue<T> value(final Collection<T> value) {
+    public static <T extends @Nullable Object> SimpleCollectionValue<T> value(final @Nullable Collection<T> value) {
         return new SimpleCollectionValue<>(value);
     }
 
@@ -217,7 +218,7 @@ public class Values {
      *
      * @return A value that wraps the supplied {@link List}.
      */
-    public static <T> ListValue<T> value(final List<T> value) {
+    public static <T extends @Nullable Object> ListValue<T> value(final @Nullable List<T> value) {
         return new ListValue<>(value);
     }
 
@@ -231,7 +232,7 @@ public class Values {
      *
      * @return A value that wraps the supplied {@link Set}.
      */
-    public static <T> SetValue<T> value(final Set<T> value) {
+    public static <T extends @Nullable Object> SetValue<T> value(final @Nullable Set<T> value) {
         return new SetValue<>(value);
     }
 }

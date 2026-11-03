@@ -4,6 +4,7 @@ import io.github.libzeal.zeal.assertion.error.AssertionFailedError;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.format.SimpleEvaluationFormatter;
 import io.github.libzeal.zeal.logic.unary.UnaryExpression;
+import org.jspecify.annotations.Nullable;
 
 /**
  * An assertion evaluator responsible for evaluating assertions invariants
@@ -82,7 +83,7 @@ public class Confirmation {
      * @throws AssertionFailedError
      *         The supplied expression evaluates to false.
      */
-    public <T> T confirm(final UnaryExpression<T> expression, final String message) {
+    public <T> T confirm(final UnaryExpression<T> expression, final @Nullable String message) {
         return evaluator.evaluate(expression, message);
     }
 }

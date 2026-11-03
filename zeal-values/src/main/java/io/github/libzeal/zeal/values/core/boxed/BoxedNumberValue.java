@@ -1,6 +1,7 @@
 package io.github.libzeal.zeal.values.core.boxed;
 
 import io.github.libzeal.zeal.values.core.ObjectValue;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A value representing a boxed {@link Number}.
@@ -24,7 +25,7 @@ public interface BoxedNumberValue<T extends Number, V extends BoxedNumberValue<T
      *
      * @return This value (fluent interface).
      */
-    V isLessThan(T value);
+    V isLessThan(@Nullable T value);
 
     /**
      * Alias for {@link #isLessThan}
@@ -37,7 +38,7 @@ public interface BoxedNumberValue<T extends Number, V extends BoxedNumberValue<T
      *
      * @see #isLessThan
      */
-    default V lt(final T value) {
+    default V lt(final @Nullable T value) {
         return isLessThan(value);
     }
 
@@ -50,7 +51,7 @@ public interface BoxedNumberValue<T extends Number, V extends BoxedNumberValue<T
      *
      * @return This value (fluent interface).
      */
-    V isGreaterThan(T value);
+    V isGreaterThan(@Nullable T value);
 
     /**
      * Alias for {@link #isGreaterThan}
@@ -63,7 +64,7 @@ public interface BoxedNumberValue<T extends Number, V extends BoxedNumberValue<T
      *
      * @see #isGreaterThan
      */
-    default V gt(final T value) {
+    default V gt(final @Nullable T value) {
         return isGreaterThan(value);
     }
 
@@ -76,7 +77,7 @@ public interface BoxedNumberValue<T extends Number, V extends BoxedNumberValue<T
      *
      * @return This value (fluent interface).
      */
-    V isLessThanOrEqualTo(T value);
+    V isLessThanOrEqualTo(@Nullable T value);
 
     /**
      * Alias for {@link #isLessThanOrEqualTo}
@@ -89,7 +90,7 @@ public interface BoxedNumberValue<T extends Number, V extends BoxedNumberValue<T
      *
      * @see #isLessThanOrEqualTo
      */
-    default V lte(final T value) {
+    default V lte(final @Nullable T value) {
         return isLessThanOrEqualTo(value);
     }
 
@@ -102,7 +103,7 @@ public interface BoxedNumberValue<T extends Number, V extends BoxedNumberValue<T
      *
      * @return This value (fluent interface).
      */
-    V isGreaterThanOrEqualTo(T value);
+    V isGreaterThanOrEqualTo(@Nullable T value);
 
     /**
      * Alias for {@link #isGreaterThanOrEqualTo}
@@ -115,7 +116,7 @@ public interface BoxedNumberValue<T extends Number, V extends BoxedNumberValue<T
      *
      * @see #isGreaterThanOrEqualTo
      */
-    default V gte(final T value) {
+    default V gte(final @Nullable T value) {
         return isGreaterThanOrEqualTo(value);
     }
 

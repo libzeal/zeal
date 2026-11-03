@@ -1,5 +1,7 @@
 package io.github.libzeal.zeal.values.sdk.sequence;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.Collection;
 
 /**
@@ -14,7 +16,7 @@ import java.util.Collection;
  *
  * @author Justin Albano
  */
-public interface SequenceValue<T, V extends SequenceValue<T, V>> {
+public interface SequenceValue<T extends @Nullable Object, V extends SequenceValue<T, V>> {
 
     /**
      * Checks if the value is empty.
@@ -98,7 +100,7 @@ public interface SequenceValue<T, V extends SequenceValue<T, V>> {
      *
      * @return This value (fluent interface).
      */
-    V includes(T desired);
+    V includes(@Nullable T desired);
 
     /**
      * Checks that the value includes the supplied elements.
@@ -108,7 +110,7 @@ public interface SequenceValue<T, V extends SequenceValue<T, V>> {
      *
      * @return This value (fluent interface).
      */
-    V includesAll(Collection<? extends T> desired);
+    V includesAll(@Nullable Collection<? extends @Nullable T> desired);
 
     /**
      * Checks that the value includes the supplied elements.
@@ -119,7 +121,7 @@ public interface SequenceValue<T, V extends SequenceValue<T, V>> {
      * @return This value (fluent interface).
      */
     @SuppressWarnings("unchecked")
-    V includesAllOf(T... desired);
+    V includesAllOf(@Nullable T... desired);
 
     /**
      * Checks that the value includes any of the supplied elements.
@@ -129,7 +131,7 @@ public interface SequenceValue<T, V extends SequenceValue<T, V>> {
      *
      * @return This value (fluent interface).
      */
-    V includesAny(Collection<? extends T> desired);
+    V includesAny(@Nullable Collection<? extends @Nullable T> desired);
 
     /**
      * Checks that the value includes any of the supplied elements.
@@ -140,7 +142,7 @@ public interface SequenceValue<T, V extends SequenceValue<T, V>> {
      * @return This value (fluent interface).
      */
     @SuppressWarnings("unchecked")
-    V includesAnyOf(T... desired);
+    V includesAnyOf(@Nullable T... desired);
 
     /**
      * Checks that the value excludes the supplied element.
@@ -150,7 +152,7 @@ public interface SequenceValue<T, V extends SequenceValue<T, V>> {
      *
      * @return This value (fluent interface).
      */
-    V excludes(T desired);
+    V excludes(@Nullable T desired);
 
     /**
      * Checks that the value excludes the supplied elements.
@@ -160,7 +162,7 @@ public interface SequenceValue<T, V extends SequenceValue<T, V>> {
      *
      * @return This value (fluent interface).
      */
-    V excludesAll(Collection<? extends T> desired);
+    V excludesAll(@Nullable Collection<? extends @Nullable T> desired);
 
     /**
      * Checks that the value excludes the supplied elements.
@@ -171,7 +173,7 @@ public interface SequenceValue<T, V extends SequenceValue<T, V>> {
      * @return This value (fluent interface).
      */
     @SuppressWarnings("unchecked")
-    V excludesAllOf(T... desired);
+    V excludesAllOf(@Nullable T... desired);
 
     /**
      * Checks that the value excludes any of the supplied elements.
@@ -181,7 +183,7 @@ public interface SequenceValue<T, V extends SequenceValue<T, V>> {
      *
      * @return This value (fluent interface).
      */
-    V excludesAny(Collection<? extends T> desired);
+    V excludesAny(@Nullable Collection<? extends @Nullable T> desired);
 
     /**
      * Checks that the value excludes any of the supplied elements.
@@ -192,7 +194,7 @@ public interface SequenceValue<T, V extends SequenceValue<T, V>> {
      * @return This value (fluent interface).
      */
     @SuppressWarnings("unchecked")
-    V excludesAnyOf(T... desired);
+    V excludesAnyOf(@Nullable T... desired);
 
     /**
      * Checks that the desired element occurs the desired number of times.
@@ -204,7 +206,7 @@ public interface SequenceValue<T, V extends SequenceValue<T, V>> {
      *
      * @return This value (fluent interface).
      */
-    V includesExactly(T desired, long times);
+    V includesExactly(@Nullable T desired, long times);
 
     /**
      * Checks that the desired element occurs exactly once.
@@ -214,7 +216,7 @@ public interface SequenceValue<T, V extends SequenceValue<T, V>> {
      *
      * @return This value (fluent interface).
      */
-    default V includesOnce(T desired) {
+    default V includesOnce(@Nullable T desired) {
         return includesExactly(desired, 1);
     }
 
@@ -230,7 +232,7 @@ public interface SequenceValue<T, V extends SequenceValue<T, V>> {
      *
      * @return This value (fluent interface).
      */
-    V includesMoreThan(T desired, long times);
+    V includesMoreThan(@Nullable T desired, long times);
 
     /**
      * Checks that the desired element occurs more than or equal the desired
@@ -244,7 +246,7 @@ public interface SequenceValue<T, V extends SequenceValue<T, V>> {
      *
      * @return This value (fluent interface).
      */
-    V includesMoreThanOrEqualTo(T desired, long times);
+    V includesMoreThanOrEqualTo(@Nullable T desired, long times);
 
     /**
      * Checks that the desired element occurs less than the desired number of
@@ -258,7 +260,7 @@ public interface SequenceValue<T, V extends SequenceValue<T, V>> {
      *
      * @return This value (fluent interface).
      */
-    V includesLessThan(T desired, long times);
+    V includesLessThan(@Nullable T desired, long times);
 
     /**
      * Checks that the desired element occurs less than or equal the desired
@@ -272,5 +274,5 @@ public interface SequenceValue<T, V extends SequenceValue<T, V>> {
      *
      * @return This value (fluent interface).
      */
-    V includesLessThanOrEqualTo(T desired, long times);
+    V includesLessThanOrEqualTo(@Nullable T desired, long times);
 }

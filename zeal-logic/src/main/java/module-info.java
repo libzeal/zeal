@@ -1,3 +1,5 @@
+import org.jspecify.annotations.NullMarked;
+
 /**
  * The logic module that contains the logical constructed used by the rest of
  * Zeal, including expressions, operators, and conditions. This logic is
@@ -6,8 +8,10 @@
  *
  * @author Justin Albano
  */
+@NullMarked
 module zeal.logic {
 
+    requires static transitive org.jspecify;
     exports io.github.libzeal.zeal.logic;
     exports io.github.libzeal.zeal.logic.evaluation;
     exports io.github.libzeal.zeal.logic.format;

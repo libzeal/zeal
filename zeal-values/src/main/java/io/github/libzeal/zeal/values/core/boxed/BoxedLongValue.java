@@ -1,5 +1,7 @@
 package io.github.libzeal.zeal.values.core.boxed;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * A value used to evaluate {@link Long}s.
  *
@@ -13,7 +15,7 @@ public class BoxedLongValue extends BaseBoxedWholeNumberValue<Long, BoxedLongVal
      * @param subject
      *         The desired subject.
      */
-    public BoxedLongValue(final Long subject) {
+    public BoxedLongValue(final @Nullable Long subject) {
         super(
                 subject,
                 "Long value",

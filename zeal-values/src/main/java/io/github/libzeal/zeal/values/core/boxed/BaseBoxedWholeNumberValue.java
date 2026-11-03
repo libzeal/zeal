@@ -1,10 +1,12 @@
 package io.github.libzeal.zeal.values.core.boxed;
 
+import org.jspecify.annotations.Nullable;
+
 abstract class BaseBoxedWholeNumberValue<N extends Number, V extends BaseBoxedWholeNumberValue<N, V>>
         extends BaseBoxedNumberValue<N, V>
         implements BoxedWholeNumberValue<N, V> {
 
-    BaseBoxedWholeNumberValue(final N subject, final String name, final WholeNumberOperations<N> operations) {
+    BaseBoxedWholeNumberValue(final @Nullable N subject, final String name, final WholeNumberOperations<N> operations) {
         super(subject, name, operations);
     }
 

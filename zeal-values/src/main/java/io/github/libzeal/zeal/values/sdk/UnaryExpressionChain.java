@@ -3,6 +3,7 @@ package io.github.libzeal.zeal.values.sdk;
 import io.github.libzeal.zeal.logic.Expression;
 import io.github.libzeal.zeal.logic.unary.Condition;
 import io.github.libzeal.zeal.values.core.ObjectValue;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +60,7 @@ class UnaryExpressionChain<S> {
      * @return A list of expressions corresponding to the conditions in the
      * chain bound to the supplied subject.
      */
-    public List<Expression> bind(final S subject) {
+    public List<Expression> bind(final @Nullable S subject) {
         return conditions.stream()
                 .map(condition -> condition.bind(subject))
                 .toList();

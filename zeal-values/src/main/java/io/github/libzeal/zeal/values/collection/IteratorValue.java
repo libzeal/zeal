@@ -2,6 +2,7 @@ package io.github.libzeal.zeal.values.collection;
 
 import io.github.libzeal.zeal.logic.unary.ObservableUnaryExpression.Field;
 import io.github.libzeal.zeal.values.sdk.BaseValue;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Iterator;
 
@@ -13,7 +14,7 @@ import java.util.Iterator;
  *
  * @author Justin Albano
  */
-public class IteratorValue<T> extends BaseValue<Iterator<T>, IteratorValue<T>> {
+public class IteratorValue<T extends @Nullable Object> extends BaseValue<Iterator<T>, IteratorValue<T>> {
 
     private static final String HAS_NEXT_NAME = "hasNext";
     private static final String NOT_HAS_NEXT_NAME = "not[hasNext]";
@@ -24,7 +25,7 @@ public class IteratorValue<T> extends BaseValue<Iterator<T>, IteratorValue<T>> {
      * @param subject
      *         The desired subject.
      */
-    public IteratorValue(final Iterator<T> subject) {
+    public IteratorValue(final @Nullable Iterator<T> subject) {
         super(subject, "Iterator value");
     }
 

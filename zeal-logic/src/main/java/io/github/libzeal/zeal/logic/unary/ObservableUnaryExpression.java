@@ -4,11 +4,13 @@ import io.github.libzeal.zeal.logic.evaluation.TerminalEvaluation;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
 import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
 import io.github.libzeal.zeal.logic.util.StopWatch;
+import org.jspecify.annotations.Nullable;
 
 import java.time.Duration;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import static io.github.libzeal.zeal.logic.format.ObjectFormatter.stringify;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -68,13 +70,13 @@ import static java.util.Objects.requireNonNull;
  */
 public record ObservableUnaryExpression<S, O>(
         String name,
-        S subject,
+        @Nullable S subject,
         boolean nullable,
         Function<? super S, ? extends O> observe,
         Predicate<? super O> condition,
         Field<S, O> expected,
         Field<S, O> actual,
-        Field<S, O> hint
+        @Nullable Field<S, O> hint
 ) implements TerminalUnaryExpression<S> {
 
     /**
@@ -120,9 +122,16 @@ public record ObservableUnaryExpression<S, O>(
     public TerminalEvaluation evaluate() {
 
         final StopWatch stopWatch = StopWatch.started();
-        final boolean observable = subject != null || nullable;
-        final O observed = observable ? observe.apply(subject) : null;
-        final boolean passed = observable && condition.test(observed);
+
+        if (subject == null && !nullable) {
+            final Duration elapsedTime = stopWatch.stop();
+            final Rationale rationale = new SimpleRationale(expected.compute(unobservedContext()), stringify(null));
+
+            return new TerminalEvaluation(false, name, rationale, elapsedTime);
+        }
+
+        final O observed = observeSubject();
+        final boolean passed = condition.test(observed);
         final Duration elapsedTime = stopWatch.stop();
 
         final Context<S, O> context = new Context<>(subject, observed, passed);
@@ -133,6 +142,20 @@ public record ObservableUnaryExpression<S, O>(
         );
 
         return new TerminalEvaluation(passed, name, rationale, elapsedTime);
+    }
+
+    // The subject is only null here when the condition is nullable, and nullable conditions observe using functions
+    // that accept null
+    @SuppressWarnings("NullAway")
+    private O observeSubject() {
+        return observe.apply(subject);
+    }
+
+    // A null subject is never observed by a non-nullable condition, so only the expected field is computed, and
+    // expected fields do not use the observed value
+    @SuppressWarnings("NullAway")
+    private Context<S, O> unobservedContext() {
+        return new Context<>(subject, null, false);
     }
 
     /**
@@ -149,7 +172,7 @@ public record ObservableUnaryExpression<S, O>(
      * @param <O>
      *         The type of the observed value.
      */
-    public record Context<S, O>(S subject, O observed, boolean passed) {
+    public record Context<S, O>(@Nullable S subject, O observed, boolean passed) {
 
         /**
          * Returns the supplied value if the evaluation passed (the boolean flag

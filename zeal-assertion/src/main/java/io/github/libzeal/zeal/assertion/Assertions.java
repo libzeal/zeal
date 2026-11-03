@@ -5,6 +5,7 @@ import io.github.libzeal.zeal.assertion.error.PostconditionFailedException;
 import io.github.libzeal.zeal.assertion.error.PreconditionFailedException;
 import io.github.libzeal.zeal.logic.unary.UnaryExpression;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Basic assertions that verify expressions.
@@ -65,7 +66,7 @@ public class Assertions {
      *     The supplied expression evaluates to false and the subject of the expression is not {@code null}.
      * @see Requirement#require(UnaryExpression, String)
      */
-    public static <T> T require(final UnaryExpression<T> expression, final String message) {
+    public static <T> T require(final UnaryExpression<T> expression, final @Nullable String message) {
         return Requirement.create().require(expression, message);
     }
 
@@ -116,7 +117,7 @@ public class Assertions {
      *     The supplied expression evaluates to false.
      * @see Confirmation#confirm(UnaryExpression, String)
      */
-    public static <T> T confirm(final UnaryExpression<T> expression, final String message) {
+    public static <T> T confirm(final UnaryExpression<T> expression, final @Nullable String message) {
         return Confirmation.create().confirm(expression, message);
     }
 
@@ -167,7 +168,7 @@ public class Assertions {
      *     The supplied expression evaluates to false.
      * @see Assurance#ensure(UnaryExpression, String)
      */
-    public static <T> T ensure(final UnaryExpression<T> expression, final String message) {
+    public static <T> T ensure(final UnaryExpression<T> expression, final @Nullable String message) {
         return Assurance.create().ensure(expression, message);
     }
 }

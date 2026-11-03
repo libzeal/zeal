@@ -3,6 +3,7 @@ package io.github.libzeal.zeal.values.collection;
 import io.github.libzeal.zeal.logic.unary.Observed;
 import io.github.libzeal.zeal.values.sdk.sequence.BaseOrderedSequenceValue;
 import io.github.libzeal.zeal.values.sdk.sequence.OrderedSequenceOperations;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Arrays;
 
@@ -14,7 +15,7 @@ import java.util.Arrays;
  *
  * @author Justin Albano
  */
-public class ArrayValue<T> extends BaseOrderedSequenceValue<T[], T, ArrayValue<T>> {
+public class ArrayValue<T extends @Nullable Object> extends BaseOrderedSequenceValue<T[], T, ArrayValue<T>> {
 
     /**
      * Creates a new array value using the supplied subject.
@@ -22,11 +23,11 @@ public class ArrayValue<T> extends BaseOrderedSequenceValue<T[], T, ArrayValue<T
      * @param subject
      *         The desired subject.
      */
-    public ArrayValue(final T[] subject) {
+    public ArrayValue(final T @Nullable [] subject) {
         super(subject, "Array value", new ArrayOperations<>());
     }
 
-    private static final class ArrayOperations<T>
+    private static final class ArrayOperations<T extends @Nullable Object>
             implements OrderedSequenceOperations<T, T[]> {
 
         private final ListOperations<T> list = new ListOperations<>();
@@ -37,32 +38,32 @@ public class ArrayValue<T> extends BaseOrderedSequenceValue<T[], T, ArrayValue<T
         }
 
         @Override
-        public boolean includes(final T[] haystack, final T needle) {
+        public boolean includes(final T[] haystack, final @Nullable T needle) {
             return list.includes(Arrays.asList(haystack), needle);
         }
 
         @Override
-        public int occurrences(final T[] haystack, final T needle) {
+        public int occurrences(final T[] haystack, final @Nullable T needle) {
             return list.occurrences(Arrays.asList(haystack), needle);
         }
 
         @Override
-        public int indexOf(final T[] haystack, final T needle) {
+        public int indexOf(final T[] haystack, final @Nullable T needle) {
             return list.indexOf(Arrays.asList(haystack), needle);
         }
 
         @Override
-        public int lastIndexOf(final T[] haystack, final T needle) {
+        public int lastIndexOf(final T[] haystack, final @Nullable T needle) {
             return list.lastIndexOf(Arrays.asList(haystack), needle);
         }
 
         @Override
-        public Observed<T> atIndex(final T[] haystack, final int index, final T desired) {
+        public Observed<T> atIndex(final T[] haystack, final int index, final @Nullable T desired) {
             return list.atIndex(Arrays.asList(haystack), index, desired);
         }
 
         @Override
-        public Observed<T> lastElement(final T[] haystack, final T desired) {
+        public Observed<T> lastElement(final T[] haystack, final @Nullable T desired) {
             return list.lastElement(Arrays.asList(haystack), desired);
         }
     }

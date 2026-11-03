@@ -1,5 +1,7 @@
 package io.github.libzeal.zeal.logic.rationale;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.Objects;
 import java.util.Optional;
 
@@ -15,7 +17,7 @@ public class SimpleRationale implements Rationale {
     private static final SimpleRationale EMPTY = new SimpleRationale("", "");
     private final String expected;
     private final String actual;
-    private final String hint;
+    private final @Nullable String hint;
 
     /**
      * Creates an empty rationale, where the expected value, actual value, and
@@ -49,7 +51,7 @@ public class SimpleRationale implements Rationale {
      * @param hint
      *         A hint as to how the expected and actual values should match.
      */
-    public SimpleRationale(String expected, String actual, String hint) {
+    public SimpleRationale(String expected, String actual, @Nullable String hint) {
         this.expected = expected;
         this.actual = actual;
         this.hint = hint;

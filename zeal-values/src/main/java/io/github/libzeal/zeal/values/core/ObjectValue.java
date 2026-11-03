@@ -3,6 +3,7 @@ package io.github.libzeal.zeal.values.core;
 import io.github.libzeal.zeal.logic.Expression;
 import io.github.libzeal.zeal.logic.unary.CompoundUnaryExpression;
 import io.github.libzeal.zeal.logic.unary.Condition;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Comparator;
 import java.util.Objects;
@@ -74,7 +75,7 @@ public interface ObjectValue<S, V extends ObjectValue<S, V>>
      *
      * @return This value (fluent interface).
      */
-    V isType(Class<?> type);
+    V isType(@Nullable Class<?> type);
 
     /**
      * Checks if the subject is not an exact match of the supplied type.
@@ -85,7 +86,7 @@ public interface ObjectValue<S, V extends ObjectValue<S, V>>
      *
      * @return This value (fluent interface).
      */
-    V isNotType(Class<?> type);
+    V isNotType(@Nullable Class<?> type);
 
     /**
      * Checks if the subject matches or is a subtype of the supplied type.
@@ -105,7 +106,7 @@ public interface ObjectValue<S, V extends ObjectValue<S, V>>
      *
      * @see Class#isAssignableFrom(Class)
      */
-    V isInstanceOf(Class<?> type);
+    V isInstanceOf(@Nullable Class<?> type);
 
     /**
      * Checks if the subject does not exactly match or is not a subtype of the
@@ -126,7 +127,7 @@ public interface ObjectValue<S, V extends ObjectValue<S, V>>
      *
      * @see Class#isAssignableFrom(Class)
      */
-    V isNotInstanceOf(Class<?> type);
+    V isNotInstanceOf(@Nullable Class<?> type);
 
     /**
      * Checks if the subject is the same as the supplied object.
@@ -146,7 +147,7 @@ public interface ObjectValue<S, V extends ObjectValue<S, V>>
      *
      * @return This value (fluent interface).
      */
-    V isExactly(Object other);
+    V isExactly(@Nullable Object other);
 
     /**
      * Checks if the subject is not the same as the supplied object.
@@ -166,7 +167,7 @@ public interface ObjectValue<S, V extends ObjectValue<S, V>>
      *
      * @return This value (fluent interface).
      */
-    V isNotExactly(Object other);
+    V isNotExactly(@Nullable Object other);
 
     /**
      * Checks if the subject satisfies the supplied condition.
@@ -176,7 +177,7 @@ public interface ObjectValue<S, V extends ObjectValue<S, V>>
      *
      * @return This value (fluent interface).
      */
-    V is(Condition<S> condition);
+    V is(@Nullable Condition<S> condition);
 
     /**
      * Checks if the subject is equal to the supplied object.
@@ -198,7 +199,7 @@ public interface ObjectValue<S, V extends ObjectValue<S, V>>
      *
      * @see Objects#equals(Object, Object)
      */
-    V isEqualTo(Object other);
+    V isEqualTo(@Nullable Object other);
 
     /**
      * Checks if the subject is equal to the supplied object using the supplied
@@ -218,7 +219,7 @@ public interface ObjectValue<S, V extends ObjectValue<S, V>>
      *
      * @see Comparator#compare(Object, Object)
      */
-    V isEqualTo(S other, Comparator<? super S> comparator);
+    V isEqualTo(S other, @Nullable Comparator<? super S> comparator);
 
     /**
      * Checks if the subject is not equal to the supplied object.
@@ -240,7 +241,7 @@ public interface ObjectValue<S, V extends ObjectValue<S, V>>
      *
      * @see Objects#equals(Object, Object)
      */
-    V isNotEqualTo(Object other);
+    V isNotEqualTo(@Nullable Object other);
 
     /**
      * Checks if the subject is not equal to the supplied object using the
@@ -260,7 +261,7 @@ public interface ObjectValue<S, V extends ObjectValue<S, V>>
      *
      * @see Comparator#compare(Object, Object)
      */
-    V isNotEqualTo(S other, Comparator<? super S> comparator);
+    V isNotEqualTo(S other, @Nullable Comparator<? super S> comparator);
 
     /**
      * Checks if the hash code of the subject is equal to the supplied hash
@@ -314,7 +315,7 @@ public interface ObjectValue<S, V extends ObjectValue<S, V>>
      *
      * @return This value (fluent interface).
      */
-    V toStringIs(String expected);
+    V toStringIs(@Nullable String expected);
 
     /**
      * Checks if the {@code toString()} value of the subject is not equal to the
@@ -332,7 +333,7 @@ public interface ObjectValue<S, V extends ObjectValue<S, V>>
      *
      * @return This value (fluent interface).
      */
-    V toStringIsNot(String expected);
+    V toStringIsNot(@Nullable String expected);
 
     /**
      * Checks if the supplied predicate is true.

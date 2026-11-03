@@ -4,6 +4,7 @@ import io.github.libzeal.zeal.logic.AndExpression;
 import io.github.libzeal.zeal.logic.Expression;
 import io.github.libzeal.zeal.logic.Expressions;
 import io.github.libzeal.zeal.logic.OrExpression;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 import java.util.Objects;
@@ -79,7 +80,7 @@ public final class Conditions {
      * @return A new condition that evaluates to true if the subject exactly
      * matches the supplied desired value.
      */
-    public static <T> Condition<T> exactly(final Object desired) {
+    public static <T> Condition<T> exactly(final @Nullable Object desired) {
         return ConditionBuilder.of((T o) -> o == desired)
                 .nullable()
                 .name(exactlyName(desired))
@@ -88,11 +89,11 @@ public final class Conditions {
                 .build();
     }
 
-    static <T> String exactlyName(final T desired) {
+    static <T> String exactlyName(final @Nullable T desired) {
         return "isExactly[" + stringify(desired) + "]";
     }
 
-    static <T> String exactlyHint(final T desired) {
+    static <T> String exactlyHint(final @Nullable T desired) {
         return "Actual should be identical to " + desired + " (using ==)";
     }
 
@@ -108,7 +109,7 @@ public final class Conditions {
      * @return A new condition that evaluates to true if the subject matches the
      * supplied desired value.
      */
-    public static <T> Condition<T> equalTo(final Object desired) {
+    public static <T> Condition<T> equalTo(final @Nullable Object desired) {
         return ConditionBuilder.of((T o) -> Objects.equals(o, desired))
                 .nullable()
                 .name(equalToName(desired))
@@ -117,11 +118,11 @@ public final class Conditions {
                 .build();
     }
 
-    static <T> String equalToName(final T desired) {
+    static <T> String equalToName(final @Nullable T desired) {
         return "isEqualTo[" + stringify(desired) + "]";
     }
 
-    static <T> String equalToHint(final T desired) {
+    static <T> String equalToHint(final @Nullable T desired) {
         return "Actual should be equal to " + desired + " (using subject.equals(" + desired + "))";
     }
 
@@ -167,7 +168,7 @@ public final class Conditions {
      *         The supplied array is {@code null}.
      */
     @SafeVarargs
-    public static <T> Condition<T> anyOf(final T... values) {
+    public static <T> Condition<T> anyOf(final @Nullable T... values) {
 
         requireNonNull(values);
 
@@ -196,7 +197,7 @@ public final class Conditions {
      * @throws NullPointerException
      *         The supplied {@link Iterable} is {@code null}.
      */
-    public static <T> Condition<T> anyOf(final Iterable<? extends T> values) {
+    public static <T> Condition<T> anyOf(final Iterable<? extends @Nullable T> values) {
 
         requireNonNull(values);
 
@@ -256,7 +257,7 @@ public final class Conditions {
      *         The supplied array is {@code null}.
      */
     @SafeVarargs
-    public static <T> Condition<T> allOf(final T... values) {
+    public static <T> Condition<T> allOf(final @Nullable T... values) {
 
         requireNonNull(values);
 
@@ -285,7 +286,7 @@ public final class Conditions {
      * @throws NullPointerException
      *         The supplied {@link Iterable} is {@code null}.
      */
-    public static <T> Condition<T> allOf(final Iterable<? extends T> values) {
+    public static <T> Condition<T> allOf(final Iterable<? extends @Nullable T> values) {
 
         requireNonNull(values);
 
@@ -336,7 +337,7 @@ public final class Conditions {
      *         The supplied array is {@code null}.
      */
     @SafeVarargs
-    public static <T> Condition<T> noneOf(final T... values) {
+    public static <T> Condition<T> noneOf(final @Nullable T... values) {
 
         requireNonNull(values);
 
@@ -360,7 +361,7 @@ public final class Conditions {
      * @throws NullPointerException
      *         The supplied {@link Iterable} is {@code null}.
      */
-    public static <T> Condition<T> noneOf(final Iterable<? extends T> values) {
+    public static <T> Condition<T> noneOf(final Iterable<? extends @Nullable T> values) {
 
         requireNonNull(values);
 

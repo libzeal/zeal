@@ -5,6 +5,9 @@ import io.github.libzeal.zeal.values.sdk.sequence.BaseOrderedSequenceValue;
 import io.github.libzeal.zeal.values.sdk.sequence.OrderedSequenceConditions;
 import io.github.libzeal.zeal.values.sdk.sequence.OrderedSequenceOperations;
 import io.github.libzeal.zeal.values.sdk.sequence.SequenceConditions;
+import org.jspecify.annotations.Nullable;
+
+import static io.github.libzeal.zeal.logic.format.ObjectFormatter.stringify;
 
 /**
  * A value used to evaluate {@link String}s.
@@ -21,7 +24,7 @@ public class StringValue extends BaseOrderedSequenceValue<String, Character, Str
      * @param subject
      *         The subject of the expression.
      */
-    public StringValue(final String subject) {
+    public StringValue(final @Nullable String subject) {
         super(subject, "String value", new StringOperations());
     }
 
@@ -65,7 +68,7 @@ public class StringValue extends BaseOrderedSequenceValue<String, Character, Str
      *
      * @return This value (fluent interface).
      */
-    public StringValue includes(final CharSequence desired) {
+    public StringValue includes(final @Nullable CharSequence desired) {
         return append(
                 OrderedSequenceConditions.includes(asString(desired), stringOperations)
         );
@@ -81,7 +84,7 @@ public class StringValue extends BaseOrderedSequenceValue<String, Character, Str
      *
      * @return This value (fluent interface).
      */
-    public StringValue excludes(final CharSequence undesired) {
+    public StringValue excludes(final @Nullable CharSequence undesired) {
         return append(
                 OrderedSequenceConditions.excludes(asString(undesired), stringOperations)
         );
@@ -117,7 +120,7 @@ public class StringValue extends BaseOrderedSequenceValue<String, Character, Str
      *
      * @return This value (fluent interface).
      */
-    public StringValue includesExactly(final CharSequence desired, final long times) {
+    public StringValue includesExactly(final @Nullable CharSequence desired, final long times) {
         return append(
                 SequenceConditions.includesExactly(asString(desired), times, stringOperations)
         );
@@ -135,7 +138,7 @@ public class StringValue extends BaseOrderedSequenceValue<String, Character, Str
      *
      * @see #includesExactly(CharSequence, long)
      */
-    public StringValue includesOnce(final CharSequence desired) {
+    public StringValue includesOnce(final @Nullable CharSequence desired) {
         return includesExactly(desired, 1);
     }
 
@@ -153,7 +156,7 @@ public class StringValue extends BaseOrderedSequenceValue<String, Character, Str
      *
      * @see #includesExactly(CharSequence, long)
      */
-    public StringValue includesMoreThan(final CharSequence desired, final long times) {
+    public StringValue includesMoreThan(final @Nullable CharSequence desired, final long times) {
         return append(
                 SequenceConditions.includesMoreThan(asString(desired), times, stringOperations)
         );
@@ -174,7 +177,7 @@ public class StringValue extends BaseOrderedSequenceValue<String, Character, Str
      *
      * @see #includesExactly(CharSequence, long)
      */
-    public StringValue includesMoreThanOrEqualTo(final CharSequence desired, final long times) {
+    public StringValue includesMoreThanOrEqualTo(final @Nullable CharSequence desired, final long times) {
         return append(
                 SequenceConditions.includesMoreThanOrEqualTo(asString(desired), times, stringOperations)
         );
@@ -194,7 +197,7 @@ public class StringValue extends BaseOrderedSequenceValue<String, Character, Str
      *
      * @see #includesExactly(CharSequence, long)
      */
-    public StringValue includesLessThan(final CharSequence desired, final long times) {
+    public StringValue includesLessThan(final @Nullable CharSequence desired, final long times) {
         return append(
                 SequenceConditions.includesLessThan(asString(desired), times, stringOperations)
         );
@@ -215,7 +218,7 @@ public class StringValue extends BaseOrderedSequenceValue<String, Character, Str
      *
      * @see #includesExactly(CharSequence, long)
      */
-    public StringValue includesLessThanOrEqualTo(final CharSequence desired, final long times) {
+    public StringValue includesLessThanOrEqualTo(final @Nullable CharSequence desired, final long times) {
         return append(
                 SequenceConditions.includesLessThanOrEqualTo(asString(desired), times, stringOperations)
         );
@@ -245,7 +248,7 @@ public class StringValue extends BaseOrderedSequenceValue<String, Character, Str
      *
      * @return This value (fluent interface).
      */
-    public StringValue hasAtIndex(final CharSequence desired, final int index) {
+    public StringValue hasAtIndex(final @Nullable CharSequence desired, final int index) {
         return append(
                 OrderedSequenceConditions.hasAtIndex(asString(desired), index, stringOperations)
         );
@@ -266,7 +269,7 @@ public class StringValue extends BaseOrderedSequenceValue<String, Character, Str
      *
      * @see #hasAtIndex(CharSequence, int)
      */
-    public StringValue doesNotHaveAtIndex(final CharSequence undesired, final int index) {
+    public StringValue doesNotHaveAtIndex(final @Nullable CharSequence undesired, final int index) {
         return append(
                 OrderedSequenceConditions.doesNotHaveAtIndex(asString(undesired), index, stringOperations)
         );
@@ -287,7 +290,7 @@ public class StringValue extends BaseOrderedSequenceValue<String, Character, Str
      *
      * @see #hasAtIndex(CharSequence, int)
      */
-    public StringValue lastIndexOfIs(final CharSequence desired, final int index) {
+    public StringValue lastIndexOfIs(final @Nullable CharSequence desired, final int index) {
         return append(
                 OrderedSequenceConditions.lastIndexOfIs(asString(desired), index, stringOperations)
         );
@@ -308,7 +311,7 @@ public class StringValue extends BaseOrderedSequenceValue<String, Character, Str
      *
      * @see #hasAtIndex(CharSequence, int)
      */
-    public StringValue lastIndexOfIsNot(final CharSequence undesired, final int index) {
+    public StringValue lastIndexOfIsNot(final @Nullable CharSequence undesired, final int index) {
         return append(
                 OrderedSequenceConditions.lastIndexOfIsNot(asString(undesired), index, stringOperations)
         );
@@ -322,7 +325,7 @@ public class StringValue extends BaseOrderedSequenceValue<String, Character, Str
      *
      * @return This value (fluent interface).
      */
-    public StringValue startsWith(final CharSequence desired) {
+    public StringValue startsWith(final @Nullable CharSequence desired) {
         return append(
                 OrderedSequenceConditions.startsWith(asString(desired), stringOperations)
         );
@@ -336,7 +339,7 @@ public class StringValue extends BaseOrderedSequenceValue<String, Character, Str
      *
      * @return This value (fluent interface).
      */
-    public StringValue doesNotStartWith(final CharSequence undesired) {
+    public StringValue doesNotStartWith(final @Nullable CharSequence undesired) {
         return append(
                 OrderedSequenceConditions.doesNotStartWith(asString(undesired), stringOperations)
         );
@@ -350,7 +353,7 @@ public class StringValue extends BaseOrderedSequenceValue<String, Character, Str
      *
      * @return This value (fluent interface).
      */
-    public StringValue endsWith(final CharSequence desired) {
+    public StringValue endsWith(final @Nullable CharSequence desired) {
         return append(
                 OrderedSequenceConditions.endsWith(asString(desired), stringOperations)
         );
@@ -364,13 +367,13 @@ public class StringValue extends BaseOrderedSequenceValue<String, Character, Str
      *
      * @return This value (fluent interface).
      */
-    public StringValue doesNotEndWith(final CharSequence undesired) {
+    public StringValue doesNotEndWith(final @Nullable CharSequence undesired) {
         return append(
                 OrderedSequenceConditions.doesNotEndWith(asString(undesired), stringOperations)
         );
     }
 
-    private static String asString(final CharSequence sequence) {
+    private static @Nullable String asString(final @Nullable CharSequence sequence) {
         return sequence == null ? null : sequence.toString();
     }
 
@@ -416,11 +419,11 @@ public class StringValue extends BaseOrderedSequenceValue<String, Character, Str
      *
      * @return This value (fluent interface).
      */
-    public StringValue isCaseInsensitiveEqualTo(final String other) {
+    public StringValue isCaseInsensitiveEqualTo(final @Nullable String other) {
         return append(
                 expression(s -> s.equalsIgnoreCase(other))
-                        .name("caseInsensitiveEqualTo[" + other + "]")
-                        .expected(other)
+                        .name("caseInsensitiveEqualTo[" + stringify(other) + "]")
+                        .expected(stringify(other))
                         .build()
         );
     }
@@ -451,7 +454,7 @@ public class StringValue extends BaseOrderedSequenceValue<String, Character, Str
      *
      * @return This value (fluent interface).
      */
-    public StringValue hasAtLastIndex(final String needle, final int index) {
+    public StringValue hasAtLastIndex(final @Nullable String needle, final int index) {
         return lastIndexOfIs((CharSequence) needle, index);
     }
 
@@ -481,14 +484,14 @@ public class StringValue extends BaseOrderedSequenceValue<String, Character, Str
      *
      * @return This value (fluent interface).
      */
-    public StringValue doesNotHaveAtLastIndex(final String needle, final int index) {
+    public StringValue doesNotHaveAtLastIndex(final @Nullable String needle, final int index) {
         return lastIndexOfIsNot((CharSequence) needle, index);
     }
 
     private static final class StringOperations implements OrderedSequenceOperations<Character, String> {
 
         @Override
-        public Observed<Character> lastElement(final String haystack, final Character desired) {
+        public Observed<Character> lastElement(final String haystack, final @Nullable Character desired) {
 
             if (haystack.isEmpty()) {
                 return Observed.missing();
@@ -499,7 +502,7 @@ public class StringValue extends BaseOrderedSequenceValue<String, Character, Str
         }
 
         @Override
-        public Observed<Character> atIndex(final String haystack, final int index, final Character desired) {
+        public Observed<Character> atIndex(final String haystack, final int index, final @Nullable Character desired) {
 
             if (index >= 0 && index < haystack.length()) {
                 return Observed.found(haystack.charAt(index));
@@ -510,7 +513,7 @@ public class StringValue extends BaseOrderedSequenceValue<String, Character, Str
         }
 
         @Override
-        public int indexOf(final String haystack, final Character needle) {
+        public int indexOf(final String haystack, final @Nullable Character needle) {
 
             if (needle == null) {
                 return -1;
@@ -521,7 +524,7 @@ public class StringValue extends BaseOrderedSequenceValue<String, Character, Str
         }
 
         @Override
-        public int lastIndexOf(final String haystack, final Character needle) {
+        public int lastIndexOf(final String haystack, final @Nullable Character needle) {
 
             if (needle == null) {
                 return -1;
@@ -532,7 +535,7 @@ public class StringValue extends BaseOrderedSequenceValue<String, Character, Str
         }
 
         @Override
-        public int occurrences(final String haystack, final Character needle) {
+        public int occurrences(final String haystack, final @Nullable Character needle) {
 
             if (needle == null) {
                 return 0;
@@ -555,7 +558,7 @@ public class StringValue extends BaseOrderedSequenceValue<String, Character, Str
         }
 
         @Override
-        public boolean includes(final String haystack, final Character needle) {
+        public boolean includes(final String haystack, final @Nullable Character needle) {
             return indexOf(haystack, needle) >= 0;
         }
     }
@@ -563,7 +566,7 @@ public class StringValue extends BaseOrderedSequenceValue<String, Character, Str
     private static final class StringOnStringOperations implements OrderedSequenceOperations<String, String> {
 
         @Override
-        public Observed<String> lastElement(final String haystack, final String desired) {
+        public Observed<String> lastElement(final String haystack, final @Nullable String desired) {
 
             final int length = lengthOf(desired);
 
@@ -576,7 +579,7 @@ public class StringValue extends BaseOrderedSequenceValue<String, Character, Str
         }
 
         @Override
-        public Observed<String> atIndex(final String haystack, final int index, final String desired) {
+        public Observed<String> atIndex(final String haystack, final int index, final @Nullable String desired) {
 
             final int length = lengthOf(desired);
 
@@ -590,7 +593,7 @@ public class StringValue extends BaseOrderedSequenceValue<String, Character, Str
         }
 
         @Override
-        public int indexOf(final String haystack, final String needle) {
+        public int indexOf(final String haystack, final @Nullable String needle) {
 
             if (needle == null) {
                 return -1;
@@ -601,7 +604,7 @@ public class StringValue extends BaseOrderedSequenceValue<String, Character, Str
         }
 
         @Override
-        public int lastIndexOf(final String haystack, final String needle) {
+        public int lastIndexOf(final String haystack, final @Nullable String needle) {
 
             if (needle == null) {
                 return -1;
@@ -612,7 +615,7 @@ public class StringValue extends BaseOrderedSequenceValue<String, Character, Str
         }
 
         @Override
-        public int occurrences(final String haystack, final String needle) {
+        public int occurrences(final String haystack, final @Nullable String needle) {
 
             if (needle == null) {
                 return 0;
@@ -638,13 +641,13 @@ public class StringValue extends BaseOrderedSequenceValue<String, Character, Str
         }
 
         @Override
-        public boolean includes(final String haystack, final String needle) {
+        public boolean includes(final String haystack, final @Nullable String needle) {
             return indexOf(haystack, needle) >= 0;
         }
 
         // A null desired value is compared against a single character so that it is reported as not matching the
         // element at the index (rather than as an empty match or an out-of-bounds index)
-        private static int lengthOf(final String desired) {
+        private static int lengthOf(final @Nullable String desired) {
             return desired == null ? 1 : desired.length();
         }
     }

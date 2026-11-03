@@ -2,6 +2,7 @@ package io.github.libzeal.zeal.logic.unary;
 
 import io.github.libzeal.zeal.logic.Expression;
 import io.github.libzeal.zeal.logic.Expressions;
+import org.jspecify.annotations.Nullable;
 
 /**
  * An object that creates an expression based on a subject.
@@ -23,7 +24,7 @@ public interface Condition<T> {
      * @return An expression resulting from binding the supplied subject with
      * the condition.
      */
-    Expression bind(T subject);
+    Expression bind(@Nullable T subject);
 
     /**
      * A type-safe tautological condition that always results in a true

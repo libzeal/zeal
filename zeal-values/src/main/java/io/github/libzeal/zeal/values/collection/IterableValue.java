@@ -2,6 +2,7 @@ package io.github.libzeal.zeal.values.collection;
 
 import io.github.libzeal.zeal.values.sdk.sequence.BaseSequenceValue;
 import io.github.libzeal.zeal.values.sdk.sequence.SequenceOperations;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Objects;
@@ -14,7 +15,7 @@ import java.util.Objects;
  *
  * @author Justin Albano
  */
-public final class IterableValue<T> extends BaseSequenceValue<Iterable<T>, T, IterableValue<T>> {
+public final class IterableValue<T extends @Nullable Object> extends BaseSequenceValue<Iterable<T>, T, IterableValue<T>> {
 
     /**
      * Creates a new iterable value using the supplied subject.
@@ -22,11 +23,11 @@ public final class IterableValue<T> extends BaseSequenceValue<Iterable<T>, T, It
      * @param subject
      *         The desired subject.
      */
-    public IterableValue(final Iterable<T> subject) {
+    public IterableValue(final @Nullable Iterable<T> subject) {
         super(subject, "Iterable value", new ConcreteIterableSequenceOperations<>());
     }
 
-    private static class ConcreteIterableSequenceOperations<T, I extends Iterable<T>>
+    private static class ConcreteIterableSequenceOperations<T extends @Nullable Object, I extends Iterable<T>>
             implements SequenceOperations<T, I> {
 
         @Override
@@ -47,7 +48,7 @@ public final class IterableValue<T> extends BaseSequenceValue<Iterable<T>, T, It
         }
 
         @Override
-        public boolean includes(final I haystack, final T needle) {
+        public boolean includes(final I haystack, final @Nullable T needle) {
 
             if (haystack instanceof final Collection<?> collection) {
                 return includesInCollection(needle, collection);
@@ -63,7 +64,7 @@ public final class IterableValue<T> extends BaseSequenceValue<Iterable<T>, T, It
         }
 
         private static <T> boolean includesInCollection(
-                final T needle,
+                final @Nullable T needle,
                 final Collection<?> collection
         ) {
             try {
@@ -84,7 +85,7 @@ public final class IterableValue<T> extends BaseSequenceValue<Iterable<T>, T, It
         }
 
         @Override
-        public int occurrences(final I haystack, final T needle) {
+        public int occurrences(final I haystack, final @Nullable T needle) {
 
             int count = 0;
 

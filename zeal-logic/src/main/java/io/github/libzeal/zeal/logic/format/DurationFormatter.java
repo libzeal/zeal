@@ -1,5 +1,7 @@
 package io.github.libzeal.zeal.logic.format;
 
+import org.jspecify.annotations.Nullable;
+
 import java.time.Duration;
 
 final class DurationFormatter {
@@ -7,7 +9,7 @@ final class DurationFormatter {
     private DurationFormatter() {
     }
 
-    static String format(final Duration duration) {
+    static String format(final @Nullable Duration duration) {
 
         if (duration == null) {
             return "";

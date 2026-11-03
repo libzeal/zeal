@@ -4,6 +4,7 @@ import io.github.libzeal.zeal.logic.format.ObjectFormatter;
 import io.github.libzeal.zeal.logic.unary.Condition;
 import io.github.libzeal.zeal.logic.unary.ConditionBuilder;
 import io.github.libzeal.zeal.values.sdk.BaseValue;
+import org.jspecify.annotations.Nullable;
 
 import java.util.function.Predicate;
 
@@ -15,13 +16,13 @@ abstract class BaseBoxedNumberValue<N extends Number, V extends BaseBoxedNumberV
 
     private final BoxedNumberOperations<N> operations;
 
-    BaseBoxedNumberValue(final N subject, final String name, final BoxedNumberOperations<N> operations) {
+    BaseBoxedNumberValue(final @Nullable N subject, final String name, final BoxedNumberOperations<N> operations) {
         super(subject, name);
         this.operations = operations;
     }
 
     @Override
-    public V isLessThan(final N value) {
+    public V isLessThan(final @Nullable N value) {
         return append(
                 nullProtectedValueExpression(
                         value,
@@ -33,7 +34,7 @@ abstract class BaseBoxedNumberValue<N extends Number, V extends BaseBoxedNumberV
     }
 
     @Override
-    public V isGreaterThan(final N value) {
+    public V isGreaterThan(final @Nullable N value) {
         return append(
                 nullProtectedValueExpression(
                         value,
@@ -45,7 +46,7 @@ abstract class BaseBoxedNumberValue<N extends Number, V extends BaseBoxedNumberV
     }
 
     @Override
-    public V isLessThanOrEqualTo(final N value) {
+    public V isLessThanOrEqualTo(final @Nullable N value) {
         return append(
                 nullProtectedValueExpression(
                         value,
@@ -57,7 +58,7 @@ abstract class BaseBoxedNumberValue<N extends Number, V extends BaseBoxedNumberV
     }
 
     @Override
-    public V isGreaterThanOrEqualTo(final N value) {
+    public V isGreaterThanOrEqualTo(final @Nullable N value) {
         return append(
                 nullProtectedValueExpression(
                         value,
@@ -69,7 +70,7 @@ abstract class BaseBoxedNumberValue<N extends Number, V extends BaseBoxedNumberV
     }
 
     private Condition<N> nullProtectedValueExpression(
-            final N value,
+            final @Nullable N value,
             final String name,
             final String expectedValue,
             final Predicate<N> test
