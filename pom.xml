@@ -168,6 +168,7 @@
                     <configuration>
                         <compilerArgs>
                             <arg>-XDcompilePolicy=simple</arg>
+                            <arg>-XDaddTypeAnnotationsToSymbol=true</arg>
                             <arg>--should-stop=ifError=FLOW</arg>
                             <arg>-Xplugin:ErrorProne -XepDisableAllChecks -Xep:NullAway:ERROR -XepOpt:NullAway:OnlyNullMarked=true -XepOpt:NullAway:JSpecifyMode=true -XepExcludedPaths:.*/src/test/java/.*</arg>
                         </compilerArgs>
