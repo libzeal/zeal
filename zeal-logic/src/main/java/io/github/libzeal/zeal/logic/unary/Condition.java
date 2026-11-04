@@ -1,6 +1,5 @@
 package io.github.libzeal.zeal.logic.unary;
 
-import io.github.libzeal.zeal.logic.Expression;
 import io.github.libzeal.zeal.logic.Expressions;
 import org.jspecify.annotations.Nullable;
 
@@ -24,7 +23,7 @@ public interface Condition<T> {
      * @return An expression resulting from binding the supplied subject with
      * the condition.
      */
-    Expression bind(@Nullable T subject);
+    UnaryExpression<T> bind(@Nullable T subject);
 
     /**
      * A type-safe tautological condition that always results in a true
@@ -36,7 +35,10 @@ public interface Condition<T> {
      * @return A tautology.
      */
     static <T> Condition<T> tautology() {
-        return subject -> Expressions.tautology();
+        return subject -> new UnaryTerminalAdapter<>(
+                subject,
+                Expressions.tautology()
+        );
     }
 
     /**
@@ -49,6 +51,9 @@ public interface Condition<T> {
      * @return A contradiction.
      */
     static <T> Condition<T> contradiction() {
-        return subject -> Expressions.contradiction();
+        return subject -> new UnaryTerminalAdapter<>(
+                subject,
+                Expressions.contradiction()
+        );
     }
 }

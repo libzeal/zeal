@@ -75,6 +75,60 @@ class AssuranceTest {
         );
     }
 
+    @ParameterizedTest(name = "{0}")
+    @ArgumentsSource(ExpressionFailureArgumentsProvider.class)
+    void whenEnsureExpression(final ExpressionExceptionTestCaseData testData) {
+        helper.whenCallExpression_thenExceptionThrown(
+                testData,
+                assurance::ensure,
+                Assurance.DEFAULT_MESSAGE
+        );
+    }
+
+    @ParameterizedTest(name = "{0}")
+    @ArgumentsSource(ExpressionFailureArgumentsProvider.class)
+    void whenEnsureExpressionWithMessage(final ExpressionExceptionTestCaseData testData) {
+        helper.whenCallExpressionWithMessage_thenExceptionThrown(
+                testData,
+                assurance::ensure
+        );
+    }
+
+    @ParameterizedTest(name = "{0}")
+    @ArgumentsSource(ExpressionFailureArgumentsProvider.class)
+    void whenEnsureExpressionWithMissingMessage(final ExpressionExceptionTestCaseData testData) {
+        helper.whenCallExpressionWithMissingMessage_thenExceptionThrown(
+                testData,
+                assurance::ensure
+        );
+    }
+
+    @ParameterizedTest(name = "{0}")
+    @ArgumentsSource(PassingExpressionArgumentsProvider.class)
+    void whenEnsureExpression_thenNoExceptionThrown(final PassingExpressionTestCaseData testData) {
+        helper.whenCallExpression_thenNoExceptionThrown(
+                testData,
+                assurance::ensure
+        );
+    }
+
+    @ParameterizedTest(name = "{0}")
+    @ArgumentsSource(PassingExpressionArgumentsProvider.class)
+    void whenEnsureExpressionWithMessage_thenNoExceptionThrown(final PassingExpressionTestCaseData testData) {
+        helper.whenCallExpressionWithMessage_thenNoExceptionThrown(
+                testData,
+                assurance::ensure
+        );
+    }
+
+    static final class ExpressionFailureArgumentsProvider implements ArgumentsProvider {
+
+        @Override
+        public Stream<? extends Arguments> provideArguments(final ExtensionContext extensionContext) {
+            return expressionFailureCases(PostconditionFailedException.class, PostconditionFailedException.class);
+        }
+    }
+
     static final class ExceptionThrownArgumentsProvider implements ArgumentsProvider {
 
         @Override

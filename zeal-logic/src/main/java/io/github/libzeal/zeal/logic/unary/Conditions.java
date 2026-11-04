@@ -6,14 +6,13 @@ import io.github.libzeal.zeal.logic.Expressions;
 import io.github.libzeal.zeal.logic.OrExpression;
 import org.jspecify.annotations.Nullable;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import static io.github.libzeal.zeal.logic.format.ObjectFormatter.stringify;
 import static io.github.libzeal.zeal.logic.Expression.DEFAULT_NAME;
+import static io.github.libzeal.zeal.logic.format.ObjectFormatter.stringify;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -144,11 +143,14 @@ public final class Conditions {
         requireNonNull(conditions);
 
         return subject -> {
-            final List<Expression> collected = Stream.of(conditions)
+            final var collected = Stream.of(conditions)
                     .map(c -> c.bind(subject))
                     .toList();
 
-            return OrExpression.unnamed(collected);
+            return new UnaryCompoundAdapter<>(
+                    subject,
+                    OrExpression.unnamed(collected)
+            );
         };
     }
 
@@ -173,12 +175,15 @@ public final class Conditions {
         requireNonNull(values);
 
         return subject -> {
-            final List<Expression> collected = Stream.of(values)
+            final var collected = Stream.of(values)
                     .map(Conditions::equalTo)
                     .map(c -> c.bind(subject))
                     .toList();
 
-            return OrExpression.unnamed(collected);
+            return new UnaryCompoundAdapter<>(
+                    subject,
+                    OrExpression.unnamed(collected)
+            );
         };
     }
 
@@ -202,12 +207,15 @@ public final class Conditions {
         requireNonNull(values);
 
         return subject -> {
-            final List<Expression> collected = streamOf(values)
+            final var collected = streamOf(values)
                     .map(Conditions::equalTo)
                     .map(c -> c.bind(subject))
                     .toList();
 
-            return OrExpression.unnamed(collected);
+            return new UnaryCompoundAdapter<>(
+                    subject,
+                    OrExpression.unnamed(collected)
+            );
         };
     }
 
@@ -233,11 +241,14 @@ public final class Conditions {
         requireNonNull(conditions);
 
         return subject -> {
-            final List<Expression> collected = Stream.of(conditions)
+            final var collected = Stream.of(conditions)
                     .map(c -> c.bind(subject))
                     .toList();
 
-            return AndExpression.unnamed(collected);
+            return new UnaryCompoundAdapter<>(
+                    subject,
+                    AndExpression.unnamed(collected)
+            );
         };
     }
 
@@ -262,12 +273,15 @@ public final class Conditions {
         requireNonNull(values);
 
         return subject -> {
-            final List<Expression> collected = Stream.of(values)
+            final var collected = Stream.of(values)
                     .map(Conditions::equalTo)
                     .map(c -> c.bind(subject))
                     .toList();
 
-            return AndExpression.unnamed(collected);
+            return new UnaryCompoundAdapter<>(
+                    subject,
+                    AndExpression.unnamed(collected)
+            );
         };
     }
 
@@ -291,12 +305,15 @@ public final class Conditions {
         requireNonNull(values);
 
         return subject -> {
-            final List<Expression> collected = streamOf(values)
+            final var collected = streamOf(values)
                     .map(Conditions::equalTo)
                     .map(c -> c.bind(subject))
                     .toList();
 
-            return AndExpression.unnamed(collected);
+            return new UnaryCompoundAdapter<>(
+                    subject,
+                    AndExpression.unnamed(collected)
+            );
         };
     }
 
@@ -317,8 +334,12 @@ public final class Conditions {
 
         requireNonNull(conditions);
 
-        return subject -> Expressions.nor(Stream.of(conditions)
-                .map(c -> c.bind(subject)).toArray(Expression[]::new));
+        return subject -> {
+            final var expression = Expressions.nor(Stream.of(conditions)
+                    .map(c -> c.bind(subject)).toArray(Expression[]::new));
+
+            return new UnaryCompoundAdapter<>(subject, expression);
+        };
     }
 
     /**
@@ -341,9 +362,13 @@ public final class Conditions {
 
         requireNonNull(values);
 
-        return subject -> Expressions.nor(Stream.of(values)
-                .map(Conditions::equalTo)
-                .map(c -> c.bind(subject)).toArray(Expression[]::new));
+        return subject -> {
+            final var expression = Expressions.nor(Stream.of(values)
+                    .map(Conditions::equalTo)
+                    .map(c -> c.bind(subject)).toArray(Expression[]::new));
+
+            return new UnaryCompoundAdapter<>(subject, expression);
+        };
     }
 
     /**
@@ -365,8 +390,12 @@ public final class Conditions {
 
         requireNonNull(values);
 
-        return subject -> Expressions.nor(streamOf(values)
-                .map(Conditions::equalTo)
-                .map(c -> c.bind(subject)).toArray(Expression[]::new));
+        return subject -> {
+            final var expression = Expressions.nor(streamOf(values)
+                    .map(Conditions::equalTo)
+                    .map(c -> c.bind(subject)).toArray(Expression[]::new));
+
+            return new UnaryCompoundAdapter<>(subject, expression);
+        };
     }
 }

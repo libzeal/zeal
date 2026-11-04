@@ -62,7 +62,7 @@ class UnaryExpressionChain<S> {
      */
     public List<Expression> bind(final @Nullable S subject) {
         return conditions.stream()
-                .map(condition -> condition.bind(subject))
+                .<Expression>map(condition -> condition.bind(subject))
                 .toList();
     }
 }

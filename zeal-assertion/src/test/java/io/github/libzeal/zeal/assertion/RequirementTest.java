@@ -75,6 +75,60 @@ class RequirementTest {
         );
     }
 
+    @ParameterizedTest(name = "{0}")
+    @ArgumentsSource(ExpressionFailureArgumentsProvider.class)
+    void whenRequireExpression(final ExpressionExceptionTestCaseData testData) {
+        helper.whenCallExpression_thenExceptionThrown(
+                testData,
+                requirement::require,
+                Requirement.DEFAULT_MESSAGE
+        );
+    }
+
+    @ParameterizedTest(name = "{0}")
+    @ArgumentsSource(ExpressionFailureArgumentsProvider.class)
+    void whenRequireExpressionWithMessage(final ExpressionExceptionTestCaseData testData) {
+        helper.whenCallExpressionWithMessage_thenExceptionThrown(
+                testData,
+                requirement::require
+        );
+    }
+
+    @ParameterizedTest(name = "{0}")
+    @ArgumentsSource(ExpressionFailureArgumentsProvider.class)
+    void whenRequireExpressionWithMissingMessage(final ExpressionExceptionTestCaseData testData) {
+        helper.whenCallExpressionWithMissingMessage_thenExceptionThrown(
+                testData,
+                requirement::require
+        );
+    }
+
+    @ParameterizedTest(name = "{0}")
+    @ArgumentsSource(PassingExpressionArgumentsProvider.class)
+    void whenRequireExpression_thenNoExceptionThrown(final PassingExpressionTestCaseData testData) {
+        helper.whenCallExpression_thenNoExceptionThrown(
+                testData,
+                requirement::require
+        );
+    }
+
+    @ParameterizedTest(name = "{0}")
+    @ArgumentsSource(PassingExpressionArgumentsProvider.class)
+    void whenRequireExpressionWithMessage_thenNoExceptionThrown(final PassingExpressionTestCaseData testData) {
+        helper.whenCallExpressionWithMessage_thenNoExceptionThrown(
+                testData,
+                requirement::require
+        );
+    }
+
+    static final class ExpressionFailureArgumentsProvider implements ArgumentsProvider {
+
+        @Override
+        public Stream<? extends Arguments> provideArguments(final ExtensionContext extensionContext) {
+            return expressionFailureCases(NullPointerException.class, PreconditionFailedException.class);
+        }
+    }
+
     static final class ExceptionThrownArgumentsProvider implements ArgumentsProvider {
 
         @Override
