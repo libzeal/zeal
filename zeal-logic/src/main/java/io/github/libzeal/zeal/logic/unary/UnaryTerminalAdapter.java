@@ -1,15 +1,12 @@
 package io.github.libzeal.zeal.logic.unary;
 
-import io.github.libzeal.zeal.logic.CompoundExpression;
-import io.github.libzeal.zeal.logic.Expression;
-import io.github.libzeal.zeal.logic.evaluation.CompoundEvaluation;
+import io.github.libzeal.zeal.logic.TerminalExpression;
+import io.github.libzeal.zeal.logic.evaluation.TerminalEvaluation;
 import org.jspecify.annotations.Nullable;
 
-import java.util.List;
-
-record UnaryCompoundAdapter<T>(
-        @Nullable T subject, CompoundExpression delegate
-) implements CompoundUnaryExpression<T> {
+record UnaryTerminalAdapter<T>(
+        @Nullable T subject, TerminalExpression delegate
+) implements TerminalUnaryExpression<T> {
 
     @Override
     public String name() {
@@ -17,12 +14,7 @@ record UnaryCompoundAdapter<T>(
     }
 
     @Override
-    public List<Expression> children() {
-        return delegate.children();
-    }
-
-    @Override
-    public CompoundEvaluation evaluate() {
+    public TerminalEvaluation evaluate() {
         return delegate.evaluate();
     }
 }
