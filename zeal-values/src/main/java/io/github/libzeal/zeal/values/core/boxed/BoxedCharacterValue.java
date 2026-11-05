@@ -8,7 +8,7 @@ import org.jspecify.annotations.Nullable;
  *
  * @author Justin Albano
  */
-public class BoxedCharacterValue extends BaseValue<Character, BoxedCharacterValue> {
+public final class BoxedCharacterValue extends BaseValue<Character, BoxedCharacterValue> {
 
     private static final String IS_LOWER_CASE = "isLowerCase";
     private static final String IS_UPPER_CASE = "isUpperCase";

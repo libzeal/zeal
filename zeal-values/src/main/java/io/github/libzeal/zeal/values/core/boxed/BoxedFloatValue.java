@@ -7,7 +7,7 @@ import org.jspecify.annotations.Nullable;
  *
  * @author Justin Albano
  */
-public class BoxedFloatValue extends BaseBoxedFloatingPointValue<Float, BoxedFloatValue> {
+public final class BoxedFloatValue extends BaseBoxedFloatingPointValue<Float, BoxedFloatValue> {
 
     /**
      * Creates a new Float value.

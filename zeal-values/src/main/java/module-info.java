@@ -14,7 +14,6 @@ module zeal.values {
 
     exports io.github.libzeal.zeal.values;
     exports io.github.libzeal.zeal.values.collection;
-    exports io.github.libzeal.zeal.values.config;
     exports io.github.libzeal.zeal.values.core;
     exports io.github.libzeal.zeal.values.core.boxed;
     exports io.github.libzeal.zeal.values.sdk;

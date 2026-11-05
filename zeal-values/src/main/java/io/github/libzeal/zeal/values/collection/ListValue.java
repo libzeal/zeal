@@ -13,7 +13,7 @@ import java.util.List;
  *
  * @author Justin Albano
  */
-public class ListValue<T extends @Nullable Object> extends BaseOrderedSequenceValue<List<T>, T, ListValue<T>> {
+public final class ListValue<T extends @Nullable Object> extends BaseOrderedSequenceValue<List<T>, T, ListValue<T>> {
 
     /**
      * Creates a new list value with the supplied subject.

@@ -12,7 +12,7 @@ import java.util.Optional;
  *
  * @author Justin Albano
  */
-public class SimpleRationale implements Rationale {
+public final class SimpleRationale implements Rationale {
 
     private static final SimpleRationale EMPTY = new SimpleRationale("", "");
     private final String expected;

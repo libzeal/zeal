@@ -14,7 +14,7 @@ import static io.github.libzeal.zeal.logic.format.ObjectFormatter.stringify;
  *
  * @author Justin Albano
  */
-public class StringValue extends BaseOrderedSequenceValue<String, Character, StringValue> {
+public final class StringValue extends BaseOrderedSequenceValue<String, Character, StringValue> {
 
     private final StringOnStringOperations stringOperations = new StringOnStringOperations();
 

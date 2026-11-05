@@ -15,7 +15,7 @@ import java.util.Arrays;
  *
  * @author Justin Albano
  */
-public class ArrayValue<T extends @Nullable Object> extends BaseOrderedSequenceValue<T[], T, ArrayValue<T>> {
+public final class ArrayValue<T extends @Nullable Object> extends BaseOrderedSequenceValue<T[], T, ArrayValue<T>> {
 
     /**
      * Creates a new array value using the supplied subject.

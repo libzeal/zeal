@@ -1,8 +1,10 @@
 package io.github.libzeal.zeal.values;
 
 import io.github.libzeal.zeal.logic.unary.UnaryExpression;
+import io.github.libzeal.zeal.values.core.boxed.BoxedShortValue;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class ValuesTest {
@@ -93,6 +95,22 @@ class ValuesTest {
         final UnaryExpression<?> expression = Values.value((byte) 0x01);
 
         assertNotNull(expression);
+    }
+
+    @Test
+    void givenValidValue_whenValueBoxedShort_thenBoxedShortValueReturned() {
+
+        final UnaryExpression<?> expression = Values.value((short) 1);
+
+        assertInstanceOf(BoxedShortValue.class, expression);
+    }
+
+    @Test
+    void givenNullValue_whenValueBoxedShort_thenBoxedShortValueReturned() {
+
+        final UnaryExpression<?> expression = Values.value((Short) null);
+
+        assertInstanceOf(BoxedShortValue.class, expression);
     }
 
     @Test

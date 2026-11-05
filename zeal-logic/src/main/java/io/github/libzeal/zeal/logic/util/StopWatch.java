@@ -7,7 +7,7 @@ import java.time.Duration;
  *
  * @author Justin Albano
  */
-public class StopWatch {
+public final class StopWatch {
 
     private long startNanos;
 

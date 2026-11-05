@@ -12,7 +12,7 @@ import static io.github.libzeal.zeal.logic.format.ObjectFormatter.stringify;
  *
  * @author Justin Albano
  */
-public class StandardRationales {
+public final class StandardRationales {
 
     private StandardRationales() {
     }

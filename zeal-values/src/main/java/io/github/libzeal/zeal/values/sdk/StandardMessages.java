@@ -6,7 +6,7 @@ package io.github.libzeal.zeal.values.sdk;
  *
  * @author Justin Albano
  */
-public class StandardMessages {
+public final class StandardMessages {
 
     /**
      * Common message when a condition is satisfied.

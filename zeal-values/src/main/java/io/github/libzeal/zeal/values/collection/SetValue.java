@@ -16,7 +16,7 @@ import java.util.SortedSet;
  *
  * @author Justin Albano
  */
-public class SetValue<T extends @Nullable Object> extends BaseSequenceValue<Set<T>, T, SetValue<T>> {
+public final class SetValue<T extends @Nullable Object> extends BaseSequenceValue<Set<T>, T, SetValue<T>> {
 
     /**
      * Creates a set value from the supplied subject.

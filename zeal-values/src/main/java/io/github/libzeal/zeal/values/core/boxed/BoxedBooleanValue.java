@@ -8,7 +8,7 @@ import org.jspecify.annotations.Nullable;
  *
  * @author Justin Albano
  */
-public class BoxedBooleanValue extends BaseValue<Boolean, BoxedBooleanValue> {
+public final class BoxedBooleanValue extends BaseValue<Boolean, BoxedBooleanValue> {
 
     /**
      * Creates a new Boolean expression.

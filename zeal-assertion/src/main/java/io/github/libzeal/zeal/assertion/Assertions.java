@@ -13,7 +13,7 @@ import org.jspecify.annotations.Nullable;
  *
  * @author Justin Albano
  */
-public class Assertions {
+public final class Assertions {
 
     private Assertions() {
     }

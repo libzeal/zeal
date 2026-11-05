@@ -13,7 +13,7 @@ import org.jspecify.annotations.Nullable;
  *
  * @author Justin Albano
  */
-public class Requirement {
+public final class Requirement {
 
     static final String DEFAULT_MESSAGE = "Precondition failed";
     private final AssertionExpressionEvaluator<NullPointerException, PreconditionFailedException> evaluator;

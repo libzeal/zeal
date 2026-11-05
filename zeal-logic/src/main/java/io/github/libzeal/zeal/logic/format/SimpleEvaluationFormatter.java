@@ -21,7 +21,7 @@ import java.util.Set;
  *
  * @author Justin Albano
  */
-public class SimpleEvaluationFormatter implements EvaluationFormatter {
+public final class SimpleEvaluationFormatter implements EvaluationFormatter {
 
     static final String TRUE_ROOT_CAUSE_NOTE = "A true expression may be a root cause if it belongs to a negated " +
             "expression, such as NOT, NAND, or NOR";

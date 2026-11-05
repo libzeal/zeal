@@ -7,7 +7,7 @@ import org.jspecify.annotations.Nullable;
  *
  * @author Justin Albano
  */
-public class ObjectFormatter {
+public final class ObjectFormatter {
 
     private ObjectFormatter() {
     }

@@ -13,7 +13,7 @@ import org.jspecify.annotations.Nullable;
  *
  * @author Justin Albano
  */
-public class Confirmation {
+public final class Confirmation {
 
     static final String DEFAULT_MESSAGE = "Assertion failed";
     private final AssertionExpressionEvaluator<AssertionFailedError, AssertionFailedError> evaluator;

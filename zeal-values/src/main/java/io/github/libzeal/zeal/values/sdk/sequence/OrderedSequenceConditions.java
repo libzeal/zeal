@@ -18,7 +18,7 @@ import static io.github.libzeal.zeal.values.sdk.StandardRationales.Names.withVal
  *
  * @author Justin Albano
  */
-public class OrderedSequenceConditions {
+public final class OrderedSequenceConditions {
 
     private OrderedSequenceConditions() {
     }

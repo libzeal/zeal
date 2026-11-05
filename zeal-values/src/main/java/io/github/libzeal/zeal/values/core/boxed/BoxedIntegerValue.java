@@ -7,7 +7,7 @@ import org.jspecify.annotations.Nullable;
  *
  * @author Justin Albano
  */
-public class BoxedIntegerValue
+public final class BoxedIntegerValue
         extends BaseBoxedWholeNumberValue<Integer, BoxedIntegerValue> {
 
     /**

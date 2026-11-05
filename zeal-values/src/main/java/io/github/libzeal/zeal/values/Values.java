@@ -18,7 +18,7 @@ import java.util.Set;
  *
  * @author Justin Albano
  */
-public class Values {
+public final class Values {
 
     private Values() {
     }
@@ -134,6 +134,18 @@ public class Values {
      */
     public static BoxedByteValue value(final @Nullable Byte value) {
         return new BoxedByteValue(value);
+    }
+
+    /**
+     * Wraps a {@link Short} as a value.
+     *
+     * @param value
+     *         The {@link Short} to wrap.
+     *
+     * @return A value that wraps the supplied {@link Short}.
+     */
+    public static BoxedShortValue value(final @Nullable Short value) {
+        return new BoxedShortValue(value);
     }
 
     /**

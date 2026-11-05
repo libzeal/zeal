@@ -13,7 +13,7 @@ import org.jspecify.annotations.Nullable;
  *
  * @author Justin Albano
  */
-public class Assurance {
+public final class Assurance {
 
     static final String DEFAULT_MESSAGE = "Postcondition failed";
     private final AssertionExpressionEvaluator<PostconditionFailedException, PostconditionFailedException> evaluator;

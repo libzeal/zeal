@@ -7,7 +7,7 @@ import org.jspecify.annotations.Nullable;
  *
  * @author Justin Albano
  */
-public class BoxedShortValue extends BaseBoxedWholeNumberValue<Short, BoxedShortValue> {
+public final class BoxedShortValue extends BaseBoxedWholeNumberValue<Short, BoxedShortValue> {
 
     /**
      * Creates a new Short value.

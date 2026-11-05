@@ -13,7 +13,7 @@ import java.util.Collection;
  *
  * @author Justin Albano
  */
-public class SimpleCollectionValue<T extends @Nullable Object> extends BaseSequenceValue<Collection<T>, T, SimpleCollectionValue<T>> {
+public final class SimpleCollectionValue<T extends @Nullable Object> extends BaseSequenceValue<Collection<T>, T, SimpleCollectionValue<T>> {
 
     /**
      * Creates a collection value from the supplied subject.

@@ -7,7 +7,7 @@ import org.jspecify.annotations.Nullable;
  *
  * @author Justin Albano
  */
-public class BoxedLongValue extends BaseBoxedWholeNumberValue<Long, BoxedLongValue> {
+public final class BoxedLongValue extends BaseBoxedWholeNumberValue<Long, BoxedLongValue> {
 
     /**
      * Creates a new Long value.

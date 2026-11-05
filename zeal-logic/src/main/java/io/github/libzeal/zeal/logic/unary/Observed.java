@@ -19,7 +19,7 @@ import java.util.function.Supplier;
  *
  * @author Justin Albano
  */
-public class Observed<T extends @Nullable Object> {
+public final class Observed<T extends @Nullable Object> {
 
     private final @Nullable T value;
     private final boolean missing;

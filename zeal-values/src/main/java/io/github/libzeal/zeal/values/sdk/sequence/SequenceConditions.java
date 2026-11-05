@@ -4,7 +4,6 @@ import io.github.libzeal.zeal.logic.format.ObjectFormatter;
 import io.github.libzeal.zeal.logic.unary.Condition;
 import io.github.libzeal.zeal.logic.unary.ConditionBuilder;
 import io.github.libzeal.zeal.logic.unary.ObservableUnaryExpression.Field;
-import io.github.libzeal.zeal.values.config.Configuration;
 import io.github.libzeal.zeal.values.sdk.StandardRationales;
 import io.github.libzeal.zeal.values.sdk.StandardRationales.Operators;
 import org.jspecify.annotations.Nullable;
@@ -24,8 +23,9 @@ import static java.util.stream.Collectors.toList;
  *
  * @author Justin Albano
  */
-public class SequenceConditions {
+public final class SequenceConditions {
 
+    private static final int MAX_LIST_DISPLAY_LENGTH = 20;
     private static final String LENGTH = "length";
     private static final String NULL_DESIRED_HINT = "Desired elements is (null), which passes by default";
 
@@ -336,11 +336,11 @@ public class SequenceConditions {
 
     private static <T extends @Nullable Object> List<String> computeMissing(final Collection<? extends @Nullable T> desired, final List<T> found) {
 
-        final boolean truncated = desired.size() > Configuration.MAX_LIST_DISPLAY_LENGTH;
+        final boolean truncated = desired.size() > MAX_LIST_DISPLAY_LENGTH;
 
         final List<String> missing = desired.stream()
                 .filter(d -> !found.contains(d))
-                .limit(Configuration.MAX_LIST_DISPLAY_LENGTH)
+                .limit(MAX_LIST_DISPLAY_LENGTH)
                 .map(ObjectFormatter::stringify)
                 .collect(toList());
 
