@@ -1,43 +1,69 @@
 package io.github.libzeal.zeal.values.collection;
 
-import io.github.libzeal.zeal.logic.unary.future.rationale.ComputableField;
-import io.github.libzeal.zeal.values.api.BaseObjectValue;
+import io.github.libzeal.zeal.logic.unary.ObservableUnaryExpression.Field;
+import io.github.libzeal.zeal.values.sdk.BaseValue;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Iterator;
 
-public class IteratorValue<T> extends BaseObjectValue<Iterator<T>, IteratorValue<T>> {
+/**
+ * A value used to evaluate {@link Iterator}s.
+ *
+ * @param <T>
+ *         The type of the elements in the {@link Iterator}.
+ *
+ * @author Justin Albano
+ */
+public final class IteratorValue<T extends @Nullable Object> extends BaseValue<Iterator<T>, IteratorValue<T>> {
 
-    public IteratorValue(final Iterator<T> subject) {
+    private static final String HAS_NEXT_NAME = "hasNext";
+    private static final String NOT_HAS_NEXT_NAME = "not[hasNext]";
+
+    /**
+     * Creates a new iterator value.
+     *
+     * @param subject
+     *         The desired subject.
+     */
+    public IteratorValue(final @Nullable Iterator<T> subject) {
         super(subject, "Iterator value");
     }
 
+    /**
+     * Checks if the iterator has a next element (equivalent to
+     * {@link Iterator#hasNext()}.
+     *
+     * @return This value (fluent interface).
+     */
     public IteratorValue<T> hasNext() {
         return append(
-                expression(Iterator::hasNext)
-                        .name(hasNextName())
-                        .expected(hasNextName())
+                observing(Iterator::hasNext)
+                        .passesIf(hasNext -> hasNext)
+                        .name(HAS_NEXT_NAME)
+                        .expected(HAS_NEXT_NAME)
                         .actual(hasNextActual())
+                        .build()
         );
     }
 
-    private static String hasNextName() {
-        return "hasNext";
+    private static <T> Field<Iterator<T>, Boolean> hasNextActual() {
+        return context -> Boolean.TRUE.equals(context.observed()) ? HAS_NEXT_NAME : NOT_HAS_NEXT_NAME;
     }
 
-    private static <T> ComputableField<Iterator<T>> hasNextActual() {
-        return context -> context.ifPassedOrElse(hasNextName(), doesNotHaveNextName());
-    }
-
-    private static String doesNotHaveNextName() {
-        return "not[hasNext]";
-    }
-
+    /**
+     * Checks if the iterator does not have a next element (equivalent to not
+     * {@link Iterator#hasNext()}).
+     *
+     * @return This value (fluent interface).
+     */
     public IteratorValue<T> doesNotHaveNext() {
         return append(
-                expression(s -> !s.hasNext())
-                        .name(doesNotHaveNextName())
-                        .expected(doesNotHaveNextName())
+                observing(Iterator::hasNext)
+                        .passesIf(hasNext -> !hasNext)
+                        .name(NOT_HAS_NEXT_NAME)
+                        .expected(NOT_HAS_NEXT_NAME)
                         .actual(hasNextActual())
+                        .build()
         );
     }
 }

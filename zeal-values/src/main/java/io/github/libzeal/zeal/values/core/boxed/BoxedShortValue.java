@@ -1,61 +1,29 @@
 package io.github.libzeal.zeal.values.core.boxed;
 
+import org.jspecify.annotations.Nullable;
+
 /**
- * An expression used to evaluate {@link Short} instances.
- * <p>
- * Note: Many of the predicates of this expression require unboxing, resulting in some performance loss.
+ * A value used to evaluate {@link Short}s.
  *
  * @author Justin Albano
  */
-public class BoxedShortValue extends BoxedWholeNumberValue<Short, BoxedShortValue> {
+public final class BoxedShortValue extends BaseBoxedWholeNumberValue<Short, BoxedShortValue> {
 
     /**
-     * Creates a new expression.
+     * Creates a new Short value.
      *
      * @param subject
-     *     The subject of the expression.
+     *         The desired subject.
      */
-    public BoxedShortValue(final Short subject) {
-        super(subject, "Short value");
-    }
-
-    @Override
-    protected Short zero() {
-        return 0;
-    }
-
-    @Override
-    protected Short min() {
-        return Short.MIN_VALUE;
-    }
-
-    @Override
-    protected Short max() {
-        return Short.MAX_VALUE;
-    }
-
-    @Override
-    protected boolean eq(final Short a, final Short b) {
-        return a.equals(b);
-    }
-
-    @Override
-    protected boolean lt(final Short a, final Short b) {
-        return a < b;
-    }
-
-    @Override
-    protected boolean gt(final Short a, final Short b) {
-        return a > b;
-    }
-
-    @Override
-    protected boolean gte(final Short a, final Short b) {
-        return a >= b;
-    }
-
-    @Override
-    protected boolean lte(final Short a, final Short b) {
-        return a <= b;
+    public BoxedShortValue(final @Nullable Short subject) {
+        super(
+                subject,
+                "Short value",
+                new WholeNumberOperations<>(
+                        (short) 0,
+                        Short.MIN_VALUE,
+                        Short.MAX_VALUE
+                )
+        );
     }
 }

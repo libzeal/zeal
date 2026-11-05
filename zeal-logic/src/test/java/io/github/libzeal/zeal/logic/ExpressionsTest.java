@@ -1,7 +1,7 @@
 package io.github.libzeal.zeal.logic;
 
+import io.github.libzeal.zeal.logic.evaluation.DirectCause;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
-import io.github.libzeal.zeal.logic.evaluation.Result;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
 import io.github.libzeal.zeal.logic.test.TestExpressions;
 import org.junit.jupiter.api.Test;
@@ -16,25 +16,6 @@ class ExpressionsTest {
     private static final String FALSE = "false";
 
     @Test
-    void givenContradiction_whenName_thenNameIsCorrect() {
-        assertEquals(Contradiction.NAME, Expressions.contradiction().name());
-    }
-
-    @Test
-    void givenContradiction_whenEvaluate_thenEvaluationIsCorrect() {
-
-        final Expression expression = Expressions.contradiction();
-        final Evaluation evaluation = expression.evaluate();
-        final Rationale rationale = evaluation.rationale();
-
-        assertEquals(Result.FALSE, evaluation.result());
-        assertEquals(Contradiction.NAME, evaluation.name());
-        assertRationaleEquals(rationale, FALSE, FALSE);
-        assertEquals(evaluation, evaluation.cause().evaluation());
-        assertDepthFirstTraversalIsTerminal(evaluation);
-    }
-
-    @Test
     void givenTautology_whenName_thenNameIsCorrect() {
         assertEquals(Tautology.NAME, Expressions.tautology().name());
     }
@@ -46,11 +27,48 @@ class ExpressionsTest {
         final Evaluation evaluation = expression.evaluate();
         final Rationale rationale = evaluation.rationale();
 
-        assertEquals(Result.TRUE, evaluation.result());
+        assertTrue(evaluation.isTrue());
         assertEquals(Tautology.NAME, evaluation.name());
         assertRationaleEquals(rationale, TRUE, TRUE);
-        assertEquals(evaluation, evaluation.cause().evaluation());
+        assertEquals(DirectCause.self(), evaluation.cause().direct());
         assertDepthFirstTraversalIsTerminal(evaluation);
+    }
+
+    @Test
+    void givenContradiction_whenName_thenNameIsCorrect() {
+        assertEquals(Contradiction.NAME, Expressions.contradiction().name());
+    }
+
+    @Test
+    void givenContradiction_whenEvaluate_thenEvaluationIsCorrect() {
+
+        final Expression expression = Expressions.contradiction();
+        final Evaluation evaluation = expression.evaluate();
+        final Rationale rationale = evaluation.rationale();
+
+        assertFalse(evaluation.isTrue());
+        assertEquals(Contradiction.NAME, evaluation.name());
+        assertRationaleEquals(rationale, FALSE, FALSE);
+        assertEquals(DirectCause.self(), evaluation.cause().direct());
+        assertDepthFirstTraversalIsTerminal(evaluation);
+    }
+
+    @Test
+    void givenNullSupplier_whenOf_thenExceptionThrown() {
+        assertThrows(
+            NullPointerException.class,
+            () -> Expressions.of(null)
+        );
+    }
+
+    @Test
+    void givenValidSupplier_whenOf_thenCorrectExpressionReturned() {
+
+        final BooleanExpression expression = Expressions.of(() -> true);
+        final Evaluation evaluation = expression.evaluate();
+
+        assertEquals(Expression.DEFAULT_NAME, expression.name());
+        assertTrue(evaluation.isTrue());
     }
 
     @Test
@@ -82,7 +100,7 @@ class ExpressionsTest {
     @Test
     void givenValidWrappedExpressions_whenAnd_thenCorrectExpressionReturned() {
 
-        final Expression wrappedExpression = TestExpressions.expression(Result.TRUE);
+        final Expression wrappedExpression = TestExpressions.expression(true);
         final AndExpression expression = Expressions.and(wrappedExpression);
 
         assertNotNull(expression);
@@ -122,7 +140,7 @@ class ExpressionsTest {
         final Expression expression = Expressions.nand(wrappedExpression);
 
         assertNotNull(expression);
-        assertInstanceOf(NotExpression.class, expression);
+        assertInstanceOf(NandExpression.class, expression);
     }
 
     @Test
@@ -140,6 +158,24 @@ class ExpressionsTest {
         final Expression expression = Expressions.nor(wrappedExpression);
 
         assertNotNull(expression);
-        assertInstanceOf(NotExpression.class, expression);
+        assertInstanceOf(NorExpression.class, expression);
+    }
+
+    @Test
+    void givenNullExpression_whenXor_thenExceptionThrown() {
+        assertThrows(
+            NullPointerException.class,
+            () -> Expressions.xor((Expression[]) null)
+        );
+    }
+
+    @Test
+    void givenValidWrappedExpressions_whenXor_thenCorrectExpressionReturned() {
+
+        final Expression wrappedExpression = TestExpressions.tautology();
+        final Expression expression = Expressions.xor(wrappedExpression);
+
+        assertNotNull(expression);
+        assertInstanceOf(XorExpression.class, expression);
     }
 }

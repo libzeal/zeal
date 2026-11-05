@@ -1,29 +1,20 @@
 package io.github.libzeal.zeal.logic;
 
-import io.github.libzeal.zeal.logic.evaluation.EvaluatedTerminalEvaluation;
-import io.github.libzeal.zeal.logic.evaluation.Evaluation;
+import io.github.libzeal.zeal.logic.evaluation.TerminalEvaluation;
 import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
 
 import java.time.Duration;
 
 /**
- * ` An expression that is always true.
+ * An expression that is always true.
  *
  * @author Justin Albano
+ * @since 0.5.0
  */
-final class Tautology implements Expression {
+public record Tautology() implements TerminalExpression {
 
     static final String NAME = "Tautology";
     private static final String TRUE = "true";
-    private static final Evaluation EVALUATION = evaluation();
-
-    private static Evaluation evaluation() {
-        return EvaluatedTerminalEvaluation.ofTrue(
-            NAME,
-            new SimpleRationale(TRUE, TRUE),
-            Duration.ZERO
-        );
-    }
 
     @Override
     public String name() {
@@ -31,7 +22,12 @@ final class Tautology implements Expression {
     }
 
     @Override
-    public Evaluation evaluate() {
-        return EVALUATION;
+    public TerminalEvaluation evaluate() {
+        return new TerminalEvaluation(
+                true,
+                NAME,
+                new SimpleRationale(TRUE, TRUE),
+                Duration.ZERO
+        );
     }
 }

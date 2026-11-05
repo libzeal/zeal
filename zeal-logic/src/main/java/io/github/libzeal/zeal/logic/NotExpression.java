@@ -1,62 +1,49 @@
 package io.github.libzeal.zeal.logic;
 
-import io.github.libzeal.zeal.logic.evaluation.cause.Cause;
-import io.github.libzeal.zeal.logic.evaluation.EvaluatedCompoundEvaluation;
+import io.github.libzeal.zeal.logic.evaluation.DirectCause;
+import io.github.libzeal.zeal.logic.evaluation.CompoundEvaluation;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
-import io.github.libzeal.zeal.logic.evaluation.Result;
-import io.github.libzeal.zeal.logic.evaluation.cause.CauseGenerator;
+import io.github.libzeal.zeal.logic.evaluation.SkippableEvaluation.Evaluated;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
 import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
 import io.github.libzeal.zeal.logic.util.StopWatch;
 
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
 /**
- * An expression that negates a wrapped expression (a logical <em>not</em>).
- * <p>
- * This expression evaluates to true if and only if the wrapped expression is
- * false; otherwise (the wrapped expression is true or skipped), the expression
- * evaluates to false.
+ * An expression whose wrapped expression is negated. The NOT expression
+ * evaluates to true only if the wrapped expression evaluates to false.
+ *
+ * @param name
+ *         The name of the expression.
+ * @param wrapped
+ *         The expression to negate.
  *
  * @author Justin Albano
+ * @since 0.5.0
  */
-public record NotExpression(String name,
-                            Expression wrapped) implements Expression {
+public record NotExpression(
+        String name,
+        Expression wrapped
+) implements CompoundExpression {
 
-    /**
-     * The actual value for the rationale if the wrapped expression is true.
-     */
-    public static final String ACTUAL_VALUE_WRAPPED_TRUE = "Wrapped: true";
-
-    /**
-     * The actual value for the rationale if the wrapped expression is false.
-     */
-    public static final String ACTUAL_VALUE_WRAPPED_FALSE = "Wrapped: false";
-
-    /**
-     * The actual value for the rationale if the wrapped expression is skip.
-     */
-    public static final String ACTUAL_VALUE_WRAPPED_SKIPPED = "Wrapped: skipped";
-
-    /**
-     * The default name of a negated expression.
-     */
-    public static final String DEFAULT_NAME = "NOT";
+    static final String ACTUAL_VALUE_WRAPPED_TRUE = "Wrapped: true";
+    static final String ACTUAL_VALUE_WRAPPED_FALSE = "Wrapped: false";
+    static final String DEFAULT_NAME = "NOT";
 
     /**
      * Creates a new expression that negates the supplied expression.
      *
      * @param name
-     *     The name of the expression.
+     *         The name of the expression.
      * @param wrapped
-     *     The expression to negate.
+     *         The expression to negate.
      *
      * @throws NullPointerException
-     *     The supplied name or wrapped expression is {@code null}.
+     *         The supplied name or wrapped expression is {@code null}.
      */
     public NotExpression {
         requireNonNull(name);
@@ -64,70 +51,38 @@ public record NotExpression(String name,
     }
 
     /**
-     * Creates a new expression that negates the supplied expression.
+     * Creates a NOT expression with a default name.
      *
      * @param wrapped
-     *     The expression to negate.
+     *         The expression to negate.
+     *
+     * @return A negated expression that evaluates to the negative of the
+     * supplied expression.
      *
      * @throws NullPointerException
-     *     The supplied wrapped expression is {@code null}.
+     *         The supplied wrapped expression is {@code null}.
      */
     public static NotExpression unnamed(final Expression wrapped) {
         return new NotExpression(DEFAULT_NAME, wrapped);
     }
 
     @Override
-    public Evaluation evaluate() {
+    public List<Expression> children() {
+        return List.of(wrapped);
+    }
+
+    @Override
+    public CompoundEvaluation evaluate() {
 
         final StopWatch stopWatch = StopWatch.started();
         final Evaluation wrappedEvaluation = wrapped.evaluate();
-        final Result result = result(wrappedEvaluation);
-        final String actualValue = actualValue(wrappedEvaluation);
+        final String actualValue = wrappedEvaluation.isTrue() ? ACTUAL_VALUE_WRAPPED_TRUE : ACTUAL_VALUE_WRAPPED_FALSE;
         final Rationale rationale = new SimpleRationale(ACTUAL_VALUE_WRAPPED_FALSE, actualValue);
-        final Cause cause = wrappedEvaluation.cause();
-
-        final List<Evaluation> children = new ArrayList<>(1);
-
-        children.add(wrappedEvaluation);
-
         final Duration elapsedTime = stopWatch.stop();
 
-        if (result.isFalse() || result.isSkipped()) {
-            return EvaluatedCompoundEvaluation.ofFalse(name(), rationale, elapsedTime, CauseGenerator.withUnderlyingCause(cause),
-                children);
-        }
-        else {
-            return EvaluatedCompoundEvaluation.ofTrue(name(), rationale, elapsedTime, CauseGenerator.withUnderlyingCause(cause), children);
-        }
-    }
-
-    private static Result result(final Evaluation wrappedEvaluation) {
-
-        final Result result = wrappedEvaluation.result();
-
-        if (result.isTrue()) {
-            return Result.FALSE;
-        }
-        else if (result.isFalse()) {
-            return Result.TRUE;
-        }
-        else {
-            return Result.SKIPPED;
-        }
-    }
-
-    private static String actualValue(final Evaluation wrappedEvaluation) {
-
-        final Result result = wrappedEvaluation.result();
-
-        if (result.isTrue()) {
-            return ACTUAL_VALUE_WRAPPED_TRUE;
-        }
-        else if (result.isFalse()) {
-            return ACTUAL_VALUE_WRAPPED_FALSE;
-        }
-        else {
-            return ACTUAL_VALUE_WRAPPED_SKIPPED;
-        }
+        return CompoundEvaluation.of(
+                this, !wrappedEvaluation.isTrue(), rationale, elapsedTime,
+                DirectCause.of(wrappedEvaluation), List.of(new Evaluated(wrappedEvaluation))
+        );
     }
 }

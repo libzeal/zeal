@@ -1,33 +1,41 @@
 package io.github.libzeal.zeal.values.collection;
 
-import io.github.libzeal.zeal.values.collection.BaseIterableValue.IterableSequenceOperations;
+import io.github.libzeal.zeal.values.sdk.sequence.BaseSequenceValue;
+import io.github.libzeal.zeal.values.sdk.sequence.SequenceOperations;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Objects;
-import java.util.stream.StreamSupport;
 
-import static java.util.stream.Collectors.toList;
+/**
+ * A value used to evaluate {@link Iterable}s.
+ *
+ * @param <T>
+ *         The type of the elements of the {@link Iterable}.
+ *
+ * @author Justin Albano
+ */
+public final class IterableValue<T extends @Nullable Object> extends BaseSequenceValue<Iterable<T>, T, IterableValue<T>> {
 
-public final class IterableValue<T> extends
-    BaseIterableValue<T, Iterable<T>, IterableSequenceOperations<T, Iterable<T>>, IterableValue<T>> {
-
-    public IterableValue(final Iterable<T> subject) {
+    /**
+     * Creates a new iterable value using the supplied subject.
+     *
+     * @param subject
+     *         The desired subject.
+     */
+    public IterableValue(final @Nullable Iterable<T> subject) {
         super(subject, "Iterable value", new ConcreteIterableSequenceOperations<>());
     }
 
-    private static class ConcreteIterableSequenceOperations<T, I extends Iterable<T>>
-        implements IterableSequenceOperations<T, I> {
-
-        @Override
-        public List<T> findAllIn(final I haystack, final Collection<T> needles) {
-            return StreamSupport.stream(haystack.spliterator(), false)
-                .filter(needles::contains)
-                .collect(toList());
-        }
+    private static class ConcreteIterableSequenceOperations<T extends @Nullable Object, I extends Iterable<T>>
+            implements SequenceOperations<T, I> {
 
         @Override
         public int size(final I haystack) {
+
+            if (haystack instanceof final Collection<?> collection) {
+                return collection.size();
+            }
 
             int count = 0;
 
@@ -40,14 +48,13 @@ public final class IterableValue<T> extends
         }
 
         @Override
-        public boolean isEmpty(final I haystack) {
-            return haystack.iterator().hasNext();
-        }
+        public boolean includes(final I haystack, final @Nullable T needle) {
 
-        @Override
-        public boolean includes(final I haystack, final T needle) {
+            if (haystack instanceof final Collection<?> collection) {
+                return includesInCollection(needle, collection);
+            }
 
-            for (final T element: haystack) {
+            for (final T element : haystack) {
                 if (Objects.equals(element, needle)) {
                     return true;
                 }
@@ -56,8 +63,29 @@ public final class IterableValue<T> extends
             return false;
         }
 
+        private static <T> boolean includesInCollection(
+                final @Nullable T needle,
+                final Collection<?> collection
+        ) {
+            try {
+                return collection.contains(needle);
+            }
+            catch (final NullPointerException e) {
+                // Some collections do not permit null elements and may throw
+                // when a null needle is used. This section catches this
+                // exception and if the needle is null (the cause of the NPE),
+                // the needle is considered "not found."
+
+                if (needle == null) {
+                    return false;
+                }
+
+                throw e;
+            }
+        }
+
         @Override
-        public int occurrences(final I haystack, final T needle) {
+        public int occurrences(final I haystack, final @Nullable T needle) {
 
             int count = 0;
 

@@ -1,26 +1,41 @@
 package io.github.libzeal.zeal.logic.evaluation;
 
 import io.github.libzeal.zeal.logic.Expression;
-import io.github.libzeal.zeal.logic.evaluation.cause.Cause;
 import io.github.libzeal.zeal.logic.rationale.Rationale;
 
 import java.time.Duration;
 
 /**
- * An {@link Expression} that has been evaluated. An evaluated expression contains a state, the name of the evaluation
- * that was performed, and a rationale that describes how the state was reached (the rationale used to reach the
- * state).
+ * An {@link Expression} that has been evaluated. An evaluation contains:
+ * <ul>
+ *     <li>A boolean result {@link #isTrue()}</li>
+ *     <li>The name of the evaluation (commonly the name of the expression that
+ *     was evaluated</li>
+ *     <li>A rationale that describes the expected and actual values of the
+ *     evaluation</li>
+ *     <li>The cause of the evaluation (that describes the evaluations that led
+ *     to the true or false value of this evaluation)</li>
+ * </ul>
  *
  * @author Justin Albano
  */
-public interface Evaluation {
+public sealed interface Evaluation permits TerminalEvaluation, CompoundEvaluation {
 
     /**
-     * Obtains the state of the evaluation (i.e., pass or fail).
+     * Checks whether the evaluation is true.
      *
-     * @return The state of the evaluation.
+     * @return True if the evaluation is true; false otherwise.
      */
-    Result result();
+    boolean isTrue();
+
+    /**
+     * Checks whether the evaluation is false.
+     *
+     * @return True if the evaluation is false; false otherwise.
+     */
+    default boolean isFalse() {
+        return !isTrue();
+    }
 
     /**
      * Obtains the name of the evaluation that was preformed.
@@ -37,13 +52,14 @@ public interface Evaluation {
     Rationale rationale();
 
     /**
-     * Obtains the elapsed time the evaluation (how long the evaluation took to complete).
+     * Obtains the duration the evaluation (how long the evaluation took to
+     * complete).
      *
-     * @return The elapsed time of the evaluation.
+     * @return The duration of the evaluation.
      *
      * @since 0.2.1
      */
-    Duration elapsedTime();
+    Duration duration();
 
     /**
      * Obtains the cause of the evaluation.

@@ -1,0 +1,110 @@
+package io.github.libzeal.zeal.values.sdk.sequence;
+
+import org.jspecify.annotations.Nullable;
+
+/**
+ * A value representing a sequence of ordered elements.
+ *
+ * @param <T>
+ *         The type of the elements in the sequence.
+ * @param <V>
+ *         The type of the value. This type is used to maintain the correct
+ *         return type for fluent interfaces, allowing for method chaining.
+ *
+ * @author Justin Albano
+ */
+public interface OrderedSequenceValue<T extends @Nullable Object, V extends OrderedSequenceValue<T, V>> extends SequenceValue<T, V> {
+
+    /**
+     * Checks that the desired element occurs at the desired index.
+     *
+     * @param desired
+     *         The desired element.
+     * @param index
+     *         The desired index.
+     *
+     * @return The value to allow for method chaining.
+     */
+    V hasAtIndex(@Nullable T desired, int index);
+
+    /**
+     * Checks that the desired element does not occur at the desired index.
+     *
+     * @param desired
+     *         The desired element.
+     * @param index
+     *         The index where the desired element should not occur.
+     *
+     * @return The value to allow for method chaining.
+     */
+    V doesNotHaveAtIndex(@Nullable T desired, int index);
+
+    /**
+     * Checks that the last occurrence of the desired element is at the desired
+     * index.
+     *
+     * @param desired
+     *         The desired element.
+     * @param index
+     *         The expected index of the last occurrence of the desired element.
+     *         An index of {@code -1} checks that the desired element does not
+     *         occur in the sequence.
+     *
+     * @return The value to allow for method chaining.
+     */
+    V lastIndexOfIs(@Nullable T desired, int index);
+
+    /**
+     * Checks that the last occurrence of the desired element is not at the
+     * desired index.
+     *
+     * @param desired
+     *         The desired element.
+     * @param index
+     *         The index that the last occurrence of the desired element should
+     *         not be at.
+     *
+     * @return The value to allow for method chaining.
+     */
+    V lastIndexOfIsNot(@Nullable T desired, int index);
+
+    /**
+     * Checks that the sequence starts with the supplied element.
+     *
+     * @param desired
+     *         The desired starting element.
+     *
+     * @return This value (fluent interface).
+     */
+    V startsWith(@Nullable T desired);
+
+    /**
+     * Checks that the sequence does not start with the supplied element.
+     *
+     * @param desired
+     *         The element that the sequence should not start with.
+     *
+     * @return This value (fluent interface).
+     */
+    V doesNotStartWith(@Nullable T desired);
+
+    /**
+     * Checks that the sequence ends with the supplied element.
+     *
+     * @param desired
+     *         The desired ending element.
+     *
+     * @return This value (fluent interface).
+     */
+    V endsWith(@Nullable T desired);
+
+    /**
+     * Checks that the sequence does not end with the supplied element.
+     *
+     * @param desired
+     *         The element that the sequence should not end with.
+     *
+     * @return This value (fluent interface).
+     */
+    V doesNotEndWith(@Nullable T desired);
+}

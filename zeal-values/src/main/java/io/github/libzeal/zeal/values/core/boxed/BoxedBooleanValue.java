@@ -1,51 +1,52 @@
 package io.github.libzeal.zeal.values.core.boxed;
 
-import io.github.libzeal.zeal.values.api.BaseObjectValue;
+import io.github.libzeal.zeal.values.sdk.BaseValue;
+import org.jspecify.annotations.Nullable;
 
 /**
- * An expression used to evaluate {@link Boolean} instances.
- * <p>
- * Note: Many of the predicates of this expression require unboxing, resulting in some performance loss.
+ * A value used to evaluate {@link Boolean}s.
  *
  * @author Justin Albano
  */
-public class BoxedBooleanValue extends BaseObjectValue<Boolean, BoxedBooleanValue> {
+public final class BoxedBooleanValue extends BaseValue<Boolean, BoxedBooleanValue> {
 
     /**
-     * Creates a new expression.
+     * Creates a new Boolean expression.
      *
      * @param subject
-     *     The subject of the expression.
+     *         The desired subject.
      */
-    public BoxedBooleanValue(final Boolean subject) {
+    public BoxedBooleanValue(final @Nullable Boolean subject) {
         super(subject, "Boolean value");
     }
 
     /**
-     * Adds a predicate to the expression that checks if the subject is true.
+     * Creates a new Boolean value.
      *
-     * @return This expression (fluent interface).
+     * @return This value (fluent interface).
      */
     public BoxedBooleanValue isTrue() {
         return append(
-            expression(Boolean::booleanValue)
-                .name("isTrue")
-                .expected("true")
-                .actual(context -> String.valueOf(context.subject()))
+                expression(Boolean::booleanValue)
+                        .name("isTrue")
+                        .expected("true")
+                        .actual(context -> String.valueOf(context.subject()))
+                        .build()
         );
     }
 
     /**
-     * Adds a predicate to the expression that checks if the subject is false.
+     * Checks if the subject is false.
      *
-     * @return This expression (fluent interface).
+     * @return This value (fluent interface).
      */
     public BoxedBooleanValue isFalse() {
         return append(
-            expression(b -> !b)
-                .name("isFalse")
-                .expected("false")
-                .actual(context -> String.valueOf(context.subject()))
+                expression(b -> !b)
+                        .name("isFalse")
+                        .expected("false")
+                        .actual(context -> String.valueOf(context.subject()))
+                        .build()
         );
     }
 }

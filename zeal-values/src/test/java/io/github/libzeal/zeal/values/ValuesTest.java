@@ -1,9 +1,10 @@
 package io.github.libzeal.zeal.values;
 
-import io.github.libzeal.zeal.logic.evaluation.Result;
 import io.github.libzeal.zeal.logic.unary.UnaryExpression;
+import io.github.libzeal.zeal.values.core.boxed.BoxedShortValue;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class ValuesTest {
@@ -43,7 +44,7 @@ class ValuesTest {
     @Test
     void givenValidValue_whenValueEnum_thenExpressionReturned() {
 
-        final UnaryExpression<?> expression = Values.value(Result.TRUE);
+        final UnaryExpression<?> expression = Values.value(true);
 
         assertNotNull(expression);
     }
@@ -51,7 +52,7 @@ class ValuesTest {
     @Test
     void givenValidValue_whenValueBoxedInteger_thenExpressionReturned() {
 
-        final UnaryExpression<?> expression = Values.value(Integer.valueOf(1));
+        final UnaryExpression<?> expression = Values.value(1);
 
         assertNotNull(expression);
     }
@@ -91,15 +92,31 @@ class ValuesTest {
     @Test
     void givenValidValue_whenValueBoxedByte_thenExpressionReturned() {
 
-        final UnaryExpression<?> expression = Values.value(Byte.valueOf((byte) 0x01));
+        final UnaryExpression<?> expression = Values.value((byte) 0x01);
 
         assertNotNull(expression);
     }
 
     @Test
+    void givenValidValue_whenValueBoxedShort_thenBoxedShortValueReturned() {
+
+        final UnaryExpression<?> expression = Values.value((short) 1);
+
+        assertInstanceOf(BoxedShortValue.class, expression);
+    }
+
+    @Test
+    void givenNullValue_whenValueBoxedShort_thenBoxedShortValueReturned() {
+
+        final UnaryExpression<?> expression = Values.value((Short) null);
+
+        assertInstanceOf(BoxedShortValue.class, expression);
+    }
+
+    @Test
     void givenValidValue_whenValueBoxedCharacter_thenExpressionReturned() {
 
-        final UnaryExpression<?> expression = Values.value(Character.valueOf('c'));
+        final UnaryExpression<?> expression = Values.value('c');
 
         assertNotNull(expression);
     }
