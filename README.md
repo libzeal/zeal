@@ -47,7 +47,7 @@ require(expression);
 ## Goals
 1. **Simple**: Expressions and evaluators clearly document the developer's intent.
 2. **Portable**: Written in JDK 21
-3. **Independent**: No external dependencies (other than [jSpecify](https://jspecify.dev/)
+3. **Independent**: No external dependencies (other than [jSpecify](https://jspecify.dev/))
 4. **Extensible**: Provides expressions for common types, but makes creating new expressions easy
 
 ## The Basics
