@@ -1,61 +1,29 @@
 package io.github.libzeal.zeal.values.core.boxed;
 
+import org.jspecify.annotations.Nullable;
+
 /**
- * An expression used to evaluate {@link Long} instances.
- * <p>
- * Note: Many of the predicates of this expression require unboxing, resulting in some performance loss.
+ * A value used to evaluate {@link Long}s.
  *
  * @author Justin Albano
  */
-public class BoxedLongValue extends BoxedWholeNumberValue<Long, BoxedLongValue> {
+public final class BoxedLongValue extends BaseBoxedWholeNumberValue<Long, BoxedLongValue> {
 
     /**
-     * Creates a new expression.
+     * Creates a new Long value.
      *
      * @param subject
-     *     The subject of the expression.
+     *         The desired subject.
      */
-    public BoxedLongValue(final Long subject) {
-        super(subject, "Long value");
-    }
-
-    @Override
-    protected Long zero() {
-        return 0L;
-    }
-
-    @Override
-    protected Long min() {
-        return Long.MIN_VALUE;
-    }
-
-    @Override
-    protected Long max() {
-        return Long.MAX_VALUE;
-    }
-
-    @Override
-    protected boolean eq(final Long a, final Long b) {
-        return a.equals(b);
-    }
-
-    @Override
-    protected boolean lt(final Long a, final Long b) {
-        return a < b;
-    }
-
-    @Override
-    protected boolean gt(final Long a, final Long b) {
-        return a > b;
-    }
-
-    @Override
-    protected boolean gte(final Long a, final Long b) {
-        return a >= b;
-    }
-
-    @Override
-    protected boolean lte(final Long a, final Long b) {
-        return a <= b;
+    public BoxedLongValue(final @Nullable Long subject) {
+        super(
+                subject,
+                "Long value",
+                new WholeNumberOperations<>(
+                        0L,
+                        Long.MIN_VALUE,
+                        Long.MAX_VALUE
+                )
+        );
     }
 }

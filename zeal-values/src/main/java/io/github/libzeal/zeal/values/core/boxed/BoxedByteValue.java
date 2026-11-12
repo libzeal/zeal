@@ -1,59 +1,30 @@
 package io.github.libzeal.zeal.values.core.boxed;
 
+import org.jspecify.annotations.Nullable;
+
 /**
- * An expression used to evaluate {@link Byte} instances.
+ * A value used to evaluate {@link Byte}s.
  *
  * @author Justin Albano
  */
-public class BoxedByteValue extends BoxedWholeNumberValue<Byte, BoxedByteValue> {
+public final class BoxedByteValue
+        extends BaseBoxedWholeNumberValue<Byte, BoxedByteValue> {
 
     /**
-     * Creates a new expression.
+     * Creates a new Byte value.
      *
      * @param subject
-     *     The subject of the expression.
+     *         The desired subject.
      */
-    public BoxedByteValue(final Byte subject) {
-        super(subject, "Byte value");
-    }
-
-    @Override
-    protected Byte zero() {
-        return 0;
-    }
-
-    @Override
-    protected Byte min() {
-        return Byte.MIN_VALUE;
-    }
-
-    @Override
-    protected Byte max() {
-        return Byte.MAX_VALUE;
-    }
-
-    @Override
-    protected boolean eq(final Byte a, final Byte b) {
-        return a.equals(b);
-    }
-
-    @Override
-    protected boolean lt(final Byte a, final Byte b) {
-        return a < b;
-    }
-
-    @Override
-    protected boolean gt(final Byte a, final Byte b) {
-        return a > b;
-    }
-
-    @Override
-    protected boolean gte(final Byte a, final Byte b) {
-        return a >= b;
-    }
-
-    @Override
-    protected boolean lte(final Byte a, final Byte b) {
-        return a <= b;
+    public BoxedByteValue(final @Nullable Byte subject) {
+        super(
+                subject,
+                "Byte value",
+                new WholeNumberOperations<>(
+                        (byte) 0,
+                        Byte.MIN_VALUE,
+                        Byte.MAX_VALUE
+                )
+        );
     }
 }

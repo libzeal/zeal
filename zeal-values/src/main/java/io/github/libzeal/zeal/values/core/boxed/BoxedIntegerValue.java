@@ -1,61 +1,30 @@
 package io.github.libzeal.zeal.values.core.boxed;
 
+import org.jspecify.annotations.Nullable;
+
 /**
- * An expression used to evaluate {@link Integer} instances.
- * <p>
- * Note: Many of the predicates of this expression require unboxing, resulting in some performance loss.
+ * A value used to evaluate {@link Integer}s.
  *
  * @author Justin Albano
  */
-public class BoxedIntegerValue extends BoxedWholeNumberValue<Integer, BoxedIntegerValue> {
+public final class BoxedIntegerValue
+        extends BaseBoxedWholeNumberValue<Integer, BoxedIntegerValue> {
 
     /**
-     * Creates a new expression.
+     * Creates a new Integer value.
      *
      * @param subject
-     *     The subject of the expression.
+     *         The desired subject.
      */
-    public BoxedIntegerValue(final Integer subject) {
-        super(subject, "Integer value");
-    }
-
-    @Override
-    protected Integer zero() {
-        return 0;
-    }
-
-    @Override
-    protected Integer min() {
-        return Integer.MIN_VALUE;
-    }
-
-    @Override
-    protected Integer max() {
-        return Integer.MAX_VALUE;
-    }
-
-    @Override
-    protected boolean eq(final Integer a, final Integer b) {
-        return a.equals(b);
-    }
-
-    @Override
-    protected boolean lt(final Integer a, final Integer b) {
-        return a < b;
-    }
-
-    @Override
-    protected boolean gt(final Integer a, final Integer b) {
-        return a > b;
-    }
-
-    @Override
-    protected boolean gte(final Integer a, final Integer b) {
-        return a >= b;
-    }
-
-    @Override
-    protected boolean lte(final Integer a, final Integer b) {
-        return a <= b;
+    public BoxedIntegerValue(final @Nullable Integer subject) {
+        super(
+                subject,
+                "Integer value",
+                new WholeNumberOperations<>(
+                        0,
+                        Integer.MIN_VALUE,
+                        Integer.MAX_VALUE
+                )
+        );
     }
 }

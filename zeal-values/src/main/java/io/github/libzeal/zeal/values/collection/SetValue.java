@@ -1,75 +1,52 @@
 package io.github.libzeal.zeal.values.collection;
 
-import io.github.libzeal.zeal.values.collection.SetValue.SetSequenceOperations;
+import io.github.libzeal.zeal.values.sdk.sequence.BaseSequenceValue;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.Comparator;
 import java.util.Set;
+import java.util.SortedSet;
 
-import static java.util.stream.Collectors.toList;
+/**
+ * A value used to evaluate {@link Set}s.
+ *
+ * @param <T>
+ *         The type of the elements in the {@link Set}.
+ *
+ * @author Justin Albano
+ */
+public final class SetValue<T extends @Nullable Object> extends BaseSequenceValue<Set<T>, T, SetValue<T>> {
 
-public class SetValue<T> extends BaseCollectionValue<T, Set<T>, SetSequenceOperations<T>, SetValue<T>> {
-
-    public SetValue(final Set<T> subject) {
-        super(subject, "Set value", new SetSequenceOperations<>());
+    /**
+     * Creates a set value from the supplied subject.
+     *
+     * @param subject
+     *         The desired subject.
+     */
+    public SetValue(final @Nullable Set<T> subject) {
+        super(subject, "Set value", new SetOperations<>());
     }
 
-    // TODO Optimize these to short circuit, since Sets have unique values
-
-    @Override
-    public SetValue<T> includesExactly(final T desired, final long times) {
-        return super.includesExactly(desired, times);
-    }
-
-    @Override
-    public SetValue<T> includesMoreThan(final T desired, final long times) {
-        return super.includesMoreThan(desired, times);
-    }
-
-    @Override
-    public SetValue<T> includesMoreThanOrEqualTo(final T desired, final long times) {
-        return super.includesMoreThanOrEqualTo(desired, times);
-    }
-
-    @Override
-    public SetValue<T> includesLessThan(final T desired, final long times) {
-        return super.includesLessThan(desired, times);
-    }
-
-    @Override
-    public SetValue<T> includesLessThanOrEqualTo(final T desired, final long times) {
-        return super.includesLessThanOrEqualTo(desired, times);
-    }
-
-    public static final class SetSequenceOperations<T>
-        implements CollectionSequenceOperations<T, Set<T>> {
+    /**
+     * Operations specific for {@link Set}.
+     * <p>
+     * This set of operations includes a shortcut for the
+     * {@link CollectionOperations#occurrences(Collection, Object)} method that
+     * assumes a {@link Set} only contains zero or one occurrences of an
+     * element. This override also leverage the membership logic of the set
+     * (such as a {@link Comparator} for {@link SortedSet}) rather than imposing
+     * membership logic.
+     *
+     * @param <T>
+     *         The type of the elements of the set.
+     */
+    private static final class SetOperations<T extends @Nullable Object>
+            extends CollectionOperations<T, Set<T>> {
 
         @Override
-        public int occurrences(final Set<T> haystack, final T needle) {
-            return Collections.frequency(haystack, needle);
-        }
-
-        @Override
-        public List<T> findAllIn(final Set<T> haystack, final Collection<T> needles) {
-            return haystack.stream()
-                .filter(needles::contains)
-                .collect(toList());
-        }
-
-        @Override
-        public boolean includes(final Set<T> haystack, final T needle) {
-            return haystack.contains(needle);
-        }
-
-        @Override
-        public int size(final Set<T> haystack) {
-            return haystack.size();
-        }
-
-        @Override
-        public boolean isEmpty(final Set<T> haystack) {
-            return haystack.isEmpty();
+        public int occurrences(final Set<T> haystack, final @Nullable T needle) {
+            return includes(haystack, needle) ? 1 : 0;
         }
     }
 }

@@ -17,5 +17,6 @@ buildNumber.properties
 .classpath
 
 .idea
+*.iml
 
 staging/

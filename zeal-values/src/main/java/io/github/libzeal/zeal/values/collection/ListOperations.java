@@ -1,0 +1,68 @@
+package io.github.libzeal.zeal.values.collection;
+
+import io.github.libzeal.zeal.logic.unary.Observed;
+import io.github.libzeal.zeal.values.sdk.sequence.OrderedSequenceOperations;
+import org.jspecify.annotations.Nullable;
+
+import java.util.List;
+
+final class ListOperations<T extends @Nullable Object> extends CollectionOperations<T, List<T>>
+        implements OrderedSequenceOperations<T, List<T>> {
+
+    @Override
+    public Observed<T> lastElement(final List<T> haystack, final @Nullable T desired) {
+
+        if (haystack.isEmpty()) {
+            return Observed.missing();
+        }
+        else {
+            return Observed.found(haystack.getLast());
+        }
+    }
+
+    @Override
+    public Observed<T> atIndex(final List<T> haystack, final int index, final @Nullable T desired) {
+
+        if (index >= 0 && index < haystack.size()) {
+            return Observed.found(haystack.get(index));
+        }
+        else {
+            return Observed.missing();
+        }
+    }
+
+    @Override
+    public int indexOf(final List<T> haystack, final @Nullable T needle) {
+
+        try {
+            return haystack.indexOf(needle);
+        }
+        catch (final NullPointerException e) {
+            return handleNullNeedle(needle, e);
+        }
+    }
+
+    private static <T> int handleNullNeedle(final @Nullable T needle, final NullPointerException e) {
+        // Some collections do not permit null elements and may throw when a
+        // null needle is used. This section catches this exception and if
+        // the needle is null (the cause of the NPE), the needle is
+        // considered "not found."
+
+        if (needle == null) {
+            return -1;
+        }
+
+        throw e;
+    }
+
+    @Override
+    public int lastIndexOf(final List<T> haystack, final @Nullable T needle) {
+
+        try {
+            return haystack.lastIndexOf(needle);
+        }
+        catch (final NullPointerException e) {
+            return handleNullNeedle(needle, e);
+        }
+    }
+}

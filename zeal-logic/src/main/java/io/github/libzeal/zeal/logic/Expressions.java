@@ -7,6 +7,7 @@ import java.util.function.BooleanSupplier;
  * A set of common logical expressions.
  *
  * @author Justin Albano
+ * @since 0.5.0
  */
 public final class Expressions {
 
@@ -17,10 +18,8 @@ public final class Expressions {
      * Creates a tautology.
      *
      * @return A tautology.
-     *
-     * @since 0.2.1
      */
-    public static Expression tautology() {
+    public static Tautology tautology() {
         return new Tautology();
     }
 
@@ -28,10 +27,8 @@ public final class Expressions {
      * Creates a contradiction.
      *
      * @return A contradiction.
-     *
-     * @since 0.2.1
      */
-    public static Expression contradiction() {
+    public static Contradiction contradiction() {
         return new Contradiction();
     }
 
@@ -39,89 +36,110 @@ public final class Expressions {
      * Creates an expression using the supplied boolean expression.
      *
      * @param expression
-     *     The desired boolean expression.
+     *         The desired boolean expression.
      *
      * @return An expression matching the supplied boolean expression.
      *
      * @throws NullPointerException
-     *     The supplied expression is {@code null}.
+     *         The supplied expression is {@code null}.
      */
     public static BooleanExpression of(final BooleanSupplier expression) {
-        return new BooleanExpression(Expression.DEFAULT_NAME,  expression);
+        return new BooleanExpression(Expression.DEFAULT_NAME, expression);
     }
 
     /**
-     * Creates a new expression that is the logical not of the supplied expression.
+     * Creates a new expression that is the logical NOT of the supplied
+     * expression.
      *
      * @param expression
-     *     The expression to negate.
+     *         The expression to negate.
      *
-     * @return The logical negation of the supplied expression.
+     * @return The logical NOT of the supplied expression.
      *
      * @throws NullPointerException
-     *     The supplied expression is {@code null}.
+     *         The supplied expression is {@code null}.
      */
     public static NotExpression not(final Expression expression) {
         return NotExpression.unnamed(expression);
     }
 
     /**
-     * Creates a new expression that is the logical and of the supplied expressions.
+     * Creates a new expression that is the logical AND of the supplied
+     * expressions.
      *
      * @param expressions
-     *     The expressions to and.
+     *         The expressions to AND.
      *
-     * @return The logical and of the supplied expressions.
+     * @return The logical AND of the supplied expressions.
      *
      * @throws NullPointerException
-     *     Any of the supplied expressions is {@code null}.
+     *         Any of the supplied expressions is {@code null}.
      */
     public static AndExpression and(final Expression... expressions) {
         return AndExpression.unnamed(Arrays.asList(expressions));
     }
 
     /**
-     * Creates a new expression that is the logical or of the supplied expressions.
+     * Creates a new expression that is the logical OR of the supplied
+     * expressions.
      *
      * @param expressions
-     *     The expressions to or.
+     *         The expressions to OR.
      *
-     * @return The logical or of the supplied expressions.
+     * @return The logical OR of the supplied expressions.
      *
      * @throws NullPointerException
-     *     Any of the supplied expressions is {@code null}.
+     *         Any of the supplied expressions is {@code null}.
      */
     public static OrExpression or(final Expression... expressions) {
         return OrExpression.unnamed(Arrays.asList(expressions));
     }
 
     /**
-     * Creates a new expression that is the logical nand of the supplied expressions.
+     * Creates a new expression that is the logical NAND of the supplied
+     * expressions.
      *
      * @param expressions
-     *     The expressions to nand.
+     *         The expressions to NAND.
      *
-     * @return The logical nand of the supplied expressions.
+     * @return The logical NAND of the supplied expressions.
      *
      * @throws NullPointerException
-     *     Any of the supplied expressions is {@code null}.
+     *         Any of the supplied expressions is {@code null}.
      */
-    public static NotExpression nand(final Expression... expressions) {
-        return NotExpression.unnamed(AndExpression.unnamed(expressions));
+    public static NandExpression nand(final Expression... expressions) {
+        return NandExpression.unnamed(expressions);
     }
 
     /**
-     * Creates a new expression that is the logical nor of the supplied expressions.
+     * Creates a new expression that is the logical NOR of the supplied
+     * expressions.
      *
      * @param expressions
-     *     The expressions to nor.
+     *         The expressions to NOR.
      *
-     * @return The logical nor of the supplied expressions.
+     * @return The logical NOR of the supplied expressions.
      *
      * @throws NullPointerException
-     *     Any of the supplied expressions is {@code null}.
+     *         Any of the supplied expressions is {@code null}.
      */
-    public static NotExpression nor(final Expression... expressions) {
-        return NotExpression.unnamed(OrExpression.unnamed(expressions));
+    public static NorExpression nor(final Expression... expressions) {
+        return NorExpression.unnamed(expressions);
+    }
+
+    /**
+     * Creates a new expression that is the logical XOR of the supplied
+     * expressions.
+     *
+     * @param expressions
+     *         The expressions to XOR.
+     *
+     * @return The logical XOR of the supplied expressions.
+     *
+     * @throws NullPointerException
+     *         Any of the supplied expressions is {@code null}.
+     */
+    public static XorExpression xor(final Expression... expressions) {
+        return XorExpression.unnamed(expressions);
     }
 }

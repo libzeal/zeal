@@ -2,30 +2,9 @@ package io.github.libzeal.zeal.logic.rationale;
 
 import org.junit.jupiter.api.Test;
 
-import static io.github.libzeal.zeal.logic.rationale.SimpleRationale.SKIPPED_VALUE;
 import static org.junit.jupiter.api.Assertions.*;
 
 class SimpleRationaleTest {
-
-    @Test
-    void whenEmpty_thenFieldsAreAllBlank() {
-
-        final Rationale rationale = SimpleRationale.empty();
-
-        assertEquals("", rationale.expected());
-        assertEquals("", rationale.actual());
-        assertFalse(rationale.hint().isPresent());
-    }
-
-    @Test
-    void whenSkipped_thenFieldsAreCorrect() {
-
-        final Rationale rationale = SimpleRationale.skipped();
-
-        assertEquals(SKIPPED_VALUE, rationale.expected());
-        assertEquals(SKIPPED_VALUE, rationale.actual());
-        assertFalse(rationale.hint().isPresent());
-    }
 
     @Test
     void givenExpectedAndActualValues_whenConstruct_thenFieldsAreAllCorrect() {
@@ -53,6 +32,16 @@ class SimpleRationaleTest {
         assertEquals(actual, rationale.actual());
         assertTrue(rationale.hint().isPresent());
         assertEquals(hint, rationale.hint().get());
+    }
+
+    @Test
+    void whenEmpty_thenFieldsAreAllBlank() {
+
+        final Rationale rationale = SimpleRationale.empty();
+
+        assertEquals("", rationale.expected());
+        assertEquals("", rationale.actual());
+        assertFalse(rationale.hint().isPresent());
     }
 
     @Test
