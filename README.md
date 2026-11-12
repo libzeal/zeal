@@ -192,7 +192,9 @@ Therefore, Zeal has a special rule:
 This ensures that if an assertion checks whether a subject is `null`, the evaluation fails because the subject is' null', not for an extraneous reason (such as `isGreaterThan`). If the expression does not contain an `isNotNull` predicate, the first predicate that fails will be considered the source of the failure (since the subject was not explicitly checked for nullity).
 
 ## Supported Types
-The following types have equivalent values supported in the [core values](/zeal-values-core) module:
+The following types have equivalent values supported in the [core values](/zeal-values-core) module.
+
+### Core
 * `Object`
 * `String`
 * `Enum`
@@ -205,3 +207,10 @@ The following types have equivalent values supported in the [core values](/zeal-
 * `Boolean`
 * `Byte`
 * `Character`
+
+### Collections
+* `Iterable`
+* `Iterator`
+* `Collection`
+* `List`
+* `Set`
