@@ -3,9 +3,7 @@ package io.github.libzeal.zeal.values.sdk.sequence;
 import io.github.libzeal.zeal.logic.format.ObjectFormatter;
 import io.github.libzeal.zeal.logic.unary.Condition;
 import io.github.libzeal.zeal.logic.unary.ConditionBuilder;
-import io.github.libzeal.zeal.logic.unary.ObservableUnaryExpression.Field;
 import io.github.libzeal.zeal.values.sdk.StandardRationales;
-import io.github.libzeal.zeal.values.sdk.StandardRationales.Operators;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
@@ -13,7 +11,6 @@ import java.util.List;
 
 import static io.github.libzeal.zeal.logic.format.ObjectFormatter.stringify;
 import static io.github.libzeal.zeal.values.sdk.StandardRationales.Names.withPairs;
-import static io.github.libzeal.zeal.values.sdk.StandardRationales.Names.withValue;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -26,188 +23,9 @@ import static java.util.stream.Collectors.toList;
 public final class SequenceConditions {
 
     private static final int MAX_LIST_DISPLAY_LENGTH = 20;
-    private static final String LENGTH = "length";
     private static final String NULL_DESIRED_HINT = "Desired elements is (null), which passes by default";
 
     private SequenceConditions() {
-    }
-
-    /**
-     * Creates a condition that checks if a sequence is empty.
-     *
-     * @param ops
-     *         The sequence operations to use.
-     * @param <S>
-     *         The type of the sequence.
-     *
-     * @return A condition that checks if a sequence is empty.
-     */
-    public static <S> Condition<S> isEmpty(final SequenceOperations<?, S> ops) {
-        return ConditionBuilder.observing(ops::size)
-                .passesIf(size -> size == 0)
-                .name("isEmpty")
-                .expected(Operators.EQ.display(LENGTH, 0))
-                .actual(actualLength())
-                .build();
-    }
-
-    private static <S> Field<S, Integer> actualLength() {
-        return context -> Operators.EQ.display(LENGTH, context.observed());
-    }
-
-    /**
-     * Creates a condition that checks if a sequence is not empty.
-     *
-     * @param ops
-     *         The sequence operations to use.
-     * @param <S>
-     *         The type of the sequence.
-     *
-     * @return A condition that checks if a sequence is not empty.
-     */
-    public static <S> Condition<S> isNotEmpty(final SequenceOperations<?, S> ops) {
-        return ConditionBuilder.observing(ops::size)
-                .passesIf(size -> size > 0)
-                .name("isNotEmpty")
-                .expected(Operators.GT.display(LENGTH, 0))
-                .actual(actualLength())
-                .build();
-    }
-
-    /**
-     * Creates a condition that checks if a sequence has the supplied length.
-     *
-     * @param ops
-     *         The sequence operations to use.
-     * @param length
-     *         The desired length.
-     * @param <S>
-     *         The type of the sequence.
-     *
-     * @return A condition that checks if a sequence has the supplied length.
-     */
-    public static <S> Condition<S> hasLengthOf(final int length, final SequenceOperations<?, S> ops) {
-        return ConditionBuilder.observing(ops::size)
-                .passesIf(size -> size == length)
-                .name("hasLengthOf[" + length + "]")
-                .expected(Operators.EQ.display(LENGTH, length))
-                .actual(actualLength())
-                .build();
-    }
-
-    /**
-     * Creates a condition that checks if a sequence does not have the supplied
-     * length.
-     *
-     * @param ops
-     *         The sequence operations to use.
-     * @param length
-     *         The desired length.
-     * @param <S>
-     *         The type of the sequence.
-     *
-     * @return A condition that checks if a sequence does not have the supplied
-     * length.
-     */
-    public static <S> Condition<S> doesNotHaveLengthOf(final int length, final SequenceOperations<?, S> ops) {
-        return ConditionBuilder.observing(ops::size)
-                .passesIf(size -> size != length)
-                .name(withValue("doesNotHaveLengthOf", length))
-                .expected(Operators.NE.display(LENGTH, length))
-                .actual(actualLength())
-                .build();
-    }
-
-    /**
-     * Creates a condition that checks if a sequence is shorter than the
-     * supplied length.
-     *
-     * @param ops
-     *         The sequence operations to use.
-     * @param length
-     *         The desired length.
-     * @param <S>
-     *         The type of the sequence.
-     *
-     * @return A condition that checks if a sequence is shorter than the
-     * supplied length.
-     */
-    public static <S> Condition<S> isShorterThan(final int length, final SequenceOperations<?, S> ops) {
-        return ConditionBuilder.observing(ops::size)
-                .passesIf(size -> size < length)
-                .name(withValue("isShorterThan", length))
-                .expected(Operators.LT.display(LENGTH, length))
-                .actual(actualLength())
-                .build();
-    }
-
-    /**
-     * Creates a condition that checks if a sequence is shorter than or equal to
-     * the supplied length.
-     *
-     * @param ops
-     *         The sequence operations to use.
-     * @param length
-     *         The desired length.
-     * @param <S>
-     *         The type of the sequence.
-     *
-     * @return A condition that checks if a sequence is shorter than or equal to
-     * the supplied length.
-     */
-    public static <S> Condition<S> isShorterThanOrEqualTo(final int length, final SequenceOperations<?, S> ops) {
-        return ConditionBuilder.observing(ops::size)
-                .passesIf(size -> size <= length)
-                .name(withValue("isShorterThanOrEqualTo", length))
-                .expected(Operators.LTE.display(LENGTH, length))
-                .actual(actualLength())
-                .build();
-    }
-
-    /**
-     * Creates a condition that checks if a sequence is longer than the supplied
-     * length.
-     *
-     * @param ops
-     *         The sequence operations to use.
-     * @param length
-     *         The desired length.
-     * @param <S>
-     *         The type of the sequence.
-     *
-     * @return A condition that checks if a sequence is longer than the supplied
-     * length.
-     */
-    public static <S> Condition<S> isLongerThan(final int length, final SequenceOperations<?, S> ops) {
-        return ConditionBuilder.observing(ops::size)
-                .passesIf(size -> size > length)
-                .name(withValue("isLongerThan", length))
-                .expected(Operators.GT.display(LENGTH, length))
-                .actual(actualLength())
-                .build();
-    }
-
-    /**
-     * Creates a condition that checks if a sequence is longer than or equal to
-     * than the supplied length.
-     *
-     * @param ops
-     *         The sequence operations to use.
-     * @param length
-     *         The desired length.
-     * @param <S>
-     *         The type of the sequence.
-     *
-     * @return A condition that checks if a sequence is longer than or equal to
-     * than the supplied length.
-     */
-    public static <S> Condition<S> isLongerThanOrEqualTo(final int length, final SequenceOperations<?, S> ops) {
-        return ConditionBuilder.observing(ops::size)
-                .passesIf(size -> size >= length)
-                .name(withValue("isLongerThanOrEqualTo", length))
-                .expected(Operators.GTE.display(LENGTH, length))
-                .actual(actualLength())
-                .build();
     }
 
     /**

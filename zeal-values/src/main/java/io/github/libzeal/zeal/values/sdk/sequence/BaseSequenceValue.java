@@ -47,56 +47,56 @@ public abstract class BaseSequenceValue<S extends @Nullable Object, T, V extends
     @Override
     public V isEmpty() {
         return append(
-                SequenceConditions.isEmpty(operations)
+                SizeConditions.isEmpty(operations::size)
         );
     }
 
     @Override
     public V isNotEmpty() {
         return append(
-                SequenceConditions.isNotEmpty(operations)
+                SizeConditions.isNotEmpty(operations::size)
         );
     }
 
     @Override
-    public V hasLengthOf(final int length) {
+    public V hasSizeOf(final int size) {
         return append(
-                SequenceConditions.hasLengthOf(length, operations)
+                SizeConditions.hasSizeOf(size, operations::size)
         );
     }
 
     @Override
-    public V doesNotHaveLengthOf(final int length) {
+    public V doesNotHaveSizeOf(final int size) {
         return append(
-                SequenceConditions.doesNotHaveLengthOf(length, operations)
+                SizeConditions.doesNotHaveSizeOf(size, operations::size)
         );
     }
 
     @Override
-    public V isLongerThan(final int length) {
+    public V isLongerThan(final int size) {
         return append(
-                SequenceConditions.isLongerThan(length, operations)
+                SizeConditions.isLongerThan(size, operations::size)
         );
     }
 
     @Override
-    public V isLongerThanOrEqualTo(final int length) {
+    public V isLongerThanOrEqualTo(final int size) {
         return append(
-                SequenceConditions.isLongerThanOrEqualTo(length, operations)
+                SizeConditions.isLongerThanOrEqualTo(size, operations::size)
         );
     }
 
     @Override
-    public V isShorterThan(final int length) {
+    public V isShorterThan(final int size) {
         return append(
-                SequenceConditions.isShorterThan(length, operations)
+                SizeConditions.isShorterThan(size, operations::size)
         );
     }
 
     @Override
-    public V isShorterThanOrEqualTo(final int length) {
+    public V isShorterThanOrEqualTo(final int size) {
         return append(
-                SequenceConditions.isShorterThanOrEqualTo(length, operations)
+                SizeConditions.isShorterThanOrEqualTo(size, operations::size)
         );
     }
 

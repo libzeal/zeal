@@ -10,6 +10,7 @@ import org.jspecify.annotations.Nullable;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -246,5 +247,9 @@ public final class Values {
      */
     public static <T extends @Nullable Object> SetValue<T> value(final @Nullable Set<T> value) {
         return new SetValue<>(value);
+    }
+
+    public static <K extends @Nullable Object, V extends @Nullable Object> MapValue<K, V> value(final @Nullable Map<K, V> value) {
+        return new MapValue<>(value);
     }
 }
