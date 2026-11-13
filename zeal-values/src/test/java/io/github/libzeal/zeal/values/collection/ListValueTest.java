@@ -214,8 +214,8 @@ class ListValueTest extends BaseValueTest<List<String>, ListValue<String>>
         final List<Function<ListValue<String>, ListValue<String>>> checks = List.of(
             value -> value.isEmpty(),
             value -> value.isNotEmpty(),
-            value -> value.hasLengthOf(0),
-            value -> value.doesNotHaveLengthOf(0),
+            value -> value.hasSizeOf(0),
+            value -> value.doesNotHaveSizeOf(0),
             value -> value.isLongerThan(0),
             value -> value.isLongerThanOrEqualTo(0),
             value -> value.isShorterThan(1),

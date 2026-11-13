@@ -1,8 +1,11 @@
 package io.github.libzeal.zeal.values;
 
 import io.github.libzeal.zeal.logic.unary.UnaryExpression;
+import io.github.libzeal.zeal.values.collection.MapValue;
 import io.github.libzeal.zeal.values.core.boxed.BoxedShortValue;
 import org.junit.jupiter.api.Test;
+
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -119,5 +122,21 @@ class ValuesTest {
         final UnaryExpression<?> expression = Values.value('c');
 
         assertNotNull(expression);
+    }
+
+    @Test
+    void givenValidValue_whenValueMap_thenMapValueReturned() {
+
+        final UnaryExpression<?> expression = Values.value(Map.of("a", 1));
+
+        assertInstanceOf(MapValue.class, expression);
+    }
+
+    @Test
+    void givenNullValue_whenValueMap_thenMapValueReturned() {
+
+        final UnaryExpression<?> expression = Values.value((Map<String, Integer>) null);
+
+        assertInstanceOf(MapValue.class, expression);
     }
 }
