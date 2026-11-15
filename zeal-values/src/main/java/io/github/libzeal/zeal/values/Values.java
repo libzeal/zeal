@@ -7,11 +7,7 @@ import io.github.libzeal.zeal.values.core.StringValue;
 import io.github.libzeal.zeal.values.core.boxed.*;
 import org.jspecify.annotations.Nullable;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * A class containing static methods that wrap common values as unary
@@ -249,6 +245,18 @@ public final class Values {
         return new SetValue<>(value);
     }
 
+    /**
+     * Wraps an {@link Map} as a value.
+     *
+     * @param value
+     *         The {@link Map} to wrap.
+     * @param <K>
+     *         The type of the key in the {@link Map}.
+     * @param <V>
+     *         The type of the value in the {@link Map}.
+     *
+     * @return A value that wraps the supplied {@link Map}.
+     */
     public static <K extends @Nullable Object, V extends @Nullable Object> MapValue<K, V> value(final @Nullable Map<K, V> value) {
         return new MapValue<>(value);
     }
