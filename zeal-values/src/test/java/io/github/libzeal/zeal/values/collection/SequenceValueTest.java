@@ -24,8 +24,8 @@ interface SequenceValueTest<S, E extends ObjectValue<S, E> & SequenceValue<Strin
             .expression(value -> value.isEmpty())
             .result(true)
             .name("isEmpty")
-            .expected("length = 0")
-            .actual("length = 0")
+            .expected("size = 0")
+            .actual("size = 0")
             .run();
     }
 
@@ -36,8 +36,8 @@ interface SequenceValueTest<S, E extends ObjectValue<S, E> & SequenceValue<Strin
             .expression(value -> value.isEmpty())
             .result(false)
             .name("isEmpty")
-            .expected("length = 0")
-            .actual("length = 1")
+            .expected("size = 0")
+            .actual("size = 1")
             .run();
     }
 
@@ -50,8 +50,8 @@ interface SequenceValueTest<S, E extends ObjectValue<S, E> & SequenceValue<Strin
             .expression(value -> value.isNotEmpty())
             .result(false)
             .name("isNotEmpty")
-            .expected("length > 0")
-            .actual("length = 0")
+            .expected("size > 0")
+            .actual("size = 0")
             .run();
     }
 
@@ -62,84 +62,84 @@ interface SequenceValueTest<S, E extends ObjectValue<S, E> & SequenceValue<Strin
             .expression(value -> value.isNotEmpty())
             .result(true)
             .name("isNotEmpty")
-            .expected("length > 0")
-            .actual("length = 1")
+            .expected("size > 0")
+            .actual("size = 1")
             .run();
     }
 
-    // ---- hasLengthOf ----
+    // ---- hasSizeOf ----
 
     @Test
-    default void givenShorter_whenHasLengthOf_thenFalse() {
+    default void givenShorter_whenHasSizeOf_thenFalse() {
         newTestCase()
             .subject(subjectOf())
-            .expression(value -> value.hasLengthOf(1))
+            .expression(value -> value.hasSizeOf(1))
             .result(false)
-            .name("hasLengthOf[1]")
-            .expected("length = 1")
-            .actual("length = 0")
+            .name("hasSizeOf[1]")
+            .expected("size = 1")
+            .actual("size = 0")
             .run();
     }
 
     @Test
-    default void givenSameLength_whenHasLengthOf_thenTrue() {
+    default void givenSameLength_whenHasSizeOf_thenTrue() {
         newTestCase()
             .subject(subjectOf("a"))
-            .expression(value -> value.hasLengthOf(1))
+            .expression(value -> value.hasSizeOf(1))
             .result(true)
-            .name("hasLengthOf[1]")
-            .expected("length = 1")
-            .actual("length = 1")
+            .name("hasSizeOf[1]")
+            .expected("size = 1")
+            .actual("size = 1")
             .run();
     }
 
     @Test
-    default void givenLonger_whenHasLengthOf_thenFalse() {
+    default void givenLonger_whenHasSizeOf_thenFalse() {
         newTestCase()
             .subject(subjectOf("a", "b"))
-            .expression(value -> value.hasLengthOf(1))
+            .expression(value -> value.hasSizeOf(1))
             .result(false)
-            .name("hasLengthOf[1]")
-            .expected("length = 1")
-            .actual("length = 2")
+            .name("hasSizeOf[1]")
+            .expected("size = 1")
+            .actual("size = 2")
             .run();
     }
 
-    // ---- doesNotHaveLengthOf ----
+    // ---- doesNotHaveSizeOf ----
 
     @Test
-    default void givenShorter_whenDoesNotHaveLengthOf_thenTrue() {
+    default void givenShorter_whenDoesNotHaveSizeOf_thenTrue() {
         newTestCase()
             .subject(subjectOf())
-            .expression(value -> value.doesNotHaveLengthOf(1))
+            .expression(value -> value.doesNotHaveSizeOf(1))
             .result(true)
-            .name("doesNotHaveLengthOf[1]")
-            .expected("length != 1")
-            .actual("length = 0")
+            .name("doesNotHaveSizeOf[1]")
+            .expected("size != 1")
+            .actual("size = 0")
             .run();
     }
 
     @Test
-    default void givenSameLength_whenDoesNotHaveLengthOf_thenFalse() {
+    default void givenSameLength_whenDoesNotHaveSizeOf_thenFalse() {
         newTestCase()
             .subject(subjectOf("a"))
-            .expression(value -> value.doesNotHaveLengthOf(1))
+            .expression(value -> value.doesNotHaveSizeOf(1))
             .result(false)
-            .name("doesNotHaveLengthOf[1]")
-            .expected("length != 1")
-            .actual("length = 1")
+            .name("doesNotHaveSizeOf[1]")
+            .expected("size != 1")
+            .actual("size = 1")
             .run();
     }
 
     @Test
-    default void givenLonger_whenDoesNotHaveLengthOf_thenTrue() {
+    default void givenLonger_whenDoesNotHaveSizeOf_thenTrue() {
         newTestCase()
             .subject(subjectOf("a", "b"))
-            .expression(value -> value.doesNotHaveLengthOf(1))
+            .expression(value -> value.doesNotHaveSizeOf(1))
             .result(true)
-            .name("doesNotHaveLengthOf[1]")
-            .expected("length != 1")
-            .actual("length = 2")
+            .name("doesNotHaveSizeOf[1]")
+            .expected("size != 1")
+            .actual("size = 2")
             .run();
     }
 
@@ -152,8 +152,8 @@ interface SequenceValueTest<S, E extends ObjectValue<S, E> & SequenceValue<Strin
             .expression(value -> value.isShorterThan(1))
             .result(true)
             .name("isShorterThan[1]")
-            .expected("length < 1")
-            .actual("length = 0")
+            .expected("size < 1")
+            .actual("size = 0")
             .run();
     }
 
@@ -164,8 +164,8 @@ interface SequenceValueTest<S, E extends ObjectValue<S, E> & SequenceValue<Strin
             .expression(value -> value.isShorterThan(1))
             .result(false)
             .name("isShorterThan[1]")
-            .expected("length < 1")
-            .actual("length = 1")
+            .expected("size < 1")
+            .actual("size = 1")
             .run();
     }
 
@@ -176,8 +176,8 @@ interface SequenceValueTest<S, E extends ObjectValue<S, E> & SequenceValue<Strin
             .expression(value -> value.isShorterThan(1))
             .result(false)
             .name("isShorterThan[1]")
-            .expected("length < 1")
-            .actual("length = 2")
+            .expected("size < 1")
+            .actual("size = 2")
             .run();
     }
 
@@ -190,8 +190,8 @@ interface SequenceValueTest<S, E extends ObjectValue<S, E> & SequenceValue<Strin
             .expression(value -> value.isShorterThanOrEqualTo(1))
             .result(true)
             .name("isShorterThanOrEqualTo[1]")
-            .expected("length <= 1")
-            .actual("length = 0")
+            .expected("size <= 1")
+            .actual("size = 0")
             .run();
     }
 
@@ -202,8 +202,8 @@ interface SequenceValueTest<S, E extends ObjectValue<S, E> & SequenceValue<Strin
             .expression(value -> value.isShorterThanOrEqualTo(1))
             .result(true)
             .name("isShorterThanOrEqualTo[1]")
-            .expected("length <= 1")
-            .actual("length = 1")
+            .expected("size <= 1")
+            .actual("size = 1")
             .run();
     }
 
@@ -214,8 +214,8 @@ interface SequenceValueTest<S, E extends ObjectValue<S, E> & SequenceValue<Strin
             .expression(value -> value.isShorterThanOrEqualTo(1))
             .result(false)
             .name("isShorterThanOrEqualTo[1]")
-            .expected("length <= 1")
-            .actual("length = 2")
+            .expected("size <= 1")
+            .actual("size = 2")
             .run();
     }
 
@@ -228,8 +228,8 @@ interface SequenceValueTest<S, E extends ObjectValue<S, E> & SequenceValue<Strin
             .expression(value -> value.isLongerThan(1))
             .result(false)
             .name("isLongerThan[1]")
-            .expected("length > 1")
-            .actual("length = 0")
+            .expected("size > 1")
+            .actual("size = 0")
             .run();
     }
 
@@ -240,8 +240,8 @@ interface SequenceValueTest<S, E extends ObjectValue<S, E> & SequenceValue<Strin
             .expression(value -> value.isLongerThan(1))
             .result(false)
             .name("isLongerThan[1]")
-            .expected("length > 1")
-            .actual("length = 1")
+            .expected("size > 1")
+            .actual("size = 1")
             .run();
     }
 
@@ -252,8 +252,8 @@ interface SequenceValueTest<S, E extends ObjectValue<S, E> & SequenceValue<Strin
             .expression(value -> value.isLongerThan(1))
             .result(true)
             .name("isLongerThan[1]")
-            .expected("length > 1")
-            .actual("length = 2")
+            .expected("size > 1")
+            .actual("size = 2")
             .run();
     }
 
@@ -266,8 +266,8 @@ interface SequenceValueTest<S, E extends ObjectValue<S, E> & SequenceValue<Strin
             .expression(value -> value.isLongerThanOrEqualTo(1))
             .result(false)
             .name("isLongerThanOrEqualTo[1]")
-            .expected("length >= 1")
-            .actual("length = 0")
+            .expected("size >= 1")
+            .actual("size = 0")
             .run();
     }
 
@@ -278,8 +278,8 @@ interface SequenceValueTest<S, E extends ObjectValue<S, E> & SequenceValue<Strin
             .expression(value -> value.isLongerThanOrEqualTo(1))
             .result(true)
             .name("isLongerThanOrEqualTo[1]")
-            .expected("length >= 1")
-            .actual("length = 1")
+            .expected("size >= 1")
+            .actual("size = 1")
             .run();
     }
 
@@ -290,8 +290,8 @@ interface SequenceValueTest<S, E extends ObjectValue<S, E> & SequenceValue<Strin
             .expression(value -> value.isLongerThanOrEqualTo(1))
             .result(true)
             .name("isLongerThanOrEqualTo[1]")
-            .expected("length >= 1")
-            .actual("length = 2")
+            .expected("size >= 1")
+            .actual("size = 2")
             .run();
     }
 

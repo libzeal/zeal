@@ -88,14 +88,14 @@ class IterableValueTest extends BaseValueTest<Iterable<String>, IterableValue<St
         }
 
         @Test
-        void givenNonIterableCollection_whenHasLengthOf_thenSizeUsedWithoutIterating() {
+        void givenNonIterableCollection_whenHasSizeOf_thenSizeUsedWithoutIterating() {
             newTestCase()
                 .subject(nonIterableCollectionOf("a", "b"))
-                .expression(value -> value.hasLengthOf(2))
+                .expression(value -> value.hasSizeOf(2))
                 .result(true)
-                .name("hasLengthOf[2]")
-                .expected("length = 2")
-                .actual("length = 2")
+                .name("hasSizeOf[2]")
+                .expected("size = 2")
+                .actual("size = 2")
                 .run();
         }
 

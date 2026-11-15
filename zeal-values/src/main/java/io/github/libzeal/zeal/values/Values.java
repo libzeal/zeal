@@ -7,10 +7,7 @@ import io.github.libzeal.zeal.values.core.StringValue;
 import io.github.libzeal.zeal.values.core.boxed.*;
 import org.jspecify.annotations.Nullable;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * A class containing static methods that wrap common values as unary
@@ -24,8 +21,8 @@ public final class Values {
     }
 
     /**
-     * Integer Wraps an object as a value. This method is used when a
-     * more-specific expression is not available.
+     * Wraps an object as a value. This method is used when a more-specific
+     * value is not available.
      *
      * @param value
      *         The value to wrap.
@@ -39,7 +36,7 @@ public final class Values {
     }
 
     /**
-     * Wraps a {@link Enum} as a value.
+     * Wraps an {@link Enum} as a value.
      *
      * @param value
      *         The {@link Enum} to wrap.
@@ -77,7 +74,7 @@ public final class Values {
     }
 
     /**
-     * Wraps a {@link Integer} as a value.
+     * Wraps an {@link Integer} as a value.
      *
      * @param value
      *         The {@link Integer} to wrap.
@@ -221,7 +218,7 @@ public final class Values {
     }
 
     /**
-     * Wraps an {@link List} as a value.
+     * Wraps a {@link List} as a value.
      *
      * @param value
      *         The {@link List} to wrap.
@@ -235,7 +232,7 @@ public final class Values {
     }
 
     /**
-     * Wraps an {@link Set} as a value.
+     * Wraps a {@link Set} as a value.
      *
      * @param value
      *         The {@link Set} to wrap.
@@ -246,5 +243,21 @@ public final class Values {
      */
     public static <T extends @Nullable Object> SetValue<T> value(final @Nullable Set<T> value) {
         return new SetValue<>(value);
+    }
+
+    /**
+     * Wraps a {@link Map} as a value.
+     *
+     * @param value
+     *         The {@link Map} to wrap.
+     * @param <K>
+     *         The type of the key in the {@link Map}.
+     * @param <V>
+     *         The type of the value in the {@link Map}.
+     *
+     * @return A value that wraps the supplied {@link Map}.
+     */
+    public static <K extends @Nullable Object, V extends @Nullable Object> MapValue<K, V> value(final @Nullable Map<K, V> value) {
+        return new MapValue<>(value);
     }
 }

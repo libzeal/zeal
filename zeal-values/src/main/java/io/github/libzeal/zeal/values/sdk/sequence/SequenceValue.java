@@ -10,87 +10,14 @@ import java.util.Collection;
  * implement this interface.
  *
  * @param <T>
- *         The type of the element.
+ *         The type of the elements.
  * @param <V>
  *         The type of the implementing value (used for fluent interfaces).
  *
  * @author Justin Albano
  */
-public interface SequenceValue<T extends @Nullable Object, V extends SequenceValue<T, V>> {
-
-    /**
-     * Checks if the value is empty.
-     *
-     * @return This value (fluent interface).
-     */
-    V isEmpty();
-
-    /**
-     * Checks if the value is not empty.
-     *
-     * @return This value (fluent interface).
-     */
-    V isNotEmpty();
-
-    /**
-     * Checks if the value has the supplied length.
-     *
-     * @param length
-     *         The desired length.
-     *
-     * @return This value (fluent interface).
-     */
-    V hasLengthOf(int length);
-
-    /**
-     * Checks if the value does not have the supplied length.
-     *
-     * @param length
-     *         The undesired length.
-     *
-     * @return This value (fluent interface).
-     */
-    V doesNotHaveLengthOf(int length);
-
-    /**
-     * Checks if the value is longer than the supplied length.
-     *
-     * @param length
-     *         The desired lower bound.
-     *
-     * @return This value (fluent interface).
-     */
-    V isLongerThan(int length);
-
-    /**
-     * Checks if the value is longer than or equal to the supplied length.
-     *
-     * @param length
-     *         The desired lower bound.
-     *
-     * @return This value (fluent interface).
-     */
-    V isLongerThanOrEqualTo(int length);
-
-    /**
-     * Checks if the value is shorter than the supplied length.
-     *
-     * @param length
-     *         The desired upper bound.
-     *
-     * @return This value (fluent interface).
-     */
-    V isShorterThan(int length);
-
-    /**
-     * Checks if the value is shorter than or equal to the supplied length.
-     *
-     * @param length
-     *         The desired upper bound.
-     *
-     * @return This value (fluent interface).
-     */
-    V isShorterThanOrEqualTo(int length);
+public interface SequenceValue<T extends @Nullable Object, V extends SequenceValue<T, V>>
+        extends SizedValue<V> {
 
     /**
      * Checks that the value includes the supplied element.

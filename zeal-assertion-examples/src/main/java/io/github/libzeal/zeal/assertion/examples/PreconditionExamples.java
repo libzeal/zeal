@@ -19,6 +19,6 @@ public class PreconditionExamples {
         require(value("foo").isNotEmpty());
 
         Requirement.create()
-                .require(and(value("foo").isNotBlank(), value("bar").hasLengthOf(3)));
+                .require(and(value("foo").isNotBlank(), value("bar").hasSizeOf(3)));
     }
 }

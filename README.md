@@ -214,3 +214,4 @@ The following types have equivalent values supported in the [core values](/zeal-
 * `Collection`
 * `List`
 * `Set`
+* `Map`

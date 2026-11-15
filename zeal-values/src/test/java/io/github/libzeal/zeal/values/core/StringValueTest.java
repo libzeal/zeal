@@ -37,8 +37,8 @@ class StringValueTest extends BaseValueTest<String, StringValue> {
             .expression(StringValue::isEmpty)
             .result(false)
             .name("isEmpty")
-            .expected("length = 0")
-            .actual("length = 1")
+            .expected("size = 0")
+            .actual("size = 1")
             .run();
     }
 
@@ -49,8 +49,8 @@ class StringValueTest extends BaseValueTest<String, StringValue> {
             .expression(StringValue::isEmpty)
             .result(true)
             .name("isEmpty")
-            .expected("length = 0")
-            .actual("length = 0")
+            .expected("size = 0")
+            .actual("size = 0")
             .run();
     }
 
@@ -61,8 +61,8 @@ class StringValueTest extends BaseValueTest<String, StringValue> {
             .expression(StringValue::isEmpty)
             .result(false)
             .name("isEmpty")
-            .expected("length = 0")
-            .actual("length = 1")
+            .expected("size = 0")
+            .actual("size = 1")
             .run();
     }
 
@@ -75,8 +75,8 @@ class StringValueTest extends BaseValueTest<String, StringValue> {
             .expression(StringValue::isNotEmpty)
             .result(true)
             .name("isNotEmpty")
-            .expected("length > 0")
-            .actual("length = 1")
+            .expected("size > 0")
+            .actual("size = 1")
             .run();
     }
 
@@ -87,8 +87,8 @@ class StringValueTest extends BaseValueTest<String, StringValue> {
             .expression(StringValue::isNotEmpty)
             .result(false)
             .name("isNotEmpty")
-            .expected("length > 0")
-            .actual("length = 0")
+            .expected("size > 0")
+            .actual("size = 0")
             .run();
     }
 
@@ -99,8 +99,8 @@ class StringValueTest extends BaseValueTest<String, StringValue> {
             .expression(StringValue::isNotEmpty)
             .result(true)
             .name("isNotEmpty")
-            .expected("length > 0")
-            .actual("length = 1")
+            .expected("size > 0")
+            .actual("size = 1")
             .run();
     }
 
@@ -180,41 +180,41 @@ class StringValueTest extends BaseValueTest<String, StringValue> {
             .run();
     }
 
-    // ---- hasLengthOf ----
+    // ---- hasSizeOf ----
 
     @Test
-    void givenSameLength_whenHasLengthOf_thenTrue() {
+    void givenSameLength_whenHasSizeOf_thenTrue() {
         newTestCase()
             .subject("a")
-            .expression(value -> value.hasLengthOf(1))
+            .expression(value -> value.hasSizeOf(1))
             .result(true)
-            .name("hasLengthOf[1]")
-            .expected("length = 1")
-            .actual("length = 1")
+            .name("hasSizeOf[1]")
+            .expected("size = 1")
+            .actual("size = 1")
             .run();
     }
 
     @Test
-    void givenShorter_whenHasLengthOf_thenFalse() {
+    void givenShorter_whenHasSizeOf_thenFalse() {
         newTestCase()
             .subject("")
-            .expression(value -> value.hasLengthOf(1))
+            .expression(value -> value.hasSizeOf(1))
             .result(false)
-            .name("hasLengthOf[1]")
-            .expected("length = 1")
-            .actual("length = 0")
+            .name("hasSizeOf[1]")
+            .expected("size = 1")
+            .actual("size = 0")
             .run();
     }
 
     @Test
-    void givenLonger_whenHasLengthOf_thenFalse() {
+    void givenLonger_whenHasSizeOf_thenFalse() {
         newTestCase()
             .subject("aa")
-            .expression(value -> value.hasLengthOf(1))
+            .expression(value -> value.hasSizeOf(1))
             .result(false)
-            .name("hasLengthOf[1]")
-            .expected("length = 1")
-            .actual("length = 2")
+            .name("hasSizeOf[1]")
+            .expected("size = 1")
+            .actual("size = 2")
             .run();
     }
 
@@ -227,8 +227,8 @@ class StringValueTest extends BaseValueTest<String, StringValue> {
             .expression(value -> value.isLongerThan(1))
             .result(false)
             .name("isLongerThan[1]")
-            .expected("length > 1")
-            .actual("length = 1")
+            .expected("size > 1")
+            .actual("size = 1")
             .run();
     }
 
@@ -239,8 +239,8 @@ class StringValueTest extends BaseValueTest<String, StringValue> {
             .expression(value -> value.isLongerThan(1))
             .result(false)
             .name("isLongerThan[1]")
-            .expected("length > 1")
-            .actual("length = 0")
+            .expected("size > 1")
+            .actual("size = 0")
             .run();
     }
 
@@ -251,8 +251,8 @@ class StringValueTest extends BaseValueTest<String, StringValue> {
             .expression(value -> value.isLongerThan(1))
             .result(true)
             .name("isLongerThan[1]")
-            .expected("length > 1")
-            .actual("length = 2")
+            .expected("size > 1")
+            .actual("size = 2")
             .run();
     }
 
@@ -265,8 +265,8 @@ class StringValueTest extends BaseValueTest<String, StringValue> {
             .expression(value -> value.isLongerThanOrEqualTo(1))
             .result(true)
             .name("isLongerThanOrEqualTo[1]")
-            .expected("length >= 1")
-            .actual("length = 1")
+            .expected("size >= 1")
+            .actual("size = 1")
             .run();
     }
 
@@ -277,8 +277,8 @@ class StringValueTest extends BaseValueTest<String, StringValue> {
             .expression(value -> value.isLongerThanOrEqualTo(1))
             .result(false)
             .name("isLongerThanOrEqualTo[1]")
-            .expected("length >= 1")
-            .actual("length = 0")
+            .expected("size >= 1")
+            .actual("size = 0")
             .run();
     }
 
@@ -289,8 +289,8 @@ class StringValueTest extends BaseValueTest<String, StringValue> {
             .expression(value -> value.isLongerThanOrEqualTo(1))
             .result(true)
             .name("isLongerThanOrEqualTo[1]")
-            .expected("length >= 1")
-            .actual("length = 2")
+            .expected("size >= 1")
+            .actual("size = 2")
             .run();
     }
 
@@ -303,8 +303,8 @@ class StringValueTest extends BaseValueTest<String, StringValue> {
             .expression(value -> value.isShorterThan(1))
             .result(false)
             .name("isShorterThan[1]")
-            .expected("length < 1")
-            .actual("length = 1")
+            .expected("size < 1")
+            .actual("size = 1")
             .run();
     }
 
@@ -315,8 +315,8 @@ class StringValueTest extends BaseValueTest<String, StringValue> {
             .expression(value -> value.isShorterThan(1))
             .result(true)
             .name("isShorterThan[1]")
-            .expected("length < 1")
-            .actual("length = 0")
+            .expected("size < 1")
+            .actual("size = 0")
             .run();
     }
 
@@ -327,8 +327,8 @@ class StringValueTest extends BaseValueTest<String, StringValue> {
             .expression(value -> value.isShorterThan(1))
             .result(false)
             .name("isShorterThan[1]")
-            .expected("length < 1")
-            .actual("length = 2")
+            .expected("size < 1")
+            .actual("size = 2")
             .run();
     }
 
@@ -341,8 +341,8 @@ class StringValueTest extends BaseValueTest<String, StringValue> {
             .expression(value -> value.isShorterThanOrEqualTo(1))
             .result(true)
             .name("isShorterThanOrEqualTo[1]")
-            .expected("length <= 1")
-            .actual("length = 1")
+            .expected("size <= 1")
+            .actual("size = 1")
             .run();
     }
 
@@ -353,8 +353,8 @@ class StringValueTest extends BaseValueTest<String, StringValue> {
             .expression(value -> value.isShorterThanOrEqualTo(1))
             .result(true)
             .name("isShorterThanOrEqualTo[1]")
-            .expected("length <= 1")
-            .actual("length = 0")
+            .expected("size <= 1")
+            .actual("size = 0")
             .run();
     }
 
@@ -365,8 +365,8 @@ class StringValueTest extends BaseValueTest<String, StringValue> {
             .expression(value -> value.isShorterThanOrEqualTo(1))
             .result(false)
             .name("isShorterThanOrEqualTo[1]")
-            .expected("length <= 1")
-            .actual("length = 2")
+            .expected("size <= 1")
+            .actual("size = 2")
             .run();
     }
 
