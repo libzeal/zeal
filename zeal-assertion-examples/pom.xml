@@ -3,6 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>zeal-assertion-examples</artifactId>
+    <name>zeal-assertion-examples</name>
 
     <parent>
         <groupId>io.github.libzeal</groupId>
@@ -13,11 +14,7 @@
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>zeal-assertion</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>zeal-values</artifactId>
+            <artifactId>zeal</artifactId>
         </dependency>
     </dependencies>
 
