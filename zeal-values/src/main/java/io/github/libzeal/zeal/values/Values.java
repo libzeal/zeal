@@ -21,8 +21,8 @@ public final class Values {
     }
 
     /**
-     * Integer Wraps an object as a value. This method is used when a
-     * more-specific expression is not available.
+     * Wraps an object as a value. This method is used when a more-specific
+     * value is not available.
      *
      * @param value
      *         The value to wrap.
@@ -36,7 +36,7 @@ public final class Values {
     }
 
     /**
-     * Wraps a {@link Enum} as a value.
+     * Wraps an {@link Enum} as a value.
      *
      * @param value
      *         The {@link Enum} to wrap.
@@ -74,7 +74,7 @@ public final class Values {
     }
 
     /**
-     * Wraps a {@link Integer} as a value.
+     * Wraps an {@link Integer} as a value.
      *
      * @param value
      *         The {@link Integer} to wrap.
@@ -218,7 +218,7 @@ public final class Values {
     }
 
     /**
-     * Wraps an {@link List} as a value.
+     * Wraps a {@link List} as a value.
      *
      * @param value
      *         The {@link List} to wrap.
@@ -232,7 +232,7 @@ public final class Values {
     }
 
     /**
-     * Wraps an {@link Set} as a value.
+     * Wraps a {@link Set} as a value.
      *
      * @param value
      *         The {@link Set} to wrap.
@@ -246,7 +246,7 @@ public final class Values {
     }
 
     /**
-     * Wraps an {@link Map} as a value.
+     * Wraps a {@link Map} as a value.
      *
      * @param value
      *         The {@link Map} to wrap.
