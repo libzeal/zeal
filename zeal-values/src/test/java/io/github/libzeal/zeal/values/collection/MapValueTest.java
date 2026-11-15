@@ -1015,6 +1015,38 @@ class MapValueTest extends BaseValueTest<Map<String, Integer>, MapValue<String, 
             .run();
     }
 
+    @Test
+    void givenNullEntry_whenIncludesAllEntriesOf_thenExceptionThrown() {
+
+        final MapValue<String, Integer> value = expression(mapOf("a", 1));
+
+        assertThrows(NullPointerException.class, () -> value.includesAllEntriesOf(entry("a", 1), null));
+    }
+
+    @Test
+    void givenNullEntry_whenIncludesAnyEntriesOf_thenExceptionThrown() {
+
+        final MapValue<String, Integer> value = expression(mapOf("a", 1));
+
+        assertThrows(NullPointerException.class, () -> value.includesAnyEntriesOf(entry("a", 1), null));
+    }
+
+    @Test
+    void givenNullEntry_whenExcludesAllEntriesOf_thenExceptionThrown() {
+
+        final MapValue<String, Integer> value = expression(mapOf("a", 1));
+
+        assertThrows(NullPointerException.class, () -> value.excludesAllEntriesOf(entry("a", 1), null));
+    }
+
+    @Test
+    void givenNullEntry_whenExcludesAnyEntriesOf_thenExceptionThrown() {
+
+        final MapValue<String, Integer> value = expression(mapOf("a", 1));
+
+        assertThrows(NullPointerException.class, () -> value.excludesAnyEntriesOf(entry("a", 1), null));
+    }
+
     // ---- predicates over all elements ----
 
     @Test
@@ -1152,6 +1184,336 @@ class MapValueTest extends BaseValueTest<Map<String, Integer>, MapValue<String, 
             .actual("At least one value does not satisfy condition")
             .hint("The following values do not satisfy condition: [-1]")
             .run();
+    }
+
+    // ---- anyKeySatisfies ----
+
+    @Test
+    void givenOneKeyMatches_whenAnyKeySatisfies_thenTrue() {
+        newTestCase()
+            .subject(mapOf("a", 1, "bb", 2))
+            .expression(value -> value.anyKeySatisfies(k -> k.length() == 2))
+            .result(true)
+            .name("anyKeySatisfies")
+            .expected("At least one key satisfies condition")
+            .actual("At least one key satisfies condition")
+            .hint("The following keys satisfy condition: [bb]")
+            .run();
+    }
+
+    @Test
+    void givenAllKeysMatch_whenAnyKeySatisfies_thenAllMatchingKeysInHint() {
+        newTestCase()
+            .subject(mapOf("a", 1, "b", 2))
+            .expression(value -> value.anyKeySatisfies(k -> k.length() == 1))
+            .result(true)
+            .name("anyKeySatisfies")
+            .expected("At least one key satisfies condition")
+            .actual("At least one key satisfies condition")
+            .hint("The following keys satisfy condition: [a, b]")
+            .run();
+    }
+
+    @Test
+    void givenNoKeysMatch_whenAnyKeySatisfies_thenFalse() {
+        newTestCase()
+            .subject(mapOf("a", 1, "b", 2))
+            .expression(value -> value.anyKeySatisfies(k -> k.length() == 2))
+            .result(false)
+            .name("anyKeySatisfies")
+            .expected("At least one key satisfies condition")
+            .actual("No keys satisfy condition")
+            .hint("No keys satisfy condition")
+            .run();
+    }
+
+    @Test
+    void givenEmptyMap_whenAnyKeySatisfies_thenFalse() {
+        newTestCase()
+            .subject(Map.of())
+            .expression(value -> value.anyKeySatisfies(k -> true))
+            .result(false)
+            .name("anyKeySatisfies")
+            .expected("At least one key satisfies condition")
+            .actual("No keys satisfy condition")
+            .run();
+    }
+
+    @Test
+    void givenNullKey_whenAnyKeySatisfies_thenNullKeyPassedToPredicate() {
+        newTestCase()
+            .subject(mapOf(null, 1, "a", 2))
+            .expression(value -> value.anyKeySatisfies(Objects::isNull))
+            .result(true)
+            .name("anyKeySatisfies")
+            .expected("At least one key satisfies condition")
+            .actual("At least one key satisfies condition")
+            .hint("The following keys satisfy condition: [(null)]")
+            .run();
+    }
+
+    @Test
+    void givenSortedMapWithCaseInsensitiveOrder_whenAnyKeySatisfies_thenStoredKeysPassedToPredicate() {
+        newTestCase()
+            .subject(caseInsensitiveMapOf("a", 1))
+            .expression(value -> value.anyKeySatisfies(k -> k.equals("A")))
+            .result(false)
+            .name("anyKeySatisfies")
+            .expected("At least one key satisfies condition")
+            .actual("No keys satisfy condition")
+            .run();
+    }
+
+    @Test
+    void givenNullMap_whenAnyKeySatisfies_thenFalse() {
+        newTestCase()
+            .subject(null)
+            .expression(value -> value.anyKeySatisfies(k -> true))
+            .result(false)
+            .name("anyKeySatisfies")
+            .expected("At least one key satisfies condition")
+            .actual("(null)")
+            .run();
+    }
+
+    @Test
+    void givenNullPredicate_whenAnyKeySatisfies_thenExceptionThrown() {
+
+        final MapValue<String, Integer> value = expression(mapOf("a", 1));
+
+        assertThrows(NullPointerException.class, () -> value.anyKeySatisfies(null));
+    }
+
+    // ---- noKeySatisfies ----
+
+    @Test
+    void givenNoKeysMatch_whenNoKeySatisfies_thenTrue() {
+        newTestCase()
+            .subject(mapOf("a", 1, "b", 2))
+            .expression(value -> value.noKeySatisfies(k -> k.length() == 2))
+            .result(true)
+            .name("noKeySatisfies")
+            .expected("No keys satisfy condition")
+            .actual("No keys satisfy condition")
+            .hint("No keys satisfy condition")
+            .run();
+    }
+
+    @Test
+    void givenOneKeyMatches_whenNoKeySatisfies_thenFalse() {
+        newTestCase()
+            .subject(mapOf("a", 1, "bb", 2))
+            .expression(value -> value.noKeySatisfies(k -> k.length() == 2))
+            .result(false)
+            .name("noKeySatisfies")
+            .expected("No keys satisfy condition")
+            .actual("At least one key satisfies condition")
+            .hint("The following keys satisfy condition: [bb]")
+            .run();
+    }
+
+    @Test
+    void givenEmptyMap_whenNoKeySatisfies_thenTrue() {
+        newTestCase()
+            .subject(Map.of())
+            .expression(value -> value.noKeySatisfies(k -> true))
+            .result(true)
+            .name("noKeySatisfies")
+            .expected("No keys satisfy condition")
+            .actual("No keys satisfy condition")
+            .run();
+    }
+
+    @Test
+    void givenNullKey_whenNoKeySatisfiesIsNull_thenFalse() {
+        newTestCase()
+            .subject(mapOf(null, 1))
+            .expression(value -> value.noKeySatisfies(Objects::isNull))
+            .result(false)
+            .name("noKeySatisfies")
+            .expected("No keys satisfy condition")
+            .actual("At least one key satisfies condition")
+            .hint("The following keys satisfy condition: [(null)]")
+            .run();
+    }
+
+    @Test
+    void givenNullMap_whenNoKeySatisfies_thenFalse() {
+        newTestCase()
+            .subject(null)
+            .expression(value -> value.noKeySatisfies(k -> false))
+            .result(false)
+            .name("noKeySatisfies")
+            .expected("No keys satisfy condition")
+            .actual("(null)")
+            .run();
+    }
+
+    @Test
+    void givenNullPredicate_whenNoKeySatisfies_thenExceptionThrown() {
+
+        final MapValue<String, Integer> value = expression(mapOf("a", 1));
+
+        assertThrows(NullPointerException.class, () -> value.noKeySatisfies(null));
+    }
+
+    // ---- anyValueSatisfies ----
+
+    @Test
+    void givenOneValueMatches_whenAnyValueSatisfies_thenTrue() {
+        newTestCase()
+            .subject(mapOf("a", 1, "b", -1))
+            .expression(value -> value.anyValueSatisfies(v -> v < 0))
+            .result(true)
+            .name("anyValueSatisfies")
+            .expected("At least one value satisfies condition")
+            .actual("At least one value satisfies condition")
+            .hint("The following values satisfy condition: [-1]")
+            .run();
+    }
+
+    @Test
+    void givenDuplicateMatchingValues_whenAnyValueSatisfies_thenEachOccurrenceInHint() {
+        newTestCase()
+            .subject(mapOf("a", 1, "b", 1))
+            .expression(value -> value.anyValueSatisfies(v -> v == 1))
+            .result(true)
+            .name("anyValueSatisfies")
+            .expected("At least one value satisfies condition")
+            .actual("At least one value satisfies condition")
+            .hint("The following values satisfy condition: [1, 1]")
+            .run();
+    }
+
+    @Test
+    void givenNoValuesMatch_whenAnyValueSatisfies_thenFalse() {
+        newTestCase()
+            .subject(mapOf("a", 1, "b", 2))
+            .expression(value -> value.anyValueSatisfies(v -> v < 0))
+            .result(false)
+            .name("anyValueSatisfies")
+            .expected("At least one value satisfies condition")
+            .actual("No values satisfy condition")
+            .hint("No values satisfy condition")
+            .run();
+    }
+
+    @Test
+    void givenEmptyMap_whenAnyValueSatisfies_thenFalse() {
+        newTestCase()
+            .subject(Map.of())
+            .expression(value -> value.anyValueSatisfies(v -> true))
+            .result(false)
+            .name("anyValueSatisfies")
+            .expected("At least one value satisfies condition")
+            .actual("No values satisfy condition")
+            .run();
+    }
+
+    @Test
+    void givenNullValue_whenAnyValueSatisfies_thenNullValuePassedToPredicate() {
+        newTestCase()
+            .subject(mapOf("a", null, "b", 1))
+            .expression(value -> value.anyValueSatisfies(Objects::isNull))
+            .result(true)
+            .name("anyValueSatisfies")
+            .expected("At least one value satisfies condition")
+            .actual("At least one value satisfies condition")
+            .hint("The following values satisfy condition: [(null)]")
+            .run();
+    }
+
+    @Test
+    void givenNullMap_whenAnyValueSatisfies_thenFalse() {
+        newTestCase()
+            .subject(null)
+            .expression(value -> value.anyValueSatisfies(v -> true))
+            .result(false)
+            .name("anyValueSatisfies")
+            .expected("At least one value satisfies condition")
+            .actual("(null)")
+            .run();
+    }
+
+    @Test
+    void givenNullPredicate_whenAnyValueSatisfies_thenExceptionThrown() {
+
+        final MapValue<String, Integer> value = expression(mapOf("a", 1));
+
+        assertThrows(NullPointerException.class, () -> value.anyValueSatisfies(null));
+    }
+
+    // ---- noValueSatisfies ----
+
+    @Test
+    void givenNoValuesMatch_whenNoValueSatisfies_thenTrue() {
+        newTestCase()
+            .subject(mapOf("a", 1, "b", 2))
+            .expression(value -> value.noValueSatisfies(v -> v < 0))
+            .result(true)
+            .name("noValueSatisfies")
+            .expected("No values satisfy condition")
+            .actual("No values satisfy condition")
+            .hint("No values satisfy condition")
+            .run();
+    }
+
+    @Test
+    void givenOneValueMatches_whenNoValueSatisfies_thenFalse() {
+        newTestCase()
+            .subject(mapOf("a", 1, "b", -1))
+            .expression(value -> value.noValueSatisfies(v -> v < 0))
+            .result(false)
+            .name("noValueSatisfies")
+            .expected("No values satisfy condition")
+            .actual("At least one value satisfies condition")
+            .hint("The following values satisfy condition: [-1]")
+            .run();
+    }
+
+    @Test
+    void givenEmptyMap_whenNoValueSatisfies_thenTrue() {
+        newTestCase()
+            .subject(Map.of())
+            .expression(value -> value.noValueSatisfies(v -> true))
+            .result(true)
+            .name("noValueSatisfies")
+            .expected("No values satisfy condition")
+            .actual("No values satisfy condition")
+            .run();
+    }
+
+    @Test
+    void givenNullValue_whenNoValueSatisfiesIsNull_thenFalse() {
+        newTestCase()
+            .subject(mapOf("a", null))
+            .expression(value -> value.noValueSatisfies(Objects::isNull))
+            .result(false)
+            .name("noValueSatisfies")
+            .expected("No values satisfy condition")
+            .actual("At least one value satisfies condition")
+            .hint("The following values satisfy condition: [(null)]")
+            .run();
+    }
+
+    @Test
+    void givenNullMap_whenNoValueSatisfies_thenFalse() {
+        newTestCase()
+            .subject(null)
+            .expression(value -> value.noValueSatisfies(v -> false))
+            .result(false)
+            .name("noValueSatisfies")
+            .expected("No values satisfy condition")
+            .actual("(null)")
+            .run();
+    }
+
+    @Test
+    void givenNullPredicate_whenNoValueSatisfies_thenExceptionThrown() {
+
+        final MapValue<String, Integer> value = expression(mapOf("a", 1));
+
+        assertThrows(NullPointerException.class, () -> value.noValueSatisfies(null));
     }
 
     @Test
