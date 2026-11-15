@@ -11,15 +11,15 @@ The Maven dependency is:
 ```xml
 <dependency>
     <groupId>io.github.libzeal</groupId>
-    <artifactId>zeal-assertion</artifactId>
-    <version>0.4.0</version>
+    <artifactId>zeal</artifactId>
+    <version>0.5.0</version>
 </dependency>
 ```
 
 The Gradle dependency is:
 
 ```groovy
-implementation 'io.github.libzeal:zeal-assertion:0.4.0'
+implementation 'io.github.libzeal:zeal:0.5.0'
 ```
 
 ## Using It
@@ -192,7 +192,7 @@ Therefore, Zeal has a special rule:
 This ensures that if an assertion checks whether a subject is `null`, the evaluation fails because the subject is' null', not for an extraneous reason (such as `isGreaterThan`). If the expression does not contain an `isNotNull` predicate, the first predicate that fails will be considered the source of the failure (since the subject was not explicitly checked for nullity).
 
 ## Supported Types
-The following types have equivalent values supported in the [core values](/zeal-values-core) module.
+The following types have equivalent values supported in the [values](/zeal-values) module.
 
 ### Core
 * `Object`

@@ -45,14 +45,14 @@ jobs:
           tag_name: ${{ env.RELEASE_VERSION }}
           release_name: ${{ env.RELEASE_VERSION }}
           body: |
-            This release can be obtained from Maven Central at https://repo1.maven.org/maven2/io/github/libzeal/zeal-assertion/${{ env.RELEASE_VERSION }}/.
+            This release can be obtained from Maven Central at https://repo1.maven.org/maven2/io/github/libzeal/zeal/${{ env.RELEASE_VERSION }}/.
             
-            The `zeal-assertion` dependency can be added using the following: 
+            The `zeal` dependency can be added using the following: 
   
             ```
             <dependency>
                 <groupId>io.github.libzeal</groupId>
-                <artifactId>zeal-assertion</artifactId>
+                <artifactId>zeal</artifactId>
                 <version>${{ env.RELEASE_VERSION }}</version>
             </dependency>
             ```

@@ -11,7 +11,6 @@ module zeal.assertion {
 
     requires static transitive org.jspecify;
     requires transitive zeal.logic;
-    requires transitive zeal.values;
 
     exports io.github.libzeal.zeal.assertion;
     exports io.github.libzeal.zeal.assertion.error;
