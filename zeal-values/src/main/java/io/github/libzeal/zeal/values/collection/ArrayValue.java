@@ -6,6 +6,8 @@ import io.github.libzeal.zeal.values.sdk.sequence.OrderedSequenceOperations;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.function.Predicate;
 
 /**
  * A value used to evaluate arrays.
@@ -45,6 +47,11 @@ public final class ArrayValue<T extends @Nullable Object> extends BaseOrderedSeq
         @Override
         public int occurrences(final T[] haystack, final @Nullable T needle) {
             return list.occurrences(Arrays.asList(haystack), needle);
+        }
+
+        @Override
+        public List<T> findAllSatisfying(final T[] haystack, final Predicate<? super T> predicate, final int limit) {
+            return list.findAllSatisfying(Arrays.asList(haystack), predicate, limit);
         }
 
         @Override

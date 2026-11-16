@@ -6,6 +6,10 @@ import io.github.libzeal.zeal.values.sdk.sequence.SequenceValue;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.IntStream;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 interface SequenceValueTest<S, E extends ObjectValue<S, E> & SequenceValue<String, E>> {
 
@@ -715,5 +719,148 @@ interface SequenceValueTest<S, E extends ObjectValue<S, E> & SequenceValue<Strin
             .expected("found 'a' less than or equal to 0 times")
             .actual("found 'a' 1 time")
             .run();
+    }
+
+    // ---- allSatisfy ----
+
+    @Test
+    default void givenAllElementsSatisfy_whenAllSatisfy_thenTrue() {
+        newTestCase()
+            .subject(subjectOf("a", "b"))
+            .expression(value -> value.allSatisfy(e -> e.length() == 1))
+            .result(true)
+            .name("allSatisfy")
+            .expected("All elements satisfy condition")
+            .actual("All elements satisfy condition")
+            .hint("All elements satisfy condition")
+            .run();
+    }
+
+    @Test
+    default void givenOneElementDoesNotSatisfy_whenAllSatisfy_thenFalse() {
+        newTestCase()
+            .subject(subjectOf("a", "bb"))
+            .expression(value -> value.allSatisfy(e -> e.length() == 1))
+            .result(false)
+            .name("allSatisfy")
+            .expected("All elements satisfy condition")
+            .actual("At least one element does not satisfy condition")
+            .hint("The following elements do not satisfy condition: [bb]")
+            .run();
+    }
+
+    @Test
+    default void givenEmpty_whenAllSatisfy_thenTrue() {
+        newTestCase()
+            .subject(subjectOf())
+            .expression(value -> value.allSatisfy(e -> false))
+            .result(true)
+            .name("allSatisfy")
+            .expected("All elements satisfy condition")
+            .actual("All elements satisfy condition")
+            .run();
+    }
+
+    // ---- anySatisfies ----
+
+    @Test
+    default void givenOneElementSatisfies_whenAnySatisfies_thenTrue() {
+        newTestCase()
+            .subject(subjectOf("a", "bb"))
+            .expression(value -> value.anySatisfies(e -> e.length() == 2))
+            .result(true)
+            .name("anySatisfies")
+            .expected("At least one element satisfies condition")
+            .actual("At least one element satisfies condition")
+            .hint("The following elements satisfy condition: [bb]")
+            .run();
+    }
+
+    @Test
+    default void givenNoElementSatisfies_whenAnySatisfies_thenFalse() {
+        newTestCase()
+            .subject(subjectOf("a", "b"))
+            .expression(value -> value.anySatisfies(e -> e.length() == 2))
+            .result(false)
+            .name("anySatisfies")
+            .expected("At least one element satisfies condition")
+            .actual("No elements satisfy condition")
+            .hint("No elements satisfy condition")
+            .run();
+    }
+
+    @Test
+    default void givenEmpty_whenAnySatisfies_thenFalse() {
+        newTestCase()
+            .subject(subjectOf())
+            .expression(value -> value.anySatisfies(e -> true))
+            .result(false)
+            .name("anySatisfies")
+            .expected("At least one element satisfies condition")
+            .actual("No elements satisfy condition")
+            .run();
+    }
+
+    // ---- noneSatisfies ----
+
+    @Test
+    default void givenNoElementSatisfies_whenNoneSatisfies_thenTrue() {
+        newTestCase()
+            .subject(subjectOf("a", "b"))
+            .expression(value -> value.noneSatisfies(e -> e.length() == 2))
+            .result(true)
+            .name("noneSatisfies")
+            .expected("No elements satisfy condition")
+            .actual("No elements satisfy condition")
+            .hint("No elements satisfy condition")
+            .run();
+    }
+
+    @Test
+    default void givenOneElementSatisfies_whenNoneSatisfies_thenFalse() {
+        newTestCase()
+            .subject(subjectOf("a", "bb"))
+            .expression(value -> value.noneSatisfies(e -> e.length() == 2))
+            .result(false)
+            .name("noneSatisfies")
+            .expected("No elements satisfy condition")
+            .actual("At least one element satisfies condition")
+            .hint("The following elements satisfy condition: [bb]")
+            .run();
+    }
+
+    @Test
+    default void givenEmpty_whenNoneSatisfies_thenTrue() {
+        newTestCase()
+            .subject(subjectOf())
+            .expression(value -> value.noneSatisfies(e -> true))
+            .result(true)
+            .name("noneSatisfies")
+            .expected("No elements satisfy condition")
+            .actual("No elements satisfy condition")
+            .run();
+    }
+
+    // ---- optimizations ----
+
+    @Test
+    default void givenManyElementsDoNotSatisfy_whenAllSatisfy_thenSearchStopsEarly() {
+
+        final AtomicInteger tests = new AtomicInteger();
+        final String[] elements = IntStream.range(0, 100)
+            .mapToObj(String::valueOf)
+            .toArray(String[]::new);
+
+        newTestCase()
+            .subject(subjectOf(elements))
+            .expression(value -> value.allSatisfy(e -> tests.incrementAndGet() < 0))
+            .result(false)
+            .name("allSatisfy")
+            .expected("All elements satisfy condition")
+            .actual("At least one element does not satisfy condition")
+            .run();
+
+        // One more than the maximum number of displayed elements
+        assertEquals(21, tests.get());
     }
 }

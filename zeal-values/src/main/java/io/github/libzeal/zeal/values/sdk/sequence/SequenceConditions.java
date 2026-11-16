@@ -6,8 +6,8 @@ import io.github.libzeal.zeal.logic.unary.ConditionBuilder;
 import io.github.libzeal.zeal.values.sdk.StandardRationales;
 import org.jspecify.annotations.Nullable;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
+import java.util.function.Predicate;
 
 import static io.github.libzeal.zeal.logic.format.ObjectFormatter.stringify;
 import static io.github.libzeal.zeal.values.sdk.StandardRationales.Names.withPairs;
@@ -23,6 +23,9 @@ import static java.util.stream.Collectors.toList;
 public final class SequenceConditions {
 
     private static final int MAX_LIST_DISPLAY_LENGTH = 20;
+    private static final String CONDITION = "condition";
+    // One more than can be displayed, so the display can tell that more elements matched
+    private static final int MATCH_LIMIT = MAX_LIST_DISPLAY_LENGTH + 1;
     private static final String NULL_DESIRED_HINT = "Desired elements is (null), which passes by default";
 
     private SequenceConditions() {
@@ -139,7 +142,7 @@ public final class SequenceConditions {
                 .build();
     }
 
-    private static <T extends @Nullable Object, S> Condition<S> passesForNullDesired(
+    private static <S> Condition<S> passesForNullDesired(
             final String name, final String expected,
             final String actual
     ) {
@@ -152,7 +155,7 @@ public final class SequenceConditions {
                 .build();
     }
 
-    private static <T extends @Nullable Object> List<String> computeMissing(final Collection<? extends @Nullable T> desired, final List<T> found) {
+    private static <T extends @Nullable Object> List<String> computeMissing(final Collection<? extends @Nullable T> desired, final List<? extends @Nullable T> found) {
 
         final boolean truncated = desired.size() > MAX_LIST_DISPLAY_LENGTH;
 
@@ -169,7 +172,7 @@ public final class SequenceConditions {
         return missing;
     }
 
-    private static <T extends @Nullable Object> List<String> stringifyAll(final List<T> elements) {
+    private static List<String> stringifyAll(final List<?> elements) {
         return elements.stream()
                 .map(ObjectFormatter::stringify)
                 .toList();
@@ -257,7 +260,10 @@ public final class SequenceConditions {
      * @return A condition that checks if a sequence excludes any of the
      * supplied elements.
      */
-    public static <T extends @Nullable Object, S> Condition<S> excludesAny(final @Nullable Collection<? extends @Nullable T> undesired, final SequenceOperations<T, S> ops) {
+    public static <T extends @Nullable Object, S> Condition<S> excludesAny(
+            final @Nullable Collection<? extends @Nullable T> undesired,
+            final SequenceOperations<T, S> ops
+    ) {
 
         if (undesired == null) {
             return passesForNullDesired(
@@ -470,5 +476,151 @@ public final class SequenceConditions {
                                 "Desired value was found, but " + context.observed() + " " + timesSuffix(context.observed())
                 )
                 .build();
+    }
+
+    /**
+     * Creates a condition that checks if all elements of a sequence satisfy the
+     * supplied predicate. If the sequence is empty, the condition passes.
+     *
+     * @param predicate
+     *         The predicate to test the elements of the sequence against.
+     * @param ops
+     *         The sequence operations to use.
+     * @param <S>
+     *         The type of the sequence.
+     * @param <T>
+     *         The type of the elements in the sequence.
+     *
+     * @return A condition that checks if all elements of a sequence satisfy the
+     * supplied predicate.
+     *
+     * @throws NullPointerException
+     *         The supplied predicate is {@code null}.
+     */
+    public static <T extends @Nullable Object, S> Condition<S> allSatisfy(
+            final Predicate<? super T> predicate,
+            final SequenceOperations<T, S> ops
+    ) {
+
+        Objects.requireNonNull(predicate);
+
+        final String expected = "All elements satisfy " + CONDITION;
+
+        return ConditionBuilder.observing((S s) -> ops.findAllSatisfying(s, e -> !predicate.test(e), MATCH_LIMIT))
+                .passesIf(List::isEmpty)
+                .name("allSatisfy")
+                .expected(expected)
+                .actual(context -> context.ifPassedOrElse(
+                        expected,
+                        "At least one element does not satisfy " + CONDITION
+                ))
+                .hint(context -> context.passed() ?
+                        expected :
+                        "The following elements do not satisfy " + CONDITION + ": " + display(context.observed())
+                )
+                .build();
+    }
+
+    /**
+     * Creates a condition that checks if at least one element of a sequence
+     * satisfies the supplied predicate. If the sequence is empty, the condition
+     * fails.
+     *
+     * @param predicate
+     *         The predicate to test the elements of the sequence against.
+     * @param ops
+     *         The sequence operations to use.
+     * @param <S>
+     *         The type of the sequence.
+     * @param <T>
+     *         The type of the elements in the sequence.
+     *
+     * @return A condition that checks if at least one element of a sequence
+     * satisfies the supplied predicate.
+     *
+     * @throws NullPointerException
+     *         The supplied predicate is {@code null}.
+     */
+    public static <T extends @Nullable Object, S> Condition<S> anySatisfies(
+            final Predicate<? super T> predicate,
+            final SequenceOperations<T, S> ops
+    ) {
+
+        Objects.requireNonNull(predicate);
+
+        final String expected = "At least one element satisfies " + CONDITION;
+
+        return ConditionBuilder.observing((S s) -> ops.findAllSatisfying(s, predicate, MATCH_LIMIT))
+                .passesIf(matching -> !matching.isEmpty())
+                .name("anySatisfies")
+                .expected(expected)
+                .actual(context -> context.ifPassedOrElse(
+                        expected,
+                        "No elements satisfy " + CONDITION
+                ))
+                .hint(context -> context.passed() ?
+                        "The following elements satisfy " + CONDITION + ": " + display(context.observed()) :
+                        "No elements satisfy " + CONDITION
+                )
+                .build();
+    }
+
+    /**
+     * Creates a condition that checks if no element of a sequence satisfies the
+     * supplied predicate. If the sequence is empty, the condition passes.
+     *
+     * @param predicate
+     *         The predicate to test the elements of the sequence against.
+     * @param ops
+     *         The sequence operations to use.
+     * @param <S>
+     *         The type of the sequence.
+     * @param <T>
+     *         The type of the elements in the sequence.
+     *
+     * @return A condition that checks if no element of a sequence satisfies the
+     * supplied predicate.
+     *
+     * @throws NullPointerException
+     *         The supplied predicate is {@code null}.
+     */
+    public static <T extends @Nullable Object, S> Condition<S> noneSatisfies(
+            final Predicate<? super T> predicate,
+            final SequenceOperations<T, S> ops
+    ) {
+
+        Objects.requireNonNull(predicate);
+
+        final String expected = "No elements satisfy " + CONDITION;
+
+        return ConditionBuilder.observing((S s) -> ops.findAllSatisfying(s, predicate, MATCH_LIMIT))
+                .passesIf(List::isEmpty)
+                .name("noneSatisfies")
+                .expected(expected)
+                .actual(context -> context.ifPassedOrElse(
+                        expected,
+                        "At least one element satisfies " + CONDITION
+                ))
+                .hint(context -> context.passed() ?
+                        expected :
+                        "The following elements satisfy " + CONDITION + ": " + display(context.observed())
+                )
+                .build();
+    }
+
+    private static List<String> display(final List<?> matches) {
+
+        final List<String> displayed = new ArrayList<>();
+        final Iterator<?> iterator = matches.iterator();
+
+        while (iterator.hasNext() && displayed.size() < MAX_LIST_DISPLAY_LENGTH) {
+            displayed.add(stringify(iterator.next()));
+        }
+
+        if (iterator.hasNext()) {
+            displayed.add("...");
+        }
+
+        return displayed;
     }
 }
