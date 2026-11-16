@@ -81,7 +81,7 @@ public interface SequenceOperations<T extends @Nullable Object, S> {
      *         The predicate that the matching elements should satisfy.
      * @param limit
      *         The number of matching elements after which the search may stop.
-     *         This is supplied as an optimization that implementation
+     *         This is supplied as an optimization that implementations
      *         <em>may</em> honor.
      *
      * @return A list containing the elements of the supplied haystack that
