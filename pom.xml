@@ -51,7 +51,7 @@
         <source.plugin.version>3.3.1</source.plugin.version>
         <javadoc.plugin.version>3.7.0</javadoc.plugin.version>
         <jar.plugin.version>3.5.0</jar.plugin.version>
-        <central.publishing.plugin.version>0.5.0</central.publishing.plugin.version>
+        <central.publishing.plugin.version>0.12.0</central.publishing.plugin.version>
         <compiler.plugin.version>3.15.0</compiler.plugin.version>
         <release.plugin.version>3.1.0</release.plugin.version>
 
@@ -232,7 +232,17 @@
                         <extensions>true</extensions>
                         <configuration>
                             <publishingServerId>central</publishingServerId>
-                            <autoPublish>true</autoPublish>
+                            <!--
+                                Releases are uploaded and validated, then published
+                                manually from the Central Portal. Set autoPublish to
+                                true and waitUntil to published for fully automated
+                                releases. These are set here, rather than through -D
+                                flags, because release:perform runs a separate build.
+                                SNAPSHOT versions are deployed to the Central snapshot
+                                repository and are not affected by these settings.
+                            -->
+                            <autoPublish>false</autoPublish>
+                            <waitUntil>validated</waitUntil>
                         </configuration>
                     </plugin>
                     <plugin>

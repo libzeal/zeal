@@ -32,8 +32,9 @@ jobs:
           fail-on-empty: false
           reporter: java-junit
           fail-on-error: true
-  dry-run-publish:
+  publish-snapshot:
     needs: build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -48,14 +49,14 @@ jobs:
           gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
           cache: maven
-      - name: Maven Central Upload (dry-run)
+      - name: Publish SNAPSHOT to Maven Central
         run: |
-          mvn -B -Ppublish deploy \
-            -DskipTests \
-            -DautoPublish=false \
-            -DwaitUntil=validated \
-            -DdropValidated=true \
-            --no-transfer-progress
+          version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+          if [[ "$version" != *-SNAPSHOT ]]; then
+            echo "Skipping: $version is not a SNAPSHOT version (releases are published by the Publish workflow)"
+            exit 0
+          fi
+          mvn -B -Ppublish deploy -DskipTests --no-transfer-progress
         env:
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
