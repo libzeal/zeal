@@ -375,10 +375,10 @@ public abstract class BaseValue<T, E extends BaseValue<T, E>> implements ObjectV
     @Override
     public E isNotEqualTo(final @Nullable Object other) {
         return append(
-                nullableExpression(s -> !Objects.equals(s, other))
+                nullableExpression(s -> !Objects.deepEquals(s, other))
                         .name("isNotEqualTo[" + stringify(other) + "]")
                         .expected("not[" + stringify(other) + "]")
-                        .hint("Actual should be equal to " + other + " (using !subject.equals(" + other + "))")
+                        .hint("Actual should not be equal to " + stringify(other) + " (using !subject.equals(" + stringify(other) + "))")
                         .build()
         );
     }
@@ -435,6 +435,7 @@ public abstract class BaseValue<T, E extends BaseValue<T, E>> implements ObjectV
                 expression(s -> s.toString().equals(expected))
                         .name("toString().equals(" + stringify(expected) + ")")
                         .expected(stringify(expected))
+                        .actual(context -> String.valueOf(context.subject()))
                         .hint("Subject's toString() value should equal " + stringify(expected) + " (using subject.toString().equals(" + stringify(expected) + "))")
                         .build()
         );
@@ -446,6 +447,7 @@ public abstract class BaseValue<T, E extends BaseValue<T, E>> implements ObjectV
                 expression(s -> !s.toString().equals(expected))
                         .name("not[toString().equals(" + stringify(expected) + ")]")
                         .expected("not[" + stringify(expected) + "]")
+                        .actual(context -> String.valueOf(context.subject()))
                         .hint("Subject's toString() value should not equal " + stringify(expected) + " (using !subject.toString().equals(" + stringify(expected) + "))")
                         .build()
         );

@@ -57,4 +57,54 @@ class ArrayValueTest extends BaseValueTest<String[], ArrayValue<String>>
             .hint("The following desired elements were not found: [c]")
             .run();
     }
+
+    // ---- equality by contents ----
+
+    @Test
+    void givenDifferentInstanceWithSameElements_whenIsEqualTo_thenTrue() {
+        newTestCase()
+            .subject(new String[]{"foo", "bar"})
+            .expression(value -> value.isEqualTo(new String[]{"foo", "bar"}))
+            .result(true)
+            .name("isEqualTo[[foo, bar]]")
+            .expected("[foo, bar]")
+            .actual("[foo, bar]")
+            .run();
+    }
+
+    @Test
+    void givenDifferentElements_whenIsEqualTo_thenFalse() {
+        newTestCase()
+            .subject(new String[]{"foo", "bar"})
+            .expression(value -> value.isEqualTo(new String[]{"bar", "foo"}))
+            .result(false)
+            .name("isEqualTo[[bar, foo]]")
+            .expected("[bar, foo]")
+            .actual("[foo, bar]")
+            .run();
+    }
+
+    @Test
+    void givenDifferentInstanceWithSameElements_whenIsNotEqualTo_thenFalse() {
+        newTestCase()
+            .subject(new String[]{"foo", "bar"})
+            .expression(value -> value.isNotEqualTo(new String[]{"foo", "bar"}))
+            .result(false)
+            .name("isNotEqualTo[[foo, bar]]")
+            .expected("not[[foo, bar]]")
+            .actual("[foo, bar]")
+            .run();
+    }
+
+    @Test
+    void givenDifferentElements_whenIsNotEqualTo_thenTrue() {
+        newTestCase()
+            .subject(new String[]{"foo", "bar"})
+            .expression(value -> value.isNotEqualTo(new String[]{"foo"}))
+            .result(true)
+            .name("isNotEqualTo[[foo]]")
+            .expected("not[[foo]]")
+            .actual("[foo, bar]")
+            .run();
+    }
 }
