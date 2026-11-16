@@ -5,7 +5,9 @@ import io.github.libzeal.zeal.values.sdk.sequence.SequenceOperations;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
+import java.util.function.Predicate;
 
 /**
  * A value used to evaluate {@link Iterable}s.
@@ -96,6 +98,11 @@ public final class IterableValue<T extends @Nullable Object> extends BaseSequenc
             }
 
             return count;
+        }
+
+        @Override
+        public List<T> findAllSatisfying(final I haystack, final Predicate<? super T> predicate, final int limit) {
+            return CollectionOperations.findAllMatchingIn(haystack, predicate, limit);
         }
     }
 }

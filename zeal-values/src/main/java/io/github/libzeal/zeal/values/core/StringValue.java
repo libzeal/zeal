@@ -7,6 +7,10 @@ import io.github.libzeal.zeal.values.sdk.sequence.OrderedSequenceOperations;
 import io.github.libzeal.zeal.values.sdk.sequence.SequenceConditions;
 import org.jspecify.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Predicate;
+
 import static io.github.libzeal.zeal.logic.format.ObjectFormatter.stringify;
 
 /**
@@ -561,6 +565,23 @@ public final class StringValue extends BaseOrderedSequenceValue<String, Characte
         public boolean includes(final String haystack, final @Nullable Character needle) {
             return indexOf(haystack, needle) >= 0;
         }
+
+        @Override
+        public List<Character> findAllSatisfying(final String haystack, final Predicate<? super Character> predicate, final int limit) {
+
+            final List<Character> matches = new ArrayList<>();
+
+            for (int i = 0; i < haystack.length() && matches.size() < limit; i++) {
+
+                final char element = haystack.charAt(i);
+
+                if (predicate.test(element)) {
+                    matches.add(element);
+                }
+            }
+
+            return matches;
+        }
     }
 
     private static final class StringOnStringOperations implements OrderedSequenceOperations<String, String> {
@@ -643,6 +664,25 @@ public final class StringValue extends BaseOrderedSequenceValue<String, Characte
         @Override
         public boolean includes(final String haystack, final @Nullable String needle) {
             return indexOf(haystack, needle) >= 0;
+        }
+
+        // The elements of the haystack are its characters (consistent with size), each tested as a single-character
+        // string
+        @Override
+        public List<String> findAllSatisfying(final String haystack, final Predicate<? super String> predicate, final int limit) {
+
+            final List<String> matches = new ArrayList<>();
+
+            for (int i = 0; i < haystack.length() && matches.size() < limit; i++) {
+
+                final String element = String.valueOf(haystack.charAt(i));
+
+                if (predicate.test(element)) {
+                    matches.add(element);
+                }
+            }
+
+            return matches;
         }
 
         // A null desired value is compared against a single character so that it is reported as not matching the

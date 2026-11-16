@@ -1,8 +1,11 @@
 package io.github.libzeal.zeal.values.sdk.sequence;
 
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.function.Predicate;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -31,13 +34,16 @@ class BaseSequenceValueTest {
 
     private static final class TestSequenceValue extends BaseSequenceValue<List<String>, String, TestSequenceValue> {
 
-        private TestSequenceValue(final List<String> subject, final String name,
-                                  final SequenceOperations<String, List<String>> operations) {
+        private TestSequenceValue(
+                final List<String> subject, final String name,
+                final SequenceOperations<String, List<String>> operations
+        ) {
             super(subject, name, operations);
         }
     }
 
     // Construction never uses the operations, so the operations do not need to be functional
+    @NullMarked
     private static final class TestOperations implements SequenceOperations<String, List<String>> {
 
         @Override
@@ -46,12 +52,17 @@ class BaseSequenceValueTest {
         }
 
         @Override
-        public boolean includes(final List<String> haystack, final String needle) {
+        public boolean includes(final List<String> haystack, final @Nullable String needle) {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public int occurrences(final List<String> haystack, final String needle) {
+        public int occurrences(final List<String> haystack, final @Nullable String needle) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public List<String> findAllSatisfying(final List<String> haystack, final Predicate<? super String> predicate, final int limit) {
             throw new UnsupportedOperationException();
         }
     }

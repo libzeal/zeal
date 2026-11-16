@@ -3,6 +3,7 @@ package io.github.libzeal.zeal.values.sdk.sequence;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
+import java.util.function.Predicate;
 
 /**
  * A value that represents a sequence of elements. This is not limited to
@@ -202,4 +203,46 @@ public interface SequenceValue<T extends @Nullable Object, V extends SequenceVal
      * @return This value (fluent interface).
      */
     V includesLessThanOrEqualTo(@Nullable T desired, long times);
+
+    /**
+     * Checks that all elements of the value satisfy the supplied predicate. If
+     * the value is empty, the check passes.
+     *
+     * @param predicate
+     *         The predicate that all elements should satisfy.
+     *
+     * @return This value (fluent interface).
+     *
+     * @throws NullPointerException
+     *         The supplied predicate is {@code null}.
+     */
+    V allSatisfy(Predicate<? super T> predicate);
+
+    /**
+     * Checks that at least one element of the value satisfies the supplied
+     * predicate. If the value is empty, the check fails.
+     *
+     * @param predicate
+     *         The predicate that at least one element should satisfy.
+     *
+     * @return This value (fluent interface).
+     *
+     * @throws NullPointerException
+     *         The supplied predicate is {@code null}.
+     */
+    V anySatisfies(Predicate<? super T> predicate);
+
+    /**
+     * Checks that no element of the value satisfies the supplied predicate. If
+     * the value is empty, the check passes.
+     *
+     * @param predicate
+     *         The predicate that no element should satisfy.
+     *
+     * @return This value (fluent interface).
+     *
+     * @throws NullPointerException
+     *         The supplied predicate is {@code null}.
+     */
+    V noneSatisfies(Predicate<? super T> predicate);
 }

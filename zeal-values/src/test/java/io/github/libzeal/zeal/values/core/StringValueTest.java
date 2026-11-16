@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.function.Function;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -1985,7 +1986,10 @@ class StringValueTest extends BaseValueTest<String, StringValue> {
             value -> value.doesNotMatch("a"),
             value -> value.isCaseInsensitiveEqualTo("a"),
             value -> value.hasAtLastIndex("a", 0),
-            value -> value.doesNotHaveAtLastIndex("a", 0)
+            value -> value.doesNotHaveAtLastIndex("a", 0),
+            value -> value.allSatisfy(c -> true),
+            value -> value.anySatisfies(c -> true),
+            value -> value.noneSatisfies(c -> false)
         );
 
         for (final Function<StringValue, StringValue> check : checks) {
@@ -1996,5 +2000,75 @@ class StringValueTest extends BaseValueTest<String, StringValue> {
             assertEquals("(null)", evaluation.rationale().actual(), evaluation.name());
             assertFalse(evaluation.rationale().hint().isPresent(), evaluation.name());
         }
+    }
+
+    // ---- satisfy ----
+
+    @Test
+    void givenAllCharactersSatisfy_whenAllSatisfy_thenTrue() {
+        newTestCase()
+            .subject("123")
+            .expression(value -> value.allSatisfy(Character::isDigit))
+            .result(true)
+            .name("allSatisfy")
+            .expected("All elements satisfy condition")
+            .actual("All elements satisfy condition")
+            .run();
+    }
+
+    @Test
+    void givenOneCharacterDoesNotSatisfy_whenAllSatisfy_thenFalse() {
+        newTestCase()
+            .subject("1a3")
+            .expression(value -> value.allSatisfy(Character::isDigit))
+            .result(false)
+            .name("allSatisfy")
+            .expected("All elements satisfy condition")
+            .actual("At least one element does not satisfy condition")
+            .hint("The following elements do not satisfy condition: [a]")
+            .run();
+    }
+
+    @Test
+    void givenOneCharacterSatisfies_whenAnySatisfies_thenTrue() {
+        newTestCase()
+            .subject("abC")
+            .expression(value -> value.anySatisfies(Character::isUpperCase))
+            .result(true)
+            .name("anySatisfies")
+            .expected("At least one element satisfies condition")
+            .actual("At least one element satisfies condition")
+            .hint("The following elements satisfy condition: [C]")
+            .run();
+    }
+
+    @Test
+    void givenNoCharacterSatisfies_whenNoneSatisfies_thenTrue() {
+        newTestCase()
+            .subject("abc")
+            .expression(value -> value.noneSatisfies(Character::isWhitespace))
+            .result(true)
+            .name("noneSatisfies")
+            .expected("No elements satisfy condition")
+            .actual("No elements satisfy condition")
+            .run();
+    }
+
+    @Test
+    void givenManyCharactersDoNotSatisfy_whenAllSatisfy_thenSearchStopsEarly() {
+
+        final AtomicInteger tests = new AtomicInteger();
+
+        newTestCase()
+            .subject("a".repeat(100))
+            .expression(value -> value.allSatisfy(c -> tests.incrementAndGet() < 0))
+            .result(false)
+            .name("allSatisfy")
+            .expected("All elements satisfy condition")
+            .actual("At least one element does not satisfy condition")
+            .run();
+
+        // One more than the maximum number of displayed elements
+        assertEquals(21, tests.get());
     }
 }

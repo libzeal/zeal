@@ -5,8 +5,12 @@ import io.github.libzeal.zeal.values.sdk.BaseValueTest;
 import org.junit.jupiter.api.Test;
 
 import java.util.AbstractList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -243,7 +247,10 @@ class ListValueTest extends BaseValueTest<List<String>, ListValue<String>>
             value -> value.startsWith("a"),
             value -> value.doesNotStartWith("a"),
             value -> value.endsWith("a"),
-            value -> value.doesNotEndWith("a")
+            value -> value.doesNotEndWith("a"),
+            value -> value.allSatisfy(e -> true),
+            value -> value.anySatisfies(e -> true),
+            value -> value.noneSatisfies(e -> false)
         );
 
         for (final Function<ListValue<String>, ListValue<String>> check : checks) {
@@ -254,5 +261,52 @@ class ListValueTest extends BaseValueTest<List<String>, ListValue<String>>
             assertEquals("(null)", evaluation.rationale().actual(), evaluation.name());
             assertFalse(evaluation.rationale().hint().isPresent(), evaluation.name());
         }
+    }
+
+    // ---- satisfy ----
+
+    @Test
+    void givenNullPredicate_whenSatisfy_thenExceptionThrown() {
+
+        final ListValue<String> value = new ListValue<>(List.of("a"));
+
+        assertThrows(NullPointerException.class, () -> value.allSatisfy(null));
+        assertThrows(NullPointerException.class, () -> value.anySatisfies(null));
+        assertThrows(NullPointerException.class, () -> value.noneSatisfies(null));
+    }
+
+    @Test
+    void givenNullElement_whenAllSatisfy_thenNullElementReported() {
+        newTestCase()
+            .subject(Arrays.asList("a", null))
+            .expression(value -> value.allSatisfy(Objects::nonNull))
+            .result(false)
+            .name("allSatisfy")
+            .expected("All elements satisfy condition")
+            .actual("At least one element does not satisfy condition")
+            .hint("The following elements do not satisfy condition: [(null)]")
+            .run();
+    }
+
+    @Test
+    void givenManyElementsDoNotSatisfy_whenAllSatisfy_thenReportedElementsTruncated() {
+
+        final List<String> subject = IntStream.range(0, 25)
+            .mapToObj(String::valueOf)
+            .toList();
+
+        final String reported = IntStream.range(0, 20)
+            .mapToObj(String::valueOf)
+            .collect(Collectors.joining(", ", "[", ", ...]"));
+
+        newTestCase()
+            .subject(subject)
+            .expression(value -> value.allSatisfy(e -> false))
+            .result(false)
+            .name("allSatisfy")
+            .expected("All elements satisfy condition")
+            .actual("At least one element does not satisfy condition")
+            .hint("The following elements do not satisfy condition: " + reported)
+            .run();
     }
 }

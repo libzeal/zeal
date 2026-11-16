@@ -16,7 +16,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @author Justin Albano
  */
-public abstract class BaseOrderedSequenceValue<S extends @Nullable Object, T, V extends BaseOrderedSequenceValue<S, T, V>>
+public abstract class BaseOrderedSequenceValue<S, T extends @Nullable Object, V extends BaseOrderedSequenceValue<S, T, V>>
         extends BaseSequenceValue<S, T, V>
         implements OrderedSequenceValue<T, V> {
 

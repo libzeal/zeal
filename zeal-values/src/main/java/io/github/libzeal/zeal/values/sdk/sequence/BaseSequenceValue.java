@@ -5,6 +5,7 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.function.Predicate;
 
 import static java.util.Objects.requireNonNull;
 
@@ -20,7 +21,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @author Justin Albano
  */
-public abstract class BaseSequenceValue<S extends @Nullable Object, T, V extends BaseSequenceValue<S, T, V>>
+public abstract class BaseSequenceValue<S, T extends @Nullable Object, V extends BaseSequenceValue<S, T, V>>
         extends BaseValue<S, V>
         implements SequenceValue<T, V> {
 
@@ -198,6 +199,27 @@ public abstract class BaseSequenceValue<S extends @Nullable Object, T, V extends
     public V includesLessThanOrEqualTo(final @Nullable T desired, final long times) {
         return append(
                 SequenceConditions.includesLessThanOrEqualTo(desired, times, operations)
+        );
+    }
+
+    @Override
+    public V allSatisfy(final Predicate<? super T> predicate) {
+        return append(
+                SequenceConditions.allSatisfy(predicate, operations)
+        );
+    }
+
+    @Override
+    public V anySatisfies(final Predicate<? super T> predicate) {
+        return append(
+                SequenceConditions.anySatisfies(predicate, operations)
+        );
+    }
+
+    @Override
+    public V noneSatisfies(final Predicate<? super T> predicate) {
+        return append(
+                SequenceConditions.noneSatisfies(predicate, operations)
         );
     }
 }
