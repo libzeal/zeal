@@ -226,6 +226,31 @@ class ConditionsTest {
         assertEquals(Conditions.equalToHint(desired), evaluation.rationale().hint().get());
     }
 
+    @Test
+    void givenArraysWithSameElements_whenEqualTo_thenTrue() {
+
+        final Condition<Object> condition = Conditions.equalTo(new int[][]{{1}, {2, 3}});
+
+        final Evaluation evaluation = condition.bind(new int[][]{{1}, {2, 3}}).evaluate();
+
+        assertTrue(evaluation.isTrue());
+        assertEquals("isEqualTo[[[1], [2, 3]]]", evaluation.name());
+        assertEquals("[[1], [2, 3]]", evaluation.rationale().expected());
+        assertEquals("[[1], [2, 3]]", evaluation.rationale().actual());
+    }
+
+    @Test
+    void givenArraysWithDifferentElements_whenEqualTo_thenFalse() {
+
+        final Condition<Object> condition = Conditions.equalTo(new String[]{"a"});
+
+        final Evaluation evaluation = condition.bind(new String[]{"b"}).evaluate();
+
+        assertFalse(evaluation.isTrue());
+        assertEquals("[a]", evaluation.rationale().expected());
+        assertEquals("[b]", evaluation.rationale().actual());
+    }
+
     // ------------------------------------------------------------------------
     // Conditions#anyOf(Condition[])
     // ------------------------------------------------------------------------

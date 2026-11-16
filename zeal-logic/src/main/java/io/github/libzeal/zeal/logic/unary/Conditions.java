@@ -109,7 +109,7 @@ public final class Conditions {
      * supplied desired value.
      */
     public static <T> Condition<T> equalTo(final @Nullable Object desired) {
-        return ConditionBuilder.of((T o) -> Objects.equals(o, desired))
+        return ConditionBuilder.of((T o) -> Objects.deepEquals(o, desired))
                 .nullable()
                 .name(equalToName(desired))
                 .expected(stringify(desired))
@@ -122,7 +122,7 @@ public final class Conditions {
     }
 
     static <T> String equalToHint(final @Nullable T desired) {
-        return "Actual should be equal to " + desired + " (using subject.equals(" + desired + "))";
+        return "Actual should be equal to " + stringify(desired) + " (using subject.equals(" + stringify(desired) + "))";
     }
 
     /**

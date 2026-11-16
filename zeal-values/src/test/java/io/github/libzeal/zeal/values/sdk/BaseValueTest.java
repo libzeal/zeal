@@ -14,6 +14,7 @@ import org.junit.jupiter.api.TestInstance;
 import java.util.Comparator;
 import java.util.List;
 
+import static io.github.libzeal.zeal.logic.format.ObjectFormatter.stringify;
 import static io.github.libzeal.zeal.values.sdk.StandardMessages.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
@@ -99,7 +100,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
                 .result(false)
                 .name("isNull")
                 .expected("(null)")
-                .actual(String.valueOf(nonNullValueA()))
+                .actual(stringify(nonNullValueA()))
                 .run();
     }
 
@@ -123,7 +124,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
                 .result(true)
                 .name("isNotNull")
                 .expected("not[(null)]")
-                .actual(String.valueOf(nonNullValueA()))
+                .actual(stringify(nonNullValueA()))
                 .run();
     }
 
@@ -320,9 +321,9 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
                 .subject(v)
                 .expression(value -> value.isExactly(v))
                 .result(true)
-                .name("isExactly[" + v + "]")
-                .expected(v.toString())
-                .actual(v.toString())
+                .name("isExactly[" + stringify(v) + "]")
+                .expected(stringify(v))
+                .actual(stringify(v))
                 .run();
     }
 
@@ -334,9 +335,9 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
                 .subject(b)
                 .expression(value -> value.isExactly(a))
                 .result(false)
-                .name("isExactly[" + a + "]")
-                .expected(a.toString())
-                .actual(b.toString())
+                .name("isExactly[" + stringify(a) + "]")
+                .expected(stringify(a))
+                .actual(stringify(b))
                 .run();
     }
 
@@ -359,9 +360,9 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
                 .subject(v)
                 .expression(value -> value.isNotExactly(v))
                 .result(false)
-                .name("isNotExactly[" + v + "]")
-                .expected("not[" + v + "]")
-                .actual(v.toString())
+                .name("isNotExactly[" + stringify(v) + "]")
+                .expected("not[" + stringify(v) + "]")
+                .actual(stringify(v))
                 .run();
     }
 
@@ -373,9 +374,9 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
                 .subject(b)
                 .expression(value -> value.isNotExactly(a))
                 .result(true)
-                .name("isNotExactly[" + a + "]")
-                .expected("not[" + a + "]")
-                .actual(b.toString())
+                .name("isNotExactly[" + stringify(a) + "]")
+                .expected("not[" + stringify(a) + "]")
+                .actual(stringify(b))
                 .run();
     }
 
@@ -398,9 +399,9 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
                 .subject(v)
                 .expression(value -> value.isEqualTo(v))
                 .result(true)
-                .name("isEqualTo[" + v + "]")
-                .expected(v.toString())
-                .actual(v.toString())
+                .name("isEqualTo[" + stringify(v) + "]")
+                .expected(stringify(v))
+                .actual(stringify(v))
                 .run();
     }
 
@@ -412,9 +413,9 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
                 .subject(b)
                 .expression(value -> value.isEqualTo(a))
                 .result(false)
-                .name("isEqualTo[" + a + "]")
-                .expected(a.toString())
-                .actual(b.toString())
+                .name("isEqualTo[" + stringify(a) + "]")
+                .expected(stringify(a))
+                .actual(stringify(b))
                 .run();
     }
 
@@ -441,7 +442,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
                 .result(false)
                 .name("is[condition: (null)]")
                 .expected(ALWAYS_FAIL_CANNOT_CHECK_TO_NULL_CONDITION)
-                .actual(v.toString())
+                .actual(stringify(v))
                 .hint(CANNOT_CHECK_USING_NULL_CONDITION)
                 .run();
     }
@@ -622,9 +623,9 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
                 .subject(b)
                 .expression(value -> value.isEqualTo(a, null))
                 .result(false)
-                .name("isEqualTo[" + a + ", comparator: (null)]")
-                .expected(a.toString())
-                .actual(b.toString())
+                .name("isEqualTo[" + stringify(a) + ", comparator: (null)]")
+                .expected(stringify(a))
+                .actual(stringify(b))
                 .hint(CANNOT_COMPARE_USING_NULL_COMPARATOR)
                 .run();
     }
@@ -637,9 +638,9 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
                 .subject(b)
                 .expression(value -> value.isEqualTo(a, equalComparator))
                 .result(true)
-                .name("isEqualTo[" + a + ", comparator: " + equalComparator + "]")
-                .expected(a.toString())
-                .actual(b.toString())
+                .name("isEqualTo[" + stringify(a) + ", comparator: " + equalComparator + "]")
+                .expected(stringify(a))
+                .actual(stringify(b))
                 .run();
     }
 
@@ -652,9 +653,9 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
                 .subject(v)
                 .expression(value -> value.isNotEqualTo(v))
                 .result(false)
-                .name("isNotEqualTo[" + v + "]")
-                .expected("not[" + v + "]")
-                .actual(v.toString())
+                .name("isNotEqualTo[" + stringify(v) + "]")
+                .expected("not[" + stringify(v) + "]")
+                .actual(stringify(v))
                 .run();
     }
 
@@ -666,9 +667,9 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
                 .subject(b)
                 .expression(value -> value.isNotEqualTo(a))
                 .result(true)
-                .name("isNotEqualTo[" + a + "]")
-                .expected("not[" + a + "]")
-                .actual(b.toString())
+                .name("isNotEqualTo[" + stringify(a) + "]")
+                .expected("not[" + stringify(a) + "]")
+                .actual(stringify(b))
                 .run();
     }
 
@@ -682,9 +683,9 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
                 .subject(b)
                 .expression(value -> value.isNotEqualTo(a, null))
                 .result(false)
-                .name("isNotEqualTo[" + a + ", comparator: (null)]")
-                .expected(a.toString())
-                .actual(b.toString())
+                .name("isNotEqualTo[" + stringify(a) + ", comparator: (null)]")
+                .expected(stringify(a))
+                .actual(stringify(b))
                 .hint(CANNOT_COMPARE_USING_NULL_COMPARATOR)
                 .run();
     }
@@ -697,9 +698,9 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
                 .subject(b)
                 .expression(value -> value.isNotEqualTo(a, equalComparator))
                 .result(false)
-                .name("isNotEqualTo[" + a + ", comparator: " + equalComparator + "]")
-                .expected(a.toString())
-                .actual(b.toString())
+                .name("isNotEqualTo[" + stringify(a) + ", comparator: " + equalComparator + "]")
+                .expected(stringify(a))
+                .actual(stringify(b))
                 .run();
     }
 
@@ -711,9 +712,9 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
                 .subject(b)
                 .expression(value -> value.isNotEqualTo(a, lessThanComparator))
                 .result(true)
-                .name("isNotEqualTo[" + a + ", comparator: " + lessThanComparator + "]")
-                .expected(a.toString())
-                .actual(b.toString())
+                .name("isNotEqualTo[" + stringify(a) + ", comparator: " + lessThanComparator + "]")
+                .expected(stringify(a))
+                .actual(stringify(b))
                 .run();
     }
 
@@ -725,9 +726,9 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
                 .subject(b)
                 .expression(value -> value.isNotEqualTo(a, greaterThanComparator))
                 .result(true)
-                .name("isNotEqualTo[" + a + ", comparator: " + greaterThanComparator + "]")
-                .expected(a.toString())
-                .actual(b.toString())
+                .name("isNotEqualTo[" + stringify(a) + ", comparator: " + greaterThanComparator + "]")
+                .expected(stringify(a))
+                .actual(stringify(b))
                 .run();
     }
 
@@ -777,9 +778,9 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
                 .subject(b)
                 .expression(value -> value.isEqualTo(a, lessThanComparator))
                 .result(false)
-                .name("isEqualTo[" + a + ", comparator: " + lessThanComparator + "]")
-                .expected(a.toString())
-                .actual(b.toString())
+                .name("isEqualTo[" + stringify(a) + ", comparator: " + lessThanComparator + "]")
+                .expected(stringify(a))
+                .actual(stringify(b))
                 .run();
     }
 
@@ -791,9 +792,9 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
                 .subject(b)
                 .expression(value -> value.isEqualTo(a, greaterThanComparator))
                 .result(false)
-                .name("isEqualTo[" + a + ", comparator: " + greaterThanComparator + "]")
-                .expected(a.toString())
-                .actual(b.toString())
+                .name("isEqualTo[" + stringify(a) + ", comparator: " + greaterThanComparator + "]")
+                .expected(stringify(a))
+                .actual(stringify(b))
                 .run();
     }
 }

@@ -183,13 +183,14 @@ public interface ObjectValue<S, V extends ObjectValue<S, V>>
      * Checks if the subject is equal to the supplied object.
      * <p>
      * This evaluation will pass if the subject and supplied object are both
-     * {@code null}.
+     * {@code null}. Arrays (including primitive and nested arrays) are compared
+     * by their contents rather than by identity.
      * <p>
      * Note: This check is equivalent to the following statement, where
      * {@code other} is the supplied object and {@code subject} is the subject
      * of the expression:
      * <pre>{@code
-     * Objects.equals(subject, other);
+     * Objects.deepEquals(subject, other);
      * }</pre>
      *
      * @param other
@@ -197,7 +198,7 @@ public interface ObjectValue<S, V extends ObjectValue<S, V>>
      *
      * @return This value (fluent interface).
      *
-     * @see Objects#equals(Object, Object)
+     * @see Objects#deepEquals(Object, Object)
      */
     V isEqualTo(@Nullable Object other);
 
@@ -225,13 +226,14 @@ public interface ObjectValue<S, V extends ObjectValue<S, V>>
      * Checks if the subject is not equal to the supplied object.
      * <p>
      * This evaluation will fail if the subject and supplied object are both
-     * {@code null}.
+     * {@code null}. Arrays (including primitive and nested arrays) are compared
+     * by their contents rather than by identity.
      * <p>
      * Note: This check is equivalent to the following statement, where
      * {@code other} is the supplied object and {@code subject} is the subject
      * of the expression:
      * <pre>{@code
-     * !Objects.equals(subject, other);
+     * !Objects.deepEquals(subject, other);
      * }</pre>
      *
      * @param other
@@ -239,7 +241,7 @@ public interface ObjectValue<S, V extends ObjectValue<S, V>>
      *
      * @return This value (fluent interface).
      *
-     * @see Objects#equals(Object, Object)
+     * @see Objects#deepEquals(Object, Object)
      */
     V isNotEqualTo(@Nullable Object other);
 
