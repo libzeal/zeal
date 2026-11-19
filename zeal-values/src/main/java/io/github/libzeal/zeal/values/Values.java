@@ -5,6 +5,7 @@ import io.github.libzeal.zeal.values.core.SimpleEnumValue;
 import io.github.libzeal.zeal.values.core.SimpleObjectValue;
 import io.github.libzeal.zeal.values.core.StringValue;
 import io.github.libzeal.zeal.values.core.boxed.*;
+import io.github.libzeal.zeal.values.primitive.*;
 import org.jspecify.annotations.Nullable;
 
 import java.util.*;
@@ -62,12 +63,12 @@ public final class Values {
     }
 
     /**
-     * Wraps a {@link Long} as a value.
+     * Wraps a {@code long} as a value.
      *
      * @param value
-     *         The {@link Long} to wrap.
+     *         The {@code long} to wrap.
      *
-     * @return A value that wraps the supplied {@link Long}.
+     * @return A value that wraps the supplied {@code long}.
      */
     public static BoxedLongValue value(final @Nullable Long value) {
         return new BoxedLongValue(value);
@@ -173,6 +174,102 @@ public final class Values {
      */
     public static <T extends @Nullable Object> ArrayValue<T> value(final T @Nullable [] value) {
         return new ArrayValue<>(value);
+    }
+
+    /**
+     * Wraps a {@code boolean[]} as a value.
+     *
+     * @param value
+     *         The {@code boolean[]} to wrap.
+     *
+     * @return A value that wraps the supplied {@code boolean[]}.
+     */
+    public static BooleanArrayValue value(final boolean @Nullable [] value) {
+        return new BooleanArrayValue(value);
+    }
+
+    /**
+     * Wraps a {@code char[]} as a value.
+     *
+     * @param value
+     *         The {@code char[]} to wrap.
+     *
+     * @return A value that wraps the supplied {@code char[]}.
+     */
+    public static CharArrayValue value(final char @Nullable [] value) {
+        return new CharArrayValue(value);
+    }
+
+    /**
+     * Wraps a {@code byte[]} as a value.
+     *
+     * @param value
+     *         The {@code byte[]} to wrap.
+     *
+     * @return A value that wraps the supplied {@code byte[]}.
+     */
+    public static ByteArrayValue value(final byte @Nullable [] value) {
+        return new ByteArrayValue(value);
+    }
+
+    /**
+     * Wraps a {@code short[]} as a value.
+     *
+     * @param value
+     *         The {@code short[]} to wrap.
+     *
+     * @return A value that wraps the supplied {@code short[]}.
+     */
+    public static ShortArrayValue value(final short @Nullable [] value) {
+        return new ShortArrayValue(value);
+    }
+
+    /**
+     * Wraps an {@code int[]} as a value.
+     *
+     * @param value
+     *         The {@code int[]} to wrap.
+     *
+     * @return A value that wraps the supplied {@code int[]}.
+     */
+    public static IntArrayValue value(final int @Nullable [] value) {
+        return new IntArrayValue(value);
+    }
+
+    /**
+     * Wraps a {@code long[]} as a value.
+     *
+     * @param value
+     *         The {@code long[]} to wrap.
+     *
+     * @return A value that wraps the supplied {@code long[]}.
+     */
+    public static LongArrayValue value(final long @Nullable [] value) {
+        return new LongArrayValue(value);
+    }
+
+    /**
+     * Wraps a {@code float[]} as a value.
+     *
+     * @param value
+     *         The {@code float[]} to wrap.
+     *
+     * @return A value that wraps the supplied {@code float[]}.
+     */
+    public static FloatArrayValue value(final float @Nullable [] value) {
+        return new FloatArrayValue(value);
+    }
+
+    /**
+     * Wraps a {@code double[]} as a value.
+     *
+     * @param value
+     *         The {@code double[]} to wrap.
+     *
+     * @return A value that wraps the supplied {@code double[]}.
+     */
+    public static DoubleArrayValue value(final double @Nullable [] value) {
+        return new DoubleArrayValue(value);
     }
 
     /**

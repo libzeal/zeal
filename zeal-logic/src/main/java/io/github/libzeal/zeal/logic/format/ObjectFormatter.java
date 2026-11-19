@@ -23,17 +23,18 @@ public final class ObjectFormatter {
      * @return A formatted object (as a string).
      */
     public static String stringify(@Nullable Object o) {
-
-        if (o == null) {
-            return "(null)";
-        }
-        else if (o.getClass().isArray()) {
-            // Wrapping the array allows deepToString to format both object
-            // and primitive arrays (including nested arrays)
-            final String wrapped = Arrays.deepToString(new Object[]{o});
-            return wrapped.substring(1, wrapped.length() - 1);
-        }
-
-        return o.toString();
+        return switch (o) {
+            case null -> "(null)";
+            case Object[] a -> Arrays.deepToString(a);
+            case int[] a -> Arrays.toString(a);
+            case long[] a -> Arrays.toString(a);
+            case double[] a -> Arrays.toString(a);
+            case float[] a -> Arrays.toString(a);
+            case short[] a -> Arrays.toString(a);
+            case byte[] a -> Arrays.toString(a);
+            case char[] a -> Arrays.toString(a);
+            case boolean[] a -> Arrays.toString(a);
+            default -> o.toString();
+        };
     }
 }

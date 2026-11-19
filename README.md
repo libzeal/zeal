@@ -215,3 +215,14 @@ The following types have equivalent values supported in the [values](/zeal-value
 * `List`
 * `Set`
 * `Map`
+
+### Arrays
+* `Object[]`
+* `boolean[]`
+* `char[]`
+* `byte[]`
+* `short[]`
+* `int[]`
+* `long[]`
+* `float[]`
+* `double[]`
