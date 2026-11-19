@@ -3,7 +3,7 @@ package io.github.libzeal.zeal.values.core.boxed;
 import org.jspecify.annotations.Nullable;
 
 /**
- * A value used to evaluate {@link Long}s.
+ * A value used to evaluate {@code long}s.
  *
  * @author Justin Albano
  */
