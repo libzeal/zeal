@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static io.github.libzeal.zeal.logic.CompoundEvaluator.format;
+import static io.github.libzeal.zeal.logic.CompoundEvaluator.formatActual;
 import static io.github.libzeal.zeal.logic.test.Arguments.listWithSingleNull;
 import static io.github.libzeal.zeal.logic.test.CauseAssertions.*;
 import static io.github.libzeal.zeal.logic.test.NamedExpressions.*;
@@ -36,32 +36,32 @@ class OrExpressionTest {
         final List<Expression> list = List.of();
 
         assertThrows(
-            NullPointerException.class,
-            () -> new OrExpression(null, list)
+                NullPointerException.class,
+                () -> new OrExpression(null, list)
         );
     }
 
     @Test
     void givenNullPredicateList_whenConstruct_thenExceptionThrown() {
         assertThrows(
-            NullPointerException.class,
-            () -> new OrExpression(name, null)
+                NullPointerException.class,
+                () -> new OrExpression(name, null)
         );
     }
 
     @Test
     void givenNullListChildren_whenWithDefaultName_thenExceptionThrown() {
         assertThrows(
-            NullPointerException.class,
-            () -> OrExpression.unnamed((List<Expression>) null)
+                NullPointerException.class,
+                () -> OrExpression.unnamed((List<Expression>) null)
         );
     }
 
     @Test
     void givenNullVarargsChildren_whenWithDefaultName_thenExceptionThrown() {
         assertThrows(
-            NullPointerException.class,
-            () -> OrExpression.unnamed((Expression[]) null)
+                NullPointerException.class,
+                () -> OrExpression.unnamed((Expression[]) null)
         );
     }
 
@@ -71,8 +71,8 @@ class OrExpressionTest {
         final List<Expression> children = listWithSingleNull();
 
         assertThrows(
-            NullPointerException.class,
-            () -> new OrExpression("foo", children)
+                NullPointerException.class,
+                () -> new OrExpression("foo", children)
         );
     }
 
@@ -82,8 +82,8 @@ class OrExpressionTest {
         final List<Expression> children = listWithSingleNull();
 
         assertThrows(
-            NullPointerException.class,
-            () -> OrExpression.unnamed(children)
+                NullPointerException.class,
+                () -> OrExpression.unnamed(children)
         );
     }
 
@@ -111,7 +111,7 @@ class OrExpressionTest {
         assertFalse(evaluation.isTrue());
         assertEquals(name, evaluation.name());
         assertEquals(OrExpression.EXPECTED, rationale.expected());
-        assertEquals(format(0, 0, 0), rationale.actual());
+        assertEquals(formatActual(0, 0, 0), rationale.actual());
         assertFalse(rationale.hint().isPresent());
     }
 
@@ -126,7 +126,7 @@ class OrExpressionTest {
         assertTrue(evaluation.isTrue());
         assertEquals(name, evaluation.name());
         assertEquals(OrExpression.EXPECTED, rationale.expected());
-        assertEquals(format(1, 0, 0), rationale.actual());
+        assertEquals(formatActual(1, 0, 0), rationale.actual());
         assertFalse(rationale.hint().isPresent());
     }
 
@@ -141,7 +141,7 @@ class OrExpressionTest {
         assertFalse(evaluation.isTrue());
         assertEquals(name, evaluation.name());
         assertEquals(OrExpression.EXPECTED, rationale.expected());
-        assertEquals(format(0, 1, 0), rationale.actual());
+        assertEquals(formatActual(0, 1, 0), rationale.actual());
         assertFalse(rationale.hint().isPresent());
     }
 
@@ -158,7 +158,7 @@ class OrExpressionTest {
         assertTrue(evaluation.isTrue());
         assertEquals(name, evaluation.name());
         assertEquals(OrExpression.EXPECTED, rationale.expected());
-        assertEquals(format(1, 1, 0), rationale.actual());
+        assertEquals(formatActual(1, 1, 0), rationale.actual());
         assertFalse(rationale.hint().isPresent());
         assertIsNotSkipped(failingSubPredicate);
     }
@@ -184,7 +184,7 @@ class OrExpressionTest {
         assertTrue(evaluation.isTrue());
         assertEquals(name, evaluation.name());
         assertEquals(OrExpression.EXPECTED, rationale.expected());
-        assertEquals(format(1, 0, 1), rationale.actual());
+        assertEquals(formatActual(1, 0, 1), rationale.actual());
         assertFalse(rationale.hint().isPresent());
         assertIsSkipped(failingSubPredicate);
     }
@@ -209,8 +209,8 @@ class OrExpressionTest {
         final Expression child = TestExpressions.tautology();
 
         assertThrows(
-            UnsupportedOperationException.class,
-            () -> children.add(child)
+                UnsupportedOperationException.class,
+                () -> children.add(child)
         );
     }
 
@@ -225,14 +225,25 @@ class OrExpressionTest {
     }
 
     @Test
-    void givenOrWithAllFalse_whenEvaluate_thenCauseIsAllChildren() {
+    void givenOrWithAllFalse_whenEvaluate_thenCauseIsSelf() {
 
         final Evaluation evaluation = or("OR", f("f1"), f("f2")).evaluate();
 
         assertFalse(evaluation.isTrue());
-        assertCause(evaluation, child(evaluation, 0), child(evaluation, 1));
-        assertTraces(evaluation, "OR -> f1", "OR -> f2");
-        assertRootCauses(evaluation, child(evaluation, 0), child(evaluation, 1));
+        assertCauseIsSelf(evaluation);
+        assertTraces(evaluation, "OR");
+        assertRootCauses(evaluation, evaluation);
+    }
+
+    @Test
+    void givenOrWithOneFalseChild_whenEvaluate_thenCauseIsChild() {
+
+        final Evaluation evaluation = or("OR", f("f1")).evaluate();
+
+        assertFalse(evaluation.isTrue());
+        assertCause(evaluation, child(evaluation, 0));
+        assertTraces(evaluation, "OR -> f1");
+        assertRootCauses(evaluation, child(evaluation, 0));
     }
 
     @Test
@@ -262,29 +273,29 @@ class OrExpressionTest {
     }
 
     @Test
-    void givenOrOfFalseAndThenTrueAnd_whenEvaluate_thenTracesFollowEveryChildOfTrueAnd() {
+    void givenOrOfFalseAndThenTrueAnd_whenEvaluate_thenTraceEndsAtTrueAnd() {
 
         final Evaluation evaluation = or(
-            "OR",
-            and("AND1", t("t1"), f("f2")),
-            and("AND2", t("t3"), t("t4"))
+                "OR",
+                and("AND1", t("t1"), f("f2")),
+                and("AND2", t("t3"), t("t4"))
         ).evaluate();
 
         assertTrue(evaluation.isTrue());
-        assertTraces(evaluation, "OR -> AND2 -> t3", "OR -> AND2 -> t4");
+        assertTraces(evaluation, "OR -> AND2");
     }
 
     @Test
-    void givenOrOfTrueAnd_whenEvaluate_thenSkippedSiblingTracesFollowTrueAnd() {
+    void givenOrOfTrueAnd_whenEvaluate_thenSkippedSiblingTraceEndsAtTrueAnd() {
 
         final Evaluation evaluation = or("OR", and("AND", t("t1"), t("t2")), f("f3")).evaluate();
         final Skipped f3 = skipped(evaluation, 1);
 
         assertTrue(evaluation.isTrue());
-        assertTraces(evaluation, "OR -> AND -> t1", "OR -> AND -> t2");
+        assertTraces(evaluation, "OR -> AND");
 
         assertCause(f3, child(evaluation, 0));
-        assertTraces(f3, "AND -> t1", "AND -> t2");
+        assertTraces(f3, "AND");
     }
 
     @Test

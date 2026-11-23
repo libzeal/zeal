@@ -1,7 +1,8 @@
 package io.github.libzeal.zeal.logic;
 
-import io.github.libzeal.zeal.logic.evaluation.DirectCause;
 import io.github.libzeal.zeal.logic.evaluation.CompoundEvaluation;
+import io.github.libzeal.zeal.logic.evaluation.DirectCause;
+import io.github.libzeal.zeal.logic.evaluation.DirectCause.Delegated;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.evaluation.SkippableEvaluation;
 import io.github.libzeal.zeal.logic.evaluation.SkippableEvaluation.Evaluated;
@@ -40,12 +41,12 @@ final class CompoundEvaluator {
         final StopWatch stopWatch = StopWatch.started();
         final List<SkippableEvaluation> children = new ArrayList<>();
         final List<Evaluation> evaluated = new ArrayList<>();
-        DirectCause.@Nullable Delegated decidedBy = null;
+        Delegated decidingChild = null;
 
         for (final Expression child : expression.children()) {
 
-            if (decidedBy != null) {
-                children.add(new Skipped(child, decidedBy));
+            if (decidingChild != null) {
+                children.add(new Skipped(child, decidingChild));
                 continue;
             }
 
@@ -54,44 +55,66 @@ final class CompoundEvaluator {
             evaluated.add(evaluation);
 
             if (stopWhen.test(evaluation)) {
-                decidedBy = DirectCause.of(evaluation);
+                decidingChild = DirectCause.of(evaluation);
             }
         }
 
         final Duration elapsedTime = stopWatch.stop();
         final Tally tally = Tally.of(children);
-        final Rationale rationale = new SimpleRationale(expected, format(tally));
+        final Rationale rationale = new SimpleRationale(expected, formatActual(tally));
+        final DirectCauseFinder directCauseFinder = new DirectCauseFinder(decidingChild, evaluated);
 
         return CompoundEvaluation.of(
-                expression, isTrue.test(tally), rationale, elapsedTime,
-                directCause(decidedBy, evaluated), children
+                expression,
+                isTrue.test(tally),
+                rationale,
+                elapsedTime,
+                directCauseFinder.find(),
+                children
         );
     }
 
-    private static DirectCause directCause(final DirectCause.@Nullable Delegated decidedBy, final List<Evaluation> evaluated) {
-
-        if (decidedBy != null) {
-            return decidedBy;
-        }
-        else if (evaluated.isEmpty()) {
-            return DirectCause.self();
-        }
-        else {
-            return DirectCause.of(evaluated);
-        }
+    private static String formatActual(final Tally tally) {
+        return formatActual(tally.trueCount(), tally.falseCount(), tally.skippedCount());
     }
 
-    private static String format(final Tally tally) {
-        return format(tally.trueCount(), tally.falseCount(), tally.skippedCount());
-    }
-
-    static String format(final int trueCount, final int falseCount, final int skippedCount) {
+    static String formatActual(final int trueCount, final int falseCount, final int skippedCount) {
 
         final String formattedTrue = TRUE_PREFIX + trueCount;
         final String formattedFalse = FALSE_PREFIX + falseCount;
         final String formattedSkipped = SKIPPED_PREFIX + skippedCount;
 
         return String.join(SEPARATOR, formattedTrue, formattedFalse, formattedSkipped);
+    }
+
+    private record DirectCauseFinder(
+            @Nullable Delegated decidingChild,
+            List<Evaluation> evaluated
+    ) {
+
+        DirectCause find() {
+
+            if (decidingChild != null) {
+                // A non-null child ended the evaluation early (such as the
+                // first false child in an AND evaluation). That child alone
+                // decided the result of the evaluation.
+                return decidingChild;
+            }
+            else if (evaluated.size() == 1) {
+                // The compound evaluation only has one child, so that child
+                // decided the result.
+                return DirectCause.of(evaluated);
+            }
+            else {
+                // The children of the compound evaluation decided the
+                // evaluation together (such as all the false children of an OR
+                // evaluation) or the compound evaluation has no children.
+                // Therefore, the compound evaluation itself is the direct cause
+                // of its result.
+                return DirectCause.self();
+            }
+        }
+
     }
 
     record Tally(int trueCount, int falseCount, int skippedCount) {

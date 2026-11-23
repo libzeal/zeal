@@ -89,12 +89,12 @@ class NotExpressionTest {
     }
 
     @Test
-    void givenNotOfTrueAnd_whenEvaluate_thenTracesFollowEveryAndChild() {
+    void givenNotOfTrueAnd_whenEvaluate_thenTraceEndsAtAnd() {
 
         final Evaluation evaluation = not("NOT", and("AND", t("t1"), t("t2"))).evaluate();
 
         assertFalse(evaluation.isTrue());
-        assertTraces(evaluation, "NOT -> AND -> t1", "NOT -> AND -> t2");
+        assertTraces(evaluation, "NOT -> AND");
     }
 
     @Test
@@ -116,11 +116,11 @@ class NotExpressionTest {
     }
 
     @Test
-    void givenNotOfFalseOr_whenEvaluate_thenTracesFollowEveryOrChild() {
+    void givenNotOfFalseOr_whenEvaluate_thenTraceEndsAtOr() {
 
         final Evaluation evaluation = not("NOT", or("OR", f("f1"), f("f2"))).evaluate();
 
         assertTrue(evaluation.isTrue());
-        assertTraces(evaluation, "NOT -> OR -> f1", "NOT -> OR -> f2");
+        assertTraces(evaluation, "NOT -> OR");
     }
 }
