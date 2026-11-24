@@ -193,6 +193,19 @@ public record Cause(Evaluation evaluation, DirectCause direct) {
             return evaluations.getLast();
         }
 
+        /**
+         * Checks if the trace is negated. A trace is negated when it passes
+         * through an odd number of negations (such as NOT, NOR, and NAND). This
+         * flips the result of the root cause relative to the evaluation it
+         * caused. An even number of negations cancel out (i.e.,
+         * {@code NOT(NOT(evaluation))} is not negated).
+         *
+         * @return True if the trace is negated; false otherwise.
+         */
+        public boolean isNegated() {
+            return rootCause().isTrue() != evaluation().isTrue();
+        }
+
         @Override
         public String toString() {
             return evaluations.stream()

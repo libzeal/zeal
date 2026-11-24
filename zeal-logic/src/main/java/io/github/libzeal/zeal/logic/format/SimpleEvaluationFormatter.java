@@ -19,8 +19,6 @@ import java.util.Set;
  */
 public final class SimpleEvaluationFormatter implements EvaluationFormatter {
 
-    static final String TRUE_ROOT_CAUSE_NOTE = "A true expression may be a root cause if it belongs to a negated " +
-            "expression, such as NOT, NAND, or NOR";
     private static final String INDENT = "    ";
     private static final String FIELD_FORMAT = "%-13s : %s\n";
 
@@ -56,14 +54,19 @@ public final class SimpleEvaluationFormatter implements EvaluationFormatter {
             final Rationale rationale = rootCause.rationale();
 
             appendField("- Expression", rootCause.name(), builder);
-            appendField("  Expected", rationale.expected(), builder);
-            appendField("  Actual", rationale.actual(), builder);
-            rationale.hint().ifPresent(hint -> appendField("  Hint", hint, builder));
-            appendField("  Cause Trace", trace.toString(), builder);
 
-            if (rootCause.isTrue()) {
-                appendField("  Notes", TRUE_ROOT_CAUSE_NOTE, builder);
+            if (trace.isNegated()) {
+                appendField("  Expected", rationale.negatedExpected(), builder);
+                appendField("  Actual", rationale.actual(), builder);
+                rationale.negatedHint().ifPresent(hint -> appendField("  Hint", hint, builder));
             }
+            else {
+                appendField("  Expected", rationale.expected(), builder);
+                appendField("  Actual", rationale.actual(), builder);
+                rationale.hint().ifPresent(hint -> appendField("  Hint", hint, builder));
+            }
+
+            appendField("  Cause Trace", trace.toString(), builder);
         }
 
         builder.append("\n");

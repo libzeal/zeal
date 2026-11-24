@@ -5,6 +5,8 @@ import io.github.libzeal.zeal.logic.Expression;
 import io.github.libzeal.zeal.logic.evaluation.*;
 import io.github.libzeal.zeal.logic.evaluation.SkippableEvaluation.Evaluated;
 import io.github.libzeal.zeal.logic.evaluation.SkippableEvaluation.Skipped;
+import io.github.libzeal.zeal.logic.unary.Condition;
+import io.github.libzeal.zeal.logic.unary.ConditionBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -106,7 +108,7 @@ class SimpleEvaluationFormatterTest {
     }
 
     @Test
-    void givenOneFailingWithTrueNestedEvaluation_whenFormat_thenResultIsCorrect() {
+    void givenOneFailingWithTrueNestedEvaluation_whenFormat_thenNegatedExpectedAndHintFormatted() {
 
         final Duration childElapsedTime = Duration.ofMillis(10);
         final Rationale childRationale = new SimpleRationale("someExpectedChild", "someActualChild", "someHintChild");
@@ -121,11 +123,10 @@ class SimpleEvaluationFormatterTest {
         final String expected =
                 ROOT_CAUSES_HEADING +
                         "- Expression  : " + childEvaluation.name() + "\n" +
-                        "  Expected    : " + childRationale.expected() + "\n" +
+                        "  Expected    : " + childRationale.negatedExpected() + "\n" +
                         "  Actual      : " + childRationale.actual() + "\n" +
-                        "  Hint        : " + childRationale.hint().orElse("") + "\n" +
+                        "  Hint        : " + childRationale.negatedHint().orElse("") + "\n" +
                         "  Cause Trace : " + parentEvaluation.name() + " -> " + childEvaluation.name() + "\n" +
-                        "  Notes       : " + SimpleEvaluationFormatter.TRUE_ROOT_CAUSE_NOTE + "\n" +
                         "\n" +
                         EVALUATION_HEADING +
                         "[F] " + parentEvaluation.name() + " (" + parentElapsedTime.toMillis() + "ms)\n" +
@@ -233,6 +234,77 @@ class SimpleEvaluationFormatterTest {
         final String result = formatter.format(parentEvaluation);
 
         assertEquals(expected, result);
+    }
+
+    @Test
+    void givenDoubleNegation_whenFormat_thenRootCauseNotNegated() {
+
+        final Evaluation evaluation = not("NOT1", not("NOT2", f("f1"))).evaluate();
+
+        final String expected = ROOT_CAUSES_HEADING +
+                "- Expression  : f1\n" +
+                "  Expected    : true\n" +
+                "  Actual      : false\n" +
+                "  Cause Trace : NOT1 -> NOT2 -> f1\n";
+
+        assertEquals(expected, rootCausesOf(formatter.format(evaluation)));
+    }
+
+    @Test
+    void givenTripleNegation_whenFormat_thenRootCauseNegated() {
+
+        final Evaluation evaluation = not("NOT1", not("NOT2", not("NOT3", t("t1")))).evaluate();
+
+        final String expected = ROOT_CAUSES_HEADING +
+                "- Expression  : t1\n" +
+                "  Expected    : not[true]\n" +
+                "  Actual      : true\n" +
+                "  Cause Trace : NOT1 -> NOT2 -> NOT3 -> t1\n";
+
+        assertEquals(expected, rootCausesOf(formatter.format(evaluation)));
+    }
+
+    @Test
+    void givenNegatedPassingNor_whenFormat_thenNorIsNegatedRootCause() {
+
+        final Evaluation evaluation = not("NOT", nor("NOR", f("f1"), f("f2"))).evaluate();
+
+        final String expected = ROOT_CAUSES_HEADING +
+                "- Expression  : NOR\n" +
+                "  Expected    : not[true = 0]\n" +
+                "  Actual      : True: 0, False: 2, Skipped: 0\n" +
+                "  Cause Trace : NOT -> NOR\n";
+
+        assertEquals(expected, rootCausesOf(formatter.format(evaluation)));
+    }
+
+    @Test
+    void givenNegatedConditionWithNegatedFields_whenFormat_thenNegatedFieldsUsed() {
+
+        final Condition<String> condition = ConditionBuilder.<String>of(s -> s.contains("eve"))
+                .name("includes[eve]")
+                .expected("includes[eve]")
+                .actual("includes[eve]")
+                .hint("'eve' found")
+                .negatedExpected("excludes[eve]")
+                .negatedHint("'eve' should not be included")
+                .build();
+
+        final Evaluation evaluation = not("NOT", condition.bind("alice, eve")).evaluate();
+
+        final String expected = ROOT_CAUSES_HEADING +
+                "- Expression  : includes[eve]\n" +
+                "  Expected    : excludes[eve]\n" +
+                "  Actual      : includes[eve]\n" +
+                "  Hint        : 'eve' should not be included\n" +
+                "  Cause Trace : NOT -> includes[eve]\n";
+
+        assertEquals(expected, rootCausesOf(formatter.format(evaluation)));
+    }
+
+    // Only the root causes are compared, since the evaluation tree includes elapsed times that vary between runs
+    private static String rootCausesOf(final String formatted) {
+        return formatted.substring(0, formatted.indexOf("\n" + EVALUATION_HEADING));
     }
 
     private static Evaluation parent(final Duration elapsedTime, final DirectCause cause, final Evaluation... children) {
