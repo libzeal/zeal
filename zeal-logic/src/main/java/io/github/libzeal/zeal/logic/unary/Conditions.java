@@ -1,15 +1,14 @@
 package io.github.libzeal.zeal.logic.unary;
 
 import io.github.libzeal.zeal.logic.AndExpression;
-import io.github.libzeal.zeal.logic.Expression;
-import io.github.libzeal.zeal.logic.Expressions;
+import io.github.libzeal.zeal.logic.NorExpression;
 import io.github.libzeal.zeal.logic.OrExpression;
 import org.jspecify.annotations.Nullable;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 import static io.github.libzeal.zeal.logic.Expression.DEFAULT_NAME;
 import static io.github.libzeal.zeal.logic.format.ObjectFormatter.stringify;
@@ -21,6 +20,14 @@ import static java.util.Objects.requireNonNull;
  * @author Justin Albano
  */
 public final class Conditions {
+
+    private static final String ANY_OF = "anyOf";
+    private static final String ALL_OF = "allOf";
+    private static final String NONE_OF = "noneOf";
+    private static final String ONE_OF = "oneOf";
+    private static final String NOT_ONE_OF = "notOneOf";
+    private static final String IN = "in";
+    private static final String NOT_IN = "notIn";
 
     private Conditions() {
     }
@@ -150,85 +157,39 @@ public final class Conditions {
 
         requireNonNull(conditions);
 
-        return subject -> {
-            final var collected = Stream.of(conditions)
-                    .map(c -> c.bind(subject))
-                    .toList();
-
-            return new UnaryCompoundAdapter<>(
-                    subject,
-                    OrExpression.unnamed(collected)
-            );
-        };
+        return Conditions.anyOf(Arrays.<Condition<? super T>>asList(conditions));
     }
 
     /**
-     * Creates a condition that evaluates if the subject matches any of the
-     * supplied values.
+     * Creates a condition that evaluates if any of the supplied conditions are
+     * true.
      *
-     * @param values
-     *         The values to check.
+     * @param conditions
+     *         The conditions to check.
      * @param <T>
      *         The type of the subject.
      *
-     * @return A new condition that evaluations to true if the subject matches
-     * any of the supplied values.
+     * @return A new condition that evaluates to true if any of the supplied
+     * conditions are true.
      *
      * @throws NullPointerException
-     *         The supplied array is {@code null}.
+     *         The supplied {@link List} is {@code null}.
      */
-    @SafeVarargs
-    public static <T> Condition<T> anyOf(final @Nullable T... values) {
-
-        requireNonNull(values);
+    public static <T> Condition<T> anyOf(
+            final List<? extends Condition<? super T>> conditions
+    ) {
+        requireNonNull(conditions);
 
         return subject -> {
-            final var collected = Stream.of(values)
-                    .map(Conditions::equalTo)
+            final var collected = conditions.stream()
                     .map(c -> c.bind(subject))
                     .toList();
 
             return new UnaryCompoundAdapter<>(
                     subject,
-                    OrExpression.unnamed(collected)
+                    OrExpression.named(ANY_OF, collected)
             );
         };
-    }
-
-    /**
-     * Creates a condition that evaluates if the subject matches any of the
-     * supplied values.
-     *
-     * @param values
-     *         The values to check.
-     * @param <T>
-     *         The type of the subject.
-     *
-     * @return A new condition that evaluations to true if the subject matches
-     * any of the supplied values.
-     *
-     * @throws NullPointerException
-     *         The supplied {@link Iterable} is {@code null}.
-     */
-    public static <T> Condition<T> anyOf(final Iterable<? extends @Nullable T> values) {
-
-        requireNonNull(values);
-
-        return subject -> {
-            final var collected = streamOf(values)
-                    .map(Conditions::equalTo)
-                    .map(c -> c.bind(subject))
-                    .toList();
-
-            return new UnaryCompoundAdapter<>(
-                    subject,
-                    OrExpression.unnamed(collected)
-            );
-        };
-    }
-
-    private static <T> Stream<T> streamOf(final Iterable<T> iterable) {
-        return StreamSupport.stream(iterable.spliterator(), false);
     }
 
     /**
@@ -248,79 +209,37 @@ public final class Conditions {
 
         requireNonNull(conditions);
 
-        return subject -> {
-            final var collected = Stream.of(conditions)
-                    .map(c -> c.bind(subject))
-                    .toList();
-
-            return new UnaryCompoundAdapter<>(
-                    subject,
-                    AndExpression.unnamed(collected)
-            );
-        };
+        return Conditions.allOf(Arrays.<Condition<? super T>>asList(conditions));
     }
 
     /**
-     * Creates a condition that evaluates if the subject matches all the
-     * supplied values.
+     * Creates a condition that evaluates if all the supplied conditions are
+     * true.
      *
-     * @param values
-     *         The values to check.
+     * @param conditions
+     *         The conditions to check.
      * @param <T>
      *         The type of the subject.
      *
-     * @return A new condition that evaluations to true if the subject matches
-     * all the supplied values.
+     * @return A new condition that evaluates to true if all the supplied
+     * conditions are true.
      *
      * @throws NullPointerException
-     *         The supplied array is {@code null}.
+     *         The supplied {@link List} is {@code null}.
      */
-    @SafeVarargs
-    public static <T> Condition<T> allOf(final @Nullable T... values) {
-
-        requireNonNull(values);
+    public static <T> Condition<T> allOf(
+            final List<? extends Condition<? super T>> conditions
+    ) {
+        requireNonNull(conditions);
 
         return subject -> {
-            final var collected = Stream.of(values)
-                    .map(Conditions::equalTo)
+            final var collected = conditions.stream()
                     .map(c -> c.bind(subject))
                     .toList();
 
             return new UnaryCompoundAdapter<>(
                     subject,
-                    AndExpression.unnamed(collected)
-            );
-        };
-    }
-
-    /**
-     * Creates a condition that evaluates if the subject matches all the
-     * supplied values.
-     *
-     * @param values
-     *         The values to check.
-     * @param <T>
-     *         The type of the subject.
-     *
-     * @return A new condition that evaluations to true if the subject matches
-     * all the supplied values.
-     *
-     * @throws NullPointerException
-     *         The supplied {@link Iterable} is {@code null}.
-     */
-    public static <T> Condition<T> allOf(final Iterable<? extends @Nullable T> values) {
-
-        requireNonNull(values);
-
-        return subject -> {
-            final var collected = streamOf(values)
-                    .map(Conditions::equalTo)
-                    .map(c -> c.bind(subject))
-                    .toList();
-
-            return new UnaryCompoundAdapter<>(
-                    subject,
-                    AndExpression.unnamed(collected)
+                    AndExpression.named(ALL_OF, collected)
             );
         };
     }
@@ -342,68 +261,155 @@ public final class Conditions {
 
         requireNonNull(conditions);
 
-        return subject -> {
-            final var expression = Expressions.nor(Stream.of(conditions)
-                    .map(c -> c.bind(subject)).toArray(Expression[]::new));
+        return Conditions.noneOf(Arrays.<Condition<? super T>>asList(conditions));
+    }
 
-            return new UnaryCompoundAdapter<>(subject, expression);
+    /**
+     * Creates a condition that evaluates if none of the supplied conditions are
+     * true.
+     *
+     * @param conditions
+     *         The conditions to check.
+     * @param <T>
+     *         The type of the subject.
+     *
+     * @return A new condition that evaluates to true if none of the supplied
+     * conditions are true.
+     *
+     * @throws NullPointerException
+     *         The supplied {@link List} is {@code null}.
+     */
+    public static <T> Condition<T> noneOf(
+            final List<? extends Condition<? super T>> conditions
+    ) {
+        requireNonNull(conditions);
+
+        return subject -> {
+            final var collected = conditions.stream()
+                    .map(c -> c.bind(subject))
+                    .toList();
+
+            return new UnaryCompoundAdapter<>(
+                    subject,
+                    NorExpression.named(NONE_OF, collected)
+            );
         };
     }
 
     /**
-     * Creates a condition that evaluates if the subject matches none of the
-     * supplied values.
+     * Creates a condition that evaluates if the subject is equal to one of the
+     * supplied values. Values are compared to the subject using
+     * {@link Objects#deepEquals(Object, Object)}.
      *
      * @param values
      *         The values to check.
      * @param <T>
      *         The type of the subject.
      *
-     * @return A new condition that evaluations to true if the subject does not
-     * match any of the supplied values.
+     * @return A new condition that evaluates to true if the subject is equal to
+     * one of the supplied values.
      *
      * @throws NullPointerException
      *         The supplied array is {@code null}.
      */
     @SafeVarargs
-    public static <T> Condition<T> noneOf(final @Nullable T... values) {
+    public static <T> Condition<T> oneOf(final @Nullable T... values) {
 
         requireNonNull(values);
 
-        return subject -> {
-            final var expression = Expressions.nor(Stream.of(values)
-                    .map(Conditions::equalTo)
-                    .map(c -> c.bind(subject)).toArray(Expression[]::new));
-
-            return new UnaryCompoundAdapter<>(subject, expression);
-        };
+        return equalToAnyOf(ONE_OF, Arrays.asList(values));
     }
 
     /**
-     * Creates a condition that evaluates if the subject matches none of the
-     * supplied values.
+     * Creates a condition that evaluates if the subject is equal to one of the
+     * values in the supplied list. Values are compared to the subject using
+     * {@link Objects#deepEquals(Object, Object)}.
      *
      * @param values
      *         The values to check.
      * @param <T>
      *         The type of the subject.
      *
-     * @return A new condition that evaluations to true if the subject matches
-     * none of the supplied values.
+     * @return A new condition that evaluates to true if the subject is equal to
+     * one of the values in the supplied list.
      *
      * @throws NullPointerException
-     *         The supplied {@link Iterable} is {@code null}.
+     *         The supplied {@link List} is {@code null}.
      */
-    public static <T> Condition<T> noneOf(final Iterable<? extends @Nullable T> values) {
+    public static <T> Condition<T> in(final List<? extends @Nullable T> values) {
 
         requireNonNull(values);
 
-        return subject -> {
-            final var expression = Expressions.nor(streamOf(values)
-                    .map(Conditions::equalTo)
-                    .map(c -> c.bind(subject)).toArray(Expression[]::new));
+        return equalToAnyOf(IN, values);
+    }
 
-            return new UnaryCompoundAdapter<>(subject, expression);
-        };
+    /**
+     * Creates a condition that evaluates if the subject is not equal to any of
+     * the supplied values. Values are compared to the subject using
+     * {@link Objects#deepEquals(Object, Object)}.
+     *
+     * @param values
+     *         The values to check.
+     * @param <T>
+     *         The type of the subject.
+     *
+     * @return A new condition that evaluates to true if the subject is not
+     * equal to any of the supplied values.
+     *
+     * @throws NullPointerException
+     *         The supplied array is {@code null}.
+     */
+    @SafeVarargs
+    public static <T> Condition<T> notOneOf(final @Nullable T... values) {
+
+        requireNonNull(values);
+
+        return equalToNoneOf(NOT_ONE_OF, Arrays.asList(values));
+    }
+
+    /**
+     * Creates a condition that evaluates if the subject is not equal to any of
+     * the values in the supplied list. Values are compared to the subject using
+     * {@link Objects#deepEquals(Object, Object)}.
+     *
+     * @param values
+     *         The values to check.
+     * @param <T>
+     *         The type of the subject.
+     *
+     * @return A new condition that evaluates to true if the subject is not
+     * equal to any of the values in the supplied list.
+     *
+     * @throws NullPointerException
+     *         The supplied {@link List} is {@code null}.
+     */
+    public static <T> Condition<T> notIn(final List<? extends @Nullable T> values) {
+
+        requireNonNull(values);
+
+        return equalToNoneOf(NOT_IN, values);
+    }
+
+    private static <T> Condition<T> equalToAnyOf(final String name, final List<? extends @Nullable T> values) {
+        return subject -> new UnaryCompoundAdapter<>(
+                subject,
+                OrExpression.named(name, equalToAll(values, subject))
+        );
+    }
+
+    private static <T> Condition<T> equalToNoneOf(final String name, final List<? extends @Nullable T> values) {
+        return subject -> new UnaryCompoundAdapter<>(
+                subject,
+                NorExpression.named(name, equalToAll(values, subject))
+        );
+    }
+
+    private static <T> List<UnaryExpression<T>> equalToAll(
+            final List<? extends @Nullable T> values,
+            final @Nullable T subject
+    ) {
+        return values.stream()
+                .map(value -> Conditions.<T>equalTo(value).bind(subject))
+                .toList();
     }
 }

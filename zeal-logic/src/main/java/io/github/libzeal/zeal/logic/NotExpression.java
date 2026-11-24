@@ -62,6 +62,27 @@ public record NotExpression(
         return new NotExpression(DEFAULT_NAME, wrapped);
     }
 
+    /**
+     * Creates a NOT expression with the supplied name.
+     *
+     * @param name
+     *         The name of the expression.
+     * @param wrapped
+     *         The expression to negate.
+     *
+     * @return A negated expression that evaluates to the negative of the
+     * supplied expression.
+     *
+     * @throws NullPointerException
+     *         The supplied name or wrapped expression is {@code null}.
+     */
+    public static NotExpression named(
+            final String name,
+            final Expression wrapped
+    ) {
+        return new NotExpression(name, wrapped);
+    }
+
     @Override
     public List<Expression> children() {
         return List.of(wrapped);

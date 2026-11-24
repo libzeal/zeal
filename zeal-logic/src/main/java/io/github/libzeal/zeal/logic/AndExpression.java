@@ -77,6 +77,45 @@ public record AndExpression(
         return new AndExpression(DEFAULT_NAME, List.of(children));
     }
 
+    /**
+     * Creates an AND expression with the supplied name.
+     *
+     * @param name
+     *         The name of the expression.
+     * @param children
+     *         The sub-expressions to be ANDed together.
+     *
+     * @return An AND expression with the supplied name.
+     *
+     * @throws NullPointerException
+     *         The supplied name or children list is {@code null} or the list
+     *         contains any {@code null}s.
+     */
+    public static AndExpression named(
+            final String name,
+            final List<? extends Expression> children
+    ) {
+        return new AndExpression(name, List.copyOf(children));
+    }
+
+    /**
+     * Creates an AND expression with the supplied name.
+     *
+     * @param name
+     *         The name of the expression.
+     * @param children
+     *         The sub-expressions to be ANDed together.
+     *
+     * @return An AND expression with the supplied name.
+     *
+     * @throws NullPointerException
+     *         The supplied name or children list is {@code null} or the list
+     *         contains any {@code null}s.
+     */
+    public static AndExpression named(final String name, final Expression... children) {
+        return new AndExpression(name, List.of(children));
+    }
+
     @Override
     public CompoundEvaluation evaluate() {
         return CompoundEvaluator.evaluate(

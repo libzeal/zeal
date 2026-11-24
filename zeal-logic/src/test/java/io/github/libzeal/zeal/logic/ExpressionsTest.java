@@ -6,6 +6,8 @@ import io.github.libzeal.zeal.logic.evaluation.Rationale;
 import io.github.libzeal.zeal.logic.test.TestExpressions;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static io.github.libzeal.zeal.logic.test.Assertions.assertDepthFirstTraversalIsTerminal;
 import static io.github.libzeal.zeal.logic.test.Assertions.assertRationaleEquals;
 import static org.junit.jupiter.api.Assertions.*;
@@ -177,5 +179,95 @@ class ExpressionsTest {
 
         assertNotNull(expression);
         assertInstanceOf(XorExpression.class, expression);
+    }
+
+    @Test
+    void givenListOfExpressionSubtype_whenAnd_thenUnnamedExpressionWithChildrenReturned() {
+
+        final BooleanExpression first = new BooleanExpression(() -> true);
+        final BooleanExpression second = new BooleanExpression(() -> false);
+        final List<BooleanExpression> children = List.of(first, second);
+
+        final AndExpression expression = Expressions.and(children);
+
+        assertEquals(AndExpression.DEFAULT_NAME, expression.name());
+        assertEquals(List.of(first, second), expression.children());
+    }
+
+    @Test
+    void givenNullList_whenAnd_thenExceptionThrown() {
+        assertThrows(NullPointerException.class, () -> Expressions.and((List<Expression>) null));
+    }
+
+    @Test
+    void givenListOfExpressionSubtype_whenOr_thenUnnamedExpressionWithChildrenReturned() {
+
+        final BooleanExpression first = new BooleanExpression(() -> true);
+        final BooleanExpression second = new BooleanExpression(() -> false);
+        final List<BooleanExpression> children = List.of(first, second);
+
+        final OrExpression expression = Expressions.or(children);
+
+        assertEquals(OrExpression.DEFAULT_NAME, expression.name());
+        assertEquals(List.of(first, second), expression.children());
+    }
+
+    @Test
+    void givenNullList_whenOr_thenExceptionThrown() {
+        assertThrows(NullPointerException.class, () -> Expressions.or((List<Expression>) null));
+    }
+
+    @Test
+    void givenListOfExpressionSubtype_whenNand_thenUnnamedExpressionWithChildrenReturned() {
+
+        final BooleanExpression first = new BooleanExpression(() -> true);
+        final BooleanExpression second = new BooleanExpression(() -> false);
+        final List<BooleanExpression> children = List.of(first, second);
+
+        final NandExpression expression = Expressions.nand(children);
+
+        assertEquals(NandExpression.DEFAULT_NAME, expression.name());
+        assertEquals(List.of(first, second), expression.children());
+    }
+
+    @Test
+    void givenNullList_whenNand_thenExceptionThrown() {
+        assertThrows(NullPointerException.class, () -> Expressions.nand((List<Expression>) null));
+    }
+
+    @Test
+    void givenListOfExpressionSubtype_whenNor_thenUnnamedExpressionWithChildrenReturned() {
+
+        final BooleanExpression first = new BooleanExpression(() -> true);
+        final BooleanExpression second = new BooleanExpression(() -> false);
+        final List<BooleanExpression> children = List.of(first, second);
+
+        final NorExpression expression = Expressions.nor(children);
+
+        assertEquals(NorExpression.DEFAULT_NAME, expression.name());
+        assertEquals(List.of(first, second), expression.children());
+    }
+
+    @Test
+    void givenNullList_whenNor_thenExceptionThrown() {
+        assertThrows(NullPointerException.class, () -> Expressions.nor((List<Expression>) null));
+    }
+
+    @Test
+    void givenListOfExpressionSubtype_whenXor_thenUnnamedExpressionWithChildrenReturned() {
+
+        final BooleanExpression first = new BooleanExpression(() -> true);
+        final BooleanExpression second = new BooleanExpression(() -> false);
+        final List<BooleanExpression> children = List.of(first, second);
+
+        final XorExpression expression = Expressions.xor(children);
+
+        assertEquals(XorExpression.DEFAULT_NAME, expression.name());
+        assertEquals(List.of(first, second), expression.children());
+    }
+
+    @Test
+    void givenNullList_whenXor_thenExceptionThrown() {
+        assertThrows(NullPointerException.class, () -> Expressions.xor((List<Expression>) null));
     }
 }

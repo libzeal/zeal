@@ -46,7 +46,7 @@ public record OrExpression(
     }
 
     /**
-     * Creates a OR expression with a default name.
+     * Creates an OR expression with a default name.
      *
      * @param children
      *         The sub-expressions to be ORed together.
@@ -62,7 +62,7 @@ public record OrExpression(
     }
 
     /**
-     * Creates a OR expression with a default name.
+     * Creates an OR expression with a default name.
      *
      * @param children
      *         The sub-expressions to be ORed together.
@@ -75,6 +75,45 @@ public record OrExpression(
      */
     public static OrExpression unnamed(final Expression... children) {
         return new OrExpression(DEFAULT_NAME, List.of(children));
+    }
+
+    /**
+     * Creates an OR expression with the supplied name.
+     *
+     * @param name
+     *         The name of the expression.
+     * @param children
+     *         The sub-expressions to be ORed together.
+     *
+     * @return An OR expression with the supplied name.
+     *
+     * @throws NullPointerException
+     *         The supplied name or children list is {@code null} or the list
+     *         contains any {@code null}s.
+     */
+    public static OrExpression named(
+            final String name,
+            final List<? extends Expression> children
+    ) {
+        return new OrExpression(name, List.copyOf(children));
+    }
+
+    /**
+     * Creates an OR expression with the supplied name.
+     *
+     * @param name
+     *         The name of the expression.
+     * @param children
+     *         The sub-expressions to be ORed together.
+     *
+     * @return An OR expression with the supplied name.
+     *
+     * @throws NullPointerException
+     *         The supplied name or children list is {@code null} or the list
+     *         contains any {@code null}s.
+     */
+    public static OrExpression named(final String name, final Expression... children) {
+        return new OrExpression(name, List.of(children));
     }
 
     @Override

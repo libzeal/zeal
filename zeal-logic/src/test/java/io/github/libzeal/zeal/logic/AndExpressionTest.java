@@ -413,4 +413,33 @@ class AndExpressionTest {
 
         assertEquals(List.of(child), expression.children());
     }
+
+    @Test
+    void givenNameAndListOfExpressionSubtype_whenNamed_thenNameAndChildrenUsed() {
+
+        final BooleanExpression child = new BooleanExpression(() -> true);
+        final List<BooleanExpression> children = List.of(child);
+
+        final AndExpression expression = AndExpression.named("foo", children);
+
+        assertEquals("foo", expression.name());
+        assertEquals(List.of(child), expression.children());
+    }
+
+    @Test
+    void givenNameAndVarargs_whenNamed_thenNameAndChildrenUsed() {
+
+        final BooleanExpression first = new BooleanExpression(() -> true);
+        final BooleanExpression second = new BooleanExpression(() -> false);
+
+        final AndExpression expression = AndExpression.named("foo", first, second);
+
+        assertEquals("foo", expression.name());
+        assertEquals(List.of(first, second), expression.children());
+    }
+
+    @Test
+    void givenNullName_whenNamed_thenExceptionThrown() {
+        assertThrows(NullPointerException.class, () -> AndExpression.named(null, new BooleanExpression(() -> true)));
+    }
 }

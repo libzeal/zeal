@@ -309,4 +309,33 @@ class OrExpressionTest {
 
         assertEquals(List.of(child), expression.children());
     }
+
+    @Test
+    void givenNameAndListOfExpressionSubtype_whenNamed_thenNameAndChildrenUsed() {
+
+        final BooleanExpression child = new BooleanExpression(() -> true);
+        final List<BooleanExpression> children = List.of(child);
+
+        final OrExpression expression = OrExpression.named("foo", children);
+
+        assertEquals("foo", expression.name());
+        assertEquals(List.of(child), expression.children());
+    }
+
+    @Test
+    void givenNameAndVarargs_whenNamed_thenNameAndChildrenUsed() {
+
+        final BooleanExpression first = new BooleanExpression(() -> true);
+        final BooleanExpression second = new BooleanExpression(() -> false);
+
+        final OrExpression expression = OrExpression.named("foo", first, second);
+
+        assertEquals("foo", expression.name());
+        assertEquals(List.of(first, second), expression.children());
+    }
+
+    @Test
+    void givenNullName_whenNamed_thenExceptionThrown() {
+        assertThrows(NullPointerException.class, () -> OrExpression.named(null, new BooleanExpression(() -> true)));
+    }
 }

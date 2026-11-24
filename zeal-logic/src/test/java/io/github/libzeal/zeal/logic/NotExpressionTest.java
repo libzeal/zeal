@@ -124,4 +124,20 @@ class NotExpressionTest {
         assertTrue(evaluation.isTrue());
         assertTraces(evaluation, "NOT -> OR");
     }
+
+    @Test
+    void givenNameAndWrapped_whenNamed_thenNameAndWrappedUsed() {
+
+        final BooleanExpression wrapped = new BooleanExpression(() -> true);
+
+        final NotExpression expression = NotExpression.named("foo", wrapped);
+
+        assertEquals("foo", expression.name());
+        assertEquals(List.of(wrapped), expression.children());
+    }
+
+    @Test
+    void givenNullName_whenNamed_thenExceptionThrown() {
+        assertThrows(NullPointerException.class, () -> NotExpression.named(null, new BooleanExpression(() -> true)));
+    }
 }

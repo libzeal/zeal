@@ -163,4 +163,33 @@ class XorExpressionTest {
 
         assertEquals(List.of(child), expression.children());
     }
+
+    @Test
+    void givenNameAndListOfExpressionSubtype_whenNamed_thenNameAndChildrenUsed() {
+
+        final BooleanExpression child = new BooleanExpression(() -> true);
+        final List<BooleanExpression> children = List.of(child);
+
+        final XorExpression expression = XorExpression.named("foo", children);
+
+        assertEquals("foo", expression.name());
+        assertEquals(List.of(child), expression.children());
+    }
+
+    @Test
+    void givenNameAndVarargs_whenNamed_thenNameAndChildrenUsed() {
+
+        final BooleanExpression first = new BooleanExpression(() -> true);
+        final BooleanExpression second = new BooleanExpression(() -> false);
+
+        final XorExpression expression = XorExpression.named("foo", first, second);
+
+        assertEquals("foo", expression.name());
+        assertEquals(List.of(first, second), expression.children());
+    }
+
+    @Test
+    void givenNullName_whenNamed_thenExceptionThrown() {
+        assertThrows(NullPointerException.class, () -> XorExpression.named(null, new BooleanExpression(() -> true)));
+    }
 }
