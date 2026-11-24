@@ -6,10 +6,7 @@ import io.github.libzeal.zeal.logic.evaluation.*;
 import io.github.libzeal.zeal.logic.evaluation.SkippableEvaluation.Evaluated;
 import io.github.libzeal.zeal.logic.evaluation.SkippableEvaluation.Skipped;
 
-import java.util.Collections;
-import java.util.IdentityHashMap;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * A simple formatter that provides information about the root cause of a failed
@@ -33,18 +30,23 @@ public final class SimpleEvaluationFormatter implements EvaluationFormatter {
 
         final StringBuilder builder = new StringBuilder();
         final List<Cause.Trace> traces = evaluation.cause().traces();
+        final Map<Evaluation, String> names = displayNamesOf(evaluation);
 
         if (!evaluation.isTrue()) {
-            appendRootCauses(traces, builder);
+            appendRootCauses(traces, names, builder);
         }
 
         builder.append("Evaluation:\n");
-        appendEvaluation(evaluation, rootCausesOf(traces), 0, builder);
+        appendEvaluation(evaluation, rootCausesOf(traces), names, 0, builder);
 
         return builder.toString().trim();
     }
 
-    private static void appendRootCauses(final List<Cause.Trace> traces, final StringBuilder builder) {
+    private static void appendRootCauses(
+            final List<Cause.Trace> traces,
+            final Map<Evaluation, String> names,
+            final StringBuilder builder
+    ) {
 
         builder.append("Root Causes:\n");
 
@@ -52,8 +54,12 @@ public final class SimpleEvaluationFormatter implements EvaluationFormatter {
 
             final Evaluation rootCause = trace.rootCause();
             final Rationale rationale = rootCause.rationale();
+            final List<String> traceNames = trace.evaluations()
+                    .stream()
+                    .map(names::get)
+                    .toList();
 
-            appendField("- Expression", rootCause.name(), builder);
+            appendField("- Expression", traceNames.getLast(), builder);
 
             if (trace.isNegated()) {
                 appendField("  Expected", rationale.negatedExpected(), builder);
@@ -66,7 +72,7 @@ public final class SimpleEvaluationFormatter implements EvaluationFormatter {
                 rationale.hint().ifPresent(hint -> appendField("  Hint", hint, builder));
             }
 
-            appendField("  Cause Trace", trace.toString(), builder);
+            appendField("  Cause Trace", String.join(" -> ", traceNames), builder);
         }
 
         builder.append("\n");
@@ -106,12 +112,12 @@ public final class SimpleEvaluationFormatter implements EvaluationFormatter {
 
     private static void appendEvaluation(
             final Evaluation evaluation, final Set<Evaluation> rootCauses,
-            final int depth, final StringBuilder builder
+            final Map<Evaluation, String> names, final int depth, final StringBuilder builder
     ) {
 
         builder.repeat(INDENT, depth)
                 .append(evaluation.isTrue() ? "[T] " : "[F] ")
-                .append(evaluation.name())
+                .append(names.get(evaluation))
                 .append(" (")
                 .append(DurationFormatter.format(evaluation.duration()))
                 .append(")");
@@ -123,28 +129,144 @@ public final class SimpleEvaluationFormatter implements EvaluationFormatter {
         builder.append("\n");
 
         if (evaluation instanceof final CompoundEvaluation compound) {
-            for (final SkippableEvaluation child : compound.children()) {
-                switch (child) {
+
+            final List<SkippableEvaluation> children = compound.children();
+            final List<String> childNames = displayNamesOfChildren(compound);
+
+            for (int i = 0; i < children.size(); i++) {
+                switch (children.get(i)) {
                     case Evaluated(Evaluation evaluated) ->
-                            appendEvaluation(evaluated, rootCauses, depth + 1, builder);
+                            appendEvaluation(evaluated, rootCauses, names, depth + 1, builder);
                     case Skipped skipped ->
-                            appendSkipped(skipped.expression(), depth + 1, builder);
+                            appendSkipped(skipped.expression(), childNames.get(i), depth + 1, builder);
                 }
             }
         }
     }
 
-    private static void appendSkipped(final Expression expression, final int depth, final StringBuilder builder) {
+    private static void appendSkipped(
+            final Expression expression, final String displayName,
+            final int depth, final StringBuilder builder
+    ) {
 
         builder.repeat(INDENT, depth)
                 .append("[ ] ")
-                .append(expression.name())
+                .append(displayName)
                 .append("\n");
 
         if (expression instanceof final CompoundExpression compound) {
-            for (final Expression child : compound.children()) {
-                appendSkipped(child, depth + 1, builder);
+
+            final List<Expression> children = compound.children();
+            final List<String> names = children.stream().map(Expression::name).toList();
+            final List<String> displayNames = displayNames(names);
+
+            for (int i = 0; i < children.size(); i++) {
+                appendSkipped(
+                        children.get(i),
+                        displayNames.get(i),
+                        depth + 1,
+                        builder
+                );
             }
         }
+    }
+
+    /**
+     * Obtains the display name of every evaluation in the supplied tree. The
+     * root keeps its own name, while the children of each compound evaluation
+     * are numbered among their siblings (see {@link #displayNames(List)}).
+     * <p>
+     * The display names are keyed by identity, rather than by
+     * {@link Object#equals(Object)}. Each occurrence of a repeated expression
+     * (e.g., OR(e, e)) is evaluated separately, so each occurrence has its own
+     * evaluation and its own key, even though the evaluations may be equal to
+     * one another (according to {@link Object#equals(Object)}.
+     *
+     * @param root
+     *         The root of the evaluation tree.
+     *
+     * @return The display name of every evaluation in the tree, keyed by
+     * identity.
+     */
+    private static Map<Evaluation, String> displayNamesOf(final Evaluation root) {
+
+        final Map<Evaluation, String> names = new IdentityHashMap<>();
+
+        names.put(root, root.name());
+        addDisplayNamesOfChildren(root, names);
+
+        return names;
+    }
+
+    private static void addDisplayNamesOfChildren(final Evaluation evaluation, final Map<Evaluation, String> names) {
+
+        if (evaluation instanceof final CompoundEvaluation compound) {
+
+            final List<SkippableEvaluation> children = compound.children();
+            final List<String> childNames = displayNamesOfChildren(compound);
+
+            for (int i = 0; i < children.size(); i++) {
+                if (children.get(i) instanceof Evaluated(Evaluation child)) {
+                    names.put(child, childNames.get(i));
+                    addDisplayNamesOfChildren(child, names);
+                }
+            }
+        }
+    }
+
+    private static List<String> displayNamesOfChildren(final CompoundEvaluation compound) {
+
+        final List<String> names = compound.children()
+                .stream()
+                .map(SkippableEvaluation::name)
+                .toList();
+
+        return displayNames(names);
+    }
+
+    /**
+     * Creates display names for each of the supplied names, appending numeric
+     * identifiers for repeated sibling names. For example, the names [anyOf,
+     * isNull, anyOf] are displayed as [anyOf #1, isNull, anyOf #2].
+     * <p>
+     * Numbers are assigned by position, rather than stored per expression (such
+     * as a map from each expression to its display name). The same expression
+     * can appear more than once among siblings (e.g., OR(e, e)), and storing
+     * numbers per expression would give each occurrence the same number. For
+     * example, the map would look like {@code [e => "e #1"]}, which would cause
+     * the display names to be {@code ["e #1", "e #1"]} rather than
+     * {@code ["e #1", "e #2"]}.
+     *
+     * @param names
+     *         The names of the siblings, in order.
+     *
+     * @return The display names of the siblings, in the same order as the
+     * supplied names.
+     */
+    private static List<String> displayNames(final List<String> names) {
+
+        final Map<String, Integer> totals = new HashMap<>();
+        final Map<String, Integer> seen = new HashMap<>();
+
+        for (final String name : names) {
+            totals.merge(name, 1, Integer::sum);
+        }
+
+        final List<String> displayNames = new ArrayList<>();
+
+        for (final String name : names) {
+
+            if (totals.getOrDefault(name, 0) > 1) {
+
+                final Integer seenSoFar = seen.merge(name, 1, Integer::sum);
+
+                displayNames.add(name + " #" + seenSoFar);
+            }
+            else {
+                displayNames.add(name);
+            }
+        }
+
+        return displayNames;
     }
 }

@@ -302,6 +302,123 @@ class SimpleEvaluationFormatterTest {
         assertEquals(expected, rootCausesOf(formatter.format(evaluation)));
     }
 
+    @Test
+    void givenDuplicateSiblings_whenFormat_thenSiblingsNumbered() {
+
+        final Evaluation evaluation = or("OR", f("a"), f("a")).evaluate();
+
+        final String expected =
+                "[F] OR  <---[ Root Cause ]\n" +
+                "    [F] a #1\n" +
+                "    [F] a #2";
+
+        assertEquals(expected, treeOf(formatter.format(evaluation)));
+    }
+
+    @Test
+    void givenDuplicateSkippedSibling_whenFormat_thenSkippedSiblingNumbered() {
+
+        final Evaluation evaluation = and("AND", f("a"), t("a")).evaluate();
+
+        final String expected =
+                "[F] AND\n" +
+                "    [F] a #1  <---[ Root Cause ]\n" +
+                "    [ ] a #2";
+
+        assertEquals(expected, treeOf(formatter.format(evaluation)));
+    }
+
+    @Test
+    void givenDuplicatesInSkippedCompound_whenFormat_thenChildrenNumbered() {
+
+        final Evaluation evaluation = and("AND", f("f1"), or("OR", t("b"), t("b"))).evaluate();
+
+        final String expected =
+                "[F] AND\n" +
+                "    [F] f1  <---[ Root Cause ]\n" +
+                "    [ ] OR\n" +
+                "        [ ] b #1\n" +
+                "        [ ] b #2";
+
+        assertEquals(expected, treeOf(formatter.format(evaluation)));
+    }
+
+    @Test
+    void givenUniqueSiblings_whenFormat_thenNamesUnchanged() {
+
+        final Evaluation evaluation = or("OR", f("a"), f("b")).evaluate();
+
+        final String expected =
+                "[F] OR  <---[ Root Cause ]\n" +
+                "    [F] a\n" +
+                "    [F] b";
+
+        assertEquals(expected, treeOf(formatter.format(evaluation)));
+    }
+
+    @Test
+    void givenSameNameAtDifferentLevels_whenFormat_thenNotNumbered() {
+
+        final Evaluation evaluation = or("OR", and("AND", f("a")), f("a")).evaluate();
+
+        final String expected =
+                "[F] OR  <---[ Root Cause ]\n" +
+                "    [F] AND\n" +
+                "        [F] a\n" +
+                "    [F] a";
+
+        assertEquals(expected, treeOf(formatter.format(evaluation)));
+    }
+
+    @Test
+    void givenDuplicateRootCause_whenFormat_thenExpressionAndTraceNumbered() {
+
+        final Evaluation evaluation = nor("NOR", f("a"), t("a")).evaluate();
+
+        final String expected = ROOT_CAUSES_HEADING +
+                "- Expression  : a #2\n" +
+                "  Expected    : not[true]\n" +
+                "  Actual      : true\n" +
+                "  Cause Trace : NOR -> a #2\n";
+
+        assertEquals(expected, rootCausesOf(formatter.format(evaluation)));
+    }
+
+    @Test
+    void givenSameExpressionInstanceTwice_whenFormat_thenBothNumbered() {
+
+        final Expression a = f("a");
+        final Evaluation evaluation = or("OR", a, a).evaluate();
+
+        final String expected =
+                "[F] OR  <---[ Root Cause ]\n" +
+                "    [F] a #1\n" +
+                "    [F] a #2";
+
+        assertEquals(expected, treeOf(formatter.format(evaluation)));
+    }
+
+    @Test
+    void givenSameExpressionInstanceTwiceAsRootCause_whenFormat_thenFirstInstanceNumbered() {
+
+        final Expression a = f("a");
+        final Evaluation evaluation = and("AND", a, a).evaluate();
+
+        final String expected = ROOT_CAUSES_HEADING +
+                "- Expression  : a #1\n" +
+                "  Expected    : true\n" +
+                "  Actual      : false\n" +
+                "  Cause Trace : AND -> a #1\n";
+
+        assertEquals(expected, rootCausesOf(formatter.format(evaluation)));
+    }
+
+    // The evaluation tree, without the elapsed times (which vary between runs)
+    private static String treeOf(final String formatted) {
+        return formatted.substring(formatted.indexOf(EVALUATION_HEADING) + EVALUATION_HEADING.length())
+                .replaceAll(" \\(\\d[^)]*\\)", "");
+    }
+
     // Only the root causes are compared, since the evaluation tree includes elapsed times that vary between runs
     private static String rootCausesOf(final String formatted) {
         return formatted.substring(0, formatted.indexOf("\n" + EVALUATION_HEADING));
