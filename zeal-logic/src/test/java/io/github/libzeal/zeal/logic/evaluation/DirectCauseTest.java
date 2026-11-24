@@ -1,6 +1,5 @@
 package io.github.libzeal.zeal.logic.evaluation;
 
-import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
@@ -31,8 +30,10 @@ class DirectCauseTest {
     @Test
     void givenEvaluations_whenOf_thenDelegatedToEvaluations() {
 
-        final DirectCause.Delegated cause = assertInstanceOf(DirectCause.Delegated.class,
-            DirectCause.of(List.of(FIRST, SECOND)));
+        final DirectCause.Delegated cause = assertInstanceOf(
+                DirectCause.Delegated.class,
+                DirectCause.of(List.of(FIRST, SECOND))
+        );
 
         assertEquals(List.of(FIRST, SECOND), cause.evaluations());
     }
@@ -40,16 +41,16 @@ class DirectCauseTest {
     @Test
     void givenNullEvaluation_whenOf_thenExceptionThrown() {
         assertThrows(
-            NullPointerException.class,
-            () -> DirectCause.of((Evaluation) null)
+                NullPointerException.class,
+                () -> DirectCause.of((Evaluation) null)
         );
     }
 
     @Test
     void givenNullEvaluations_whenConstructDelegated_thenExceptionThrown() {
         assertThrows(
-            NullPointerException.class,
-            () -> new DirectCause.Delegated(null)
+                NullPointerException.class,
+                () -> new DirectCause.Delegated(null)
         );
     }
 
@@ -59,8 +60,8 @@ class DirectCauseTest {
         final List<Evaluation> evaluations = Arrays.asList(FIRST, null);
 
         assertThrows(
-            NullPointerException.class,
-            () -> new DirectCause.Delegated(evaluations)
+                NullPointerException.class,
+                () -> new DirectCause.Delegated(evaluations)
         );
     }
 
@@ -70,8 +71,8 @@ class DirectCauseTest {
         final List<Evaluation> evaluations = List.of();
 
         assertThrows(
-            IllegalArgumentException.class,
-            () -> new DirectCause.Delegated(evaluations)
+                IllegalArgumentException.class,
+                () -> new DirectCause.Delegated(evaluations)
         );
     }
 

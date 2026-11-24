@@ -2,15 +2,13 @@ package io.github.libzeal.zeal.logic;
 
 import io.github.libzeal.zeal.logic.evaluation.DirectCause;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
-import io.github.libzeal.zeal.logic.rationale.Rationale;
+import io.github.libzeal.zeal.logic.evaluation.Rationale;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static io.github.libzeal.zeal.logic.test.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static io.github.libzeal.zeal.logic.test.Assertions.assertDepthFirstTraversalIsTerminal;
+import static io.github.libzeal.zeal.logic.test.Assertions.assertRationaleEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 class TautologyTest {
 
@@ -63,8 +61,8 @@ class TautologyTest {
     @Test
     void givenCompoundsOfTautologies_whenEquals_thenEqual() {
         assertEquals(
-            AndExpression.unnamed(new Tautology()),
-            AndExpression.unnamed(new Tautology())
+                AndExpression.unnamed(new Tautology()),
+                AndExpression.unnamed(new Tautology())
         );
     }
 }

@@ -1,6 +1,7 @@
 package io.github.libzeal.zeal.logic.unary;
 
 import io.github.libzeal.zeal.logic.Expression;
+import io.github.libzeal.zeal.logic.evaluation.Rationale;
 import io.github.libzeal.zeal.logic.format.ObjectFormatter;
 import io.github.libzeal.zeal.logic.unary.ObservableUnaryExpression.Field;
 import org.jspecify.annotations.Nullable;
@@ -28,6 +29,8 @@ public final class ConditionBuilder<S, O> {
     private Field<S, O> expected = context -> "<not set>";
     private Field<S, O> actual = context -> ObjectFormatter.stringify(context.observed());
     private @Nullable Field<S, O> hint = null;
+    private @Nullable Field<S, O> negatedExpected = null;
+    private @Nullable Field<S, O> negatedHint = null;
 
     private ConditionBuilder(final Function<? super S, ? extends O> observe, final Predicate<? super O> condition) {
         this.observe = requireNonNull(observe);
@@ -154,6 +157,46 @@ public final class ConditionBuilder<S, O> {
     }
 
     /**
+     * Sets the expected value used when the evaluation is negated (such as when
+     * it is wrapped by a NOT, NOR, or NAND expression) based on the observed
+     * value. If not set, the default of {@link Rationale#negatedExpected()} is
+     * used.
+     *
+     * @param negatedExpected
+     *         The desired negated expected value as a function of the observed
+     *         value.
+     *
+     * @return The builder (fluent interface).
+     *
+     * @throws NullPointerException
+     *         The supplied negated expected value is {@code null}.
+     */
+    public ConditionBuilder<S, O> negatedExpected(final Field<S, O> negatedExpected) {
+        this.negatedExpected = requireNonNull(negatedExpected);
+        return this;
+    }
+
+    /**
+     * Sets the expected value used when the evaluation is negated (such as when
+     * it is wrapped by a NOT, NOR, or NAND expression). If not set, the default
+     * of {@link Rationale#negatedExpected()} is used.
+     *
+     * @param negatedExpected
+     *         The desired negated expected value.
+     *
+     * @return The builder (fluent interface).
+     *
+     * @throws NullPointerException
+     *         The supplied negated expected value is {@code null}.
+     */
+    public ConditionBuilder<S, O> negatedExpected(final String negatedExpected) {
+
+        requireNonNull(negatedExpected);
+
+        return negatedExpected(context -> negatedExpected);
+    }
+
+    /**
      * Sets the actual value based on the observed value.
      *
      * @param actual
@@ -222,6 +265,44 @@ public final class ConditionBuilder<S, O> {
     }
 
     /**
+     * Sets the hint used when the evaluation is negated (such as when it is
+     * wrapped by a NOT, NOR, or NAND expression) based on the observed value.
+     * If not set, the default of {@link Rationale#negatedHint()} is used.
+     *
+     * @param negatedHint
+     *         The desired negated hint as a function of the observed value.
+     *
+     * @return The builder (fluent interface).
+     *
+     * @throws NullPointerException
+     *         The supplied negated hint is {@code null}.
+     */
+    public ConditionBuilder<S, O> negatedHint(final Field<S, O> negatedHint) {
+        this.negatedHint = requireNonNull(negatedHint);
+        return this;
+    }
+
+    /**
+     * Sets the hint used when the evaluation is negated (such as when it is
+     * wrapped by a NOT, NOR, or NAND expression). If not set, the default of
+     * {@link Rationale#negatedHint()} is used.
+     *
+     * @param negatedHint
+     *         The desired negated hint.
+     *
+     * @return The builder (fluent interface).
+     *
+     * @throws NullPointerException
+     *         The supplied negated hint is {@code null}.
+     */
+    public ConditionBuilder<S, O> negatedHint(final String negatedHint) {
+
+        requireNonNull(negatedHint);
+
+        return negatedHint(context -> negatedHint);
+    }
+
+    /**
      * Creates the condition based on the current state of the builder.
      *
      * @return The built condition.
@@ -233,10 +314,12 @@ public final class ConditionBuilder<S, O> {
         final Field<S, O> expected = this.expected;
         final Field<S, O> actual = this.actual;
         final Field<S, O> hint = this.hint;
+        final Field<S, O> negatedExpected = this.negatedExpected;
+        final Field<S, O> negatedHint = this.negatedHint;
 
         return subject -> new ObservableUnaryExpression<>(
                 name, subject, nullable, observe, condition, expected, actual,
-                hint
+                hint, negatedExpected, negatedHint
         );
     }
 

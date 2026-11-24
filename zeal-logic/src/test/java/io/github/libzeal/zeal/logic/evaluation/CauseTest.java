@@ -1,6 +1,5 @@
 package io.github.libzeal.zeal.logic.evaluation;
 
-import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
 import io.github.libzeal.zeal.logic.test.TestExpressions;
 import org.junit.jupiter.api.Test;
 
@@ -22,16 +21,16 @@ class CauseTest {
         final DirectCause direct = DirectCause.self();
 
         assertThrows(
-            NullPointerException.class,
-            () -> new Cause(null, direct)
+                NullPointerException.class,
+                () -> new Cause(null, direct)
         );
     }
 
     @Test
     void givenNullDirect_whenConstruct_thenExceptionThrown() {
         assertThrows(
-            NullPointerException.class,
-            () -> new Cause(FIRST, null)
+                NullPointerException.class,
+                () -> new Cause(FIRST, null)
         );
     }
 
@@ -53,11 +52,11 @@ class CauseTest {
 
         assertEquals(direct, cause.direct());
         assertEquals(
-            List.of(
-                new Cause.Trace(List.of(OWNER, FIRST)),
-                new Cause.Trace(List.of(OWNER, SECOND))
-            ),
-            cause.traces()
+                List.of(
+                        new Cause.Trace(List.of(OWNER, FIRST)),
+                        new Cause.Trace(List.of(OWNER, SECOND))
+                ),
+                cause.traces()
         );
         assertEquals(List.of(FIRST, SECOND), cause.rootCauses());
     }
@@ -78,16 +77,16 @@ class CauseTest {
         final List<Evaluation> evaluations = List.of();
 
         assertThrows(
-            IllegalArgumentException.class,
-            () -> new Cause.Trace(evaluations)
+                IllegalArgumentException.class,
+                () -> new Cause.Trace(evaluations)
         );
     }
 
     @Test
     void givenNullEvaluations_whenConstructTrace_thenExceptionThrown() {
         assertThrows(
-            NullPointerException.class,
-            () -> new Cause.Trace(null)
+                NullPointerException.class,
+                () -> new Cause.Trace(null)
         );
     }
 

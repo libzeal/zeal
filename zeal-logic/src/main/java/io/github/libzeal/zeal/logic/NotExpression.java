@@ -1,11 +1,7 @@
 package io.github.libzeal.zeal.logic;
 
-import io.github.libzeal.zeal.logic.evaluation.DirectCause;
-import io.github.libzeal.zeal.logic.evaluation.CompoundEvaluation;
-import io.github.libzeal.zeal.logic.evaluation.Evaluation;
+import io.github.libzeal.zeal.logic.evaluation.*;
 import io.github.libzeal.zeal.logic.evaluation.SkippableEvaluation.Evaluated;
-import io.github.libzeal.zeal.logic.rationale.Rationale;
-import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
 import io.github.libzeal.zeal.logic.util.StopWatch;
 
 import java.time.Duration;

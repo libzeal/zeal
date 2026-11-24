@@ -1,8 +1,9 @@
 package io.github.libzeal.zeal.logic;
 
+import io.github.libzeal.zeal.logic.CompoundEvaluator.Tally;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
+import io.github.libzeal.zeal.logic.evaluation.Rationale;
 import io.github.libzeal.zeal.logic.evaluation.SkippableEvaluation.Skipped;
-import io.github.libzeal.zeal.logic.rationale.Rationale;
 import io.github.libzeal.zeal.logic.test.TestExpressions;
 import org.junit.jupiter.api.Test;
 
@@ -84,7 +85,7 @@ class NandExpressionTest {
         assertFalse(evaluation.isTrue());
         assertEquals("NAND", evaluation.name());
         assertEquals(NandExpression.EXPECTED, rationale.expected());
-        assertEquals(formatActual(0, 0, 0), rationale.actual());
+        assertEquals(formatActual(new Tally(0, 0, 0)), rationale.actual());
         assertCauseIsSelf(evaluation);
         assertTraces(evaluation, "NAND");
     }
@@ -97,7 +98,7 @@ class NandExpressionTest {
 
         assertFalse(evaluation.isTrue());
         assertEquals(NandExpression.EXPECTED, rationale.expected());
-        assertEquals(formatActual(2, 0, 0), rationale.actual());
+        assertEquals(formatActual(new Tally(2, 0, 0)), rationale.actual());
         assertCauseIsSelf(evaluation);
         assertTraces(evaluation, "NAND");
         assertRootCauses(evaluation, evaluation);
@@ -111,7 +112,7 @@ class NandExpressionTest {
         final Skipped t3 = skipped(evaluation, 2);
 
         assertTrue(evaluation.isTrue());
-        assertEquals(formatActual(1, 1, 1), evaluation.rationale().actual());
+        assertEquals(formatActual(new Tally(1, 1, 1)), evaluation.rationale().actual());
         assertCause(evaluation, f2);
         assertTraces(evaluation, "NAND -> f2");
 

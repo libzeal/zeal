@@ -155,4 +155,89 @@ class ConditionBuilderTest {
 
         assertTrue(evaluation.isTrue());
     }
+
+    @Test
+    void givenNullNegatedExpectedField_whenNegatedExpected_thenExceptionThrown() {
+        assertThrows(
+                NullPointerException.class,
+                () -> ConditionBuilder.of(s -> true).negatedExpected((ObservableUnaryExpression.Field<Object, Object>) null)
+        );
+    }
+
+    @Test
+    void givenNullNegatedExpectedString_whenNegatedExpected_thenExceptionThrown() {
+        assertThrows(NullPointerException.class, () -> ConditionBuilder.of(s -> true).negatedExpected((String) null));
+    }
+
+    @Test
+    void givenNullNegatedHintField_whenNegatedHint_thenExceptionThrown() {
+        assertThrows(
+                NullPointerException.class,
+                () -> ConditionBuilder.of(s -> true).negatedHint((ObservableUnaryExpression.Field<Object, Object>) null)
+        );
+    }
+
+    @Test
+    void givenNullNegatedHintString_whenNegatedHint_thenExceptionThrown() {
+        assertThrows(NullPointerException.class, () -> ConditionBuilder.of(s -> true).negatedHint((String) null));
+    }
+
+    @Test
+    void givenNoNegatedFields_whenEvaluate_thenDefaultsUsed() {
+
+        final Evaluation evaluation = ConditionBuilder.<String>of(s -> true)
+                .expected("foo")
+                .hint("bar")
+                .build()
+                .bind("baz")
+                .evaluate();
+
+        assertEquals("not[foo]", evaluation.rationale().negatedExpected());
+        assertEquals("Negated: bar", evaluation.rationale().negatedHint().orElseThrow());
+    }
+
+    @Test
+    void givenNegatedStrings_whenEvaluate_thenNegatedFieldsUsed() {
+
+        final Evaluation evaluation = ConditionBuilder.<String>of(s -> true)
+                .expected("foo")
+                .hint("bar")
+                .negatedExpected("notFoo")
+                .negatedHint("notBar")
+                .build()
+                .bind("baz")
+                .evaluate();
+
+        assertEquals("notFoo", evaluation.rationale().negatedExpected());
+        assertEquals("notBar", evaluation.rationale().negatedHint().orElseThrow());
+    }
+
+    @Test
+    void givenNegatedFields_whenEvaluate_thenFieldsComputedFromContext() {
+
+        final Evaluation evaluation = ConditionBuilder.<String, Integer>observing(String::length)
+                .passesIf(length -> length == 3)
+                .negatedExpected(context -> "length != " + context.observed())
+                .negatedHint(context -> "Subject " + context.subject() + " passed: " + context.passed())
+                .build()
+                .bind("baz")
+                .evaluate();
+
+        assertEquals("length != 3", evaluation.rationale().negatedExpected());
+        assertEquals("Subject baz passed: true", evaluation.rationale().negatedHint().orElseThrow());
+    }
+
+    @Test
+    void givenNullSubjectAndNotNullable_whenEvaluate_thenNegatedExpectedComputed() {
+
+        final Evaluation evaluation = ConditionBuilder.<String>of(s -> true)
+                .expected("foo")
+                .negatedExpected("notFoo")
+                .build()
+                .bind(null)
+                .evaluate();
+
+        assertFalse(evaluation.isTrue());
+        assertEquals("notFoo", evaluation.rationale().negatedExpected());
+    }
 }

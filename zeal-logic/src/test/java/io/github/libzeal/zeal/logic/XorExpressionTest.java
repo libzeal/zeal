@@ -1,9 +1,10 @@
 package io.github.libzeal.zeal.logic;
 
+import io.github.libzeal.zeal.logic.CompoundEvaluator.Tally;
 import io.github.libzeal.zeal.logic.evaluation.CompoundEvaluation;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
+import io.github.libzeal.zeal.logic.evaluation.Rationale;
 import io.github.libzeal.zeal.logic.evaluation.SkippableEvaluation.Evaluated;
-import io.github.libzeal.zeal.logic.rationale.Rationale;
 import io.github.libzeal.zeal.logic.test.TestExpressions;
 import org.junit.jupiter.api.Test;
 
@@ -86,7 +87,7 @@ class XorExpressionTest {
         assertFalse(evaluation.isTrue());
         assertEquals("XOR", evaluation.name());
         assertEquals(XorExpression.EXPECTED, rationale.expected());
-        assertEquals(formatActual(0, 0, 0), rationale.actual());
+        assertEquals(formatActual(new Tally(0, 0, 0)), rationale.actual());
         assertCauseIsSelf(evaluation);
         assertTraces(evaluation, "XOR");
     }
@@ -111,7 +112,7 @@ class XorExpressionTest {
         final Evaluation evaluation = xor("XOR", t("t1"), t("t2"), t("t3")).evaluate();
 
         assertTrue(evaluation.isTrue());
-        assertEquals(formatActual(3, 0, 0), evaluation.rationale().actual());
+        assertEquals(formatActual(new Tally(3, 0, 0)), evaluation.rationale().actual());
     }
 
     @Test
@@ -146,7 +147,7 @@ class XorExpressionTest {
 
         assertTrue(evaluation.isTrue());
         assertEquals(XorExpression.EXPECTED, evaluation.rationale().expected());
-        assertEquals(formatActual(1, 1, 0), evaluation.rationale().actual());
+        assertEquals(formatActual(new Tally(1, 1, 0)), evaluation.rationale().actual());
         assertCauseIsSelf(evaluation);
         assertTraces(evaluation, "XOR");
         assertRootCauses(evaluation, evaluation);

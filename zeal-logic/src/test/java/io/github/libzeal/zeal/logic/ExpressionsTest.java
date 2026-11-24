@@ -2,7 +2,7 @@ package io.github.libzeal.zeal.logic;
 
 import io.github.libzeal.zeal.logic.evaluation.DirectCause;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
-import io.github.libzeal.zeal.logic.rationale.Rationale;
+import io.github.libzeal.zeal.logic.evaluation.Rationale;
 import io.github.libzeal.zeal.logic.test.TestExpressions;
 import org.junit.jupiter.api.Test;
 
@@ -56,8 +56,8 @@ class ExpressionsTest {
     @Test
     void givenNullSupplier_whenOf_thenExceptionThrown() {
         assertThrows(
-            NullPointerException.class,
-            () -> Expressions.of(null)
+                NullPointerException.class,
+                () -> Expressions.of(null)
         );
     }
 
@@ -74,8 +74,8 @@ class ExpressionsTest {
     @Test
     void givenNullWrappedExpression_whenNot_thenExceptionThrown() {
         assertThrows(
-            NullPointerException.class,
-            () -> Expressions.not(null)
+                NullPointerException.class,
+                () -> Expressions.not(null)
         );
     }
 
@@ -92,8 +92,8 @@ class ExpressionsTest {
     @Test
     void givenNullExpression_whenAnd_thenExceptionThrown() {
         assertThrows(
-            NullPointerException.class,
-            () -> Expressions.and((Expression[]) null)
+                NullPointerException.class,
+                () -> Expressions.and((Expression[]) null)
         );
     }
 
@@ -110,8 +110,8 @@ class ExpressionsTest {
     @Test
     void givenNullExpression_whenOr_thenExceptionThrown() {
         assertThrows(
-            NullPointerException.class,
-            () -> Expressions.or((Expression[]) null)
+                NullPointerException.class,
+                () -> Expressions.or((Expression[]) null)
         );
     }
 
@@ -128,8 +128,8 @@ class ExpressionsTest {
     @Test
     void givenNullExpression_whenNand_thenExceptionThrown() {
         assertThrows(
-            NullPointerException.class,
-            () -> Expressions.nand((Expression[]) null)
+                NullPointerException.class,
+                () -> Expressions.nand((Expression[]) null)
         );
     }
 
@@ -146,8 +146,8 @@ class ExpressionsTest {
     @Test
     void givenNullExpression_whenNor_thenExceptionThrown() {
         assertThrows(
-            NullPointerException.class,
-            () -> Expressions.nor((Expression[]) null)
+                NullPointerException.class,
+                () -> Expressions.nor((Expression[]) null)
         );
     }
 
@@ -164,8 +164,8 @@ class ExpressionsTest {
     @Test
     void givenNullExpression_whenXor_thenExceptionThrown() {
         assertThrows(
-            NullPointerException.class,
-            () -> Expressions.xor((Expression[]) null)
+                NullPointerException.class,
+                () -> Expressions.xor((Expression[]) null)
         );
     }
 

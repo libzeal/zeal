@@ -1,8 +1,9 @@
 package io.github.libzeal.zeal.logic;
 
+import io.github.libzeal.zeal.logic.CompoundEvaluator.Tally;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
+import io.github.libzeal.zeal.logic.evaluation.Rationale;
 import io.github.libzeal.zeal.logic.evaluation.SkippableEvaluation.Skipped;
-import io.github.libzeal.zeal.logic.rationale.Rationale;
 import io.github.libzeal.zeal.logic.test.TestExpressions;
 import org.junit.jupiter.api.Test;
 
@@ -84,7 +85,7 @@ class NorExpressionTest {
         assertTrue(evaluation.isTrue());
         assertEquals("NOR", evaluation.name());
         assertEquals(NorExpression.EXPECTED, rationale.expected());
-        assertEquals(formatActual(0, 0, 0), rationale.actual());
+        assertEquals(formatActual(new Tally(0, 0, 0)), rationale.actual());
         assertCauseIsSelf(evaluation);
         assertTraces(evaluation, "NOR");
     }
@@ -97,7 +98,7 @@ class NorExpressionTest {
 
         assertTrue(evaluation.isTrue());
         assertEquals(NorExpression.EXPECTED, rationale.expected());
-        assertEquals(formatActual(0, 2, 0), rationale.actual());
+        assertEquals(formatActual(new Tally(0, 2, 0)), rationale.actual());
         assertCauseIsSelf(evaluation);
         assertTraces(evaluation, "NOR");
         assertRootCauses(evaluation, evaluation);
@@ -111,7 +112,7 @@ class NorExpressionTest {
         final Skipped f3 = skipped(evaluation, 2);
 
         assertFalse(evaluation.isTrue());
-        assertEquals(formatActual(1, 1, 1), evaluation.rationale().actual());
+        assertEquals(formatActual(new Tally(1, 1, 1)), evaluation.rationale().actual());
         assertCause(evaluation, t2);
         assertTraces(evaluation, "NOR -> t2");
 

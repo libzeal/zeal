@@ -1,9 +1,10 @@
 package io.github.libzeal.zeal.logic;
 
+import io.github.libzeal.zeal.logic.CompoundEvaluator.Tally;
 import io.github.libzeal.zeal.logic.evaluation.CompoundEvaluation;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
+import io.github.libzeal.zeal.logic.evaluation.Rationale;
 import io.github.libzeal.zeal.logic.evaluation.SkippableEvaluation.Skipped;
-import io.github.libzeal.zeal.logic.rationale.Rationale;
 import io.github.libzeal.zeal.logic.test.TestExpressions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -112,7 +113,7 @@ class AndExpressionTest {
         assertTrue(evaluation.isTrue());
         assertEquals(name, evaluation.name());
         assertEquals(AndExpression.EXPECTED, rationale.expected());
-        assertEquals(formatActual(0, 0, 0), rationale.actual());
+        assertEquals(formatActual(new Tally(0, 0, 0)), rationale.actual());
         assertFalse(rationale.hint().isPresent());
     }
 
@@ -127,7 +128,7 @@ class AndExpressionTest {
         assertTrue(evaluation.isTrue());
         assertEquals(name, evaluation.name());
         assertEquals(AndExpression.EXPECTED, rationale.expected());
-        assertEquals(formatActual(1, 0, 0), rationale.actual());
+        assertEquals(formatActual(new Tally(1, 0, 0)), rationale.actual());
         assertFalse(rationale.hint().isPresent());
     }
 
@@ -142,7 +143,7 @@ class AndExpressionTest {
         assertFalse(evaluation.isTrue());
         assertEquals(name, evaluation.name());
         assertEquals(AndExpression.EXPECTED, rationale.expected());
-        assertEquals(formatActual(0, 1, 0), rationale.actual());
+        assertEquals(formatActual(new Tally(0, 1, 0)), rationale.actual());
         assertFalse(rationale.hint().isPresent());
     }
 
@@ -159,7 +160,7 @@ class AndExpressionTest {
         assertFalse(evaluation.isTrue());
         assertEquals(name, evaluation.name());
         assertEquals(AndExpression.EXPECTED, rationale.expected());
-        assertEquals(formatActual(0, 1, 1), rationale.actual());
+        assertEquals(formatActual(new Tally(0, 1, 1)), rationale.actual());
         assertFalse(rationale.hint().isPresent());
         assertIsSkipped(passingSubExpression);
     }
@@ -185,7 +186,7 @@ class AndExpressionTest {
         assertFalse(evaluation.isTrue());
         assertEquals(name, evaluation.name());
         assertEquals(AndExpression.EXPECTED, rationale.expected());
-        assertEquals(formatActual(1, 1, 0), rationale.actual());
+        assertEquals(formatActual(new Tally(1, 1, 0)), rationale.actual());
         assertFalse(rationale.hint().isPresent());
         assertIsNotSkipped(failingSubExpression);
     }

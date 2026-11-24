@@ -1,14 +1,9 @@
 package io.github.libzeal.zeal.logic;
 
-import io.github.libzeal.zeal.logic.evaluation.CompoundEvaluation;
-import io.github.libzeal.zeal.logic.evaluation.DirectCause;
+import io.github.libzeal.zeal.logic.evaluation.*;
 import io.github.libzeal.zeal.logic.evaluation.DirectCause.Delegated;
-import io.github.libzeal.zeal.logic.evaluation.Evaluation;
-import io.github.libzeal.zeal.logic.evaluation.SkippableEvaluation;
 import io.github.libzeal.zeal.logic.evaluation.SkippableEvaluation.Evaluated;
 import io.github.libzeal.zeal.logic.evaluation.SkippableEvaluation.Skipped;
-import io.github.libzeal.zeal.logic.rationale.Rationale;
-import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
 import io.github.libzeal.zeal.logic.util.StopWatch;
 import org.jspecify.annotations.Nullable;
 
@@ -34,8 +29,10 @@ final class CompoundEvaluator {
     }
 
     static CompoundEvaluation evaluate(
-            final CompoundExpression expression, final String expected,
-            final Predicate<Evaluation> stopWhen, final Predicate<Tally> isTrue
+            final CompoundExpression expression,
+            final String expected,
+            final Predicate<Evaluation> stopWhen,
+            final Predicate<Tally> isTrue
     ) {
 
         final StopWatch stopWatch = StopWatch.started();
@@ -74,17 +71,13 @@ final class CompoundEvaluator {
         );
     }
 
-    private static String formatActual(final Tally tally) {
-        return formatActual(tally.trueCount(), tally.falseCount(), tally.skippedCount());
-    }
-
-    static String formatActual(final int trueCount, final int falseCount, final int skippedCount) {
-
-        final String formattedTrue = TRUE_PREFIX + trueCount;
-        final String formattedFalse = FALSE_PREFIX + falseCount;
-        final String formattedSkipped = SKIPPED_PREFIX + skippedCount;
-
-        return String.join(SEPARATOR, formattedTrue, formattedFalse, formattedSkipped);
+    static String formatActual(final Tally tally) {
+        return String.join(
+                SEPARATOR,
+                TRUE_PREFIX + tally.trueCount(),
+                FALSE_PREFIX + tally.falseCount(),
+                SKIPPED_PREFIX + tally.skippedCount()
+        );
     }
 
     private record DirectCauseFinder(
@@ -92,6 +85,20 @@ final class CompoundEvaluator {
             List<Evaluation> evaluated
     ) {
 
+        /**
+         * Finds the direct cause of a compound evaluation. The direct cause is
+         * found using the following decision tree:
+         * <ol>
+         *     <li>If a single child ended the evaluation early, that child is
+         *     the direct cause.</li>
+         *     <li>If a compound evaluation contains only one child, that child
+         *     is implicitly the direct cause.</li>
+         *     <li>Otherwise, the compound evaluation itself is the direct
+         *     cause.</li>
+         * </ol>
+         *
+         * @return The direct cause of the compound evaluation.
+         */
         DirectCause find() {
 
             if (decidingChild != null) {

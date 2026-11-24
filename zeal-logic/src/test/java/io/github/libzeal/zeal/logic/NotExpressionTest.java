@@ -1,17 +1,18 @@
 package io.github.libzeal.zeal.logic;
 
-import io.github.libzeal.zeal.logic.evaluation.DirectCause;
 import io.github.libzeal.zeal.logic.evaluation.CompoundEvaluation;
+import io.github.libzeal.zeal.logic.evaluation.DirectCause;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
+import io.github.libzeal.zeal.logic.evaluation.Rationale;
 import io.github.libzeal.zeal.logic.evaluation.SkippableEvaluation.Evaluated;
-import io.github.libzeal.zeal.logic.rationale.Rationale;
 import io.github.libzeal.zeal.logic.test.TestExpressions;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static io.github.libzeal.zeal.logic.NotExpression.*;
-import static io.github.libzeal.zeal.logic.test.Assertions.*;
+import static io.github.libzeal.zeal.logic.NotExpression.ACTUAL_VALUE_WRAPPED_FALSE;
+import static io.github.libzeal.zeal.logic.NotExpression.ACTUAL_VALUE_WRAPPED_TRUE;
+import static io.github.libzeal.zeal.logic.test.Assertions.assertRationaleEquals;
 import static io.github.libzeal.zeal.logic.test.CauseAssertions.*;
 import static io.github.libzeal.zeal.logic.test.NamedExpressions.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -21,8 +22,8 @@ class NotExpressionTest {
     @Test
     void givenNullWrappedExpression_whenConstruct_thenExceptionThrown() {
         assertThrows(
-            NullPointerException.class,
-            () -> NotExpression.unnamed(null)
+                NullPointerException.class,
+                () -> NotExpression.unnamed(null)
         );
     }
 
