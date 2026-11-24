@@ -244,7 +244,10 @@ public abstract class BaseValue<T, E extends BaseValue<T, E>> implements ObjectV
         else {
             builder.name("isType[" + type + "]")
                     .expected(type.toString())
-                    .hint("Actual should be exactly of type " + type);
+                    .hint(context -> context.ifPassedOrElse(
+                            "Actual is exactly of type " + type,
+                            "Actual should be exactly of type " + type
+                    ));
         }
 
         return append(
@@ -265,7 +268,10 @@ public abstract class BaseValue<T, E extends BaseValue<T, E>> implements ObjectV
         else {
             builder.name("isNotType[" + type + "]")
                     .expected("not[" + type + "]")
-                    .hint("Actual should be any type other than " + type);
+                    .hint(context -> context.ifPassedOrElse(
+                            "Actual is a type other than " + type,
+                            "Actual should be any type other than " + type
+                    ));
         }
 
         return append(
@@ -286,7 +292,10 @@ public abstract class BaseValue<T, E extends BaseValue<T, E>> implements ObjectV
         else {
             builder.name("isInstanceOf[" + type + "]")
                     .expected("instanceof[" + type + "]")
-                    .hint("Actual should be exactly of type " + type + " or a subtype of type " + type);
+                    .hint(context -> context.ifPassedOrElse(
+                            "Actual is exactly of type " + type + " or a subtype of type " + type,
+                            "Actual should be exactly of type " + type + " or a subtype of type " + type
+                    ));
         }
 
         return append(
@@ -307,7 +316,10 @@ public abstract class BaseValue<T, E extends BaseValue<T, E>> implements ObjectV
         else {
             builder.name("isNotInstanceOf[" + type + "]")
                     .expected("not[instanceof[" + type + "]]")
-                    .hint("Actual should be any type other than " + type + " and not a subtype of type " + type);
+                    .hint(context -> context.ifPassedOrElse(
+                            "Actual is a type other than " + type + " and not a subtype of type " + type,
+                            "Actual should be any type other than " + type + " and not a subtype of type " + type
+                    ));
         }
 
         return append(
@@ -326,7 +338,10 @@ public abstract class BaseValue<T, E extends BaseValue<T, E>> implements ObjectV
                 nullableExpression(s -> s != other)
                         .name("isNotExactly[" + stringify(other) + "]")
                         .expected("not[" + stringify(other) + "]")
-                        .hint("Actual should not be identical to " + other + " (using !=)")
+                        .hint(context -> context.ifPassedOrElse(
+                                "Actual is not identical to " + other + " (using !=)",
+                                "Actual should not be identical to " + other + " (using !=)"
+                        ))
                         .build()
         );
     }
@@ -378,7 +393,10 @@ public abstract class BaseValue<T, E extends BaseValue<T, E>> implements ObjectV
                 nullableExpression(s -> !Objects.deepEquals(s, other))
                         .name("isNotEqualTo[" + stringify(other) + "]")
                         .expected("not[" + stringify(other) + "]")
-                        .hint("Actual should not be equal to " + stringify(other) + " (using !subject.equals(" + stringify(other) + "))")
+                        .hint(context -> context.ifPassedOrElse(
+                                "Actual is not equal to " + stringify(other) + " (using !subject.equals(" + stringify(other) + "))",
+                                "Actual should not be equal to " + stringify(other) + " (using !subject.equals(" + stringify(other) + "))"
+                        ))
                         .build()
         );
     }
@@ -436,7 +454,10 @@ public abstract class BaseValue<T, E extends BaseValue<T, E>> implements ObjectV
                         .name("toString().equals(" + stringify(expected) + ")")
                         .expected(stringify(expected))
                         .actual(context -> String.valueOf(context.subject()))
-                        .hint("Subject's toString() value should equal " + stringify(expected) + " (using subject.toString().equals(" + stringify(expected) + "))")
+                        .hint(context -> context.ifPassedOrElse(
+                                "Subject's toString() value equals " + stringify(expected) + " (using subject.toString().equals(" + stringify(expected) + "))",
+                                "Subject's toString() value should equal " + stringify(expected) + " (using subject.toString().equals(" + stringify(expected) + "))"
+                        ))
                         .build()
         );
     }
@@ -448,7 +469,10 @@ public abstract class BaseValue<T, E extends BaseValue<T, E>> implements ObjectV
                         .name("not[toString().equals(" + stringify(expected) + ")]")
                         .expected("not[" + stringify(expected) + "]")
                         .actual(context -> String.valueOf(context.subject()))
-                        .hint("Subject's toString() value should not equal " + stringify(expected) + " (using !subject.toString().equals(" + stringify(expected) + "))")
+                        .hint(context -> context.ifPassedOrElse(
+                                "Subject's toString() value does not equal " + stringify(expected) + " (using !subject.toString().equals(" + stringify(expected) + "))",
+                                "Subject's toString() value should not equal " + stringify(expected) + " (using !subject.toString().equals(" + stringify(expected) + "))"
+                        ))
                         .build()
         );
     }

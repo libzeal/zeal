@@ -140,6 +140,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
                 .name("isType[" + v.getClass() + "]")
                 .expected(v.getClass().toString())
                 .actual(v.getClass().toString())
+                .hint("Actual is exactly of type " + v.getClass())
                 .run();
     }
 
@@ -192,6 +193,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
                 .name("isNotType[" + otherClass() + "]")
                 .expected("not[" + otherClass() + "]")
                 .actual(v.getClass().toString())
+                .hint("Actual is a type other than " + otherClass())
                 .run();
     }
 
@@ -218,6 +220,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
                 .name("isInstanceOf[" + v.getClass() + "]")
                 .expected("instanceof[" + v.getClass() + "]")
                 .actual(v.getClass().toString())
+                .hint("Actual is exactly of type " + v.getClass() + " or a subtype of type " + v.getClass())
                 .run();
     }
 
@@ -296,6 +299,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
                 .name("isNotInstanceOf[" + otherClass() + "]")
                 .expected("not[instanceof[" + otherClass() + "]]")
                 .actual(v.getClass().toString())
+                .hint("Actual is a type other than " + otherClass() + " and not a subtype of type " + otherClass())
                 .run();
     }
 
@@ -377,6 +381,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
                 .name("isNotExactly[" + stringify(a) + "]")
                 .expected("not[" + stringify(a) + "]")
                 .actual(stringify(b))
+                .hint("Actual is not identical to " + a + " (using !=)")
                 .run();
     }
 
@@ -543,6 +548,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
                 .name("toString().equals(" + v + ")")
                 .expected(v.toString())
                 .actual(v.toString())
+                .hint("Subject's toString() value equals " + stringify(v.toString()) + " (using subject.toString().equals(" + stringify(v.toString()) + "))")
                 .run();
     }
 
@@ -584,6 +590,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
                 .name("not[toString().equals(" + a + ")]")
                 .expected("not[" + a + "]")
                 .actual(b.toString())
+                .hint("Subject's toString() value does not equal " + stringify(a.toString()) + " (using !subject.toString().equals(" + stringify(a.toString()) + "))")
                 .run();
     }
 
@@ -670,6 +677,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
                 .name("isNotEqualTo[" + stringify(a) + "]")
                 .expected("not[" + stringify(a) + "]")
                 .actual(stringify(b))
+                .hint("Actual is not equal to " + stringify(a) + " (using !subject.equals(" + stringify(a) + "))")
                 .run();
     }
 

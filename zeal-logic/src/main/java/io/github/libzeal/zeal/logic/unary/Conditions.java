@@ -84,7 +84,7 @@ public final class Conditions {
                 .nullable()
                 .name(exactlyName(desired))
                 .expected(stringify(desired))
-                .hint(exactlyHint(desired))
+                .hint(context -> context.ifPassedOrElse(exactlyPassedHint(desired), exactlyHint(desired)))
                 .build();
     }
 
@@ -94,6 +94,10 @@ public final class Conditions {
 
     static <T> String exactlyHint(final @Nullable T desired) {
         return "Actual should be identical to " + desired + " (using ==)";
+    }
+
+    static <T> String exactlyPassedHint(final @Nullable T desired) {
+        return "Actual is identical to " + desired + " (using ==)";
     }
 
     /**
@@ -113,7 +117,7 @@ public final class Conditions {
                 .nullable()
                 .name(equalToName(desired))
                 .expected(stringify(desired))
-                .hint(equalToHint(desired))
+                .hint(context -> context.ifPassedOrElse(equalToPassedHint(desired), equalToHint(desired)))
                 .build();
     }
 
@@ -123,6 +127,10 @@ public final class Conditions {
 
     static <T> String equalToHint(final @Nullable T desired) {
         return "Actual should be equal to " + stringify(desired) + " (using subject.equals(" + stringify(desired) + "))";
+    }
+
+    static <T> String equalToPassedHint(final @Nullable T desired) {
+        return "Actual is equal to " + stringify(desired) + " (using subject.equals(" + stringify(desired) + "))";
     }
 
     /**

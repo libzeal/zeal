@@ -123,7 +123,7 @@ class ConditionsTest {
         assertEquals(subject.toString(), evaluation.rationale().expected());
         assertEquals(subject.toString(), evaluation.rationale().actual());
         assertTrue(evaluation.rationale().hint().isPresent());
-        assertEquals(Conditions.exactlyHint(subject), evaluation.rationale().hint().get());
+        assertEquals(Conditions.exactlyPassedHint(subject), evaluation.rationale().hint().get());
     }
 
     @Test
@@ -203,7 +203,7 @@ class ConditionsTest {
         assertEquals(desired.toString(), evaluation.rationale().expected());
         assertEquals(subject.toString(), evaluation.rationale().actual());
         assertTrue(evaluation.rationale().hint().isPresent());
-        assertEquals(Conditions.equalToHint(desired), evaluation.rationale().hint().get());
+        assertEquals(Conditions.equalToPassedHint(desired), evaluation.rationale().hint().get());
     }
 
     @Test
