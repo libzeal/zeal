@@ -17,7 +17,9 @@ import java.util.*;
 public final class SimpleEvaluationFormatter implements EvaluationFormatter {
 
     private static final String INDENT = "    ";
-    private static final String FIELD_FORMAT = "%-13s : %s\n";
+    private static final String FIELD_FORMAT = "%-11s : %s\n";
+    private static final String SINGLE_ROOT_CAUSE_INDENT = "  ";
+    private static final int MAX_LISTED_ROOT_CAUSES = 9;
     private static final String ROOT_CAUSE_MARKER = "  <-- Root cause";
     private static final String DECIDED_BY_MARKER = "  <-- Decided by";
 
@@ -38,10 +40,8 @@ public final class SimpleEvaluationFormatter implements EvaluationFormatter {
             appendRootCauses(traces, names, builder);
         }
 
-        final String marker = evaluation.isTrue() ? DECIDED_BY_MARKER : ROOT_CAUSE_MARKER;
-
         builder.append("Evaluation:\n");
-        appendEvaluation(evaluation, rootCausesOf(traces), marker, names, 0, builder);
+        appendEvaluation(evaluation, markersOf(evaluation, traces), names, 0, builder);
 
         return builder.toString().trim();
     }
@@ -52,70 +52,128 @@ public final class SimpleEvaluationFormatter implements EvaluationFormatter {
             final StringBuilder builder
     ) {
 
-        builder.append("Root causes:\n");
-
-        for (final Cause.Trace trace : traces) {
-
-            final Evaluation rootCause = trace.rootCause();
-            final Rationale rationale = rootCause.rationale();
-            final List<String> traceNames = trace.evaluations()
-                    .stream()
-                    .map(names::get)
-                    .toList();
-
-            appendField("- Expression", traceNames.getLast(), builder);
-
-            if (trace.isNegated()) {
-                appendField("  Expected", rationale.negatedExpected(), builder);
-                appendField("  Actual", rationale.actual(), builder);
-                rationale.negatedHint().ifPresent(hint -> appendField("  Hint", hint, builder));
-            }
-            else {
-                appendField("  Expected", rationale.expected(), builder);
-                appendField("  Actual", rationale.actual(), builder);
-                rationale.hint().ifPresent(hint -> appendField("  Hint", hint, builder));
-            }
-
-            appendField("  Cause trace", String.join(" -> ", traceNames), builder);
+        if (traces.size() == 1) {
+            builder.append("Root Cause:\n");
+            appendRootCause(traces.getFirst(), names, SINGLE_ROOT_CAUSE_INDENT, SINGLE_ROOT_CAUSE_INDENT, builder);
+        }
+        else {
+            appendNumberedRootCauses(traces, names, builder);
         }
 
         builder.append("\n");
     }
 
-    private static void appendField(
-            final String key, final String value,
+    private static void appendNumberedRootCauses(
+            final List<Cause.Trace> traces,
+            final Map<Evaluation, String> names,
             final StringBuilder builder
     ) {
-        builder.append(String.format(FIELD_FORMAT, key, value));
-    }
 
-    private static Set<Evaluation> rootCausesOf(final List<Cause.Trace> traces) {
+        final int listed = Math.min(traces.size(), MAX_LISTED_ROOT_CAUSES);
+        final int numberWidth = String.valueOf(listed).length() + ". ".length();
+        final String indent = " ".repeat(numberWidth);
 
-        // An identity set is used so that the Set is constructed of unique
-        // Evaluations by identity rather than according to equals(), which
-        // might match for Evaluations with the same field values, like two
-        // Tautologies. This is critical when marking the exact instance that is
-        // a root cause during formatting, since the comparison will be done by
-        // identity, not by field comparisons.
-        //
-        // This set also reduces lookup to O(1) rather than O(n) for a List. A
-        // HashSet is not used because it relies on equals() and hashCode() to
-        // compare, requiring a CompoundEvaluation to hash its entire tree.
-        final Set<Evaluation> rootCauses = identitySet();
+        builder.append("Root Causes (")
+                .append(traces.size())
+                .append("):\n");
 
-        for (final Cause.Trace trace : traces) {
-            rootCauses.add(trace.rootCause());
+        for (int i = 0; i < listed; i++) {
+
+            final String format = "%-" + numberWidth + "s";
+            final String number = String.format(format, (i + 1) + ".");
+
+            appendRootCause(traces.get(i), names, number, indent, builder);
         }
 
-        return rootCauses;
+        if (traces.size() > listed) {
+            builder.append("...")
+                    .append(traces.size() - listed)
+                    .append(" more...\n");
+        }
     }
 
-    private static Set<Evaluation> identitySet() {
-        return Collections.newSetFromMap(new IdentityHashMap<>());
+    private static void appendRootCause(
+            final Cause.Trace trace,
+            final Map<Evaluation, String> names,
+            final String firstLinePrefix,
+            final String prefix,
+            final StringBuilder builder
+    ) {
+
+        final Rationale rationale = trace.rootCause().rationale();
+        final List<String> traceNames = trace.evaluations()
+                .stream()
+                .map(names::get)
+                .toList();
+
+        appendField(firstLinePrefix, "Expression", traceNames.getLast(), builder);
+
+        if (trace.isNegated()) {
+            appendField(prefix, "Expected", rationale.negatedExpected(), builder);
+            appendField(prefix, "Actual", rationale.actual(), builder);
+            rationale.negatedHint().ifPresent(hint -> appendField(prefix, "Hint", hint, builder));
+        }
+        else {
+            appendField(prefix, "Expected", rationale.expected(), builder);
+            appendField(prefix, "Actual", rationale.actual(), builder);
+            rationale.hint().ifPresent(hint -> appendField(prefix, "Hint", hint, builder));
+        }
+
+        appendField(prefix, "Cause trace", String.join(" -> ", traceNames), builder);
+    }
+
+    private static void appendField(
+            final String prefix, final String key, final String value,
+            final StringBuilder builder
+    ) {
+        builder.append(prefix)
+                .append(String.format(FIELD_FORMAT, key, value));
+    }
+
+    private static Map<Evaluation, String> markersOf(final Evaluation root, final List<Cause.Trace> traces) {
+
+        // An identity map is used so that the root causes are keyed by
+        // identity rather than according to equals(), which might match for
+        // Evaluations with the same field values, like two Tautologies. This
+        // is critical when marking the exact instance that is a root cause
+        // during formatting, since the comparison will be done by identity,
+        // not by field comparisons.
+        //
+        // This map also reduces lookup to O(1) rather than O(n) for a List. A
+        // HashMap is not used because it relies on equals() and hashCode() to
+        // compare, requiring a CompoundEvaluation to hash its entire tree.
+        final Map<Evaluation, String> markers = new IdentityHashMap<>();
+
+        for (int i = 0; i < traces.size(); i++) {
+
+            final Evaluation rootCause = traces.get(i).rootCause();
+
+            // The root is never marked, since its result is already shown on
+            // its own line and, when it fails, it is explained under the root
+            // cause heading
+            if (rootCause != root) {
+                markers.putIfAbsent(rootCause, markerOf(root, traces.size(), i + 1));
+            }
+        }
+
+        return markers;
+    }
+
+    private static String markerOf(final Evaluation root, final int rootCauseCount, final int number) {
+
+        if (root.isTrue()) {
+            return DECIDED_BY_MARKER;
+        }
+        else if (rootCauseCount == 1) {
+            return ROOT_CAUSE_MARKER;
+        }
+        else {
+            return ROOT_CAUSE_MARKER + " " + number;
+        }
     }
 
     private static void appendEvaluation(
-            final Evaluation evaluation, final Set<Evaluation> rootCauses, final String marker,
+            final Evaluation evaluation, final Map<Evaluation, String> markers,
             final Map<Evaluation, String> names, final int depth, final StringBuilder builder
     ) {
 
@@ -126,7 +184,9 @@ public final class SimpleEvaluationFormatter implements EvaluationFormatter {
                 .append(DurationFormatter.format(evaluation.duration()))
                 .append(")");
 
-        if (rootCauses.contains(evaluation)) {
+        final String marker = markers.get(evaluation);
+
+        if (marker != null) {
             builder.append(marker);
         }
 
@@ -140,7 +200,7 @@ public final class SimpleEvaluationFormatter implements EvaluationFormatter {
             for (int i = 0; i < children.size(); i++) {
                 switch (children.get(i)) {
                     case Evaluated(Evaluation evaluated) ->
-                            appendEvaluation(evaluated, rootCauses, marker, names, depth + 1, builder);
+                            appendEvaluation(evaluated, markers, names, depth + 1, builder);
                     case Skipped skipped ->
                             appendSkipped(skipped.expression(), childNames.get(i), depth + 1, builder);
                 }

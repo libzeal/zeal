@@ -13,15 +13,15 @@ import org.junit.jupiter.api.Test;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import static io.github.libzeal.zeal.logic.test.NamedExpressions.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 class SimpleEvaluationFormatterTest {
 
     private static final String EVALUATION_HEADING = "Evaluation:\n";
-    private static final String ROOT_CAUSES_HEADING = "Root causes:\n";
+    private static final String ROOT_CAUSE_HEADING = "Root Cause:\n";
     private SimpleEvaluationFormatter formatter;
 
     @BeforeEach
@@ -46,7 +46,7 @@ class SimpleEvaluationFormatterTest {
         final Evaluation evaluation = new TerminalEvaluation(true, name, rationale, elapsedTime);
 
         final String expected = EVALUATION_HEADING +
-                "[T] " + name + " (" + elapsedTime.toMillis() + "ms)  <-- Decided by";
+                "[T] " + name + " (" + elapsedTime.toMillis() + "ms)";
 
         final String result = formatter.format(evaluation);
 
@@ -62,15 +62,15 @@ class SimpleEvaluationFormatterTest {
         final Evaluation evaluation = new TerminalEvaluation(false, name, rationale, elapsedTime);
 
         final String expected =
-                ROOT_CAUSES_HEADING +
-                        "- Expression  : " + name + "\n" +
+                ROOT_CAUSE_HEADING +
+                        "  Expression  : " + name + "\n" +
                         "  Expected    : " + rationale.expected() + "\n" +
                         "  Actual      : " + rationale.actual() + "\n" +
                         "  Hint        : " + rationale.hint().orElse("") + "\n" +
                         "  Cause trace : " + name + "\n" +
                         "\n" +
                         EVALUATION_HEADING +
-                        "[F] " + name + " (" + elapsedTime.toMillis() + "ms)  <-- Root cause";
+                        "[F] " + name + " (" + elapsedTime.toMillis() + "ms)";
 
         final String result = formatter.format(evaluation);
 
@@ -91,8 +91,8 @@ class SimpleEvaluationFormatterTest {
         final Evaluation parentEvaluation = parent(parentElapsedTime, DirectCause.of(childEvaluation), childEvaluation);
 
         final String expected =
-                ROOT_CAUSES_HEADING +
-                        "- Expression  : " + childEvaluation.name() + "\n" +
+                ROOT_CAUSE_HEADING +
+                        "  Expression  : " + childEvaluation.name() + "\n" +
                         "  Expected    : " + childRationale.expected() + "\n" +
                         "  Actual      : " + childRationale.actual() + "\n" +
                         "  Hint        : " + childRationale.hint().orElse("") + "\n" +
@@ -121,8 +121,8 @@ class SimpleEvaluationFormatterTest {
         final Evaluation parentEvaluation = parent(parentElapsedTime, DirectCause.of(childEvaluation), childEvaluation);
 
         final String expected =
-                ROOT_CAUSES_HEADING +
-                        "- Expression  : " + childEvaluation.name() + "\n" +
+                ROOT_CAUSE_HEADING +
+                        "  Expression  : " + childEvaluation.name() + "\n" +
                         "  Expected    : " + childRationale.negatedExpected() + "\n" +
                         "  Actual      : " + childRationale.actual() + "\n" +
                         "  Hint        : " + childRationale.negatedHint().orElse("") + "\n" +
@@ -153,25 +153,60 @@ class SimpleEvaluationFormatterTest {
         );
 
         final String expected =
-                ROOT_CAUSES_HEADING +
-                        "- Expression  : first\n" +
-                        "  Expected    : firstExpected\n" +
-                        "  Actual      : firstActual\n" +
-                        "  Cause trace : parent -> first\n" +
-                        "- Expression  : second\n" +
-                        "  Expected    : secondExpected\n" +
-                        "  Actual      : secondActual\n" +
-                        "  Hint        : secondHint\n" +
-                        "  Cause trace : parent -> second\n" +
+                "Root Causes (2):\n" +
+                        "1. Expression  : first\n" +
+                        "   Expected    : firstExpected\n" +
+                        "   Actual      : firstActual\n" +
+                        "   Cause trace : parent -> first\n" +
+                        "2. Expression  : second\n" +
+                        "   Expected    : secondExpected\n" +
+                        "   Actual      : secondActual\n" +
+                        "   Hint        : secondHint\n" +
+                        "   Cause trace : parent -> second\n" +
                         "\n" +
                         EVALUATION_HEADING +
                         "[F] parent (20ms)\n" +
-                        "    [F] first (10ms)  <-- Root cause\n" +
-                        "    [F] second (10ms)  <-- Root cause";
+                        "    [F] first (10ms)  <-- Root cause 1\n" +
+                        "    [F] second (10ms)  <-- Root cause 2";
 
         final String result = formatter.format(parentEvaluation);
 
         assertEquals(expected, result);
+    }
+
+    @Test
+    void givenNineRootCauses_whenFormat_thenAllListed() {
+
+        final String result = rootCausesOf(formatter.format(failingParentWithRootCauses(9)));
+
+        assertTrue(result.startsWith("Root Causes (9):\n"));
+        assertTrue(result.endsWith(
+                "9. Expression  : e9\n" +
+                        "   Expected    : expected\n" +
+                        "   Actual      : actual\n" +
+                        "   Cause trace : parent -> e9\n"
+        ));
+        assertFalse(result.contains("more..."));
+    }
+
+    @Test
+    void givenTenRootCauses_whenFormat_thenTenthSummarized() {
+
+        final String result = rootCausesOf(formatter.format(failingParentWithRootCauses(10)));
+
+        assertTrue(result.startsWith("Root Causes (10):\n"));
+        assertFalse(result.contains("10."));
+        assertTrue(result.endsWith("   Cause trace : parent -> e9\n...1 more...\n"));
+    }
+
+    @Test
+    void givenManyRootCauses_whenFormat_thenRemainderSummarized() {
+
+        final String result = rootCausesOf(formatter.format(failingParentWithRootCauses(102)));
+
+        assertTrue(result.startsWith("Root Causes (102):\n"));
+        assertFalse(result.contains("e10"));
+        assertTrue(result.endsWith("   Cause trace : parent -> e9\n...93 more...\n"));
     }
 
     @Test
@@ -189,8 +224,8 @@ class SimpleEvaluationFormatterTest {
         );
 
         final String expected =
-                ROOT_CAUSES_HEADING +
-                        "- Expression  : decider\n" +
+                ROOT_CAUSE_HEADING +
+                        "  Expression  : decider\n" +
                         "  Expected    : someExpected\n" +
                         "  Actual      : someActual\n" +
                         "  Cause trace : parent -> decider\n" +
@@ -217,8 +252,8 @@ class SimpleEvaluationFormatterTest {
         );
 
         final String expected =
-                ROOT_CAUSES_HEADING +
-                        "- Expression  : decider\n" +
+                ROOT_CAUSE_HEADING +
+                        "  Expression  : decider\n" +
                         "  Expected    : someExpected\n" +
                         "  Actual      : someActual\n" +
                         "  Cause trace : parent -> decider\n" +
@@ -241,8 +276,8 @@ class SimpleEvaluationFormatterTest {
 
         final Evaluation evaluation = not("NOT1", not("NOT2", f("f1"))).evaluate();
 
-        final String expected = ROOT_CAUSES_HEADING +
-                "- Expression  : f1\n" +
+        final String expected = ROOT_CAUSE_HEADING +
+                "  Expression  : f1\n" +
                 "  Expected    : true\n" +
                 "  Actual      : false\n" +
                 "  Cause trace : NOT1 -> NOT2 -> f1\n";
@@ -255,8 +290,8 @@ class SimpleEvaluationFormatterTest {
 
         final Evaluation evaluation = not("NOT1", not("NOT2", not("NOT3", t("t1")))).evaluate();
 
-        final String expected = ROOT_CAUSES_HEADING +
-                "- Expression  : t1\n" +
+        final String expected = ROOT_CAUSE_HEADING +
+                "  Expression  : t1\n" +
                 "  Expected    : not[true]\n" +
                 "  Actual      : true\n" +
                 "  Cause trace : NOT1 -> NOT2 -> NOT3 -> t1\n";
@@ -269,8 +304,8 @@ class SimpleEvaluationFormatterTest {
 
         final Evaluation evaluation = not("NOT", nor("NOR", f("f1"), f("f2"))).evaluate();
 
-        final String expected = ROOT_CAUSES_HEADING +
-                "- Expression  : NOR\n" +
+        final String expected = ROOT_CAUSE_HEADING +
+                "  Expression  : NOR\n" +
                 "  Expected    : not[true = 0]\n" +
                 "  Actual      : True: 0, False: 2, Skipped: 0\n" +
                 "  Cause trace : NOT -> NOR\n";
@@ -292,8 +327,8 @@ class SimpleEvaluationFormatterTest {
 
         final Evaluation evaluation = not("NOT", condition.bind("alice, eve")).evaluate();
 
-        final String expected = ROOT_CAUSES_HEADING +
-                "- Expression  : includes[eve]\n" +
+        final String expected = ROOT_CAUSE_HEADING +
+                "  Expression  : includes[eve]\n" +
                 "  Expected    : excludes[eve]\n" +
                 "  Actual      : includes[eve]\n" +
                 "  Hint        : 'eve' should not be included\n" +
@@ -308,7 +343,7 @@ class SimpleEvaluationFormatterTest {
         final Evaluation evaluation = or("OR", f("a"), f("a")).evaluate();
 
         final String expected =
-                "[F] OR  <-- Root cause\n" +
+                "[F] OR\n" +
                 "    [F] a #1\n" +
                 "    [F] a #2";
 
@@ -349,11 +384,33 @@ class SimpleEvaluationFormatterTest {
         final Evaluation evaluation = or("OR", f("a"), f("b")).evaluate();
 
         final String expected =
-                "[F] OR  <-- Root cause\n" +
+                "[F] OR\n" +
                 "    [F] a\n" +
                 "    [F] b";
 
         assertEquals(expected, treeOf(formatter.format(evaluation)));
+    }
+
+    @Test
+    void givenPassingCompoundDecidedByChild_whenFormat_thenChildMarked() {
+
+        final Evaluation evaluation = or("OR", f("a"), t("b")).evaluate();
+
+        final String expected =
+                "[T] OR\n" +
+                "    [F] a\n" +
+                "    [T] b  <-- Decided by";
+
+        assertEquals(expected, treeOf(formatter.format(evaluation)));
+    }
+
+    @Test
+    void givenMoreRootCausesThanListed_whenFormat_thenUnlistedRootCausesNumberedInTree() {
+
+        final String tree = treeOf(formatter.format(failingParentWithRootCauses(10)));
+
+        assertTrue(tree.startsWith("[F] parent\n    [F] e1  <-- Root cause 1\n"));
+        assertTrue(tree.endsWith("    [F] e10  <-- Root cause 10"));
     }
 
     @Test
@@ -362,7 +419,7 @@ class SimpleEvaluationFormatterTest {
         final Evaluation evaluation = or("OR", and("AND", f("a")), f("a")).evaluate();
 
         final String expected =
-                "[F] OR  <-- Root cause\n" +
+                "[F] OR\n" +
                 "    [F] AND\n" +
                 "        [F] a\n" +
                 "    [F] a";
@@ -375,8 +432,8 @@ class SimpleEvaluationFormatterTest {
 
         final Evaluation evaluation = nor("NOR", f("a"), t("a")).evaluate();
 
-        final String expected = ROOT_CAUSES_HEADING +
-                "- Expression  : a #2\n" +
+        final String expected = ROOT_CAUSE_HEADING +
+                "  Expression  : a #2\n" +
                 "  Expected    : not[true]\n" +
                 "  Actual      : true\n" +
                 "  Cause trace : NOR -> a #2\n";
@@ -391,7 +448,7 @@ class SimpleEvaluationFormatterTest {
         final Evaluation evaluation = or("OR", a, a).evaluate();
 
         final String expected =
-                "[F] OR  <-- Root cause\n" +
+                "[F] OR\n" +
                 "    [F] a #1\n" +
                 "    [F] a #2";
 
@@ -404,8 +461,8 @@ class SimpleEvaluationFormatterTest {
         final Expression a = f("a");
         final Evaluation evaluation = and("AND", a, a).evaluate();
 
-        final String expected = ROOT_CAUSES_HEADING +
-                "- Expression  : a #1\n" +
+        final String expected = ROOT_CAUSE_HEADING +
+                "  Expression  : a #1\n" +
                 "  Expected    : true\n" +
                 "  Actual      : false\n" +
                 "  Cause trace : AND -> a #1\n";
@@ -422,6 +479,16 @@ class SimpleEvaluationFormatterTest {
     // Only the root causes are compared, since the evaluation tree includes elapsed times that vary between runs
     private static String rootCausesOf(final String formatted) {
         return formatted.substring(0, formatted.indexOf("\n" + EVALUATION_HEADING));
+    }
+
+    private static Evaluation failingParentWithRootCauses(final int count) {
+
+        final Rationale rationale = new SimpleRationale("expected", "actual");
+        final List<Evaluation> children = IntStream.rangeClosed(1, count)
+                .mapToObj(i -> (Evaluation) new TerminalEvaluation(false, "e" + i, rationale, Duration.ZERO))
+                .toList();
+
+        return parent(Duration.ZERO, DirectCause.of(children), children.toArray(Evaluation[]::new));
     }
 
     private static Evaluation parent(final Duration elapsedTime, final DirectCause cause, final Evaluation... children) {
