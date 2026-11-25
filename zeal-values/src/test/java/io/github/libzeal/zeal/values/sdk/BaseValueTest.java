@@ -53,7 +53,7 @@ public abstract class BaseValueTest<T, E extends ObjectValue<T, E>> {
 
         assertEquals(value, expression.subject());
         assertion.assertStateIs(true);
-        assertion.assertCompoundExpectedValue("false = 0");
+        assertion.assertCompoundExpectedValue("all pass");
         assertion.assertCompoundActualValueIs(0, 0, 0);
     }
 

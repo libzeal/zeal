@@ -26,7 +26,8 @@ public record AndExpression(
 ) implements CompoundExpression {
 
     static final String DEFAULT_NAME = "AND";
-    static final String EXPECTED = "false = 0";
+    static final String EXPECTED = "all pass";
+    static final String NEGATED_EXPECTED = "at least one fails";
 
     /**
      * Creates a new AND expression.
@@ -120,6 +121,7 @@ public record AndExpression(
     public CompoundEvaluation evaluate() {
         return CompoundEvaluator.evaluate(
                 this, EXPECTED,
+                NEGATED_EXPECTED,
                 Evaluation::isFalse,
                 Tally::hasNoFalse
         );

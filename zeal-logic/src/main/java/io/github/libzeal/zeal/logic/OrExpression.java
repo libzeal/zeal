@@ -26,7 +26,8 @@ public record OrExpression(
 ) implements CompoundExpression {
 
     static final String DEFAULT_NAME = "OR";
-    static final String EXPECTED = "true >= 1";
+    static final String EXPECTED = "at least one passes";
+    static final String NEGATED_EXPECTED = "none pass";
 
     /**
      * Creates a new OR expression.
@@ -121,6 +122,7 @@ public record OrExpression(
         return CompoundEvaluator.evaluate(
                 this,
                 EXPECTED,
+                NEGATED_EXPECTED,
                 Evaluation::isTrue,
                 Tally::hasAtLeastOneTrue
         );

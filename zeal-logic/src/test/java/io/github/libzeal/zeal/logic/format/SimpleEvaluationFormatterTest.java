@@ -306,8 +306,8 @@ class SimpleEvaluationFormatterTest {
 
         final String expected = ROOT_CAUSE_HEADING +
                 "  Expression  : NOR\n" +
-                "  Expected    : not[true = 0]\n" +
-                "  Actual      : True: 0, False: 2, Skipped: 0\n" +
+                "  Expected    : at least one passes\n" +
+                "  Actual      : 0 passed, 2 failed\n" +
                 "  Cause trace : NOT -> NOR\n";
 
         assertEquals(expected, rootCausesOf(formatter.format(evaluation)));

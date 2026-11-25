@@ -87,6 +87,7 @@ class XorExpressionTest {
         assertFalse(evaluation.isTrue());
         assertEquals("XOR", evaluation.name());
         assertEquals(XorExpression.EXPECTED, rationale.expected());
+        assertEquals(XorExpression.NEGATED_EXPECTED, rationale.negatedExpected());
         assertEquals(formatActual(new Tally(0, 0, 0)), rationale.actual());
         assertCauseIsSelf(evaluation);
         assertTraces(evaluation, "XOR");

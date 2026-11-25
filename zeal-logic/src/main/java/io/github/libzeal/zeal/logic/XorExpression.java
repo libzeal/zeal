@@ -32,7 +32,8 @@ public record XorExpression(
 ) implements CompoundExpression {
 
     static final String DEFAULT_NAME = "XOR";
-    static final String EXPECTED = "true is odd";
+    static final String EXPECTED = "an odd number pass";
+    static final String NEGATED_EXPECTED = "an even number pass";
 
     /**
      * Creates a new XOR expression.
@@ -124,6 +125,7 @@ public record XorExpression(
     public CompoundEvaluation evaluate() {
         return CompoundEvaluator.evaluate(
                 this, EXPECTED,
+                NEGATED_EXPECTED,
                 child -> false,
                 tally -> tally.trueCount() % 2 == 1
         );

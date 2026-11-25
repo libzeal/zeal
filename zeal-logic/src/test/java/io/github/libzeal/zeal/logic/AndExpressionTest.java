@@ -113,6 +113,7 @@ class AndExpressionTest {
         assertTrue(evaluation.isTrue());
         assertEquals(name, evaluation.name());
         assertEquals(AndExpression.EXPECTED, rationale.expected());
+        assertEquals(AndExpression.NEGATED_EXPECTED, rationale.negatedExpected());
         assertEquals(formatActual(new Tally(0, 0, 0)), rationale.actual());
         assertFalse(rationale.hint().isPresent());
     }
@@ -128,6 +129,7 @@ class AndExpressionTest {
         assertTrue(evaluation.isTrue());
         assertEquals(name, evaluation.name());
         assertEquals(AndExpression.EXPECTED, rationale.expected());
+        assertEquals(AndExpression.NEGATED_EXPECTED, rationale.negatedExpected());
         assertEquals(formatActual(new Tally(1, 0, 0)), rationale.actual());
         assertFalse(rationale.hint().isPresent());
     }
@@ -143,6 +145,7 @@ class AndExpressionTest {
         assertFalse(evaluation.isTrue());
         assertEquals(name, evaluation.name());
         assertEquals(AndExpression.EXPECTED, rationale.expected());
+        assertEquals(AndExpression.NEGATED_EXPECTED, rationale.negatedExpected());
         assertEquals(formatActual(new Tally(0, 1, 0)), rationale.actual());
         assertFalse(rationale.hint().isPresent());
     }
@@ -160,6 +163,7 @@ class AndExpressionTest {
         assertFalse(evaluation.isTrue());
         assertEquals(name, evaluation.name());
         assertEquals(AndExpression.EXPECTED, rationale.expected());
+        assertEquals(AndExpression.NEGATED_EXPECTED, rationale.negatedExpected());
         assertEquals(formatActual(new Tally(0, 1, 1)), rationale.actual());
         assertFalse(rationale.hint().isPresent());
         assertIsSkipped(passingSubExpression);
@@ -186,6 +190,7 @@ class AndExpressionTest {
         assertFalse(evaluation.isTrue());
         assertEquals(name, evaluation.name());
         assertEquals(AndExpression.EXPECTED, rationale.expected());
+        assertEquals(AndExpression.NEGATED_EXPECTED, rationale.negatedExpected());
         assertEquals(formatActual(new Tally(1, 1, 0)), rationale.actual());
         assertFalse(rationale.hint().isPresent());
         assertIsNotSkipped(failingSubExpression);

@@ -85,6 +85,7 @@ class NorExpressionTest {
         assertTrue(evaluation.isTrue());
         assertEquals("NOR", evaluation.name());
         assertEquals(NorExpression.EXPECTED, rationale.expected());
+        assertEquals(NorExpression.NEGATED_EXPECTED, rationale.negatedExpected());
         assertEquals(formatActual(new Tally(0, 0, 0)), rationale.actual());
         assertCauseIsSelf(evaluation);
         assertTraces(evaluation, "NOR");
@@ -98,6 +99,7 @@ class NorExpressionTest {
 
         assertTrue(evaluation.isTrue());
         assertEquals(NorExpression.EXPECTED, rationale.expected());
+        assertEquals(NorExpression.NEGATED_EXPECTED, rationale.negatedExpected());
         assertEquals(formatActual(new Tally(0, 2, 0)), rationale.actual());
         assertCauseIsSelf(evaluation);
         assertTraces(evaluation, "NOR");

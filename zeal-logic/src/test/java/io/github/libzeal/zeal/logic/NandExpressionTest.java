@@ -85,6 +85,7 @@ class NandExpressionTest {
         assertFalse(evaluation.isTrue());
         assertEquals("NAND", evaluation.name());
         assertEquals(NandExpression.EXPECTED, rationale.expected());
+        assertEquals(NandExpression.NEGATED_EXPECTED, rationale.negatedExpected());
         assertEquals(formatActual(new Tally(0, 0, 0)), rationale.actual());
         assertCauseIsSelf(evaluation);
         assertTraces(evaluation, "NAND");
@@ -98,6 +99,7 @@ class NandExpressionTest {
 
         assertFalse(evaluation.isTrue());
         assertEquals(NandExpression.EXPECTED, rationale.expected());
+        assertEquals(NandExpression.NEGATED_EXPECTED, rationale.negatedExpected());
         assertEquals(formatActual(new Tally(2, 0, 0)), rationale.actual());
         assertCauseIsSelf(evaluation);
         assertTraces(evaluation, "NAND");

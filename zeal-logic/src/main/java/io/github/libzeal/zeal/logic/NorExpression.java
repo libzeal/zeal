@@ -26,7 +26,8 @@ public record NorExpression(
 ) implements CompoundExpression {
 
     static final String DEFAULT_NAME = "NOR";
-    static final String EXPECTED = "true = 0";
+    static final String EXPECTED = "none pass";
+    static final String NEGATED_EXPECTED = "at least one passes";
 
     /**
      * Creates a new NOR expression.
@@ -121,6 +122,7 @@ public record NorExpression(
         return CompoundEvaluator.evaluate(
                 this,
                 EXPECTED,
+                NEGATED_EXPECTED,
                 Evaluation::isTrue,
                 Tally::hasNoTrue
         );

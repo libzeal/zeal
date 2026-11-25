@@ -20,9 +20,9 @@ import java.util.function.Predicate;
  */
 final class CompoundEvaluator {
 
-    private static final String TRUE_PREFIX = "True: ";
-    private static final String FALSE_PREFIX = "False: ";
-    private static final String SKIPPED_PREFIX = "Skipped: ";
+    private static final String PASSED_SUFFIX = " passed";
+    private static final String FAILED_SUFFIX = " failed";
+    private static final String SKIPPED_SUFFIX = " skipped";
     private static final String SEPARATOR = ", ";
 
     private CompoundEvaluator() {
@@ -31,6 +31,7 @@ final class CompoundEvaluator {
     static CompoundEvaluation evaluate(
             final CompoundExpression expression,
             final String expected,
+            final String negatedExpected,
             final Predicate<Evaluation> stopWhen,
             final Predicate<Tally> isTrue
     ) {
@@ -58,7 +59,13 @@ final class CompoundEvaluator {
 
         final Duration elapsedTime = stopWatch.stop();
         final Tally tally = Tally.of(children);
-        final Rationale rationale = new SimpleRationale(expected, formatActual(tally));
+        final Rationale rationale = new SimpleRationale(
+                expected,
+                negatedExpected,
+                formatActual(tally),
+                null,
+                null
+        );
         final DirectCauseFinder directCauseFinder = new DirectCauseFinder(decidingChild, evaluated);
 
         return CompoundEvaluation.of(
@@ -72,12 +79,14 @@ final class CompoundEvaluator {
     }
 
     static String formatActual(final Tally tally) {
-        return String.join(
-                SEPARATOR,
-                TRUE_PREFIX + tally.trueCount(),
-                FALSE_PREFIX + tally.falseCount(),
-                SKIPPED_PREFIX + tally.skippedCount()
-        );
+
+        final String actual = tally.trueCount() + PASSED_SUFFIX + SEPARATOR + tally.falseCount() + FAILED_SUFFIX;
+
+        if (tally.skippedCount() > 0) {
+            return actual + SEPARATOR + tally.skippedCount() + SKIPPED_SUFFIX;
+        }
+
+        return actual;
     }
 
     private record DirectCauseFinder(

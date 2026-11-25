@@ -112,6 +112,7 @@ class OrExpressionTest {
         assertFalse(evaluation.isTrue());
         assertEquals(name, evaluation.name());
         assertEquals(OrExpression.EXPECTED, rationale.expected());
+        assertEquals(OrExpression.NEGATED_EXPECTED, rationale.negatedExpected());
         assertEquals(formatActual(new Tally(0, 0, 0)), rationale.actual());
         assertFalse(rationale.hint().isPresent());
     }
@@ -127,6 +128,7 @@ class OrExpressionTest {
         assertTrue(evaluation.isTrue());
         assertEquals(name, evaluation.name());
         assertEquals(OrExpression.EXPECTED, rationale.expected());
+        assertEquals(OrExpression.NEGATED_EXPECTED, rationale.negatedExpected());
         assertEquals(formatActual(new Tally(1, 0, 0)), rationale.actual());
         assertFalse(rationale.hint().isPresent());
     }
@@ -142,6 +144,7 @@ class OrExpressionTest {
         assertFalse(evaluation.isTrue());
         assertEquals(name, evaluation.name());
         assertEquals(OrExpression.EXPECTED, rationale.expected());
+        assertEquals(OrExpression.NEGATED_EXPECTED, rationale.negatedExpected());
         assertEquals(formatActual(new Tally(0, 1, 0)), rationale.actual());
         assertFalse(rationale.hint().isPresent());
     }
@@ -159,6 +162,7 @@ class OrExpressionTest {
         assertTrue(evaluation.isTrue());
         assertEquals(name, evaluation.name());
         assertEquals(OrExpression.EXPECTED, rationale.expected());
+        assertEquals(OrExpression.NEGATED_EXPECTED, rationale.negatedExpected());
         assertEquals(formatActual(new Tally(1, 1, 0)), rationale.actual());
         assertFalse(rationale.hint().isPresent());
         assertIsNotSkipped(failingSubPredicate);
@@ -185,6 +189,7 @@ class OrExpressionTest {
         assertTrue(evaluation.isTrue());
         assertEquals(name, evaluation.name());
         assertEquals(OrExpression.EXPECTED, rationale.expected());
+        assertEquals(OrExpression.NEGATED_EXPECTED, rationale.negatedExpected());
         assertEquals(formatActual(new Tally(1, 0, 1)), rationale.actual());
         assertFalse(rationale.hint().isPresent());
         assertIsSkipped(failingSubPredicate);

@@ -32,7 +32,9 @@ public class ValueAssertion<T> {
     }
 
     public void assertCompoundActualValueIs(final int trueCount, final int falseCount, final int skippedCount) {
-        assertActualIs("True: " + trueCount + ", False: " + falseCount + ", Skipped: " + skippedCount);
+        final String skipped = skippedCount > 0 ? ", " + skippedCount + " skipped" : "";
+
+        assertActualIs(trueCount + " passed, " + falseCount + " failed" + skipped);
     }
 
     public void assertHintIs(final String hint) {

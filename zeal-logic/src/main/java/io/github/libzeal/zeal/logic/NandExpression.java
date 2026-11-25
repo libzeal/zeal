@@ -26,7 +26,8 @@ public record NandExpression(
 ) implements CompoundExpression {
 
     static final String DEFAULT_NAME = "NAND";
-    static final String EXPECTED = "false >= 1";
+    static final String EXPECTED = "at least one fails";
+    static final String NEGATED_EXPECTED = "all pass";
 
     /**
      * Creates a new NAND expression.
@@ -118,6 +119,7 @@ public record NandExpression(
         return CompoundEvaluator.evaluate(
                 this,
                 EXPECTED,
+                NEGATED_EXPECTED,
                 Evaluation::isFalse,
                 Tally::hasAtLeastOneFalse
         );
