@@ -154,9 +154,9 @@ public final class SimpleEvaluationFormatter implements EvaluationFormatter {
     ) {
 
         builder.repeat(INDENT, depth)
-                .append("[ ] ")
+                .append("[-] ")
                 .append(displayName)
-                .append("\n");
+                .append(" (skipped)\n");
 
         if (expression instanceof final CompoundExpression compound) {
 

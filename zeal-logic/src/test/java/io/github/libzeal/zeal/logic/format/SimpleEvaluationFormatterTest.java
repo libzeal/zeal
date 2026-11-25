@@ -180,7 +180,7 @@ class SimpleEvaluationFormatterTest {
         final Duration childElapsedTime = Duration.ofMillis(10);
         final Rationale rationale = new SimpleRationale("someExpected", "someActual");
         final Evaluation decider = new TerminalEvaluation(false, "decider", rationale, childElapsedTime);
-        final Skipped skipped = new Skipped(t("skipped"), DirectCause.of(decider));
+        final Skipped skipped = new Skipped(t("next"), DirectCause.of(decider));
 
         final Duration parentElapsedTime = Duration.ofMillis(20);
         final Evaluation parentEvaluation = parentOf(
@@ -198,7 +198,7 @@ class SimpleEvaluationFormatterTest {
                         EVALUATION_HEADING +
                         "[F] parent (20ms)\n" +
                         "    [F] decider (10ms)  <-- Root cause\n" +
-                        "    [ ] skipped";
+                        "    [-] next (skipped)";
 
         final String result = formatter.format(parentEvaluation);
 
@@ -226,10 +226,10 @@ class SimpleEvaluationFormatterTest {
                         EVALUATION_HEADING +
                         "[F] parent (20ms)\n" +
                         "    [F] decider (10ms)  <-- Root cause\n" +
-                        "    [ ] OR\n" +
-                        "        [ ] t1\n" +
-                        "        [ ] NOT\n" +
-                        "            [ ] t2";
+                        "    [-] OR (skipped)\n" +
+                        "        [-] t1 (skipped)\n" +
+                        "        [-] NOT (skipped)\n" +
+                        "            [-] t2 (skipped)";
 
         final String result = formatter.format(parentEvaluation);
 
@@ -323,7 +323,7 @@ class SimpleEvaluationFormatterTest {
         final String expected =
                 "[F] AND\n" +
                 "    [F] a #1  <-- Root cause\n" +
-                "    [ ] a #2";
+                "    [-] a #2 (skipped)";
 
         assertEquals(expected, treeOf(formatter.format(evaluation)));
     }
@@ -336,9 +336,9 @@ class SimpleEvaluationFormatterTest {
         final String expected =
                 "[F] AND\n" +
                 "    [F] f1  <-- Root cause\n" +
-                "    [ ] OR\n" +
-                "        [ ] b #1\n" +
-                "        [ ] b #2";
+                "    [-] OR (skipped)\n" +
+                "        [-] b #1 (skipped)\n" +
+                "        [-] b #2 (skipped)";
 
         assertEquals(expected, treeOf(formatter.format(evaluation)));
     }
