@@ -71,7 +71,7 @@ class DurationFormatterTest {
                 .plus(Duration.ofMillis(1))
                 .plus(Duration.ofNanos(1001));
 
-        assertEquals("1s 1ms", format(duration));
+        assertEquals("1s", format(duration));
     }
 
     @Test
@@ -88,7 +88,7 @@ class DurationFormatterTest {
         final Duration duration = Duration.ofMillis(1)
                 .plus(Duration.ofNanos(1001));
 
-        assertEquals("1ms 1us 1ns", format(duration));
+        assertEquals("1ms", format(duration));
     }
 
     @Test
@@ -104,7 +104,7 @@ class DurationFormatterTest {
 
         final Duration duration = Duration.ofNanos(1001);
 
-        assertEquals("1us 1ns", format(duration));
+        assertEquals("1us", format(duration));
     }
 
     @Test
@@ -121,6 +121,70 @@ class DurationFormatterTest {
         final Duration duration = Duration.ZERO;
 
         assertEquals("0ns", format(duration));
+    }
+
+    @Test
+    void givenThreeDigitNanoseconds_whenFormat_thenAllDigitsKept() {
+
+        final Duration duration = Duration.ofNanos(123);
+
+        assertEquals("123ns", format(duration));
+    }
+
+    @Test
+    void givenMicroseconds_whenFormat_thenRoundedToThreeSignificantFigures() {
+
+        final Duration duration = Duration.ofNanos(12_345);
+
+        assertEquals("12.3us", format(duration));
+    }
+
+    @Test
+    void givenMicrosecondsWithTrailingZero_whenFormat_thenTrailingZeroStripped() {
+
+        final Duration duration = Duration.ofNanos(9_100);
+
+        assertEquals("9.1us", format(duration));
+    }
+
+    @Test
+    void givenMilliseconds_whenFormat_thenRoundedToThreeSignificantFigures() {
+
+        final Duration duration = Duration.ofNanos(4_526_800);
+
+        assertEquals("4.53ms", format(duration));
+    }
+
+    @Test
+    void givenSeconds_whenFormat_thenRoundedToThreeSignificantFigures() {
+
+        final Duration duration = Duration.ofMillis(1_500);
+
+        assertEquals("1.5s", format(duration));
+    }
+
+    @Test
+    void givenMicrosecondsRoundingUpToTwoDigits_whenFormat_thenNoDecimalShown() {
+
+        final Duration duration = Duration.ofNanos(9_996);
+
+        assertEquals("10us", format(duration));
+    }
+
+    @Test
+    void givenMicrosecondsRoundingIntoMilliseconds_whenFormat_thenNextUnitUsed() {
+
+        final Duration duration = Duration.ofNanos(999_600);
+
+        assertEquals("1ms", format(duration));
+    }
+
+    @Test
+    void givenNanosecondsJustBelowOneMicrosecond_whenFormat_thenNanosecondsUsed() {
+
+        final Duration duration = Duration.ofNanos(999);
+
+        assertEquals("999ns", format(duration));
     }
 
     @Test
