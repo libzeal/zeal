@@ -227,6 +227,38 @@ class ConditionsTest {
     }
 
     @Test
+    void givenValue_whenExactly_thenNegatedHintIsShouldNotBeIdentical() {
+
+        final Evaluation evaluation = Conditions.exactly("CLOSED").bind("CLOSED").evaluate();
+
+        assertEquals(
+            "Actual should not be identical to CLOSED (using ==)",
+            evaluation.rationale().negatedHint().orElseThrow()
+        );
+    }
+
+    @Test
+    void givenNullAndArray_whenExactlyHints_thenValuesStringified() {
+
+        final int[] array = {1, 2};
+
+        assertEquals("Actual should be identical to (null) (using ==)", Conditions.exactlyHint(null));
+        assertEquals("Actual is identical to [1, 2] (using ==)", Conditions.exactlyPassedHint(array));
+        assertEquals("Actual should not be identical to [1, 2] (using ==)", Conditions.exactlyNegatedHint(array));
+    }
+
+    @Test
+    void givenValue_whenEqualTo_thenNegatedHintIsShouldNotBeEqual() {
+
+        final Evaluation evaluation = Conditions.equalTo("CLOSED").bind("CLOSED").evaluate();
+
+        assertEquals(
+            "Actual should not be equal to CLOSED (using subject.equals(CLOSED))",
+            evaluation.rationale().negatedHint().orElseThrow()
+        );
+    }
+
+    @Test
     void givenArraysWithSameElements_whenEqualTo_thenTrue() {
 
         final Condition<Object> condition = Conditions.equalTo(new int[][]{{1}, {2, 3}});
@@ -1001,6 +1033,76 @@ class ConditionsTest {
     @Test
     void givenList_whenNotIn_thenNamedNotIn() {
         assertEquals("notIn", Conditions.notIn(asList("a", "b")).bind("foo").name());
+    }
+
+    @Test
+    void givenNonMatchingSubject_whenIn_thenHintListsValues() {
+
+        final Evaluation evaluation = Conditions.in(asList("OPEN", "PENDING")).bind("CLOSED").evaluate();
+
+        assertEquals("CLOSED should be one of [OPEN, PENDING]", evaluation.rationale().hint().orElseThrow());
+        assertEquals("CLOSED should not be one of [OPEN, PENDING]", evaluation.rationale().negatedHint().orElseThrow());
+    }
+
+    @Test
+    void givenNonMatchingSubject_whenOneOf_thenHintListsValues() {
+
+        final Evaluation evaluation = Conditions.oneOf("OPEN", "PENDING").bind("CLOSED").evaluate();
+
+        assertEquals("CLOSED should be one of [OPEN, PENDING]", evaluation.rationale().hint().orElseThrow());
+        assertEquals("CLOSED should not be one of [OPEN, PENDING]", evaluation.rationale().negatedHint().orElseThrow());
+    }
+
+    @Test
+    void givenMatchingSubject_whenNotIn_thenHintListsValues() {
+
+        final Evaluation evaluation = Conditions.notIn(asList("OPEN", "CLOSED")).bind("CLOSED").evaluate();
+
+        assertEquals("CLOSED should not be one of [OPEN, CLOSED]", evaluation.rationale().hint().orElseThrow());
+        assertEquals("CLOSED should be one of [OPEN, CLOSED]", evaluation.rationale().negatedHint().orElseThrow());
+    }
+
+    @Test
+    void givenMatchingSubject_whenNotOneOf_thenHintListsValues() {
+
+        final Evaluation evaluation = Conditions.notOneOf("OPEN", "CLOSED").bind("CLOSED").evaluate();
+
+        assertEquals("CLOSED should not be one of [OPEN, CLOSED]", evaluation.rationale().hint().orElseThrow());
+        assertEquals("CLOSED should be one of [OPEN, CLOSED]", evaluation.rationale().negatedHint().orElseThrow());
+    }
+
+    @Test
+    void givenNullSubjectAndValue_whenIn_thenHintFormatsNulls() {
+
+        final Evaluation evaluation = Conditions.in(asList("OPEN", null)).bind(null).evaluate();
+
+        assertEquals("(null) should be one of [OPEN, (null)]", evaluation.rationale().hint().orElseThrow());
+    }
+
+    @Test
+    void givenArrayValues_whenIn_thenHintFormatsArrays() {
+
+        final Evaluation evaluation = Conditions.<Object>in(asList(new int[]{1, 2}, "a")).bind(new int[]{3}).evaluate();
+
+        assertEquals("[3] should be one of [[1, 2], a]", evaluation.rationale().hint().orElseThrow());
+    }
+
+    @Test
+    void givenHint_whenIn_thenExpectedAndActualKept() {
+
+        final Evaluation evaluation = Conditions.in(asList("OPEN", "PENDING")).bind("CLOSED").evaluate();
+
+        assertEquals("at least one passes", evaluation.rationale().expected());
+        assertEquals("none pass", evaluation.rationale().negatedExpected());
+        assertEquals("0 passed, 2 failed", evaluation.rationale().actual());
+    }
+
+    @Test
+    void givenConditions_whenAnyOfCondition_thenNoHint() {
+
+        final Condition<String> isNull = Conditions.of(Objects::isNull);
+
+        assertTrue(Conditions.anyOf(isNull).bind("foo").evaluate().rationale().hint().isEmpty());
     }
 
     @Test

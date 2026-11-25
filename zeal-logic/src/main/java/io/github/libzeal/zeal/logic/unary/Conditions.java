@@ -3,12 +3,14 @@ package io.github.libzeal.zeal.logic.unary;
 import io.github.libzeal.zeal.logic.AndExpression;
 import io.github.libzeal.zeal.logic.NorExpression;
 import io.github.libzeal.zeal.logic.OrExpression;
+import io.github.libzeal.zeal.logic.format.ObjectFormatter;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import static io.github.libzeal.zeal.logic.Expression.DEFAULT_NAME;
 import static io.github.libzeal.zeal.logic.format.ObjectFormatter.stringify;
@@ -92,6 +94,7 @@ public final class Conditions {
                 .name(exactlyName(desired))
                 .expected(stringify(desired))
                 .hint(context -> context.ifPassedOrElse(exactlyPassedHint(desired), exactlyHint(desired)))
+                .negatedHint(exactlyNegatedHint(desired))
                 .build();
     }
 
@@ -100,11 +103,15 @@ public final class Conditions {
     }
 
     static <T> String exactlyHint(final @Nullable T desired) {
-        return "Actual should be identical to " + desired + " (using ==)";
+        return "Actual should be identical to " + stringify(desired) + " (using ==)";
     }
 
     static <T> String exactlyPassedHint(final @Nullable T desired) {
-        return "Actual is identical to " + desired + " (using ==)";
+        return "Actual is identical to " + stringify(desired) + " (using ==)";
+    }
+
+    static <T> String exactlyNegatedHint(final @Nullable T desired) {
+        return "Actual should not be identical to " + stringify(desired) + " (using ==)";
     }
 
     /**
@@ -125,6 +132,7 @@ public final class Conditions {
                 .name(equalToName(desired))
                 .expected(stringify(desired))
                 .hint(context -> context.ifPassedOrElse(equalToPassedHint(desired), equalToHint(desired)))
+                .negatedHint(equalToNegatedHint(desired))
                 .build();
     }
 
@@ -138,6 +146,10 @@ public final class Conditions {
 
     static <T> String equalToPassedHint(final @Nullable T desired) {
         return "Actual is equal to " + stringify(desired) + " (using subject.equals(" + stringify(desired) + "))";
+    }
+
+    static <T> String equalToNegatedHint(final @Nullable T desired) {
+        return "Actual should not be equal to " + stringify(desired) + " (using subject.equals(" + stringify(desired) + "))";
     }
 
     /**
@@ -393,15 +405,33 @@ public final class Conditions {
     private static <T> Condition<T> equalToAnyOf(final String name, final List<? extends @Nullable T> values) {
         return subject -> new UnaryCompoundAdapter<>(
                 subject,
-                OrExpression.named(name, equalToAll(values, subject))
+                OrExpression.named(name, equalToAll(values, subject)),
+                oneOfHint(subject, values),
+                notOneOfHint(subject, values)
         );
     }
 
     private static <T> Condition<T> equalToNoneOf(final String name, final List<? extends @Nullable T> values) {
         return subject -> new UnaryCompoundAdapter<>(
                 subject,
-                NorExpression.named(name, equalToAll(values, subject))
+                NorExpression.named(name, equalToAll(values, subject)),
+                notOneOfHint(subject, values),
+                oneOfHint(subject, values)
         );
+    }
+
+    static String oneOfHint(final @Nullable Object subject, final List<?> values) {
+        return stringify(subject) + " should be one of " + stringifyAll(values);
+    }
+
+    static String notOneOfHint(final @Nullable Object subject, final List<?> values) {
+        return stringify(subject) + " should not be one of " + stringifyAll(values);
+    }
+
+    private static String stringifyAll(final List<?> values) {
+        return values.stream()
+                .map(ObjectFormatter::stringify)
+                .collect(Collectors.joining(", ", "[", "]"));
     }
 
     private static <T> List<UnaryExpression<T>> equalToAll(
