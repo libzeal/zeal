@@ -18,6 +18,8 @@ public final class SimpleEvaluationFormatter implements EvaluationFormatter {
 
     private static final String INDENT = "    ";
     private static final String FIELD_FORMAT = "%-13s : %s\n";
+    private static final String ROOT_CAUSE_MARKER = "  <-- Root cause";
+    private static final String DECIDED_BY_MARKER = "  <-- Decided by";
 
     /**
      * Creates a new formatter.
@@ -36,8 +38,10 @@ public final class SimpleEvaluationFormatter implements EvaluationFormatter {
             appendRootCauses(traces, names, builder);
         }
 
+        final String marker = evaluation.isTrue() ? DECIDED_BY_MARKER : ROOT_CAUSE_MARKER;
+
         builder.append("Evaluation:\n");
-        appendEvaluation(evaluation, rootCausesOf(traces), names, 0, builder);
+        appendEvaluation(evaluation, rootCausesOf(traces), marker, names, 0, builder);
 
         return builder.toString().trim();
     }
@@ -48,7 +52,7 @@ public final class SimpleEvaluationFormatter implements EvaluationFormatter {
             final StringBuilder builder
     ) {
 
-        builder.append("Root Causes:\n");
+        builder.append("Root causes:\n");
 
         for (final Cause.Trace trace : traces) {
 
@@ -72,7 +76,7 @@ public final class SimpleEvaluationFormatter implements EvaluationFormatter {
                 rationale.hint().ifPresent(hint -> appendField("  Hint", hint, builder));
             }
 
-            appendField("  Cause Trace", String.join(" -> ", traceNames), builder);
+            appendField("  Cause trace", String.join(" -> ", traceNames), builder);
         }
 
         builder.append("\n");
@@ -111,7 +115,7 @@ public final class SimpleEvaluationFormatter implements EvaluationFormatter {
     }
 
     private static void appendEvaluation(
-            final Evaluation evaluation, final Set<Evaluation> rootCauses,
+            final Evaluation evaluation, final Set<Evaluation> rootCauses, final String marker,
             final Map<Evaluation, String> names, final int depth, final StringBuilder builder
     ) {
 
@@ -123,7 +127,7 @@ public final class SimpleEvaluationFormatter implements EvaluationFormatter {
                 .append(")");
 
         if (rootCauses.contains(evaluation)) {
-            builder.append("  <---[ Root Cause ]");
+            builder.append(marker);
         }
 
         builder.append("\n");
@@ -136,7 +140,7 @@ public final class SimpleEvaluationFormatter implements EvaluationFormatter {
             for (int i = 0; i < children.size(); i++) {
                 switch (children.get(i)) {
                     case Evaluated(Evaluation evaluated) ->
-                            appendEvaluation(evaluated, rootCauses, names, depth + 1, builder);
+                            appendEvaluation(evaluated, rootCauses, marker, names, depth + 1, builder);
                     case Skipped skipped ->
                             appendSkipped(skipped.expression(), childNames.get(i), depth + 1, builder);
                 }
