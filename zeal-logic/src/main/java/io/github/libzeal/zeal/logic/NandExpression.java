@@ -26,7 +26,8 @@ public record NandExpression(
 ) implements CompoundExpression {
 
     static final String DEFAULT_NAME = "NAND";
-    static final String EXPECTED = "false >= 1";
+    static final String EXPECTED = "at least one fails";
+    static final String NEGATED_EXPECTED = "all pass";
 
     /**
      * Creates a new NAND expression.
@@ -77,11 +78,48 @@ public record NandExpression(
         return new NandExpression(DEFAULT_NAME, List.of(children));
     }
 
+    /**
+     * Creates a NAND expression with the supplied name.
+     *
+     * @param name
+     *         The name of the expression.
+     * @param children
+     *         The sub-expressions to be NANDed together.
+     *
+     * @return A NAND expression with the supplied name.
+     *
+     * @throws NullPointerException
+     *         The supplied name or children list is {@code null} or the list
+     *         contains any {@code null}s.
+     */
+    public static NandExpression named(final String name, final List<? extends Expression> children) {
+        return new NandExpression(name, List.copyOf(children));
+    }
+
+    /**
+     * Creates a NAND expression with the supplied name.
+     *
+     * @param name
+     *         The name of the expression.
+     * @param children
+     *         The sub-expressions to be NANDed together.
+     *
+     * @return A NAND expression with the supplied name.
+     *
+     * @throws NullPointerException
+     *         The supplied name or children list is {@code null} or the list
+     *         contains any {@code null}s.
+     */
+    public static NandExpression named(final String name, final Expression... children) {
+        return new NandExpression(name, List.of(children));
+    }
+
     @Override
     public CompoundEvaluation evaluate() {
         return CompoundEvaluator.evaluate(
                 this,
                 EXPECTED,
+                NEGATED_EXPECTED,
                 Evaluation::isFalse,
                 Tally::hasAtLeastOneFalse
         );

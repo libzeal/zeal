@@ -1,13 +1,13 @@
 package io.github.libzeal.zeal.logic.evaluation;
 
-import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
 import io.github.libzeal.zeal.logic.test.TestExpressions;
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 class EvaluationTest {
 
@@ -46,11 +46,11 @@ class EvaluationTest {
         final Evaluation parent = compound("parent", DirectCause.of(List.of(first, second)), first, second);
 
         assertEquals(
-            List.of(
-                new Cause.Trace(List.of(parent, first)),
-                new Cause.Trace(List.of(parent, second))
-            ),
-            parent.cause().traces()
+                List.of(
+                        new Cause.Trace(List.of(parent, first)),
+                        new Cause.Trace(List.of(parent, second))
+                ),
+                parent.cause().traces()
         );
         assertEquals(List.of(first, second), parent.cause().rootCauses());
     }
@@ -65,9 +65,9 @@ class EvaluationTest {
         final Evaluation outer = compound("outer", DirectCause.of(List.of(inner, c)), inner, c);
 
         final List<String> traces = outer.cause().traces()
-            .stream()
-            .map(Cause.Trace::toString)
-            .toList();
+                .stream()
+                .map(Cause.Trace::toString)
+                .toList();
 
         assertEquals(List.of("outer -> inner -> a", "outer -> inner -> b", "outer -> c"), traces);
         assertEquals(List.of(a, b, c), outer.cause().rootCauses());

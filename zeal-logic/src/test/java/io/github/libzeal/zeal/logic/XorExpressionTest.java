@@ -1,21 +1,23 @@
 package io.github.libzeal.zeal.logic;
 
+import io.github.libzeal.zeal.logic.CompoundEvaluator.Tally;
 import io.github.libzeal.zeal.logic.evaluation.CompoundEvaluation;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
+import io.github.libzeal.zeal.logic.evaluation.Rationale;
 import io.github.libzeal.zeal.logic.evaluation.SkippableEvaluation.Evaluated;
-import io.github.libzeal.zeal.logic.rationale.Rationale;
 import io.github.libzeal.zeal.logic.test.TestExpressions;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static io.github.libzeal.zeal.logic.CompoundEvaluator.format;
+import static io.github.libzeal.zeal.logic.CompoundEvaluator.formatActual;
 import static io.github.libzeal.zeal.logic.test.Arguments.listWithSingleNull;
 import static io.github.libzeal.zeal.logic.test.CauseAssertions.*;
 import static io.github.libzeal.zeal.logic.test.NamedExpressions.*;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 class XorExpressionTest {
 
@@ -25,16 +27,16 @@ class XorExpressionTest {
         final List<Expression> children = List.of();
 
         assertThrows(
-            NullPointerException.class,
-            () -> new XorExpression(null, children)
+                NullPointerException.class,
+                () -> new XorExpression(null, children)
         );
     }
 
     @Test
     void givenNullChildren_whenConstruct_thenExceptionThrown() {
         assertThrows(
-            NullPointerException.class,
-            () -> new XorExpression("foo", null)
+                NullPointerException.class,
+                () -> new XorExpression("foo", null)
         );
     }
 
@@ -44,16 +46,16 @@ class XorExpressionTest {
         final List<Expression> children = listWithSingleNull();
 
         assertThrows(
-            NullPointerException.class,
-            () -> new XorExpression("foo", children)
+                NullPointerException.class,
+                () -> new XorExpression("foo", children)
         );
     }
 
     @Test
     void givenNullVarargsChildren_whenUnnamed_thenExceptionThrown() {
         assertThrows(
-            NullPointerException.class,
-            () -> XorExpression.unnamed((Expression[]) null)
+                NullPointerException.class,
+                () -> XorExpression.unnamed((Expression[]) null)
         );
     }
 
@@ -85,7 +87,8 @@ class XorExpressionTest {
         assertFalse(evaluation.isTrue());
         assertEquals("XOR", evaluation.name());
         assertEquals(XorExpression.EXPECTED, rationale.expected());
-        assertEquals(format(0, 0, 0), rationale.actual());
+        assertEquals(XorExpression.NEGATED_EXPECTED, rationale.negatedExpected());
+        assertEquals(formatActual(new Tally(0, 0, 0)), rationale.actual());
         assertCauseIsSelf(evaluation);
         assertTraces(evaluation, "XOR");
     }
@@ -110,7 +113,7 @@ class XorExpressionTest {
         final Evaluation evaluation = xor("XOR", t("t1"), t("t2"), t("t3")).evaluate();
 
         assertTrue(evaluation.isTrue());
-        assertEquals(format(3, 0, 0), evaluation.rationale().actual());
+        assertEquals(formatActual(new Tally(3, 0, 0)), evaluation.rationale().actual());
     }
 
     @Test
@@ -139,16 +142,16 @@ class XorExpressionTest {
     }
 
     @Test
-    void givenChildren_whenEvaluate_thenCauseIsAllChildren() {
+    void givenChildren_whenEvaluate_thenCauseIsSelf() {
 
         final Evaluation evaluation = xor("XOR", t("t1"), f("f2")).evaluate();
 
         assertTrue(evaluation.isTrue());
         assertEquals(XorExpression.EXPECTED, evaluation.rationale().expected());
-        assertEquals(format(1, 1, 0), evaluation.rationale().actual());
-        assertCause(evaluation, child(evaluation, 0), child(evaluation, 1));
-        assertTraces(evaluation, "XOR -> t1", "XOR -> f2");
-        assertRootCauses(evaluation, child(evaluation, 0), child(evaluation, 1));
+        assertEquals(formatActual(new Tally(1, 1, 0)), evaluation.rationale().actual());
+        assertCauseIsSelf(evaluation);
+        assertTraces(evaluation, "XOR");
+        assertRootCauses(evaluation, evaluation);
     }
 
     @Test
@@ -160,5 +163,34 @@ class XorExpressionTest {
         final XorExpression expression = XorExpression.unnamed(children);
 
         assertEquals(List.of(child), expression.children());
+    }
+
+    @Test
+    void givenNameAndListOfExpressionSubtype_whenNamed_thenNameAndChildrenUsed() {
+
+        final BooleanExpression child = new BooleanExpression(() -> true);
+        final List<BooleanExpression> children = List.of(child);
+
+        final XorExpression expression = XorExpression.named("foo", children);
+
+        assertEquals("foo", expression.name());
+        assertEquals(List.of(child), expression.children());
+    }
+
+    @Test
+    void givenNameAndVarargs_whenNamed_thenNameAndChildrenUsed() {
+
+        final BooleanExpression first = new BooleanExpression(() -> true);
+        final BooleanExpression second = new BooleanExpression(() -> false);
+
+        final XorExpression expression = XorExpression.named("foo", first, second);
+
+        assertEquals("foo", expression.name());
+        assertEquals(List.of(first, second), expression.children());
+    }
+
+    @Test
+    void givenNullName_whenNamed_thenExceptionThrown() {
+        assertThrows(NullPointerException.class, () -> XorExpression.named(null, new BooleanExpression(() -> true)));
     }
 }

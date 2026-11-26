@@ -26,7 +26,8 @@ public record NorExpression(
 ) implements CompoundExpression {
 
     static final String DEFAULT_NAME = "NOR";
-    static final String EXPECTED = "true = 0";
+    static final String EXPECTED = "none pass";
+    static final String NEGATED_EXPECTED = "at least one passes";
 
     /**
      * Creates a new NOR expression.
@@ -46,7 +47,7 @@ public record NorExpression(
     }
 
     /**
-     * Creates an unnamed NOR expression.
+     * Creates a NOR expression with a default name.
      *
      * @param children
      *         The sub-expressions to be NORed together.
@@ -62,7 +63,7 @@ public record NorExpression(
     }
 
     /**
-     * Creates an unnamed NOR expression.
+     * Creates a NOR expression with a default name.
      *
      * @param children
      *         The sub-expressions to be NORed together.
@@ -77,11 +78,51 @@ public record NorExpression(
         return new NorExpression(DEFAULT_NAME, List.of(children));
     }
 
+    /**
+     * Creates a NOR expression with the supplied name.
+     *
+     * @param name
+     *         The name of the expression.
+     * @param children
+     *         The sub-expressions to be NORed together.
+     *
+     * @return A NOR expression with the supplied name.
+     *
+     * @throws NullPointerException
+     *         The supplied name or children list is {@code null} or the list
+     *         contains any {@code null}s.
+     */
+    public static NorExpression named(
+            final String name,
+            final List<? extends Expression> children
+    ) {
+        return new NorExpression(name, List.copyOf(children));
+    }
+
+    /**
+     * Creates a NOR expression with the supplied name.
+     *
+     * @param name
+     *         The name of the expression.
+     * @param children
+     *         The sub-expressions to be NORed together.
+     *
+     * @return A NOR expression with the supplied name.
+     *
+     * @throws NullPointerException
+     *         The supplied name or children list is {@code null} or the list
+     *         contains any {@code null}s.
+     */
+    public static NorExpression named(final String name, final Expression... children) {
+        return new NorExpression(name, List.of(children));
+    }
+
     @Override
     public CompoundEvaluation evaluate() {
         return CompoundEvaluator.evaluate(
                 this,
                 EXPECTED,
+                NEGATED_EXPECTED,
                 Evaluation::isTrue,
                 Tally::hasNoTrue
         );

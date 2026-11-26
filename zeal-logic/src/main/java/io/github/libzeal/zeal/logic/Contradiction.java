@@ -1,7 +1,7 @@
 package io.github.libzeal.zeal.logic;
 
+import io.github.libzeal.zeal.logic.evaluation.SimpleRationale;
 import io.github.libzeal.zeal.logic.evaluation.TerminalEvaluation;
-import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
 
 import java.time.Duration;
 

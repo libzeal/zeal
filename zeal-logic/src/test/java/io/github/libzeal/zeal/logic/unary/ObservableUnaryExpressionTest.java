@@ -1,7 +1,7 @@
 package io.github.libzeal.zeal.logic.unary;
 
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
-import io.github.libzeal.zeal.logic.rationale.Rationale;
+import io.github.libzeal.zeal.logic.evaluation.Rationale;
 import io.github.libzeal.zeal.logic.unary.ObservableUnaryExpression.Field;
 import org.junit.jupiter.api.Test;
 

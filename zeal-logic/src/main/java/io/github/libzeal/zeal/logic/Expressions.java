@@ -1,6 +1,7 @@
 package io.github.libzeal.zeal.logic;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.function.BooleanSupplier;
 
 /**
@@ -80,6 +81,23 @@ public final class Expressions {
     }
 
     /**
+     * Creates a new expression that is the logical AND of the supplied
+     * expressions.
+     *
+     * @param expressions
+     *         The expressions to AND.
+     *
+     * @return The logical AND of the supplied expressions.
+     *
+     * @throws NullPointerException
+     *         The supplied list is {@code null} or any of the supplied
+     *         expressions is {@code null}.
+     */
+    public static AndExpression and(final List<? extends Expression> expressions) {
+        return AndExpression.unnamed(expressions);
+    }
+
+    /**
      * Creates a new expression that is the logical OR of the supplied
      * expressions.
      *
@@ -96,6 +114,23 @@ public final class Expressions {
     }
 
     /**
+     * Creates a new expression that is the logical OR of the supplied
+     * expressions.
+     *
+     * @param expressions
+     *         The expressions to OR.
+     *
+     * @return The logical OR of the supplied expressions.
+     *
+     * @throws NullPointerException
+     *         The supplied list is {@code null} or any of the supplied
+     *         expressions is {@code null}.
+     */
+    public static OrExpression or(final List<? extends Expression> expressions) {
+        return OrExpression.unnamed(expressions);
+    }
+
+    /**
      * Creates a new expression that is the logical NAND of the supplied
      * expressions.
      *
@@ -108,6 +143,23 @@ public final class Expressions {
      *         Any of the supplied expressions is {@code null}.
      */
     public static NandExpression nand(final Expression... expressions) {
+        return NandExpression.unnamed(expressions);
+    }
+
+    /**
+     * Creates a new expression that is the logical NAND of the supplied
+     * expressions.
+     *
+     * @param expressions
+     *         The expressions to NAND.
+     *
+     * @return The logical NAND of the supplied expressions.
+     *
+     * @throws NullPointerException
+     *         The supplied list is {@code null} or any of the supplied
+     *         expressions is {@code null}.
+     */
+    public static NandExpression nand(final List<? extends Expression> expressions) {
         return NandExpression.unnamed(expressions);
     }
 
@@ -128,6 +180,23 @@ public final class Expressions {
     }
 
     /**
+     * Creates a new expression that is the logical NOR of the supplied
+     * expressions.
+     *
+     * @param expressions
+     *         The expressions to NOR.
+     *
+     * @return The logical NOR of the supplied expressions.
+     *
+     * @throws NullPointerException
+     *         The supplied list is {@code null} or any of the supplied
+     *         expressions is {@code null}.
+     */
+    public static NorExpression nor(final List<? extends Expression> expressions) {
+        return NorExpression.unnamed(expressions);
+    }
+
+    /**
      * Creates a new expression that is the logical XOR of the supplied
      * expressions.
      *
@@ -140,6 +209,23 @@ public final class Expressions {
      *         Any of the supplied expressions is {@code null}.
      */
     public static XorExpression xor(final Expression... expressions) {
+        return XorExpression.unnamed(expressions);
+    }
+
+    /**
+     * Creates a new expression that is the logical XOR of the supplied
+     * expressions.
+     *
+     * @param expressions
+     *         The expressions to XOR.
+     *
+     * @return The logical XOR of the supplied expressions.
+     *
+     * @throws NullPointerException
+     *         The supplied list is {@code null} or any of the supplied
+     *         expressions is {@code null}.
+     */
+    public static XorExpression xor(final List<? extends Expression> expressions) {
         return XorExpression.unnamed(expressions);
     }
 }

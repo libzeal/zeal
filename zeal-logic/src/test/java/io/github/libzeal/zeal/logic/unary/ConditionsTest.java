@@ -123,7 +123,7 @@ class ConditionsTest {
         assertEquals(subject.toString(), evaluation.rationale().expected());
         assertEquals(subject.toString(), evaluation.rationale().actual());
         assertTrue(evaluation.rationale().hint().isPresent());
-        assertEquals(Conditions.exactlyHint(subject), evaluation.rationale().hint().get());
+        assertEquals(Conditions.exactlyPassedHint(subject), evaluation.rationale().hint().get());
     }
 
     @Test
@@ -203,7 +203,7 @@ class ConditionsTest {
         assertEquals(desired.toString(), evaluation.rationale().expected());
         assertEquals(subject.toString(), evaluation.rationale().actual());
         assertTrue(evaluation.rationale().hint().isPresent());
-        assertEquals(Conditions.equalToHint(desired), evaluation.rationale().hint().get());
+        assertEquals(Conditions.equalToPassedHint(desired), evaluation.rationale().hint().get());
     }
 
     @Test
@@ -224,6 +224,38 @@ class ConditionsTest {
         assertEquals(subject.toString(), evaluation.rationale().actual());
         assertTrue(evaluation.rationale().hint().isPresent());
         assertEquals(Conditions.equalToHint(desired), evaluation.rationale().hint().get());
+    }
+
+    @Test
+    void givenValue_whenExactly_thenNegatedHintIsShouldNotBeIdentical() {
+
+        final Evaluation evaluation = Conditions.exactly("CLOSED").bind("CLOSED").evaluate();
+
+        assertEquals(
+            "Actual should not be identical to CLOSED (using ==)",
+            evaluation.rationale().negatedHint().orElseThrow()
+        );
+    }
+
+    @Test
+    void givenNullAndArray_whenExactlyHints_thenValuesStringified() {
+
+        final int[] array = {1, 2};
+
+        assertEquals("Actual should be identical to (null) (using ==)", Conditions.exactlyHint(null));
+        assertEquals("Actual is identical to [1, 2] (using ==)", Conditions.exactlyPassedHint(array));
+        assertEquals("Actual should not be identical to [1, 2] (using ==)", Conditions.exactlyNegatedHint(array));
+    }
+
+    @Test
+    void givenValue_whenEqualTo_thenNegatedHintIsShouldNotBeEqual() {
+
+        final Evaluation evaluation = Conditions.equalTo("CLOSED").bind("CLOSED").evaluate();
+
+        assertEquals(
+            "Actual should not be equal to CLOSED (using subject.equals(CLOSED))",
+            evaluation.rationale().negatedHint().orElseThrow()
+        );
     }
 
     @Test
@@ -355,23 +387,23 @@ class ConditionsTest {
     }
 
     // ------------------------------------------------------------------------
-    // Conditions#anyOf(Object[])
+    // Conditions#oneOf(Object[])
     // ------------------------------------------------------------------------
 
     @Test
-    void givenNullValues_whenAnyOfValues_thenExceptionThrown() {
+    void givenNullValues_whenOneOfValues_thenExceptionThrown() {
         assertThrows(
             NullPointerException.class,
-            () -> Conditions.anyOf((Object[]) null)
+            () -> Conditions.oneOf((Object[]) null)
         );
     }
 
     @Test
-    void givenOneValueAndMatches_whenAnyOfValues_thenMatches() {
+    void givenOneValueAndMatches_whenOneOfValues_thenMatches() {
 
         final Object match = new AlwaysEqualValue();
 
-        final Condition<Object> condition = Conditions.anyOf(match);
+        final Condition<Object> condition = Conditions.oneOf(match);
 
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
@@ -379,11 +411,11 @@ class ConditionsTest {
     }
 
     @Test
-    void givenOneValueAndDoesNotMatch_whenAnyOfValues_thenDoesNotMatch() {
+    void givenOneValueAndDoesNotMatch_whenOneOfValues_thenDoesNotMatch() {
 
         final Object nonMatch = new AlwaysUnequalValue();
 
-        final Condition<Object> condition = Conditions.anyOf(nonMatch);
+        final Condition<Object> condition = Conditions.oneOf(nonMatch);
 
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
@@ -391,12 +423,12 @@ class ConditionsTest {
     }
 
     @Test
-    void givenTwoValuesAndFirstMatches_whenAnyOfValue_thenMatches() {
+    void givenTwoValuesAndFirstMatches_whenOneOfValue_thenMatches() {
 
         final Object match = new AlwaysEqualValue();
         final Object nonMatch = new AlwaysUnequalValue();
 
-        final Condition<Object> condition = Conditions.anyOf(match, nonMatch);
+        final Condition<Object> condition = Conditions.oneOf(match, nonMatch);
 
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
@@ -404,12 +436,12 @@ class ConditionsTest {
     }
 
     @Test
-    void givenTwoValuesAndSecondMatches_whenAnyOfValue_thenMatches() {
+    void givenTwoValuesAndSecondMatches_whenOneOfValue_thenMatches() {
 
         final Object match = new AlwaysEqualValue();
         final Object nonMatch = new AlwaysUnequalValue();
 
-        final Condition<Object> condition = Conditions.anyOf(nonMatch, match);
+        final Condition<Object> condition = Conditions.oneOf(nonMatch, match);
 
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
@@ -417,12 +449,12 @@ class ConditionsTest {
     }
 
     @Test
-    void givenTwoValueAndBothMatch_whenAnyOfValue_thenMatches() {
+    void givenTwoValueAndBothMatch_whenOneOfValue_thenMatches() {
 
         final Object match1 = new AlwaysEqualValue();
         final Object match2 = new AlwaysEqualValue();
 
-        final Condition<Object> condition = Conditions.anyOf(match1, match2);
+        final Condition<Object> condition = Conditions.oneOf(match1, match2);
 
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
@@ -430,12 +462,12 @@ class ConditionsTest {
     }
 
     @Test
-    void givenTwoValuesAndBothDoNotMatch_whenAnyOfValues_thenDoesNotMatch() {
+    void givenTwoValuesAndBothDoNotMatch_whenOneOfValues_thenDoesNotMatch() {
 
         final Object nonMatch1 = new AlwaysUnequalValue();
         final Object nonMatch2 = new AlwaysUnequalValue();
 
-        final Condition<Object> condition = Conditions.anyOf(nonMatch1, nonMatch2);
+        final Condition<Object> condition = Conditions.oneOf(nonMatch1, nonMatch2);
 
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
@@ -443,23 +475,23 @@ class ConditionsTest {
     }
 
     // ------------------------------------------------------------------------
-    // Conditions#anyOf(Iterable)
+    // Conditions#in(List)
     // ------------------------------------------------------------------------
 
     @Test
-    void givenNullValues_whenAnyOfIterable_thenExceptionThrown() {
+    void givenNullValues_whenIn_thenExceptionThrown() {
         assertThrows(
             NullPointerException.class,
-            () -> Conditions.anyOf((Iterable<Object>) null)
+            () -> Conditions.in((List<Object>) null)
         );
     }
 
     @Test
-    void givenOneValueAndMatches_whenAnyOfIterable_thenMatches() {
+    void givenOneValueAndMatches_whenIn_thenMatches() {
 
         final Object match = new AlwaysEqualValue();
 
-        final Condition<Object> condition = Conditions.anyOf(singletonList(match));
+        final Condition<Object> condition = Conditions.in(singletonList(match));
 
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
@@ -467,11 +499,11 @@ class ConditionsTest {
     }
 
     @Test
-    void givenOneValueAndDoesNotMatch_whenAnyOfIterable_thenDoesNotMatch() {
+    void givenOneValueAndDoesNotMatch_whenIn_thenDoesNotMatch() {
 
         final Object nonMatch = new AlwaysUnequalValue();
 
-        final Condition<Object> condition = Conditions.anyOf(singletonList(nonMatch));
+        final Condition<Object> condition = Conditions.in(singletonList(nonMatch));
 
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
@@ -479,12 +511,12 @@ class ConditionsTest {
     }
 
     @Test
-    void givenTwoValuesAndFirstMatches_whenAnyOfIterable_thenMatches() {
+    void givenTwoValuesAndFirstMatches_whenIn_thenMatches() {
 
         final Object match = new AlwaysEqualValue();
         final Object nonMatch = new AlwaysUnequalValue();
 
-        final Condition<Object> condition = Conditions.anyOf(asList(match, nonMatch));
+        final Condition<Object> condition = Conditions.in(asList(match, nonMatch));
 
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
@@ -492,12 +524,12 @@ class ConditionsTest {
     }
 
     @Test
-    void givenTwoValuesAndSecondMatches_whenAnyOfIterable_thenMatches() {
+    void givenTwoValuesAndSecondMatches_whenIn_thenMatches() {
 
         final Object match = new AlwaysEqualValue();
         final Object nonMatch = new AlwaysUnequalValue();
 
-        final Condition<Object> condition = Conditions.anyOf(asList(nonMatch, match));
+        final Condition<Object> condition = Conditions.in(asList(nonMatch, match));
 
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
@@ -505,12 +537,12 @@ class ConditionsTest {
     }
 
     @Test
-    void givenTwoValueAndBothMatch_whenAnyOfIterable_thenMatches() {
+    void givenTwoValueAndBothMatch_whenIn_thenMatches() {
 
         final Object match1 = new AlwaysEqualValue();
         final Object match2 = new AlwaysEqualValue();
 
-        final Condition<Object> condition = Conditions.anyOf(asList(match1, match2));
+        final Condition<Object> condition = Conditions.in(asList(match1, match2));
 
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
@@ -518,12 +550,12 @@ class ConditionsTest {
     }
 
     @Test
-    void givenTwoValuesAndBothDoNotMatch_whenAnyOfIterable_thenDoesNotMatch() {
+    void givenTwoValuesAndBothDoNotMatch_whenIn_thenDoesNotMatch() {
 
         final Object nonMatch1 = new AlwaysUnequalValue();
         final Object nonMatch2 = new AlwaysUnequalValue();
 
-        final Condition<Object> condition = Conditions.anyOf(asList(nonMatch1, nonMatch2));
+        final Condition<Object> condition = Conditions.in(asList(nonMatch1, nonMatch2));
 
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
@@ -619,182 +651,6 @@ class ConditionsTest {
     }
 
     // ------------------------------------------------------------------------
-    // Conditions#allOf(Object[])
-    // ------------------------------------------------------------------------
-
-    @Test
-    void givenNullValues_whenAllOfValues_thenExceptionThrown() {
-        assertThrows(
-            NullPointerException.class,
-            () -> Conditions.allOf((Object[]) null)
-        );
-    }
-
-    @Test
-    void givenOneValueAndMatches_whenAllOfValues_thenMatches() {
-
-        final Object match = new AlwaysEqualValue();
-
-        final Condition<Object> condition = Conditions.allOf(match);
-
-        final Evaluation evaluation = condition.bind(match).evaluate();
-
-        assertTrue(evaluation.isTrue());
-    }
-
-    @Test
-    void givenOneValueAndDoesNotMatch_whenAllOfValues_thenDoesNotMatch() {
-
-        final Object nonMatch = new AlwaysUnequalValue();
-
-        final Condition<Object> condition = Conditions.allOf(nonMatch);
-
-        final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
-
-        assertFalse(evaluation.isTrue());
-    }
-
-    @Test
-    void givenTwoValuesAndFirstMatches_whenAllOfValue_thenDoesNotMatch() {
-
-        final Object match = new AlwaysEqualValue();
-        final Object nonMatch = new AlwaysUnequalValue();
-
-        final Condition<Object> condition = Conditions.allOf(match, nonMatch);
-
-        final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
-
-        assertFalse(evaluation.isTrue());
-    }
-
-    @Test
-    void givenTwoValuesAndSecondMatches_whenAllOfValue_thenMatches() {
-
-        final Object match = new AlwaysEqualValue();
-        final Object nonMatch = new AlwaysUnequalValue();
-
-        final Condition<Object> condition = Conditions.allOf(nonMatch, match);
-
-        final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
-
-        assertFalse(evaluation.isTrue());
-    }
-
-    @Test
-    void givenTwoValueAndBothMatch_whenAllOfValue_thenMatches() {
-
-        final Object match1 = new AlwaysEqualValue();
-        final Object match2 = new AlwaysEqualValue();
-
-        final Condition<Object> condition = Conditions.allOf(match1, match2);
-
-        final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
-
-        assertTrue(evaluation.isTrue());
-    }
-
-    @Test
-    void givenTwoValuesAndBothDoNotMatch_whenAllOfValues_thenDoesNotMatch() {
-
-        final Object nonMatch1 = new AlwaysUnequalValue();
-        final Object nonMatch2 = new AlwaysUnequalValue();
-
-        final Condition<Object> condition = Conditions.allOf(nonMatch1, nonMatch2);
-
-        final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
-
-        assertFalse(evaluation.isTrue());
-    }
-
-    // ------------------------------------------------------------------------
-    // Conditions#allOf(Iterable)
-    // ------------------------------------------------------------------------
-
-    @Test
-    void givenNullValues_whenAllOfIterable_thenExceptionThrown() {
-        assertThrows(
-            NullPointerException.class,
-            () -> Conditions.allOf((Iterable<Object>) null)
-        );
-    }
-
-    @Test
-    void givenOneValueAndMatches_whenAllOfIterable_thenMatches() {
-
-        final Object match = new AlwaysEqualValue();
-
-        final Condition<Object> condition = Conditions.allOf(singletonList(match));
-
-        final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
-
-        assertTrue(evaluation.isTrue());
-    }
-
-    @Test
-    void givenOneValueAndDoesNotMatch_whenAllOfIterable_thenDoesNotMatch() {
-
-        final Object nonMatch = new AlwaysUnequalValue();
-
-        final Condition<Object> condition = Conditions.allOf(singletonList(nonMatch));
-
-        final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
-
-        assertFalse(evaluation.isTrue());
-    }
-
-    @Test
-    void givenTwoValuesAndFirstMatches_whenAllOfIterable_thenMatches() {
-
-        final Object match = new AlwaysEqualValue();
-        final Object nonMatch = new AlwaysUnequalValue();
-
-        final Condition<Object> condition = Conditions.allOf(asList(match, nonMatch));
-
-        final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
-
-        assertFalse(evaluation.isTrue());
-    }
-
-    @Test
-    void givenTwoValuesAndSecondMatches_whenAllOfIterable_thenMatches() {
-
-        final Object match = new AlwaysEqualValue();
-        final Object nonMatch = new AlwaysUnequalValue();
-
-        final Condition<Object> condition = Conditions.allOf(asList(nonMatch, match));
-
-        final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
-
-        assertFalse(evaluation.isTrue());
-    }
-
-    @Test
-    void givenTwoValueAndBothMatch_whenAllOfIterable_thenMatches() {
-
-        final Object match1 = new AlwaysEqualValue();
-        final Object match2 = new AlwaysEqualValue();
-
-        final Condition<Object> condition = Conditions.allOf(asList(match1, match2));
-
-        final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
-
-        assertTrue(evaluation.isTrue());
-    }
-
-    @Test
-    void givenTwoValuesAndBothDoNotMatch_whenAllOfIterable_thenDoesNotMatch() {
-
-        final Object nonMatch1 = new AlwaysUnequalValue();
-        final Object nonMatch2 = new AlwaysUnequalValue();
-
-        final Condition<Object> condition = Conditions.allOf(asList(nonMatch1, nonMatch2));
-
-        final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
-
-        assertFalse(evaluation.isTrue());
-    }
-
-    // ------------------------------------------------------------------------
     // Conditions#noneOf(Condition[])
     // ------------------------------------------------------------------------
 
@@ -883,23 +739,23 @@ class ConditionsTest {
     }
 
     // ------------------------------------------------------------------------
-    // Conditions#noneOf(Object[])
+    // Conditions#notOneOf(Object[])
     // ------------------------------------------------------------------------
 
     @Test
-    void givenNullValues_whenNoneOfValues_thenExceptionThrown() {
+    void givenNullValues_whenNotOneOfValues_thenExceptionThrown() {
         assertThrows(
             NullPointerException.class,
-            () -> Conditions.noneOf((Object[]) null)
+            () -> Conditions.notOneOf((Object[]) null)
         );
     }
 
     @Test
-    void givenOneValueAndMatches_whenNoneOfValues_thenDoesNotMatch() {
+    void givenOneValueAndMatches_whenNotOneOfValues_thenDoesNotMatch() {
 
         final Object match = new AlwaysEqualValue();
 
-        final Condition<Object> condition = Conditions.noneOf(match);
+        final Condition<Object> condition = Conditions.notOneOf(match);
 
         final Evaluation evaluation = condition.bind(match).evaluate();
 
@@ -907,11 +763,11 @@ class ConditionsTest {
     }
 
     @Test
-    void givenOneValueAndDoesNotMatch_whenNoneOfValues_thenMatches() {
+    void givenOneValueAndDoesNotMatch_whenNotOneOfValues_thenMatches() {
 
         final Object nonMatch = new AlwaysUnequalValue();
 
-        final Condition<Object> condition = Conditions.noneOf(nonMatch);
+        final Condition<Object> condition = Conditions.notOneOf(nonMatch);
 
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
@@ -919,12 +775,12 @@ class ConditionsTest {
     }
 
     @Test
-    void givenTwoValuesAndFirstMatches_whenNoneOfValue_thenDoesNotMatch() {
+    void givenTwoValuesAndFirstMatches_whenNotOneOfValue_thenDoesNotMatch() {
 
         final Object match = new AlwaysEqualValue();
         final Object nonMatch = new AlwaysUnequalValue();
 
-        final Condition<Object> condition = Conditions.noneOf(match, nonMatch);
+        final Condition<Object> condition = Conditions.notOneOf(match, nonMatch);
 
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
@@ -932,12 +788,12 @@ class ConditionsTest {
     }
 
     @Test
-    void givenTwoValuesAndSecondMatches_whenNoneOfValue_thenMatches() {
+    void givenTwoValuesAndSecondMatches_whenNotOneOfValue_thenMatches() {
 
         final Object match = new AlwaysEqualValue();
         final Object nonMatch = new AlwaysUnequalValue();
 
-        final Condition<Object> condition = Conditions.noneOf(nonMatch, match);
+        final Condition<Object> condition = Conditions.notOneOf(nonMatch, match);
 
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
@@ -945,12 +801,12 @@ class ConditionsTest {
     }
 
     @Test
-    void givenTwoValueAndBothMatch_whenNoneOfValue_thenDoesNotMatch() {
+    void givenTwoValueAndBothMatch_whenNotOneOfValue_thenDoesNotMatch() {
 
         final Object match1 = new AlwaysEqualValue();
         final Object match2 = new AlwaysEqualValue();
 
-        final Condition<Object> condition = Conditions.noneOf(match1, match2);
+        final Condition<Object> condition = Conditions.notOneOf(match1, match2);
 
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
@@ -958,12 +814,12 @@ class ConditionsTest {
     }
 
     @Test
-    void givenTwoValuesAndBothDoNotMatch_whenNoneOfValues_thenMatches() {
+    void givenTwoValuesAndBothDoNotMatch_whenNotOneOfValues_thenMatches() {
 
         final Object nonMatch1 = new AlwaysUnequalValue();
         final Object nonMatch2 = new AlwaysUnequalValue();
 
-        final Condition<Object> condition = Conditions.noneOf(nonMatch1, nonMatch2);
+        final Condition<Object> condition = Conditions.notOneOf(nonMatch1, nonMatch2);
 
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
@@ -971,23 +827,23 @@ class ConditionsTest {
     }
 
     // ------------------------------------------------------------------------
-    // Conditions#noneOf(Iterable)
+    // Conditions#notIn(List)
     // ------------------------------------------------------------------------
 
     @Test
-    void givenNullValues_whenNoneOfIterable_thenExceptionThrown() {
+    void givenNullValues_whenNotIn_thenExceptionThrown() {
         assertThrows(
             NullPointerException.class,
-            () -> Conditions.noneOf((Iterable<Object>) null)
+            () -> Conditions.notIn((List<Object>) null)
         );
     }
 
     @Test
-    void givenOneValueAndMatches_whenNoneOfIterable_thenDoesNotMatch() {
+    void givenOneValueAndMatches_whenNotIn_thenDoesNotMatch() {
 
         final Object match = new AlwaysEqualValue();
 
-        final Condition<Object> condition = Conditions.noneOf(singletonList(match));
+        final Condition<Object> condition = Conditions.notIn(singletonList(match));
 
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
@@ -995,11 +851,11 @@ class ConditionsTest {
     }
 
     @Test
-    void givenOneValueAndDoesNotMatch_whenNoneOfIterable_thenMatches() {
+    void givenOneValueAndDoesNotMatch_whenNotIn_thenMatches() {
 
         final Object nonMatch = new AlwaysUnequalValue();
 
-        final Condition<Object> condition = Conditions.noneOf(singletonList(nonMatch));
+        final Condition<Object> condition = Conditions.notIn(singletonList(nonMatch));
 
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
@@ -1007,12 +863,12 @@ class ConditionsTest {
     }
 
     @Test
-    void givenTwoValuesAndFirstMatches_whenNoneOfIterable_thenMatches() {
+    void givenTwoValuesAndFirstMatches_whenNotIn_thenMatches() {
 
         final Object match = new AlwaysEqualValue();
         final Object nonMatch = new AlwaysUnequalValue();
 
-        final Condition<Object> condition = Conditions.noneOf(asList(match, nonMatch));
+        final Condition<Object> condition = Conditions.notIn(asList(match, nonMatch));
 
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
@@ -1020,12 +876,12 @@ class ConditionsTest {
     }
 
     @Test
-    void givenTwoValuesAndSecondMatches_whenNoneOfIterable_thenMatches() {
+    void givenTwoValuesAndSecondMatches_whenNotIn_thenMatches() {
 
         final Object match = new AlwaysEqualValue();
         final Object nonMatch = new AlwaysUnequalValue();
 
-        final Condition<Object> condition = Conditions.noneOf(asList(nonMatch, match));
+        final Condition<Object> condition = Conditions.notIn(asList(nonMatch, match));
 
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
@@ -1033,12 +889,12 @@ class ConditionsTest {
     }
 
     @Test
-    void givenTwoValueAndBothMatch_whenNoneOfIterable_thenDoesNotMatch() {
+    void givenTwoValueAndBothMatch_whenNotIn_thenDoesNotMatch() {
 
         final Object match1 = new AlwaysEqualValue();
         final Object match2 = new AlwaysEqualValue();
 
-        final Condition<Object> condition = Conditions.noneOf(asList(match1, match2));
+        final Condition<Object> condition = Conditions.notIn(asList(match1, match2));
 
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
@@ -1046,12 +902,12 @@ class ConditionsTest {
     }
 
     @Test
-    void givenTwoValuesAndBothDoNotMatch_whenNoneOfIterable_thenMatches() {
+    void givenTwoValuesAndBothDoNotMatch_whenNotIn_thenMatches() {
 
         final Object nonMatch1 = new AlwaysUnequalValue();
         final Object nonMatch2 = new AlwaysUnequalValue();
 
-        final Condition<Object> condition = Conditions.noneOf(asList(nonMatch1, nonMatch2));
+        final Condition<Object> condition = Conditions.notIn(asList(nonMatch1, nonMatch2));
 
         final Evaluation evaluation = condition.bind(new EqualityEvaluatingValue()).evaluate();
 
@@ -1083,31 +939,21 @@ class ConditionsTest {
     }
 
     @Test
-    void givenIterableOfSubtype_whenAnyOf_thenConditionOfSupertypeCreated() {
+    void givenListOfSubtype_whenIn_thenConditionOfSupertypeCreated() {
 
         final List<Integer> values = List.of(1, 2);
 
-        final Condition<Number> condition = Conditions.anyOf(values);
+        final Condition<Number> condition = Conditions.in(values);
 
         assertTrue(condition.bind(2).evaluate().isTrue());
     }
 
     @Test
-    void givenIterableOfSubtype_whenAllOf_thenConditionOfSupertypeCreated() {
-
-        final List<Integer> values = List.of(1);
-
-        final Condition<Number> condition = Conditions.allOf(values);
-
-        assertTrue(condition.bind(1).evaluate().isTrue());
-    }
-
-    @Test
-    void givenIterableOfSubtype_whenNoneOf_thenConditionOfSupertypeCreated() {
+    void givenListOfSubtype_whenNotIn_thenConditionOfSupertypeCreated() {
 
         final List<Integer> values = List.of(1, 2);
 
-        final Condition<Number> condition = Conditions.noneOf(values);
+        final Condition<Number> condition = Conditions.notIn(values);
 
         assertTrue(condition.bind(3).evaluate().isTrue());
     }
@@ -1143,5 +989,258 @@ class ConditionsTest {
         final Condition<String> condition = Conditions.noneOf(isNull, isEmpty);
 
         assertTrue(condition.bind("foo").evaluate().isTrue());
+    }
+
+    @Test
+    void givenConditions_whenAnyOfCondition_thenNamedAnyOf() {
+
+        final Condition<String> isNull = Conditions.of(Objects::isNull);
+
+        assertEquals("anyOf", Conditions.anyOf(isNull).bind("foo").name());
+    }
+
+    @Test
+    void givenValues_whenOneOfValues_thenNamedOneOf() {
+        assertEquals("oneOf", Conditions.oneOf("a", "b").bind("foo").name());
+    }
+
+    @Test
+    void givenList_whenIn_thenNamedIn() {
+        assertEquals("in", Conditions.in(asList("a", "b")).bind("foo").name());
+    }
+
+    @Test
+    void givenConditions_whenAllOfCondition_thenNamedAllOf() {
+
+        final Condition<String> isNull = Conditions.of(Objects::isNull);
+
+        assertEquals("allOf", Conditions.allOf(isNull).bind("foo").name());
+    }
+
+    @Test
+    void givenConditions_whenNoneOfCondition_thenNamedNoneOf() {
+
+        final Condition<String> isNull = Conditions.of(Objects::isNull);
+
+        assertEquals("noneOf", Conditions.noneOf(isNull).bind("foo").name());
+    }
+
+    @Test
+    void givenValues_whenNotOneOfValues_thenNamedNotOneOf() {
+        assertEquals("notOneOf", Conditions.notOneOf("a", "b").bind("foo").name());
+    }
+
+    @Test
+    void givenList_whenNotIn_thenNamedNotIn() {
+        assertEquals("notIn", Conditions.notIn(asList("a", "b")).bind("foo").name());
+    }
+
+    @Test
+    void givenNonMatchingSubject_whenIn_thenHintListsValues() {
+
+        final Evaluation evaluation = Conditions.in(asList("OPEN", "PENDING")).bind("CLOSED").evaluate();
+
+        assertEquals("CLOSED should be one of [OPEN, PENDING]", evaluation.rationale().hint().orElseThrow());
+        assertEquals("CLOSED should not be one of [OPEN, PENDING]", evaluation.rationale().negatedHint().orElseThrow());
+    }
+
+    @Test
+    void givenNonMatchingSubject_whenOneOf_thenHintListsValues() {
+
+        final Evaluation evaluation = Conditions.oneOf("OPEN", "PENDING").bind("CLOSED").evaluate();
+
+        assertEquals("CLOSED should be one of [OPEN, PENDING]", evaluation.rationale().hint().orElseThrow());
+        assertEquals("CLOSED should not be one of [OPEN, PENDING]", evaluation.rationale().negatedHint().orElseThrow());
+    }
+
+    @Test
+    void givenMatchingSubject_whenNotIn_thenHintListsValues() {
+
+        final Evaluation evaluation = Conditions.notIn(asList("OPEN", "CLOSED")).bind("CLOSED").evaluate();
+
+        assertEquals("CLOSED should not be one of [OPEN, CLOSED]", evaluation.rationale().hint().orElseThrow());
+        assertEquals("CLOSED should be one of [OPEN, CLOSED]", evaluation.rationale().negatedHint().orElseThrow());
+    }
+
+    @Test
+    void givenMatchingSubject_whenNotOneOf_thenHintListsValues() {
+
+        final Evaluation evaluation = Conditions.notOneOf("OPEN", "CLOSED").bind("CLOSED").evaluate();
+
+        assertEquals("CLOSED should not be one of [OPEN, CLOSED]", evaluation.rationale().hint().orElseThrow());
+        assertEquals("CLOSED should be one of [OPEN, CLOSED]", evaluation.rationale().negatedHint().orElseThrow());
+    }
+
+    @Test
+    void givenNullSubjectAndValue_whenIn_thenHintFormatsNulls() {
+
+        final Evaluation evaluation = Conditions.in(asList("OPEN", null)).bind(null).evaluate();
+
+        assertEquals("(null) should be one of [OPEN, (null)]", evaluation.rationale().hint().orElseThrow());
+    }
+
+    @Test
+    void givenArrayValues_whenIn_thenHintFormatsArrays() {
+
+        final Evaluation evaluation = Conditions.<Object>in(asList(new int[]{1, 2}, "a")).bind(new int[]{3}).evaluate();
+
+        assertEquals("[3] should be one of [[1, 2], a]", evaluation.rationale().hint().orElseThrow());
+    }
+
+    @Test
+    void givenHint_whenIn_thenExpectedAndActualKept() {
+
+        final Evaluation evaluation = Conditions.in(asList("OPEN", "PENDING")).bind("CLOSED").evaluate();
+
+        assertEquals("at least one passes", evaluation.rationale().expected());
+        assertEquals("none pass", evaluation.rationale().negatedExpected());
+        assertEquals("0 passed, 2 failed", evaluation.rationale().actual());
+    }
+
+    @Test
+    void givenConditions_whenAnyOfCondition_thenNoHint() {
+
+        final Condition<String> isNull = Conditions.of(Objects::isNull);
+
+        assertTrue(Conditions.anyOf(isNull).bind("foo").evaluate().rationale().hint().isEmpty());
+    }
+
+    @Test
+    void givenNullList_whenAnyOfConditionList_thenExceptionThrown() {
+        assertThrows(
+            NullPointerException.class,
+            () -> Conditions.anyOf((List<Condition<Object>>) null)
+        );
+    }
+
+    @Test
+    void givenMixedConditions_whenAnyOfConditionList_thenResultIsTrue() {
+
+        final List<Condition<Object>> conditions = List.of(Condition.tautology(), Condition.contradiction());
+
+        assertTrue(Conditions.anyOf(conditions).bind("foo").evaluate().isTrue());
+    }
+
+    @Test
+    void givenTrueConditions_whenAnyOfConditionList_thenResultIsTrue() {
+
+        final List<Condition<Object>> conditions = List.of(Condition.tautology(), Condition.tautology());
+
+        assertTrue(Conditions.anyOf(conditions).bind("foo").evaluate().isTrue());
+    }
+
+    @Test
+    void givenFalseConditions_whenAnyOfConditionList_thenResultIsFalse() {
+
+        final List<Condition<Object>> conditions = List.of(Condition.contradiction(), Condition.contradiction());
+
+        assertFalse(Conditions.anyOf(conditions).bind("foo").evaluate().isTrue());
+    }
+
+    @Test
+    void givenConditionListOfSupertype_whenAnyOf_thenConditionOfSubtypeCreated() {
+
+        final List<Condition<Object>> conditions = List.of(Condition.tautology());
+        final Condition<String> condition = Conditions.anyOf(conditions);
+
+        assertEquals("anyOf", condition.bind("foo").name());
+    }
+
+    @Test
+    void givenNullList_whenAllOfConditionList_thenExceptionThrown() {
+        assertThrows(
+            NullPointerException.class,
+            () -> Conditions.allOf((List<Condition<Object>>) null)
+        );
+    }
+
+    @Test
+    void givenMixedConditions_whenAllOfConditionList_thenResultIsFalse() {
+
+        final List<Condition<Object>> conditions = List.of(Condition.tautology(), Condition.contradiction());
+
+        assertFalse(Conditions.allOf(conditions).bind("foo").evaluate().isTrue());
+    }
+
+    @Test
+    void givenTrueConditions_whenAllOfConditionList_thenResultIsTrue() {
+
+        final List<Condition<Object>> conditions = List.of(Condition.tautology(), Condition.tautology());
+
+        assertTrue(Conditions.allOf(conditions).bind("foo").evaluate().isTrue());
+    }
+
+    @Test
+    void givenFalseConditions_whenAllOfConditionList_thenResultIsFalse() {
+
+        final List<Condition<Object>> conditions = List.of(Condition.contradiction(), Condition.contradiction());
+
+        assertFalse(Conditions.allOf(conditions).bind("foo").evaluate().isTrue());
+    }
+
+    @Test
+    void givenConditionListOfSupertype_whenAllOf_thenConditionOfSubtypeCreated() {
+
+        final List<Condition<Object>> conditions = List.of(Condition.tautology());
+        final Condition<String> condition = Conditions.allOf(conditions);
+
+        assertEquals("allOf", condition.bind("foo").name());
+    }
+
+    @Test
+    void givenNullList_whenNoneOfConditionList_thenExceptionThrown() {
+        assertThrows(
+            NullPointerException.class,
+            () -> Conditions.noneOf((List<Condition<Object>>) null)
+        );
+    }
+
+    @Test
+    void givenMixedConditions_whenNoneOfConditionList_thenResultIsFalse() {
+
+        final List<Condition<Object>> conditions = List.of(Condition.tautology(), Condition.contradiction());
+
+        assertFalse(Conditions.noneOf(conditions).bind("foo").evaluate().isTrue());
+    }
+
+    @Test
+    void givenTrueConditions_whenNoneOfConditionList_thenResultIsFalse() {
+
+        final List<Condition<Object>> conditions = List.of(Condition.tautology(), Condition.tautology());
+
+        assertFalse(Conditions.noneOf(conditions).bind("foo").evaluate().isTrue());
+    }
+
+    @Test
+    void givenFalseConditions_whenNoneOfConditionList_thenResultIsTrue() {
+
+        final List<Condition<Object>> conditions = List.of(Condition.contradiction(), Condition.contradiction());
+
+        assertTrue(Conditions.noneOf(conditions).bind("foo").evaluate().isTrue());
+    }
+
+    @Test
+    void givenConditionListOfSupertype_whenNoneOf_thenConditionOfSubtypeCreated() {
+
+        final List<Condition<Object>> conditions = List.of(Condition.tautology());
+        final Condition<String> condition = Conditions.noneOf(conditions);
+
+        assertEquals("noneOf", condition.bind("foo").name());
+    }
+
+    @Test
+    void givenSingleListCandidate_whenOneOf_thenListIsSingleCandidate() {
+
+        final Condition<List<String>> condition = Conditions.oneOf(List.of("a", "b"));
+
+        assertTrue(condition.bind(List.of("a", "b")).evaluate().isTrue());
+    }
+
+    @Test
+    void givenSingleListCandidate_whenNotOneOf_thenListIsSingleCandidate() {
+
+        final Condition<List<String>> condition = Conditions.notOneOf(List.of("a", "b"));
+
+        assertFalse(condition.bind(List.of("a", "b")).evaluate().isTrue());
     }
 }

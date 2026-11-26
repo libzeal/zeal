@@ -1,7 +1,5 @@
 package io.github.libzeal.zeal.logic.evaluation;
 
-import io.github.libzeal.zeal.logic.rationale.Rationale;
-
 import java.time.Duration;
 
 import static java.util.Objects.requireNonNull;

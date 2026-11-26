@@ -8,7 +8,7 @@ import io.github.libzeal.zeal.logic.Tautology;
 import io.github.libzeal.zeal.logic.TerminalExpression;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
 import io.github.libzeal.zeal.logic.evaluation.TerminalEvaluation;
-import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
+import io.github.libzeal.zeal.logic.evaluation.SimpleRationale;
 import io.github.libzeal.zeal.logic.unary.CompoundUnaryExpression;
 import io.github.libzeal.zeal.logic.unary.TerminalUnaryExpression;
 import io.github.libzeal.zeal.logic.unary.UnaryExpression;
@@ -46,8 +46,10 @@ public class Expressions {
     public static Expression terminalExpression(final boolean result) {
 
         final Expression expression = mock(TerminalExpression.class);
-        final Evaluation evaluation = new TerminalEvaluation(result, "foo", new SimpleRationale("foo", "bar", "baz"),
-            Duration.ZERO);
+        final Evaluation evaluation = new TerminalEvaluation(
+                result, "foo", new SimpleRationale("foo", "bar", "baz"),
+                Duration.ZERO
+        );
 
         doReturn(evaluation).when(expression).evaluate();
 
@@ -84,8 +86,10 @@ public class Expressions {
     public static UnaryExpression<Object> expression(final boolean result, final Object subject) {
 
         final UnaryExpression<Object> expression = expression();
-        final Evaluation evaluation = new TerminalEvaluation(result, "foo", new SimpleRationale("foo", "bar", "baz"),
-            Duration.ZERO);
+        final Evaluation evaluation = new TerminalEvaluation(
+                result, "foo", new SimpleRationale("foo", "bar", "baz"),
+                Duration.ZERO
+        );
 
         doReturn(evaluation).when(expression).evaluate();
         doReturn(subject).when(expression).subject();

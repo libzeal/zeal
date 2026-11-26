@@ -1,15 +1,16 @@
 package io.github.libzeal.zeal.logic;
 
+import io.github.libzeal.zeal.logic.CompoundEvaluator.Tally;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
+import io.github.libzeal.zeal.logic.evaluation.Rationale;
 import io.github.libzeal.zeal.logic.evaluation.SkippableEvaluation.Skipped;
-import io.github.libzeal.zeal.logic.rationale.Rationale;
 import io.github.libzeal.zeal.logic.test.TestExpressions;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static io.github.libzeal.zeal.logic.CompoundEvaluator.format;
+import static io.github.libzeal.zeal.logic.CompoundEvaluator.formatActual;
 import static io.github.libzeal.zeal.logic.test.Arguments.listWithSingleNull;
 import static io.github.libzeal.zeal.logic.test.CauseAssertions.*;
 import static io.github.libzeal.zeal.logic.test.NamedExpressions.*;
@@ -24,16 +25,16 @@ class NorExpressionTest {
         final List<Expression> children = List.of();
 
         assertThrows(
-            NullPointerException.class,
-            () -> new NorExpression(null, children)
+                NullPointerException.class,
+                () -> new NorExpression(null, children)
         );
     }
 
     @Test
     void givenNullChildren_whenConstruct_thenExceptionThrown() {
         assertThrows(
-            NullPointerException.class,
-            () -> new NorExpression("foo", null)
+                NullPointerException.class,
+                () -> new NorExpression("foo", null)
         );
     }
 
@@ -43,16 +44,16 @@ class NorExpressionTest {
         final List<Expression> children = listWithSingleNull();
 
         assertThrows(
-            NullPointerException.class,
-            () -> new NorExpression("foo", children)
+                NullPointerException.class,
+                () -> new NorExpression("foo", children)
         );
     }
 
     @Test
     void givenNullVarargsChildren_whenUnnamed_thenExceptionThrown() {
         assertThrows(
-            NullPointerException.class,
-            () -> NorExpression.unnamed((Expression[]) null)
+                NullPointerException.class,
+                () -> NorExpression.unnamed((Expression[]) null)
         );
     }
 
@@ -84,23 +85,25 @@ class NorExpressionTest {
         assertTrue(evaluation.isTrue());
         assertEquals("NOR", evaluation.name());
         assertEquals(NorExpression.EXPECTED, rationale.expected());
-        assertEquals(format(0, 0, 0), rationale.actual());
+        assertEquals(NorExpression.NEGATED_EXPECTED, rationale.negatedExpected());
+        assertEquals(formatActual(new Tally(0, 0, 0)), rationale.actual());
         assertCauseIsSelf(evaluation);
         assertTraces(evaluation, "NOR");
     }
 
     @Test
-    void givenAllFalse_whenEvaluate_thenResultIsTrueAndCauseIsAllChildren() {
+    void givenAllFalse_whenEvaluate_thenResultIsTrueAndCauseIsSelf() {
 
         final Evaluation evaluation = nor("NOR", f("f1"), f("f2")).evaluate();
         final Rationale rationale = evaluation.rationale();
 
         assertTrue(evaluation.isTrue());
         assertEquals(NorExpression.EXPECTED, rationale.expected());
-        assertEquals(format(0, 2, 0), rationale.actual());
-        assertCause(evaluation, child(evaluation, 0), child(evaluation, 1));
-        assertTraces(evaluation, "NOR -> f1", "NOR -> f2");
-        assertRootCauses(evaluation, child(evaluation, 0), child(evaluation, 1));
+        assertEquals(NorExpression.NEGATED_EXPECTED, rationale.negatedExpected());
+        assertEquals(formatActual(new Tally(0, 2, 0)), rationale.actual());
+        assertCauseIsSelf(evaluation);
+        assertTraces(evaluation, "NOR");
+        assertRootCauses(evaluation, evaluation);
     }
 
     @Test
@@ -111,7 +114,7 @@ class NorExpressionTest {
         final Skipped f3 = skipped(evaluation, 2);
 
         assertFalse(evaluation.isTrue());
-        assertEquals(format(1, 1, 1), evaluation.rationale().actual());
+        assertEquals(formatActual(new Tally(1, 1, 1)), evaluation.rationale().actual());
         assertCause(evaluation, t2);
         assertTraces(evaluation, "NOR -> t2");
 
@@ -137,19 +140,19 @@ class NorExpressionTest {
     void givenSameChildren_whenEvaluate_thenResultIsNegationOfOr() {
 
         final List<List<Expression>> cases = List.of(
-            List.of(),
-            List.of(t("a")),
-            List.of(f("a")),
-            List.of(t("a"), t("b")),
-            List.of(t("a"), f("b")),
-            List.of(f("a"), t("b")),
-            List.of(f("a"), f("b"))
+                List.of(),
+                List.of(t("a")),
+                List.of(f("a")),
+                List.of(t("a"), t("b")),
+                List.of(t("a"), f("b")),
+                List.of(f("a"), t("b")),
+                List.of(f("a"), f("b"))
         );
 
         for (final List<Expression> children : cases) {
             assertEquals(
-                !new OrExpression("OR", children).evaluate().isTrue(),
-                new NorExpression("NOR", children).evaluate().isTrue()
+                    !new OrExpression("OR", children).evaluate().isTrue(),
+                    new NorExpression("NOR", children).evaluate().isTrue()
             );
         }
     }
@@ -163,5 +166,34 @@ class NorExpressionTest {
         final NorExpression expression = NorExpression.unnamed(children);
 
         assertEquals(List.of(child), expression.children());
+    }
+
+    @Test
+    void givenNameAndListOfExpressionSubtype_whenNamed_thenNameAndChildrenUsed() {
+
+        final BooleanExpression child = new BooleanExpression(() -> true);
+        final List<BooleanExpression> children = List.of(child);
+
+        final NorExpression expression = NorExpression.named("foo", children);
+
+        assertEquals("foo", expression.name());
+        assertEquals(List.of(child), expression.children());
+    }
+
+    @Test
+    void givenNameAndVarargs_whenNamed_thenNameAndChildrenUsed() {
+
+        final BooleanExpression first = new BooleanExpression(() -> true);
+        final BooleanExpression second = new BooleanExpression(() -> false);
+
+        final NorExpression expression = NorExpression.named("foo", first, second);
+
+        assertEquals("foo", expression.name());
+        assertEquals(List.of(first, second), expression.children());
+    }
+
+    @Test
+    void givenNullName_whenNamed_thenExceptionThrown() {
+        assertThrows(NullPointerException.class, () -> NorExpression.named(null, new BooleanExpression(() -> true)));
     }
 }

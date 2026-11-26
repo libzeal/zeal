@@ -1,6 +1,6 @@
 package io.github.libzeal.zeal.logic.evaluation;
 
-import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
+import io.github.libzeal.zeal.logic.Expression;
 import io.github.libzeal.zeal.logic.test.TestExpressions;
 import org.junit.jupiter.api.Test;
 
@@ -8,6 +8,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
+import static io.github.libzeal.zeal.logic.test.NamedExpressions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class CauseTest {
@@ -22,16 +23,16 @@ class CauseTest {
         final DirectCause direct = DirectCause.self();
 
         assertThrows(
-            NullPointerException.class,
-            () -> new Cause(null, direct)
+                NullPointerException.class,
+                () -> new Cause(null, direct)
         );
     }
 
     @Test
     void givenNullDirect_whenConstruct_thenExceptionThrown() {
         assertThrows(
-            NullPointerException.class,
-            () -> new Cause(FIRST, null)
+                NullPointerException.class,
+                () -> new Cause(FIRST, null)
         );
     }
 
@@ -53,11 +54,11 @@ class CauseTest {
 
         assertEquals(direct, cause.direct());
         assertEquals(
-            List.of(
-                new Cause.Trace(List.of(OWNER, FIRST)),
-                new Cause.Trace(List.of(OWNER, SECOND))
-            ),
-            cause.traces()
+                List.of(
+                        new Cause.Trace(List.of(OWNER, FIRST)),
+                        new Cause.Trace(List.of(OWNER, SECOND))
+                ),
+                cause.traces()
         );
         assertEquals(List.of(FIRST, SECOND), cause.rootCauses());
     }
@@ -78,16 +79,16 @@ class CauseTest {
         final List<Evaluation> evaluations = List.of();
 
         assertThrows(
-            IllegalArgumentException.class,
-            () -> new Cause.Trace(evaluations)
+                IllegalArgumentException.class,
+                () -> new Cause.Trace(evaluations)
         );
     }
 
     @Test
     void givenNullEvaluations_whenConstructTrace_thenExceptionThrown() {
         assertThrows(
-            NullPointerException.class,
-            () -> new Cause.Trace(null)
+                NullPointerException.class,
+                () -> new Cause.Trace(null)
         );
     }
 
@@ -131,6 +132,55 @@ class CauseTest {
     @Test
     void givenMultipleEvaluationTrace_whenToString_thenNamesJoined() {
         assertEquals("first -> second", new Cause.Trace(List.of(FIRST, SECOND)).toString());
+    }
+
+    @Test
+    void givenSelfTrace_whenIsNegated_thenFalse() {
+        assertFalse(Cause.Trace.of(FIRST).isNegated());
+    }
+
+    @Test
+    void givenNotOfTrue_whenIsNegated_thenTrue() {
+        assertTrue(onlyTraceOf(not("NOT", t("t1"))).isNegated());
+    }
+
+    @Test
+    void givenNotOfFalse_whenIsNegated_thenTrue() {
+        assertTrue(onlyTraceOf(not("NOT", f("f1"))).isNegated());
+    }
+
+    @Test
+    void givenDoubleNegation_whenIsNegated_thenFalse() {
+        assertFalse(onlyTraceOf(not("NOT1", not("NOT2", f("f1")))).isNegated());
+    }
+
+    @Test
+    void givenTripleNegation_whenIsNegated_thenTrue() {
+        assertTrue(onlyTraceOf(not("NOT1", not("NOT2", not("NOT3", t("t1"))))).isNegated());
+    }
+
+    @Test
+    void givenAndOfFalse_whenIsNegated_thenFalse() {
+        assertFalse(onlyTraceOf(and("AND", t("t1"), f("f2"))).isNegated());
+    }
+
+    @Test
+    void givenNorWithTrueChild_whenIsNegated_thenTrue() {
+        assertTrue(onlyTraceOf(nor("NOR", f("f1"), t("t2"))).isNegated());
+    }
+
+    @Test
+    void givenNandOfTrueChildren_whenIsNegated_thenFalse() {
+        assertFalse(onlyTraceOf(nand("NAND", t("t1"), t("t2"))).isNegated());
+    }
+
+    private static Cause.Trace onlyTraceOf(final Expression expression) {
+
+        final List<Cause.Trace> traces = expression.evaluate().cause().traces();
+
+        assertEquals(1, traces.size());
+
+        return traces.getFirst();
     }
 
     private static Evaluation evaluation(final String name) {

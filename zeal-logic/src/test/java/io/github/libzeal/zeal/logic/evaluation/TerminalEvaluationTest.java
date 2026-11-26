@@ -1,7 +1,5 @@
 package io.github.libzeal.zeal.logic.evaluation;
 
-import io.github.libzeal.zeal.logic.rationale.Rationale;
-import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;

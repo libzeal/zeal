@@ -1,15 +1,16 @@
 package io.github.libzeal.zeal.logic;
 
+import io.github.libzeal.zeal.logic.CompoundEvaluator.Tally;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
+import io.github.libzeal.zeal.logic.evaluation.Rationale;
 import io.github.libzeal.zeal.logic.evaluation.SkippableEvaluation.Skipped;
-import io.github.libzeal.zeal.logic.rationale.Rationale;
 import io.github.libzeal.zeal.logic.test.TestExpressions;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static io.github.libzeal.zeal.logic.CompoundEvaluator.format;
+import static io.github.libzeal.zeal.logic.CompoundEvaluator.formatActual;
 import static io.github.libzeal.zeal.logic.test.Arguments.listWithSingleNull;
 import static io.github.libzeal.zeal.logic.test.CauseAssertions.*;
 import static io.github.libzeal.zeal.logic.test.NamedExpressions.*;
@@ -24,16 +25,16 @@ class NandExpressionTest {
         final List<Expression> children = List.of();
 
         assertThrows(
-            NullPointerException.class,
-            () -> new NandExpression(null, children)
+                NullPointerException.class,
+                () -> new NandExpression(null, children)
         );
     }
 
     @Test
     void givenNullChildren_whenConstruct_thenExceptionThrown() {
         assertThrows(
-            NullPointerException.class,
-            () -> new NandExpression("foo", null)
+                NullPointerException.class,
+                () -> new NandExpression("foo", null)
         );
     }
 
@@ -43,16 +44,16 @@ class NandExpressionTest {
         final List<Expression> children = listWithSingleNull();
 
         assertThrows(
-            NullPointerException.class,
-            () -> new NandExpression("foo", children)
+                NullPointerException.class,
+                () -> new NandExpression("foo", children)
         );
     }
 
     @Test
     void givenNullVarargsChildren_whenUnnamed_thenExceptionThrown() {
         assertThrows(
-            NullPointerException.class,
-            () -> NandExpression.unnamed((Expression[]) null)
+                NullPointerException.class,
+                () -> NandExpression.unnamed((Expression[]) null)
         );
     }
 
@@ -84,23 +85,25 @@ class NandExpressionTest {
         assertFalse(evaluation.isTrue());
         assertEquals("NAND", evaluation.name());
         assertEquals(NandExpression.EXPECTED, rationale.expected());
-        assertEquals(format(0, 0, 0), rationale.actual());
+        assertEquals(NandExpression.NEGATED_EXPECTED, rationale.negatedExpected());
+        assertEquals(formatActual(new Tally(0, 0, 0)), rationale.actual());
         assertCauseIsSelf(evaluation);
         assertTraces(evaluation, "NAND");
     }
 
     @Test
-    void givenAllTrue_whenEvaluate_thenResultIsFalseAndCauseIsAllChildren() {
+    void givenAllTrue_whenEvaluate_thenResultIsFalseAndCauseIsSelf() {
 
         final Evaluation evaluation = nand("NAND", t("t1"), t("t2")).evaluate();
         final Rationale rationale = evaluation.rationale();
 
         assertFalse(evaluation.isTrue());
         assertEquals(NandExpression.EXPECTED, rationale.expected());
-        assertEquals(format(2, 0, 0), rationale.actual());
-        assertCause(evaluation, child(evaluation, 0), child(evaluation, 1));
-        assertTraces(evaluation, "NAND -> t1", "NAND -> t2");
-        assertRootCauses(evaluation, child(evaluation, 0), child(evaluation, 1));
+        assertEquals(NandExpression.NEGATED_EXPECTED, rationale.negatedExpected());
+        assertEquals(formatActual(new Tally(2, 0, 0)), rationale.actual());
+        assertCauseIsSelf(evaluation);
+        assertTraces(evaluation, "NAND");
+        assertRootCauses(evaluation, evaluation);
     }
 
     @Test
@@ -111,7 +114,7 @@ class NandExpressionTest {
         final Skipped t3 = skipped(evaluation, 2);
 
         assertTrue(evaluation.isTrue());
-        assertEquals(format(1, 1, 1), evaluation.rationale().actual());
+        assertEquals(formatActual(new Tally(1, 1, 1)), evaluation.rationale().actual());
         assertCause(evaluation, f2);
         assertTraces(evaluation, "NAND -> f2");
 
@@ -137,19 +140,19 @@ class NandExpressionTest {
     void givenSameChildren_whenEvaluate_thenResultIsNegationOfAnd() {
 
         final List<List<Expression>> cases = List.of(
-            List.of(),
-            List.of(t("a")),
-            List.of(f("a")),
-            List.of(t("a"), t("b")),
-            List.of(t("a"), f("b")),
-            List.of(f("a"), t("b")),
-            List.of(f("a"), f("b"))
+                List.of(),
+                List.of(t("a")),
+                List.of(f("a")),
+                List.of(t("a"), t("b")),
+                List.of(t("a"), f("b")),
+                List.of(f("a"), t("b")),
+                List.of(f("a"), f("b"))
         );
 
         for (final List<Expression> children : cases) {
             assertEquals(
-                !new AndExpression("AND", children).evaluate().isTrue(),
-                new NandExpression("NAND", children).evaluate().isTrue()
+                    !new AndExpression("AND", children).evaluate().isTrue(),
+                    new NandExpression("NAND", children).evaluate().isTrue()
             );
         }
     }
@@ -163,5 +166,34 @@ class NandExpressionTest {
         final NandExpression expression = NandExpression.unnamed(children);
 
         assertEquals(List.of(child), expression.children());
+    }
+
+    @Test
+    void givenNameAndListOfExpressionSubtype_whenNamed_thenNameAndChildrenUsed() {
+
+        final BooleanExpression child = new BooleanExpression(() -> true);
+        final List<BooleanExpression> children = List.of(child);
+
+        final NandExpression expression = NandExpression.named("foo", children);
+
+        assertEquals("foo", expression.name());
+        assertEquals(List.of(child), expression.children());
+    }
+
+    @Test
+    void givenNameAndVarargs_whenNamed_thenNameAndChildrenUsed() {
+
+        final BooleanExpression first = new BooleanExpression(() -> true);
+        final BooleanExpression second = new BooleanExpression(() -> false);
+
+        final NandExpression expression = NandExpression.named("foo", first, second);
+
+        assertEquals("foo", expression.name());
+        assertEquals(List.of(first, second), expression.children());
+    }
+
+    @Test
+    void givenNullName_whenNamed_thenExceptionThrown() {
+        assertThrows(NullPointerException.class, () -> NandExpression.named(null, new BooleanExpression(() -> true)));
     }
 }

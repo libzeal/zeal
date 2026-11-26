@@ -32,7 +32,8 @@ public record XorExpression(
 ) implements CompoundExpression {
 
     static final String DEFAULT_NAME = "XOR";
-    static final String EXPECTED = "true is odd";
+    static final String EXPECTED = "an odd number pass";
+    static final String NEGATED_EXPECTED = "an even number pass";
 
     /**
      * Creates a new XOR expression.
@@ -84,10 +85,47 @@ public record XorExpression(
         return new XorExpression(DEFAULT_NAME, List.of(children));
     }
 
+    /**
+     * Creates an XOR expression with the supplied name.
+     *
+     * @param name
+     *         The name of the expression.
+     * @param children
+     *         The sub-expressions to be XORed together.
+     *
+     * @return An XOR expression with the supplied name.
+     *
+     * @throws NullPointerException
+     *         The supplied name or children list is {@code null} or the list
+     *         contains any {@code null}s.
+     */
+    public static XorExpression named(final String name, final List<? extends Expression> children) {
+        return new XorExpression(name, List.copyOf(children));
+    }
+
+    /**
+     * Creates an XOR expression with the supplied name.
+     *
+     * @param name
+     *         The name of the expression.
+     * @param children
+     *         The sub-expressions to be XORed together.
+     *
+     * @return An XOR expression with the supplied name.
+     *
+     * @throws NullPointerException
+     *         The supplied name or children list is {@code null} or the list
+     *         contains any {@code null}s.
+     */
+    public static XorExpression named(final String name, final Expression... children) {
+        return new XorExpression(name, List.of(children));
+    }
+
     @Override
     public CompoundEvaluation evaluate() {
         return CompoundEvaluator.evaluate(
                 this, EXPECTED,
+                NEGATED_EXPECTED,
                 child -> false,
                 tally -> tally.trueCount() % 2 == 1
         );

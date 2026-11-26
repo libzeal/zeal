@@ -1,17 +1,18 @@
 package io.github.libzeal.zeal.logic;
 
-import io.github.libzeal.zeal.logic.evaluation.DirectCause;
 import io.github.libzeal.zeal.logic.evaluation.CompoundEvaluation;
+import io.github.libzeal.zeal.logic.evaluation.DirectCause;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
+import io.github.libzeal.zeal.logic.evaluation.Rationale;
 import io.github.libzeal.zeal.logic.evaluation.SkippableEvaluation.Evaluated;
-import io.github.libzeal.zeal.logic.rationale.Rationale;
 import io.github.libzeal.zeal.logic.test.TestExpressions;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static io.github.libzeal.zeal.logic.NotExpression.*;
-import static io.github.libzeal.zeal.logic.test.Assertions.*;
+import static io.github.libzeal.zeal.logic.NotExpression.ACTUAL_VALUE_WRAPPED_FALSE;
+import static io.github.libzeal.zeal.logic.NotExpression.ACTUAL_VALUE_WRAPPED_TRUE;
+import static io.github.libzeal.zeal.logic.test.Assertions.assertRationaleEquals;
 import static io.github.libzeal.zeal.logic.test.CauseAssertions.*;
 import static io.github.libzeal.zeal.logic.test.NamedExpressions.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -21,8 +22,8 @@ class NotExpressionTest {
     @Test
     void givenNullWrappedExpression_whenConstruct_thenExceptionThrown() {
         assertThrows(
-            NullPointerException.class,
-            () -> NotExpression.unnamed(null)
+                NullPointerException.class,
+                () -> NotExpression.unnamed(null)
         );
     }
 
@@ -89,12 +90,12 @@ class NotExpressionTest {
     }
 
     @Test
-    void givenNotOfTrueAnd_whenEvaluate_thenTracesFollowEveryAndChild() {
+    void givenNotOfTrueAnd_whenEvaluate_thenTraceEndsAtAnd() {
 
         final Evaluation evaluation = not("NOT", and("AND", t("t1"), t("t2"))).evaluate();
 
         assertFalse(evaluation.isTrue());
-        assertTraces(evaluation, "NOT -> AND -> t1", "NOT -> AND -> t2");
+        assertTraces(evaluation, "NOT -> AND");
     }
 
     @Test
@@ -116,11 +117,27 @@ class NotExpressionTest {
     }
 
     @Test
-    void givenNotOfFalseOr_whenEvaluate_thenTracesFollowEveryOrChild() {
+    void givenNotOfFalseOr_whenEvaluate_thenTraceEndsAtOr() {
 
         final Evaluation evaluation = not("NOT", or("OR", f("f1"), f("f2"))).evaluate();
 
         assertTrue(evaluation.isTrue());
-        assertTraces(evaluation, "NOT -> OR -> f1", "NOT -> OR -> f2");
+        assertTraces(evaluation, "NOT -> OR");
+    }
+
+    @Test
+    void givenNameAndWrapped_whenNamed_thenNameAndWrappedUsed() {
+
+        final BooleanExpression wrapped = new BooleanExpression(() -> true);
+
+        final NotExpression expression = NotExpression.named("foo", wrapped);
+
+        assertEquals("foo", expression.name());
+        assertEquals(List.of(wrapped), expression.children());
+    }
+
+    @Test
+    void givenNullName_whenNamed_thenExceptionThrown() {
+        assertThrows(NullPointerException.class, () -> NotExpression.named(null, new BooleanExpression(() -> true)));
     }
 }

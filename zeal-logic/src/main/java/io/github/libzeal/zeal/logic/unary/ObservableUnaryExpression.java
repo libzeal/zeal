@@ -1,8 +1,8 @@
 package io.github.libzeal.zeal.logic.unary;
 
+import io.github.libzeal.zeal.logic.evaluation.Rationale;
+import io.github.libzeal.zeal.logic.evaluation.SimpleRationale;
 import io.github.libzeal.zeal.logic.evaluation.TerminalEvaluation;
-import io.github.libzeal.zeal.logic.rationale.Rationale;
-import io.github.libzeal.zeal.logic.rationale.SimpleRationale;
 import io.github.libzeal.zeal.logic.util.StopWatch;
 import org.jspecify.annotations.Nullable;
 
@@ -54,6 +54,14 @@ import static java.util.Objects.requireNonNull;
  * @param hint
  *         The optional hint associated with the rationale of the evaluated
  *         expression.
+ * @param negatedExpected
+ *         The optional expected value associated with the rationale of the
+ *         evaluated expression when the evaluation is negated. If {@code null},
+ *         the default of {@link Rationale#negatedExpected()} is used.
+ * @param negatedHint
+ *         The optional hint associated with the rationale of the evaluated
+ *         expression when the evaluation is negated. If {@code null}, the
+ *         default of {@link Rationale#negatedHint()} is used.
  * @param <S>
  *         The type of the subject.
  * @param <O>
@@ -76,11 +84,64 @@ public record ObservableUnaryExpression<S, O>(
         Predicate<? super O> condition,
         Field<S, O> expected,
         Field<S, O> actual,
-        @Nullable Field<S, O> hint
+        @Nullable Field<S, O> hint,
+        @Nullable Field<S, O> negatedExpected,
+        @Nullable Field<S, O> negatedHint
 ) implements TerminalUnaryExpression<S> {
 
     /**
      * Creates a new expression.
+     *
+     * @param name
+     *         The name of the expression.
+     * @param subject
+     *         The subject of the expression.
+     * @param nullable
+     *         A flag denoting if the subject of the expression can be
+     *         {@code null}.
+     * @param observe
+     *         The observation function that captured the cached value. For more
+     *         information, see the definition of the {@code <O>} generic type
+     *         parameter.
+     * @param condition
+     *         The predicate used to determine when the observed value is passed
+     *         (true).
+     * @param expected
+     *         The expected value associated with the rationale of the evaluated
+     *         expression.
+     * @param actual
+     *         The actual value associated with the rationale of the evaluated
+     *         expression.
+     * @param hint
+     *         The optional hint associated with the rationale of the evaluated
+     *         expression.
+     * @param negatedExpected
+     *         The optional expected value associated with the rationale of the
+     *         evaluated expression when the evaluation is negated. If
+     *         {@code null}, the default of {@link Rationale#negatedExpected()}
+     *         is used.
+     * @param negatedHint
+     *         The optional hint associated with the rationale of the evaluated
+     *         expression when the evaluation is negated. If {@code null}, the
+     *         default of {@link Rationale#negatedHint()} is used.
+     *
+     * @throws NullPointerException
+     *         The supplied name, observed value, predicate (condition),
+     *         expected value, or actual value are {@code null}.
+     */
+    public ObservableUnaryExpression {
+        requireNonNull(name);
+        requireNonNull(observe);
+        requireNonNull(condition);
+        requireNonNull(expected);
+        requireNonNull(actual);
+    }
+
+    /**
+     * Creates a new expression without a negated expected value or negated
+     * hint. When the evaluation is negated, the defaults of
+     * {@link Rationale#negatedExpected()} and {@link Rationale#negatedHint()}
+     * are used.
      *
      * @param name
      *         The name of the expression.
@@ -110,12 +171,17 @@ public record ObservableUnaryExpression<S, O>(
      *         The supplied name, observed value, predicate (condition),
      *         expected value, or actual value are {@code null}.
      */
-    public ObservableUnaryExpression {
-        requireNonNull(name);
-        requireNonNull(observe);
-        requireNonNull(condition);
-        requireNonNull(expected);
-        requireNonNull(actual);
+    public ObservableUnaryExpression(
+            final String name,
+            final @Nullable S subject,
+            final boolean nullable,
+            final Function<? super S, ? extends O> observe,
+            final Predicate<? super O> condition,
+            final Field<S, O> expected,
+            final Field<S, O> actual,
+            final @Nullable Field<S, O> hint
+    ) {
+        this(name, subject, nullable, observe, condition, expected, actual, hint, null, null);
     }
 
     @Override
@@ -125,7 +191,14 @@ public record ObservableUnaryExpression<S, O>(
 
         if (subject == null && !nullable) {
             final Duration elapsedTime = stopWatch.stop();
-            final Rationale rationale = new SimpleRationale(expected.compute(unobservedContext()), stringify(null));
+            final Context<S, O> context = unobservedContext();
+            final Rationale rationale = new SimpleRationale(
+                    expected.compute(context),
+                    computeIfPresent(negatedExpected, context),
+                    stringify(null),
+                    null,
+                    null
+            );
 
             return new TerminalEvaluation(false, name, rationale, elapsedTime);
         }
@@ -137,11 +210,17 @@ public record ObservableUnaryExpression<S, O>(
         final Context<S, O> context = new Context<>(subject, observed, passed);
         final Rationale rationale = new SimpleRationale(
                 expected.compute(context),
+                computeIfPresent(negatedExpected, context),
                 actual.compute(context),
-                hint == null ? null : hint.compute(context)
+                computeIfPresent(hint, context),
+                computeIfPresent(negatedHint, context)
         );
 
         return new TerminalEvaluation(passed, name, rationale, elapsedTime);
+    }
+
+    private static <S, O> @Nullable String computeIfPresent(final @Nullable Field<S, O> field, final Context<S, O> context) {
+        return field == null ? null : field.compute(context);
     }
 
     // The subject is only null here when the condition is nullable, and nullable conditions observe using functions
@@ -151,7 +230,7 @@ public record ObservableUnaryExpression<S, O>(
         return observe.apply(subject);
     }
 
-    // A null subject is never observed by a non-nullable condition, so only the expected field is computed, and
+    // A null subject is never observed by a non-nullable condition, so only the expected fields are computed, and
     // expected fields do not use the observed value
     @SuppressWarnings("NullAway")
     private Context<S, O> unobservedContext() {
@@ -172,7 +251,9 @@ public record ObservableUnaryExpression<S, O>(
      * @param <O>
      *         The type of the observed value.
      */
-    public record Context<S, O>(@Nullable S subject, O observed, boolean passed) {
+    public record Context<S, O>(
+            @Nullable S subject, O observed, boolean passed
+    ) {
 
         /**
          * Returns the supplied value if the evaluation passed (the boolean flag

@@ -3,7 +3,6 @@ package io.github.libzeal.zeal.logic.evaluation;
 import io.github.libzeal.zeal.logic.CompoundExpression;
 import io.github.libzeal.zeal.logic.evaluation.SkippableEvaluation.Evaluated;
 import io.github.libzeal.zeal.logic.evaluation.SkippableEvaluation.Skipped;
-import io.github.libzeal.zeal.logic.rationale.Rationale;
 
 import java.time.Duration;
 import java.util.List;

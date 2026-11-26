@@ -1,9 +1,10 @@
 package io.github.libzeal.zeal.logic;
 
+import io.github.libzeal.zeal.logic.CompoundEvaluator.Tally;
 import io.github.libzeal.zeal.logic.evaluation.CompoundEvaluation;
 import io.github.libzeal.zeal.logic.evaluation.Evaluation;
+import io.github.libzeal.zeal.logic.evaluation.Rationale;
 import io.github.libzeal.zeal.logic.evaluation.SkippableEvaluation.Skipped;
-import io.github.libzeal.zeal.logic.rationale.Rationale;
 import io.github.libzeal.zeal.logic.test.TestExpressions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static io.github.libzeal.zeal.logic.CompoundEvaluator.format;
+import static io.github.libzeal.zeal.logic.CompoundEvaluator.formatActual;
 import static io.github.libzeal.zeal.logic.test.Arguments.listWithSingleNull;
 import static io.github.libzeal.zeal.logic.test.CauseAssertions.*;
 import static io.github.libzeal.zeal.logic.test.NamedExpressions.*;
@@ -37,32 +38,32 @@ class AndExpressionTest {
         final List<Expression> children = List.of();
 
         assertThrows(
-            NullPointerException.class,
-            () -> new AndExpression(null, children)
+                NullPointerException.class,
+                () -> new AndExpression(null, children)
         );
     }
 
     @Test
     void givenNullExpressionList_whenConstruct_thenExceptionThrown() {
         assertThrows(
-            NullPointerException.class,
-            () -> new AndExpression(name, null)
+                NullPointerException.class,
+                () -> new AndExpression(name, null)
         );
     }
 
     @Test
     void givenNullListChildren_whenWithDefaultName_thenExceptionThrown() {
         assertThrows(
-            NullPointerException.class,
-            () -> AndExpression.unnamed((List<Expression>) null)
+                NullPointerException.class,
+                () -> AndExpression.unnamed((List<Expression>) null)
         );
     }
 
     @Test
     void givenNullVarargsChildren_whenWithDefaultName_thenExceptionThrown() {
         assertThrows(
-            NullPointerException.class,
-            () -> AndExpression.unnamed((Expression[]) null)
+                NullPointerException.class,
+                () -> AndExpression.unnamed((Expression[]) null)
         );
     }
 
@@ -72,8 +73,8 @@ class AndExpressionTest {
         final List<Expression> children = listWithSingleNull();
 
         assertThrows(
-            NullPointerException.class,
-            () -> new AndExpression("foo", children)
+                NullPointerException.class,
+                () -> new AndExpression("foo", children)
         );
     }
 
@@ -83,8 +84,8 @@ class AndExpressionTest {
         final List<Expression> children = listWithSingleNull();
 
         assertThrows(
-            NullPointerException.class,
-            () -> AndExpression.unnamed(children)
+                NullPointerException.class,
+                () -> AndExpression.unnamed(children)
         );
     }
 
@@ -112,7 +113,8 @@ class AndExpressionTest {
         assertTrue(evaluation.isTrue());
         assertEquals(name, evaluation.name());
         assertEquals(AndExpression.EXPECTED, rationale.expected());
-        assertEquals(format(0, 0, 0), rationale.actual());
+        assertEquals(AndExpression.NEGATED_EXPECTED, rationale.negatedExpected());
+        assertEquals(formatActual(new Tally(0, 0, 0)), rationale.actual());
         assertFalse(rationale.hint().isPresent());
     }
 
@@ -127,7 +129,8 @@ class AndExpressionTest {
         assertTrue(evaluation.isTrue());
         assertEquals(name, evaluation.name());
         assertEquals(AndExpression.EXPECTED, rationale.expected());
-        assertEquals(format(1, 0, 0), rationale.actual());
+        assertEquals(AndExpression.NEGATED_EXPECTED, rationale.negatedExpected());
+        assertEquals(formatActual(new Tally(1, 0, 0)), rationale.actual());
         assertFalse(rationale.hint().isPresent());
     }
 
@@ -142,7 +145,8 @@ class AndExpressionTest {
         assertFalse(evaluation.isTrue());
         assertEquals(name, evaluation.name());
         assertEquals(AndExpression.EXPECTED, rationale.expected());
-        assertEquals(format(0, 1, 0), rationale.actual());
+        assertEquals(AndExpression.NEGATED_EXPECTED, rationale.negatedExpected());
+        assertEquals(formatActual(new Tally(0, 1, 0)), rationale.actual());
         assertFalse(rationale.hint().isPresent());
     }
 
@@ -159,7 +163,8 @@ class AndExpressionTest {
         assertFalse(evaluation.isTrue());
         assertEquals(name, evaluation.name());
         assertEquals(AndExpression.EXPECTED, rationale.expected());
-        assertEquals(format(0, 1, 1), rationale.actual());
+        assertEquals(AndExpression.NEGATED_EXPECTED, rationale.negatedExpected());
+        assertEquals(formatActual(new Tally(0, 1, 1)), rationale.actual());
         assertFalse(rationale.hint().isPresent());
         assertIsSkipped(passingSubExpression);
     }
@@ -185,7 +190,8 @@ class AndExpressionTest {
         assertFalse(evaluation.isTrue());
         assertEquals(name, evaluation.name());
         assertEquals(AndExpression.EXPECTED, rationale.expected());
-        assertEquals(format(1, 1, 0), rationale.actual());
+        assertEquals(AndExpression.NEGATED_EXPECTED, rationale.negatedExpected());
+        assertEquals(formatActual(new Tally(1, 1, 0)), rationale.actual());
         assertFalse(rationale.hint().isPresent());
         assertIsNotSkipped(failingSubExpression);
     }
@@ -210,8 +216,8 @@ class AndExpressionTest {
         final Expression child = TestExpressions.tautology();
 
         assertThrows(
-            UnsupportedOperationException.class,
-            () -> children.add(child)
+                UnsupportedOperationException.class,
+                () -> children.add(child)
         );
     }
 
@@ -227,14 +233,14 @@ class AndExpressionTest {
     }
 
     @Test
-    void givenAndWithAllTrue_whenEvaluate_thenCauseIsAllChildren() {
+    void givenAndWithAllTrue_whenEvaluate_thenCauseIsSelf() {
 
         final Evaluation evaluation = and("AND", t("t1"), t("t2")).evaluate();
 
         assertTrue(evaluation.isTrue());
-        assertCause(evaluation, child(evaluation, 0), child(evaluation, 1));
-        assertTraces(evaluation, "AND -> t1", "AND -> t2");
-        assertRootCauses(evaluation, child(evaluation, 0), child(evaluation, 1));
+        assertCauseIsSelf(evaluation);
+        assertTraces(evaluation, "AND");
+        assertRootCauses(evaluation, evaluation);
     }
 
     @Test
@@ -286,27 +292,27 @@ class AndExpressionTest {
     }
 
     @Test
-    void givenAndOfFalseOr_whenEvaluate_thenTracesFollowEveryOrChild() {
+    void givenAndOfFalseOr_whenEvaluate_thenTraceEndsAtOr() {
 
         final Evaluation evaluation = and("AND", or("OR", f("f1"), f("f2")), t("t3")).evaluate();
         final Skipped t3 = skipped(evaluation, 1);
 
         assertFalse(evaluation.isTrue());
-        assertTraces(evaluation, "AND -> OR -> f1", "AND -> OR -> f2");
-        assertRootCauses(evaluation, child(evaluation, 0, 0), child(evaluation, 0, 1));
+        assertTraces(evaluation, "AND -> OR");
+        assertRootCauses(evaluation, child(evaluation, 0));
 
         assertCause(t3, child(evaluation, 0));
-        assertTraces(t3, "OR -> f1", "OR -> f2");
-        assertRootCauses(t3, child(evaluation, 0, 0), child(evaluation, 0, 1));
+        assertTraces(t3, "OR");
+        assertRootCauses(t3, child(evaluation, 0));
     }
 
     @Test
     void givenDeeplyNestedAnd_whenEvaluate_thenTraceReachesDeepestFalse() {
 
         final Evaluation evaluation = and(
-            "AND1",
-            and("AND2", t("t1"), and("AND3", t("t2"), f("f3"))),
-            t("t4")
+                "AND1",
+                and("AND2", t("t1"), and("AND3", t("t2"), f("f3"))),
+                t("t4")
         ).evaluate();
         final Skipped t4 = skipped(evaluation, 1);
 
@@ -329,12 +335,12 @@ class AndExpressionTest {
     }
 
     @Test
-    void givenMixedTree_whenEvaluate_thenTracesFollowEveryDecidingBranch() {
+    void givenMixedTree_whenEvaluate_thenTracesEndAtDecidingCompound() {
 
         final Evaluation evaluation = and(
-            "AND1",
-            or("OR", f("f1"), and("AND2", t("t2"), f("f3"), t("t4"))),
-            not("NOT", t("t5"))
+                "AND1",
+                or("OR", f("f1"), and("AND2", t("t2"), f("f3"), t("t4"))),
+                not("NOT", t("t5"))
         ).evaluate();
         final Evaluation or = child(evaluation, 0);
         final Evaluation f3 = child(evaluation, 0, 1, 1);
@@ -344,27 +350,27 @@ class AndExpressionTest {
 
         assertFalse(evaluation.isTrue());
         assertCause(evaluation, or);
-        assertTraces(evaluation, "AND1 -> OR -> f1", "AND1 -> OR -> AND2 -> f3");
-        assertRootCauses(evaluation, child(evaluation, 0, 0), f3);
+        assertTraces(evaluation, "AND1 -> OR");
+        assertRootCauses(evaluation, or);
 
         assertCause(t4, f3);
         assertTraces(t4, "f3");
 
         assertCause(not, or);
-        assertTraces(not, "OR -> f1", "OR -> AND2 -> f3");
+        assertTraces(not, "OR");
 
         assertEquals(List.of("t4", "NOT", "t5"), descendants.stream().map(Skipped::name).toList());
         assertCause(descendants.get(2), or);
-        assertTraces(descendants.get(2), "OR -> f1", "OR -> AND2 -> f3");
+        assertTraces(descendants.get(2), "OR");
     }
 
     @Test
     void givenSkippedCompound_whenEvaluate_thenEveryDescendantIsCausedByDecider() {
 
         final Evaluation evaluation = and(
-            "AND1",
-            f("f1"),
-            or("OR", t("t2"), and("AND2", t("t3"), t("t4")))
+                "AND1",
+                f("f1"),
+                or("OR", t("t2"), and("AND2", t("t3"), t("t4")))
         ).evaluate();
         final Evaluation f1 = child(evaluation, 0);
         final List<Skipped> descendants = skippedDescendants(evaluation);
@@ -411,5 +417,34 @@ class AndExpressionTest {
         final AndExpression expression = AndExpression.unnamed(children);
 
         assertEquals(List.of(child), expression.children());
+    }
+
+    @Test
+    void givenNameAndListOfExpressionSubtype_whenNamed_thenNameAndChildrenUsed() {
+
+        final BooleanExpression child = new BooleanExpression(() -> true);
+        final List<BooleanExpression> children = List.of(child);
+
+        final AndExpression expression = AndExpression.named("foo", children);
+
+        assertEquals("foo", expression.name());
+        assertEquals(List.of(child), expression.children());
+    }
+
+    @Test
+    void givenNameAndVarargs_whenNamed_thenNameAndChildrenUsed() {
+
+        final BooleanExpression first = new BooleanExpression(() -> true);
+        final BooleanExpression second = new BooleanExpression(() -> false);
+
+        final AndExpression expression = AndExpression.named("foo", first, second);
+
+        assertEquals("foo", expression.name());
+        assertEquals(List.of(first, second), expression.children());
+    }
+
+    @Test
+    void givenNullName_whenNamed_thenExceptionThrown() {
+        assertThrows(NullPointerException.class, () -> AndExpression.named(null, new BooleanExpression(() -> true)));
     }
 }
